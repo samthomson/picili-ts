@@ -3,6 +3,8 @@ import { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQL
 import express from 'express'
 import http from 'http'
 
+import * as DropboxUtil from './dropboxConnector'
+
 const typeDefs = gql`
 	type Query {
 		ping: String
@@ -20,8 +22,10 @@ const resolvers = {
 const startApolloServer = async (typeDefs, resolvers) => {
 	const app = express()
 
-	app.get('/oauth/dropbox', (req, res) => {
-		res.send('response')
+	app.get('/oauth/dropbox', async (req, res) => {
+		const redirectURL = await DropboxUtil.getConnectionURL()
+		res.writeHead(302, { Location: redirectURL });
+  		res.end();
 	})
 
 	const httpServer = http.createServer(app)

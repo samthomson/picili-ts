@@ -487,6 +487,13 @@ diff@^4.0.1:
   resolved "https://registry.yarnpkg.com/diff/-/diff-4.0.2.tgz#60f3aecb89d5fae520c11aa19efc2bb982aade7d"
   integrity sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==
 
+dropbox@^10.13.0:
+  version "10.13.0"
+  resolved "https://registry.yarnpkg.com/dropbox/-/dropbox-10.13.0.tgz#26b270521d8b9eb3412b68a9e65913cfded124b4"
+  integrity sha512-cpTwknheFDsD8L5I23gcg811qzryCRRy1hPubvXiK7+qdqUW2eKFSlqXu3HHtEMlfFF31zEXJSEy8bHbN5JGQw==
+  dependencies:
+    node-fetch "^2.6.1"
+
 duplexer@~0.1.1:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/duplexer/-/duplexer-0.1.2.tgz#3abe43aef3835f8ae077d136ddce0f276b0400e6"

@@ -1,7 +1,7 @@
 import React from 'react'
-import { useLocation } from 'react-router-dom'
+import { Redirect, useLocation } from 'react-router-dom'
 
-const App = () => {
+const DropboxConnection = () => {
 
   const search = useLocation().search;
   const token = new URLSearchParams(search).get('code');
@@ -9,6 +9,13 @@ const App = () => {
   const dropboxOAuth = () => {    
     window.location.replace(`http://localhost:3501/oauth/dropbox`)
   }
+
+  // if (!token) {
+  //   return <>
+  //     <p>redirecting to Dropbox OAuth</p>
+  //     <Redirect to="http://localhost:3501/oauth/dropbox" />
+  //   </>
+  // }
 
   return (
     <div>
@@ -19,4 +26,4 @@ const App = () => {
   );
 }
 
-export default App;
+export default DropboxConnection
