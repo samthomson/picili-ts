@@ -6,42 +6,40 @@ import http from 'http'
 import * as DropboxUtil from './dropboxConnector'
 
 const typeDefs = gql`
-	type Query {
-		ping: String
-	}
+    type Query {
+        ping: String
+    }
 `
 
 const resolvers = {
     Query: {
-		ping: () => 'pinged'
-	},
+        ping: () => 'pinged',
+    },
 }
 
-
-
 const startApolloServer = async (typeDefs, resolvers) => {
-	const app = express()
+    const app = express()
 
-	app.get('/oauth/dropbox', async (req, res) => {
-		const redirectURL = await DropboxUtil.getConnectionURL()
-		res.writeHead(302, { Location: redirectURL });
-  		res.end();
-	})
+    app.get('/oauth/dropbox', async (req, res) => {
+        const redirectURL = await DropboxUtil.getConnectionURL()
+        res.writeHead(302, { Location: redirectURL })
+        res.end()
+    })
 
-	const httpServer = http.createServer(app)
-	const server = new ApolloServer({
-	  typeDefs,
-	  resolvers,
-	  plugins: [ApolloServerPluginDrainHttpServer({ httpServer }), ApolloServerPluginLandingPageGraphQLPlayground()],
-	})
+    const httpServer = http.createServer(app)
+    const server = new ApolloServer({
+        typeDefs,
+        resolvers,
+        plugins: [ApolloServerPluginDrainHttpServer({ httpServer }), ApolloServerPluginLandingPageGraphQLPlayground()],
+    })
 
-	await server.start()
-	
-	server.applyMiddleware({ app })
+    await server.start()
 
-	httpServer.listen({ port: 4000 }, () => {
-		console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
-	})
+    server.applyMiddleware({ app })
+
+    httpServer.listen({ port: 4000 }, () => {
+        console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+    })
 }
 
 startApolloServer(typeDefs, resolvers)

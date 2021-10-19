@@ -16,7 +16,9 @@
   },
   "scripts": {
     "start-server": "node --inspect=0.0.0.0:9229 -r ts-node/register src/server.ts",
-    "watch-server": "tsc-watch --onSuccess \"yarn run start-server\""
+    "watch-server": "tsc-watch --onSuccess \"yarn run start-server\"",
+    "lint-summary": "eslint '*/**/*.{js,ts,tsx}'",
+    "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.1.0",
