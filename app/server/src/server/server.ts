@@ -2,6 +2,8 @@ import { ApolloServer, gql } from 'apollo-server-express'
 import { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 import express from 'express'
 import http from 'http'
+import cookieParser from 'cookie-parser'
+import cors from 'cors'
 
 import * as DropboxUtil from '../dropboxConnector'
 import Mutation from './mutations'
@@ -41,6 +43,13 @@ const resolvers = {
 const startApolloServer = async (typeDefs, resolvers) => {
     const app = express()
 
+    app.use(cookieParser())
+    const corsOptions = {
+        origin: true, // anyone can connect, simpler - for now - than specifying client host which will change with deployment
+        credentials: true, // <-- REQUIRED backend setting
+    }
+    app.use(cors(corsOptions))
+
     app.get('/oauth/dropbox', async (req, res) => {
         const redirectURL = await DropboxUtil.getConnectionURL()
         res.writeHead(302, { Location: redirectURL })
@@ -63,7 +72,7 @@ const startApolloServer = async (typeDefs, resolvers) => {
 
     await server.start()
 
-    server.applyMiddleware({ app })
+    server.applyMiddleware({ app, cors: false })
 
     httpServer.listen({ port: 4000 }, () => {
         console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
