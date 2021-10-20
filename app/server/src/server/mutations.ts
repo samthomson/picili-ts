@@ -3,35 +3,10 @@ import * as AuthUtil from '../util/auth'
 import * as Types from '../declarations'
 
 const login = async (parent, args, context): Promise<Types.API.Response.Auth> => {
-    /*
     const user = await DBUtil.getUser(args.authInput.email, args.authInput.password)
 
     if (user) {
         const token = AuthUtil.generateJWT(user.id)
-
-        context.setCookies.push({
-            name: 'picili-token',
-            value: token,
-            options: {
-                SameSite: 'Strict',
-                maxAge: 1000 * 60 * 60 * 24 * 31,
-            },
-        })
-
-        return {
-            token,
-            error: undefined,
-        }
-    } else {
-        return {
-            token: undefined,
-            error: `credentials didn't match a user`,
-        }
-    }
-    */
-
-    if (args.authInput.email && args.authInput.password) {
-        const token = AuthUtil.generateJWT('user.id')
 
         context.setCookies.push({
             name: 'picili-token',
