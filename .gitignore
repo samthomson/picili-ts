@@ -1,2 +1,3 @@
 app/server/node_modules
 .env
+app/server/logs
