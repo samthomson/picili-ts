@@ -1,18 +1,22 @@
 import Cookies from 'universal-cookie'
 
-const tokenName = 'picili-token'
 const cookieName = 'picili-token'
 
 export const getToken = (): string | undefined => {
-	return localStorage.getItem(tokenName) ?? undefined
+	const cookies = new Cookies()
+	const authCookieValue = cookies.get(cookieName)
+	return authCookieValue
 }
 
 export const saveToken = (token: string): void => {
-	localStorage.setItem(tokenName, token)
+	removeToken()
+
+	// set cookie
+	const cookies = new Cookies()
+	cookies.set(cookieName, token, { path: '/' })
 }
 
 export const removeToken = (): void => {
-	localStorage.removeItem(tokenName)
 	const cookies = new Cookies()
 	cookies.remove(cookieName)
 }

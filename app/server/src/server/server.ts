@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
 import * as DropboxUtil from '../dropboxConnector'
+import Query from './queries'
 import Mutation from './mutations'
 
 import * as AuthUtil from '../util/auth'
@@ -26,6 +27,7 @@ const typeDefs = gql`
     }
     type Query {
         ping: String
+        validateToken(token: String!): Boolean
     }
     type Mutation {
         login(authInput: LoginInput!): AuthResponse
@@ -34,9 +36,7 @@ const typeDefs = gql`
 `
 
 const resolvers = {
-    Query: {
-        ping: () => 'pinged',
-    },
+    Query,
     Mutation,
 }
 
@@ -62,10 +62,11 @@ const startApolloServer = async (typeDefs, resolvers) => {
         resolvers,
         plugins: [ApolloServerPluginDrainHttpServer({ httpServer }), ApolloServerPluginLandingPageGraphQLPlayground()],
         context: (ctx) => {
+            const userId = AuthUtil.userIdFromRequestCookie(ctx.req)
             return {
                 setCookies: [],
                 setHeaders: [],
-                userId: AuthUtil.userIdFromRequestCookie(ctx.req),
+                userId,
             }
         },
     })
