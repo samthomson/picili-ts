@@ -13,6 +13,8 @@ import {
 } from '@apollo/client'
 
 import './index.css'
+
+import CheckToken from 'src/components/structure/CheckToken'
 import AppRouter from 'src/components/structure/AppRouter'
 import { appReducers } from 'src/redux/reducers'
 import { Store } from 'src/redux/store'
@@ -51,6 +53,7 @@ ReactDOM.render(
 	<React.StrictMode>
 		<Provider store={store}>
 			<ApolloProvider client={client}>
+				<CheckToken />
 				<AppRouter />
 			</ApolloProvider>
 		</Provider>
