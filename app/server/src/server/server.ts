@@ -3,11 +3,31 @@ import { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQL
 import express from 'express'
 import http from 'http'
 
-import * as DropboxUtil from './dropboxConnector'
+import * as DropboxUtil from '../dropboxConnector'
+import Mutation from './mutations'
+
+import * as AuthUtil from '../util/auth'
 
 const typeDefs = gql`
+    input LoginInput {
+        email: String!
+        password: String!
+    }
+    input RegisterInput {
+        email: String!
+        password: String!
+        passwordConfirmation: String!
+    }
+    type AuthResponse {
+        token: String
+        error: String
+    }
     type Query {
         ping: String
+    }
+    type Mutation {
+        login(authInput: LoginInput!): AuthResponse
+        register(authInput: RegisterInput!): AuthResponse
     }
 `
 
@@ -15,6 +35,7 @@ const resolvers = {
     Query: {
         ping: () => 'pinged',
     },
+    Mutation,
 }
 
 const startApolloServer = async (typeDefs, resolvers) => {
@@ -31,6 +52,13 @@ const startApolloServer = async (typeDefs, resolvers) => {
         typeDefs,
         resolvers,
         plugins: [ApolloServerPluginDrainHttpServer({ httpServer }), ApolloServerPluginLandingPageGraphQLPlayground()],
+        context: (ctx) => {
+            return {
+                setCookies: [],
+                setHeaders: [],
+                userId: AuthUtil.userIdFromRequestCookie(ctx.req),
+            }
+        },
     })
 
     await server.start()
