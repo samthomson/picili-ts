@@ -1,4 +1,4 @@
-// import * as DBUtil from '../util/db'
+import * as DBUtil from '../util/db'
 import * as AuthUtil from '../util/auth'
 import * as Types from '../declarations'
 
@@ -55,7 +55,6 @@ const login = async (parent, args, context): Promise<Types.API.Response.Auth> =>
 }
 
 const register = async (parent, args, context): Promise<Types.API.Response.Auth> => {
-    /*
     const { email, password, passwordConfirmation } = args.authInput
 
     // check email not in use
@@ -79,52 +78,6 @@ const register = async (parent, args, context): Promise<Types.API.Response.Auth>
     // authenticate user
 
     const token = AuthUtil.generateJWT(user.id)
-
-    context.setCookies.push({
-        name: 'picili-token',
-        value: token,
-        options: {
-            SameSite: 'Strict',
-            maxAge: 1000 * 60 * 60 * 24 * 31,
-        },
-    })
-
-    // return token or error
-    return {
-        token: user ? token : undefined,
-        error: !user ? `user creation failed` : undefined,
-    }
-    */
-
-    const { email, password, passwordConfirmation } = args.authInput
-
-    /*
-
-    // check email not in use
-    const userWithEmailExists = await DBUtil.userWithEmailExists(email)
-    if (userWithEmailExists) {
-        return {
-            error: 'User with email exists',
-        }
-    }
-
-    // check passwords match
-    if (password !== passwordConfirmation) {
-        return {
-            error: "Passwords don't match",
-        }
-    }
-
-    // create user
-    const user = await DBUtil.createUser(email, password)
-    */
-
-    let user = false
-    if (email && password && passwordConfirmation) {
-        user = true
-    }
-    // authenticate user
-    const token = AuthUtil.generateJWT('user.id')
 
     context.setCookies.push({
         name: 'picili-token',
