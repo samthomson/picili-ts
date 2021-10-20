@@ -11,6 +11,7 @@ import {
 } from 'src/components/structure/ProtectedRoute'
 
 import LoginPage from 'src/components/pages/LoginPage'
+import RegisterPage from 'src/components/pages/RegisterPage'
 import HomePage from 'src/components/pages/HomePage'
 
 import AdminOverview from 'src/components/pages/AdminOverview'
@@ -36,6 +37,14 @@ const AppRouter: React.FunctionComponent = () => {
 				path={'/login'}
 				exact={false}
 				component={LoginPage}
+			/>
+
+			<GuestOnlyRoute
+				{...defaultGuestRouteProps}
+				key={'register'}
+				path={'/register'}
+				exact={false}
+				component={RegisterPage}
 			/>
 
 			<ProtectedRoute
