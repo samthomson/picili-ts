@@ -3,6 +3,7 @@ import { Action, ActionType } from 'src/redux/actions'
 import { Store } from 'src/redux/store'
 
 const initialState: Store = {
+	userAuthStatusIsKnown: false,
 	userIsAuthenticated: false,
 	somethingIsLoading: false,
 }
@@ -29,6 +30,7 @@ export function appReducers(
 			return {
 				...state,
 				userIsAuthenticated,
+				userAuthStatusIsKnown: true,
 			}
 		case ActionType.SET_GLOBAL_LOADING_STATE:
 			const { somethingIsLoading } = action

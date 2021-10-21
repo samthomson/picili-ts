@@ -21,8 +21,10 @@ const CheckToken: React.FunctionComponent = () => {
 	})
 
 	React.useEffect(() => {
-		const tokenWasValid = data?.validateToken
-		dispatch(Actions.verifiedAuthStatus(tokenWasValid))
+		if (data) {
+			const tokenWasValid = data?.validateToken
+			dispatch(Actions.verifiedAuthStatus(tokenWasValid))
+		}
 	}, [data])
 
 	return null
