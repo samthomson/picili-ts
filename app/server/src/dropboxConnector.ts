@@ -1,6 +1,6 @@
 import { Dropbox } from 'dropbox'
 
-const redirectURL = 'http://localhost:3500'
+const redirectURL = 'http://localhost:3500/admin'
 
 export const getConnectionURL = async () => {
     const dbx = new Dropbox({
