@@ -2,6 +2,7 @@ import * as React from 'react'
 // import { useQuery, gql } from '@apollo/client'
 
 import AdminTemplate from 'src/components/pages/AdminTemplate'
+import DropboxConnection from 'src/components/controls/DropboxConnection'
 
 // const overviewQuery = gql`
 // 	query overview {
@@ -25,6 +26,7 @@ const AdminOverview: React.FunctionComponent = () => {
 	return (
 		<AdminTemplate>
 			[admin page]
+			<DropboxConnection />
 			{/* <div>{data?.overview.unprocessedTasksCount} tasks</div> */}
 		</AdminTemplate>
 	)
