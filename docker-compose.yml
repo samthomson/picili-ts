@@ -10,6 +10,7 @@ services:
         - MYSQL_DATABASE=${MYSQL_DATABASE}
         - MYSQL_DATABASE_TESTING=${MYSQL_DATABASE_TESTING}
         - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        - NODE_ENV=development
       ports:
         - "3500:3000"
         - "3501:4000"
