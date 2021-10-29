@@ -70,9 +70,28 @@ const register = async (parent, args, context): Promise<Types.API.Response.Auth>
     }
 }
 
+const dropboxUpdate = async (parent, args, context): Promise<any> => {
+    return {
+        success: false,
+        error: 'not implemented',
+    }
+}
+const dropboxDisconnect = async (parent, args, context): Promise<any> => {
+    return {
+        success: false,
+        error: 'not implemented',
+    }
+}
+
+const dropbox = () => ({
+    update: dropboxUpdate,
+    disconnect: dropboxDisconnect,
+})
+
 const mutations = {
     login,
     register,
+    dropbox,
 }
 
 export default mutations
