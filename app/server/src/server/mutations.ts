@@ -72,10 +72,25 @@ const register = async (parent, args, context): Promise<Types.API.Response.Auth>
 
 const dropboxConnect = async (parent, args, context): Promise<any> => {
     const { token } = parent.dropboxConnectInput
+    const { userId } = args
+
+    if (!userId) {
+        return {
+            success: false,
+            error: 'missing userId - not logged in?',
+        }
+    }
+    if (!token) {
+        return {
+            success: false,
+            error: 'missing dropbox oauth token',
+        }
+    }
+
+    const connection = await DBUtil.createDropboxConnection(userId, token)
     console.log('got args for connect', { token, parent, args })
     return {
-        success: false,
-        error: 'not implemented',
+        success: !!connection,
     }
 }
 const dropboxUpdate = async (parent, args, context): Promise<any> => {

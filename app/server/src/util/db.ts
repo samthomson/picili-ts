@@ -39,3 +39,15 @@ export const createUser = async (email: string, password: string): Promise<Model
 
     return user
 }
+
+export const createDropboxConnection = async (
+    userId: number,
+    token: string,
+): Promise<Models.DropboxConnectionInstance> => {
+    const dropboxConnection = await Models.DropboxConnectionModel.create({
+        userId,
+        token,
+    })
+
+    return dropboxConnection
+}
