@@ -70,13 +70,24 @@ const register = async (parent, args, context): Promise<Types.API.Response.Auth>
     }
 }
 
+const dropboxConnect = async (parent, args, context): Promise<any> => {
+    const { token } = parent.dropboxConnectInput
+    console.log('got args for connect', { token, parent, args })
+    return {
+        success: false,
+        error: 'not implemented',
+    }
+}
 const dropboxUpdate = async (parent, args, context): Promise<any> => {
+    const { syncPath, syncEnabled } = parent.dropboxUpdateInput
+    console.log('got args for update', { syncPath, syncEnabled })
     return {
         success: false,
         error: 'not implemented',
     }
 }
 const dropboxDisconnect = async (parent, args, context): Promise<any> => {
+    console.log('dropboxDisconnect')
     return {
         success: false,
         error: 'not implemented',
@@ -84,6 +95,7 @@ const dropboxDisconnect = async (parent, args, context): Promise<any> => {
 }
 
 const dropbox = () => ({
+    connect: dropboxConnect,
     update: dropboxUpdate,
     disconnect: dropboxDisconnect,
 })

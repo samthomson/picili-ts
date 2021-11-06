@@ -26,23 +26,22 @@ const typeDefs = gql`
         error: String
     }
 
+    input DropboxConnectInput {
+        token: String!
+    }
     input DropboxUpdateInput {
-        token: String
         syncPath: String
         syncEnabled: Boolean
     }
-    type DropboxUpdateResponse {
-        success: Boolean!
-        error: String
-    }
-    type DropboxDisconnectResponse {
+    type DropboxMutationResponse {
         success: Boolean!
         error: String
     }
 
     type DropboxMutations {
-        update(dropboxUpdateInput: DropboxUpdateInput!): DropboxUpdateResponse
-        disconnect: DropboxDisconnectResponse
+        connect(dropboxConnectInput: DropboxConnectInput!): DropboxMutationResponse
+        update(dropboxUpdateInput: DropboxUpdateInput!): DropboxMutationResponse
+        disconnect: DropboxMutationResponse
     }
     type Query {
         ping: String
