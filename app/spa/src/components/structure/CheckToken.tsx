@@ -13,21 +13,26 @@ const tokenCheckQuery = gql`
 
 const CheckToken: React.FunctionComponent = () => {
 	const dispatch = ReactRedux.useDispatch()
-
 	const token = AuthUtil.getToken()
-	const { data } = useQuery(tokenCheckQuery, {
-		skip: !token,
-		variables: { token },
-	})
 
-	React.useEffect(() => {
-		if (data) {
-			const tokenWasValid = data?.validateToken
-			dispatch(Actions.verifiedAuthStatus(tokenWasValid))
-		}
-	}, [data])
+	if (!token) {
+		dispatch(Actions.verifiedAuthStatus(false))
+		return null
+	} else {
+		const { data } = useQuery(tokenCheckQuery, {
+			skip: !token,
+			variables: { token },
+		})
 
-	return null
+		React.useEffect(() => {
+			if (data) {
+				const tokenWasValid = data?.validateToken
+				dispatch(Actions.verifiedAuthStatus(tokenWasValid))
+			}
+		}, [data])
+
+		return null
+	}
 }
 
 export default CheckToken
