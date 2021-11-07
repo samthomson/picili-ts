@@ -40,6 +40,13 @@ export const createUser = async (email: string, password: string): Promise<Model
     return user
 }
 
+export const getDropboxConnection = async (userId: number): Promise<Models.DropboxConnectionInstance> => {
+    // check not already created
+    const existingDropboxConnection = await Models.DropboxConnectionModel.findOne({ where: { userId } })
+
+    return existingDropboxConnection
+}
+
 export const createDropboxConnection = async (
     userId: number,
     token: string,

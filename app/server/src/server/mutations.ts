@@ -87,6 +87,15 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
         }
     }
 
+    const existingDropboxConnection = await DBUtil.getDropboxConnection(userId)
+
+    if (existingDropboxConnection) {
+        return {
+            success: false,
+            error: 'dropbox connection already exists',
+        }
+    }
+
     const connection = await DBUtil.createDropboxConnection(userId, token)
     console.log('got args for connect', { token, parent, args })
     return {
