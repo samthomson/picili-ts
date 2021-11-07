@@ -104,10 +104,26 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
 }
 const dropboxUpdate = async (parent, args, context): Promise<any> => {
     const { syncPath, syncEnabled } = parent.dropboxUpdateInput
-    console.log('got args for update', { syncPath, syncEnabled })
+    const { userId } = args
+
+    if (!userId) {
+        return {
+            success: false,
+            error: 'missing userId - not logged in?',
+        }
+    }
+
+    if (!syncPath && syncEnabled === undefined) {
+        return {
+            success: false,
+            error: 'no arguments provided to update with',
+        }
+    }
+
+    await DBUtil.updateDropboxConnection(userId, { syncPath, syncEnabled })
+
     return {
-        success: false,
-        error: 'not implemented',
+        success: true,
     }
 }
 const dropboxDisconnect = async (parent, args, context): Promise<any> => {

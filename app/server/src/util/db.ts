@@ -59,6 +59,16 @@ export const createDropboxConnection = async (
     return dropboxConnection
 }
 
+export const updateDropboxConnection = async (
+    userId: number,
+    updateObject: {
+        syncPath: string
+        syncEnabled: boolean
+    },
+): Promise<void> => {
+    await Models.DropboxConnectionModel.update(updateObject, { where: { userId } })
+}
+
 export const removeDropboxConnection = async (userId: number): Promise<void> => {
     await Models.DropboxConnectionModel.destroy({
         where: { userId },
