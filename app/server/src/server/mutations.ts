@@ -111,10 +111,18 @@ const dropboxUpdate = async (parent, args, context): Promise<any> => {
     }
 }
 const dropboxDisconnect = async (parent, args, context): Promise<any> => {
-    console.log('dropboxDisconnect')
+    const { userId } = args
+
+    if (!userId) {
+        return {
+            success: false,
+            error: 'missing userId - not logged in?',
+        }
+    }
+
+    await DBUtil.removeDropboxConnection(userId)
     return {
-        success: false,
-        error: 'not implemented',
+        success: true,
     }
 }
 
