@@ -41,7 +41,7 @@ type DropboxConnectionCreationAttributes = Sequelize.Optional<DropboxConnectionA
 
 export interface DropboxConnectionInstance
     extends Sequelize.Model<DropboxConnectionAttributes, DropboxConnectionCreationAttributes>,
-        UserAttributes {
+        DropboxConnectionAttributes {
     createdAt?: Date
     updatedAt?: Date
 }

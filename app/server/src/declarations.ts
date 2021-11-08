@@ -4,17 +4,9 @@ export namespace API {
             token?: string
             error?: string
         }
-        // export type Overview = {
-        //     unprocessedTasksCount: number
-        // }
-        // type QueueSummary = {
-        //     processor: string
-        //     taskCount: number
-        //     oldest: string
-        // }
-        // export type Queue = {
-        //     unprocessedTasksCount: number
-        //     queueSummaries: QueueSummary[]
-        // }
+        export type DropboxConnection = {
+            syncPath?: string
+            syncEnabled: boolean
+        }
     }
 }

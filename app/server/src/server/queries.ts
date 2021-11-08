@@ -1,14 +1,18 @@
 import * as AuthUtil from '../util/auth'
-// import * as DBUtil from '../util/db'
-// import * as Types from '../declarations'
+import * as DBUtil from '../util/db'
+import * as Types from '../declarations'
 
-// const overview = async (): Promise<Types.API.Response.Overview> => {
-//     return await DBUtil.overviewStats()
-// }
+const getDropboxConnection = async (parents, args, context): Promise<Types.API.Response.DropboxConnection> => {
+    const { userId } = context
+    if (!userId) {
+        return undefined
+    }
 
-// const queues = async (): Promise<Types.API.Response.Queue> => {
-//     return await DBUtil.queueSummaries()
-// }
+    const connection = await DBUtil.getDropboxConnection(userId)
+
+    const { syncPath, syncEnabled } = connection
+    return { syncPath, syncEnabled }
+}
 
 const queries = {
     ping: (parent, args, ctx) => {
@@ -16,8 +20,7 @@ const queries = {
         return `${ctx?.userId} pinged ${Math.random()}`
     },
     validateToken: (parent, args, ctx) => AuthUtil.requestHasValidCookieToken(ctx),
-    // overview,
-    // queues,
+    dropboxConnection: getDropboxConnection,
 }
 
 export default queries

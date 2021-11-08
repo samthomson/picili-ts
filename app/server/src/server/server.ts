@@ -25,6 +25,10 @@ const typeDefs = gql`
         token: String
         error: String
     }
+    type DropboxConnection {
+        syncPath: String
+        syncEnabled: Boolean
+    }
 
     input DropboxConnectInput {
         token: String!
@@ -46,6 +50,7 @@ const typeDefs = gql`
     type Query {
         ping: String
         validateToken(token: String!): Boolean
+        dropboxConnection: DropboxConnection
     }
     type Mutation {
         login(authInput: LoginInput!): AuthResponse
