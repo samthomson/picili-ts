@@ -1,5 +1,5 @@
 import React from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 import { useMutation, gql } from '@apollo/client'
 
 const createDropboxConnectionGQL = gql`
@@ -14,9 +14,15 @@ const createDropboxConnectionGQL = gql`
 		}
 	}
 `
+interface IProps {
+	refetch: () => void
+}
 
-const CreateDropboxConnection = () => {
+const CreateDropboxConnection: React.FunctionComponent<IProps> = ({
+	refetch,
+}) => {
 	const search = useLocation().search
+	const history = useHistory()
 	const token = new URLSearchParams(search).get('code')
 	const [connectingDropboxAccount, setConnectingDropboxAccount] =
 		React.useState<boolean>(false)
@@ -36,6 +42,9 @@ const CreateDropboxConnection = () => {
 					},
 				},
 			})
+			// remove the token/code from the URL so that a reconnection is not triggered accidentally
+			history.push(window.location.pathname)
+			refetch()
 		}
 	}, [token])
 
