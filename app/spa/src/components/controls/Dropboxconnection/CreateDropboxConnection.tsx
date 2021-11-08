@@ -2,10 +2,12 @@ import React from 'react'
 import { useLocation } from 'react-router-dom'
 import { useMutation, gql } from '@apollo/client'
 
-const dropboxUpdateQuery = gql`
-	mutation dropboxUpdate($dropboxUpdateInput: DropboxUpdateInput!) {
+const createDropboxConnectionGQL = gql`
+	mutation createDropboxConnection(
+		$dropboxConnectInput: DropboxConnectInput!
+	) {
 		dropbox {
-			update(dropboxUpdateInput: $dropboxUpdateInput) {
+			connect(dropboxConnectInput: $dropboxConnectInput) {
 				success
 				error
 			}
@@ -13,23 +15,23 @@ const dropboxUpdateQuery = gql`
 	}
 `
 
-const DropboxConnection = () => {
+const CreateDropboxConnection = () => {
 	const search = useLocation().search
 	const token = new URLSearchParams(search).get('code')
 	const [connectingDropboxAccount, setConnectingDropboxAccount] =
 		React.useState<boolean>(false)
 
 	const [
-		dropboxConnectionMutation,
+		createDropboxConnectionMutation,
 		{ error: httpError, data, loading = false },
-	] = useMutation(dropboxUpdateQuery)
+	] = useMutation(createDropboxConnectionGQL)
 
 	React.useEffect(() => {
 		if (token) {
 			// there was a token in the url, so we'll call the mutation to set it to the account
-			dropboxConnectionMutation({
+			createDropboxConnectionMutation({
 				variables: {
-					dropboxUpdateInput: {
+					dropboxConnectInput: {
 						token,
 					},
 				},
@@ -41,7 +43,8 @@ const DropboxConnection = () => {
 		setConnectingDropboxAccount(loading)
 	}, [loading])
 
-	const dropboxUpdateFailed = httpError?.message || data?.dropbox.update.error
+	const dropboxConnectFailed =
+		httpError?.message || data?.dropbox.connect.error
 
 	const dropboxOAuth = () => {
 		window.location.replace(`http://localhost:3501/oauth/dropbox`)
@@ -56,10 +59,10 @@ const DropboxConnection = () => {
 					)}
 				</>
 			)}
-			{dropboxUpdateFailed && (
+			{dropboxConnectFailed && (
 				<div className="ui red segment">
 					Error:&nbsp;
-					<strong>{dropboxUpdateFailed}</strong>
+					<strong>{dropboxConnectFailed}</strong>
 				</div>
 			)}
 			<button onClick={dropboxOAuth}>
@@ -69,4 +72,4 @@ const DropboxConnection = () => {
 	)
 }
 
-export default DropboxConnection
+export default CreateDropboxConnection

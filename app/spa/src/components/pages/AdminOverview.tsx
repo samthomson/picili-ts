@@ -2,18 +2,19 @@ import * as React from 'react'
 // import { useQuery, gql } from '@apollo/client'
 
 import AdminTemplate from 'src/components/pages/AdminTemplate'
-import DropboxConnection from 'src/components/controls/DropboxConnection'
+import DropboxConnection from 'src/components/controls/Dropboxconnection'
 
-// const overviewQuery = gql`
-// 	query overview {
-// 		overview {
-// 			unprocessedTasksCount
+// const dropboxConnectionQuery = gql`
+// 	query dropboxConnection {
+// 		dropboxConnection {
+// 			syncPath
+// 			syncEnabled
 // 		}
 // 	}
 // `
 
 const AdminOverview: React.FunctionComponent = () => {
-	// const { loading, error, data } = useQuery(overviewQuery)
+	// const { loading, error, data } = useQuery(dropboxConnectionQuery)
 
 	// if (loading) {
 	// 	return <>loading...</>
