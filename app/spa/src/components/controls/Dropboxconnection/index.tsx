@@ -1,6 +1,7 @@
 import React from 'react'
 import { useQuery, gql } from '@apollo/client'
 import CreateDropboxConnection from './CreateDropboxConnection'
+import UpdateDropboxConnection from './UpdateDropboxConnection'
 import RemoveDropboxConnection from './RemoveDropboxConnection'
 
 const dropboxConnectionQuery = gql`
@@ -37,7 +38,11 @@ const DropboxConnection = () => {
 			{hasDropboxConnection && (
 				<>
 					<h4>dropbox is connected</h4>
-					<div>update</div>
+					<div>
+						<UpdateDropboxConnection
+							dropboxConnection={data.dropboxConnection}
+						/>
+					</div>
 					<div>
 						<RemoveDropboxConnection refetch={refetch} />
 					</div>
