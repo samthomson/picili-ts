@@ -6,57 +6,12 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
 import * as DropboxUtil from '../dropboxConnector'
+
+import APITypeDefs from './apiDef'
 import Query from './queries'
 import Mutation from './mutations'
 
 import * as AuthUtil from '../util/auth'
-
-const typeDefs = gql`
-    input LoginInput {
-        email: String!
-        password: String!
-    }
-    input RegisterInput {
-        email: String!
-        password: String!
-        passwordConfirmation: String!
-    }
-    type AuthResponse {
-        token: String
-        error: String
-    }
-    type DropboxConnection {
-        syncPath: String
-        syncEnabled: Boolean
-    }
-
-    input DropboxConnectInput {
-        token: String!
-    }
-    input DropboxUpdateInput {
-        syncPath: String
-        syncEnabled: Boolean
-    }
-    type DropboxMutationResponse {
-        success: Boolean!
-        error: String
-    }
-
-    type DropboxMutations {
-        connect(dropboxConnectInput: DropboxConnectInput!): DropboxMutationResponse
-        update(dropboxUpdateInput: DropboxUpdateInput!): DropboxMutationResponse
-        disconnect: DropboxMutationResponse
-    }
-    type Query {
-        validateToken(token: String!): Boolean
-        dropboxConnection: DropboxConnection
-    }
-    type Mutation {
-        login(authInput: LoginInput!): AuthResponse
-        register(authInput: RegisterInput!): AuthResponse
-        dropbox: DropboxMutations
-    }
-`
 
 const resolvers = {
     Query,
@@ -81,7 +36,7 @@ const startApolloServer = async (typeDefs, resolvers) => {
 
     const httpServer = http.createServer(app)
     const server = new ApolloServer({
-        typeDefs,
+        typeDefs: APITypeDefs,
         resolvers,
         plugins: [ApolloServerPluginDrainHttpServer({ httpServer }), ApolloServerPluginLandingPageGraphQLPlayground()],
         context: (ctx) => {
@@ -103,4 +58,4 @@ const startApolloServer = async (typeDefs, resolvers) => {
     })
 }
 
-startApolloServer(typeDefs, resolvers)
+startApolloServer(APITypeDefs, resolvers)
