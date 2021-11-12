@@ -48,7 +48,6 @@ const typeDefs = gql`
         disconnect: DropboxMutationResponse
     }
     type Query {
-        ping: String
         validateToken(token: String!): Boolean
         dropboxConnection: DropboxConnection
     }

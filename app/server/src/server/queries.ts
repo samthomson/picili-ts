@@ -15,10 +15,6 @@ const getDropboxConnection = async (parents, args, context): Promise<Types.API.R
 }
 
 const queries = {
-    ping: (parent, args, ctx) => {
-        AuthUtil.verifyRequestIsAuthenticated(ctx)
-        return `${ctx?.userId} pinged ${Math.random()}`
-    },
     validateToken: (parent, args, ctx) => AuthUtil.requestHasValidCookieToken(ctx),
     dropboxConnection: getDropboxConnection,
 }
