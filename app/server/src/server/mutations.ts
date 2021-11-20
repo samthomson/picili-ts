@@ -71,6 +71,7 @@ const register = async (parent, args, context): Promise<Types.API.Response.Auth>
 }
 
 const dropboxConnect = async (parent, args, context): Promise<any> => {
+    AuthUtil.verifyRequestIsAuthenticated(context)
     const { token } = parent.dropboxConnectInput
     const { userId } = args
 
@@ -103,6 +104,7 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
     }
 }
 const dropboxUpdate = async (parent, args, context): Promise<any> => {
+    AuthUtil.verifyRequestIsAuthenticated(context)
     const { syncPath, syncEnabled } = parent.dropboxUpdateInput
     const { userId } = args
 
@@ -127,6 +129,7 @@ const dropboxUpdate = async (parent, args, context): Promise<any> => {
     }
 }
 const dropboxDisconnect = async (parent, args, context): Promise<any> => {
+    AuthUtil.verifyRequestIsAuthenticated(context)
     const { userId } = args
 
     if (!userId) {

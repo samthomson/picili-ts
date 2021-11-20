@@ -3,6 +3,7 @@ import * as DBUtil from '../util/db'
 import * as Types from '../declarations'
 
 const getDropboxConnection = async (parents, args, context): Promise<Types.API.Response.DropboxConnection> => {
+    AuthUtil.verifyRequestIsAuthenticated(context)
     const { userId } = context
     if (!userId) {
         return undefined
