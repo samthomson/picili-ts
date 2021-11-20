@@ -1,4 +1,5 @@
 import * as Models from '../db/models'
+import * as Types from '@shared/declarations'
 import bcrypt from 'bcrypt'
 
 export const getUser = async (email: string, password: string): Promise<Models.UserInstance> => {
@@ -61,10 +62,7 @@ export const createDropboxConnection = async (
 
 export const updateDropboxConnection = async (
     userId: number,
-    updateObject: {
-        syncPath: string
-        syncEnabled: boolean
-    },
+    updateObject: Types.API.DropboxConnection,
 ): Promise<void> => {
     await Models.DropboxConnectionModel.update(updateObject, { where: { userId } })
 }

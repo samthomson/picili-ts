@@ -8,6 +8,9 @@
 		"esModuleInterop": true,
 		"module": "commonjs",
 		"target": "ES5",
-		"noEmit": true
+		"noEmit": true,
+		"paths": {
+			"@shared/*": ["../shared/*"]
+		},
   	}
 }

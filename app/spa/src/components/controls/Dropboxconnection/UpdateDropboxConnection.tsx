@@ -1,5 +1,6 @@
 import React from 'react'
 import { useMutation, gql } from '@apollo/client'
+import * as Types from '@shared/declarations'
 
 const updateDropboxConnectionGQL = gql`
 	mutation updateDropboxConnection($dropboxUpdateInput: DropboxUpdateInput!) {
@@ -13,7 +14,7 @@ const updateDropboxConnectionGQL = gql`
 `
 
 interface IProps {
-	dropboxConnection: { syncPath: string; syncEnabled: boolean }
+	dropboxConnection: Types.API.DropboxConnection
 }
 
 const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
