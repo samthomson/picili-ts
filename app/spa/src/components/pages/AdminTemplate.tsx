@@ -18,6 +18,15 @@ const AdminTemplate: React.FunctionComponent<Props> = ({ children }: Props) => {
 								Overview
 							</NavLink>
 						</li>
+						<li>
+							<NavLink
+								exact={true}
+								className="item"
+								to="/admin/dropbox"
+							>
+								Dropbox
+							</NavLink>
+						</li>
 
 						{/* <NavLink
 								exact={true}
@@ -33,17 +42,7 @@ const AdminTemplate: React.FunctionComponent<Props> = ({ children }: Props) => {
 								to="/admin/keys"
 							>
 								Keys
-							</NavLink>
-
-							<NavLink
-								exact={true}
-								className="item"
-								to="/admin/dropbox"
-							>
-								Dropbox
 							</NavLink> */}
-
-						<li>dropbox</li>
 					</ul>
 				</div>
 				<div id="admin-tab-content">{children}</div>

@@ -15,6 +15,7 @@ import RegisterPage from 'src/components/pages/RegisterPage'
 import HomePage from 'src/components/pages/HomePage'
 
 import AdminOverview from 'src/components/pages/AdminOverview'
+import AdminDropbox from 'src/components/pages/AdminDropbox'
 
 const AppRouter: React.FunctionComponent = () => {
 	const isAuthenticated = ReactRedux.useSelector(
@@ -64,6 +65,12 @@ const AppRouter: React.FunctionComponent = () => {
 							{...defaultProtectedRouteProps}
 							path={`${url}/`}
 							component={AdminOverview}
+							exact
+						/>
+						<ProtectedRoute
+							{...defaultProtectedRouteProps}
+							path={`${url}/dropbox`}
+							component={AdminDropbox}
 							exact
 						/>
 					</>
