@@ -5,7 +5,8 @@
 // SASS VARIABLES & DECLARATIONS
 // 
 //
-
+$primaryColor: maroon;
+$blackColor: black;
 
 //
 //
@@ -18,6 +19,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+a {
+  color: $blackColor;
+  text-decoration: none;
+
+  &:hover, &:active, &:visited {
+    color: $blackColor;
+    text-decoration: none;
+  }
+  &:hover {
+    font-weight: bold;
+  }
+}
 
 //
 //
@@ -31,7 +44,13 @@
 // COMPONENTS
 // 
 //
-
+#brand {
+  font-size: xx-large;
+  color: $primaryColor;
+  & a, & a:hover, & a:active, & a:visited {
+    color: $primaryColor;
+  }
+}
 
 //
 //

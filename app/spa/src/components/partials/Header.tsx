@@ -26,7 +26,7 @@ const Header: React.FunctionComponent = () => {
 			)}
 
 			<div id="header">
-				<span className="header-font">
+				<span id="brand" className="header-font">
 					<NavLink exact={true} className="header-font" to="/">
 						picili
 					</NavLink>
