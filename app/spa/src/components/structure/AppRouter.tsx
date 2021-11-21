@@ -13,6 +13,8 @@ import {
 import LoginPage from 'src/components/pages/LoginPage'
 import RegisterPage from 'src/components/pages/RegisterPage'
 import HomePage from 'src/components/pages/HomePage'
+import MapPage from 'src/components/pages/MapPage'
+import CalendarPage from 'src/components/pages/CalendarPage'
 
 import AdminOverview from 'src/components/pages/AdminOverview'
 import AdminDropbox from 'src/components/pages/AdminDropbox'
@@ -50,10 +52,21 @@ const AppRouter: React.FunctionComponent = () => {
 
 			<ProtectedRoute
 				{...defaultProtectedRouteProps}
-				key={'home'}
-				path={'/'}
-				exact={true}
+				path={`/`}
 				component={HomePage}
+				exact
+			/>
+			<ProtectedRoute
+				{...defaultProtectedRouteProps}
+				path={`/map`}
+				component={MapPage}
+				exact
+			/>
+			<ProtectedRoute
+				{...defaultProtectedRouteProps}
+				path={`/calendar`}
+				component={CalendarPage}
+				exact
 			/>
 
 			<ProtectedRoute
