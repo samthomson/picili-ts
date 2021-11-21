@@ -12,12 +12,12 @@ import {
 	DefaultOptions,
 } from '@apollo/client'
 
-import './index.css'
-
 import App from 'src/components/structure/App'
 import { appReducers } from 'src/redux/reducers'
 import { Store } from 'src/redux/store'
 import reportWebVitals from './reportWebVitals'
+
+import 'src/style.scss'
 
 const uri = `${window.location.protocol}//${window.location.hostname}:3501/graphql`
 
