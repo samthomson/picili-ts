@@ -10,15 +10,16 @@ interface Props {
 const AdminTemplate: React.FunctionComponent<Props> = ({ children }: Props) => {
 	return (
 		<PageTemplate>
-			<div id="main-page">
-				<div className="ui grid">
-					<div className="four wide column">
-						<div className="ui vertical fluid tabular menu">
+			<div id="admin-page">
+				<div id="admin-side-menu">
+					<ul>
+						<li>
 							<NavLink exact={true} className="item" to="/admin">
 								Overview
 							</NavLink>
+						</li>
 
-							{/* <NavLink
+						{/* <NavLink
 								exact={true}
 								className="item"
 								to="/admin/queues"
@@ -41,13 +42,11 @@ const AdminTemplate: React.FunctionComponent<Props> = ({ children }: Props) => {
 							>
 								Dropbox
 							</NavLink> */}
-						</div>
-					</div>
 
-					<div className="twelve wide stretched column">
-						{children}
-					</div>
+						<li>dropbox</li>
+					</ul>
 				</div>
+				<div id="admin-tab-content">{children}</div>
 			</div>
 		</PageTemplate>
 	)

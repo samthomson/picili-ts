@@ -10,7 +10,7 @@ const PageTemplate: React.FunctionComponent<Props> = ({ children }: Props) => {
 	return (
 		<div>
 			<Header />
-			{children}
+			<div id="content-container">{children}</div>
 		</div>
 	)
 }
