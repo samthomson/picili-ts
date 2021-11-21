@@ -12,12 +12,12 @@ import {
 
 import LoginPage from 'src/components/pages/LoginPage'
 import RegisterPage from 'src/components/pages/RegisterPage'
-import HomePage from 'src/components/pages/HomePage'
-import MapPage from 'src/components/pages/MapPage'
-import CalendarPage from 'src/components/pages/CalendarPage'
+import HomePage from 'src/components/pages/Search/HomePage'
+import MapPage from 'src/components/pages/Search/MapPage'
+import CalendarPage from 'src/components/pages/Search/CalendarPage'
 
-import AdminOverview from 'src/components/pages/AdminOverview'
-import AdminDropbox from 'src/components/pages/AdminDropbox'
+import AdminOverview from 'src/components/pages/Admin/AdminOverview'
+import AdminDropbox from 'src/components/pages/Admin/AdminDropbox'
 
 const AppRouter: React.FunctionComponent = () => {
 	const isAuthenticated = ReactRedux.useSelector(

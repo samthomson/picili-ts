@@ -1,7 +1,7 @@
 import * as React from 'react'
 // import { useQuery, gql } from '@apollo/client'
 
-import AdminTemplate from 'src/components/pages/AdminTemplate'
+import AdminTemplate from 'src/components/pages/Admin/AdminTemplate'
 
 // const dropboxConnectionQuery = gql`
 // 	query dropboxConnection {

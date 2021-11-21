@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import AdminTemplate from 'src/components/pages/AdminTemplate'
+import AdminTemplate from 'src/components/pages/Admin/AdminTemplate'
 import DropboxConnection from 'src/components/controls/Dropboxconnection'
 
 const AdminDropbox: React.FunctionComponent = () => {
