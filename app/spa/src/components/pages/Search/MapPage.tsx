@@ -1,18 +1,9 @@
 import * as React from 'react'
 
-// import SearchPageTemplate from 'src/components/pages//SearchPages/SearchPageTemplate'
-import PageTemplate from 'src/components/pages/PageTemplate'
-import SideMenu from 'src/components/partials/SideMenu'
+import SearchPageTemplate from 'src/components/pages/Search/SearchPageTemplate'
 
 const MapPage: React.FunctionComponent = () => {
-	return (
-		<PageTemplate>
-			<div id="side-menu">
-				<SideMenu />
-			</div>
-			<div id="results-space">[map page]</div>
-		</PageTemplate>
-	)
+	return <SearchPageTemplate>[map page]</SearchPageTemplate>
 }
 
 export default MapPage
