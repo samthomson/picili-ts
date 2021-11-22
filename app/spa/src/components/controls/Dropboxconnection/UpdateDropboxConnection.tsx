@@ -34,6 +34,11 @@ const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 
 	const dropboxUpdateFailed = httpError?.message || data?.dropbox.update.error
 
+	const isUpdateButtonDisabled =
+		(dropboxConnection.syncPath === syncPath &&
+			dropboxConnection.syncEnabled === syncEnabled) ||
+		loading
+
 	const disconnectHandler = async (e: React.FormEvent) => {
 		e.preventDefault()
 		await updateDropboxConnectionMutation({
@@ -58,7 +63,10 @@ const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 					onChange={(e) => setSyncEnabled(e.target.checked)}
 				/>
 			</form>
-			<button onClick={disconnectHandler} disabled={loading}>
+			<button
+				onClick={disconnectHandler}
+				disabled={isUpdateButtonDisabled}
+			>
 				update
 			</button>
 		</div>
