@@ -13,7 +13,7 @@ const dropboxConnectionQuery = gql`
 	}
 `
 
-const DropboxConnection = () => {
+const DropboxConnection: React.FunctionComponent = () => {
 	const { loading, error, data, refetch } = useQuery(dropboxConnectionQuery)
 
 	if (loading) {

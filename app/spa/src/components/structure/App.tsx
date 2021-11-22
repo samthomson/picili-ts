@@ -5,7 +5,7 @@ import * as Selectors from 'src/redux/selectors'
 import CheckToken from 'src/components/structure/CheckToken'
 import AppRouter from 'src/components/structure/AppRouter'
 
-const App = () => {
+const App: React.FunctionComponent = () => {
 	const userAuthStatusIsKnown = ReactRedux.useSelector(
 		Selectors.userAuthStatusIsKnown,
 	)
