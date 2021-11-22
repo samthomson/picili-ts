@@ -30,11 +30,6 @@ const DropboxConnection = () => {
 
 	return (
 		<div>
-			<hr />
-			<button type="button" onClick={() => refetch()}>
-				refetch
-			</button>
-			<hr />
 			{hasDropboxConnection && (
 				<>
 					<h4>dropbox is connected</h4>
