@@ -1,5 +1,6 @@
 import * as DBUtil from '../util/db'
 import * as AuthUtil from '../util/auth'
+import * as DropboxUtil from '../util/dropbox'
 import * as Types from '../declarations'
 
 const login = async (parent, args, context): Promise<Types.API.Response.Auth> => {
@@ -71,7 +72,7 @@ const register = async (parent, args, context): Promise<Types.API.Response.Auth>
 }
 
 const dropboxConnect = async (parent, args, context): Promise<any> => {
-    AuthUtil.verifyRequestIsAuthenticated(context)
+    AuthUtil.verifyRequestIsAuthenticated(args)
     const { token } = parent.dropboxConnectInput
     const { userId } = args
 
@@ -97,14 +98,16 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
         }
     }
 
-    const connection = await DBUtil.createDropboxConnection(userId, token)
-    console.log('got args for connect', { token, parent, args })
+    // swap the dropbox code for a long life 'refresh token'
+    const refreshToken = await DropboxUtil.exchangeCodeForRefreshToken(token)
+
+    const connection = await DBUtil.createDropboxConnection(userId, refreshToken)
     return {
         success: !!connection,
     }
 }
 const dropboxUpdate = async (parent, args, context): Promise<any> => {
-    AuthUtil.verifyRequestIsAuthenticated(context)
+    AuthUtil.verifyRequestIsAuthenticated(args)
     const { syncPath, syncEnabled } = parent.dropboxUpdateInput
     const { userId } = args
 
@@ -129,7 +132,7 @@ const dropboxUpdate = async (parent, args, context): Promise<any> => {
     }
 }
 const dropboxDisconnect = async (parent, args, context): Promise<any> => {
-    AuthUtil.verifyRequestIsAuthenticated(context)
+    AuthUtil.verifyRequestIsAuthenticated(args)
     const { userId } = args
 
     if (!userId) {

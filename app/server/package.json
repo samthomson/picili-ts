@@ -16,6 +16,7 @@
     "http": "^0.0.1-security",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.2",
+    "node-fetch": "^2.6.1",
     "sequelize": "^6.7.0",
     "ts-node": "^10.3.0",
     "tsc-watch": "^4.5.0",
@@ -28,7 +29,8 @@
     "watch-server": "tsc-watch --onSuccess \"yarn run start-server\"",
     "lint-summary": "eslint '*/**/*.{js,ts,tsx}'",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
-    "migrate": "ts-node src/db/migrate.ts"
+    "migrate": "ts-node src/db/migrate.ts",
+    "run": "ts-node src/tasks/filesync.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
