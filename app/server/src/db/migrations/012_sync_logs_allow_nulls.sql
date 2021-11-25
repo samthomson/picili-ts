@@ -1,0 +1,1 @@
+ALTER TABLE `sync_logs` CHANGE `new_count` `new_count` MEDIUMINT(8) UNSIGNED NULL, CHANGE `changed_count` `changed_count` MEDIUMINT(8) UNSIGNED NULL, CHANGE `deleted_count` `deleted_count` MEDIUMINT(8) UNSIGNED NULL, CHANGE `run_time` `run_time` MEDIUMINT(8) UNSIGNED NULL; 

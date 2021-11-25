@@ -5,6 +5,7 @@ import * as CoreUtil from './core'
 import fetch from 'node-fetch'
 import Logger from '../services/logging'
 import * as fs from 'fs'
+import moment from 'moment'
 
 export const listAllDropboxfiles = async (userId: number): Promise<Types.DropboxFile[]> => {
     // get dropbox connection details for user
@@ -207,7 +208,9 @@ const newUpdatedDeletedFileListComparison = (
 }
 
 export const checkForDropboxChanges = async (userId: number): Promise<boolean> => {
-    // todo: create a sync log, and retain it's id.
+    const startTime = moment()
+    // create a sync log, and retain it's id.
+    const syncLogId = await DBUtil.createSyncLog(userId)
     const databaseFiles = await DBUtil.getAllDropboxFilesFromDB(userId)
     // const apiFiles = await listAllDropboxFilesFromJSONFile()
     const apiFiles = await listAllDropboxfiles(userId)
@@ -229,7 +232,17 @@ export const checkForDropboxChanges = async (userId: number): Promise<boolean> =
         await CoreUtil.updateAFileInTheSystem(fileDelta.changed[i])
     }
 
+    // update the sync log with file event numbers and run time.
+    const endTime = moment()
+    const milliseconds = endTime.diff(startTime)
+    await DBUtil.updateSyncLog(
+        syncLogId,
+        fileDelta.new.length,
+        fileDelta.changed.length,
+        fileDelta.deleted.length,
+        milliseconds,
+    )
+
     // reaching the end is a success - otherwise this task would be re-run until it finishes, meaning all files were processed
-    // todo: update the sync log with file event numbers and run time.
     return true
 }

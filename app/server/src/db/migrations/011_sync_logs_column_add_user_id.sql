@@ -1,0 +1,1 @@
+ALTER TABLE `sync_logs` ADD `user_id` INT NOT NULL AFTER `id`; 

@@ -1,0 +1,10 @@
+CREATE TABLE `picili`.`sync_logs` (
+	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`new_count` MEDIUMINT UNSIGNED NOT NULL,
+	`changed_count` MEDIUMINT UNSIGNED NOT NULL,
+	`deleted_count` MEDIUMINT UNSIGNED NOT NULL,
+	`run_time` MEDIUMINT UNSIGNED NOT NULL,
+	`created_at` DATETIME NOT NULL
+	,
+	PRIMARY KEY (`id`)
+	) ENGINE = InnoDB; 

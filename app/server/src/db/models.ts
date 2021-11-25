@@ -99,3 +99,40 @@ export const DropboxFileModel = Database.define<DropboxFileInstance>(
         underscored: true,
     },
 )
+
+interface SyncLogAttributes {
+    id: number
+    userId: number
+    newCount?: number
+    changedCount?: number
+    deletedCount?: number
+    runTime?: number
+}
+type SyncLogCreationAttributes = Sequelize.Optional<SyncLogAttributes, 'id'>
+
+export interface SyncLogInstance
+    extends Sequelize.Model<SyncLogAttributes, SyncLogCreationAttributes>,
+        SyncLogAttributes {
+    createdAt?: Date
+}
+
+export const SyncLogModel = Database.define<SyncLogInstance>(
+    'sync_log',
+    {
+        id: {
+            type: Sequelize.INTEGER.UNSIGNED,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        userId: Sequelize.INTEGER.UNSIGNED,
+        newCount: Sequelize.INTEGER.UNSIGNED,
+        changedCount: Sequelize.INTEGER.UNSIGNED,
+        deletedCount: Sequelize.INTEGER.UNSIGNED,
+        runTime: Sequelize.INTEGER.UNSIGNED,
+    },
+    {
+        timestamps: true,
+        updatedAt: false,
+        underscored: true,
+    },
+)

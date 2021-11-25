@@ -114,3 +114,33 @@ export const getAllDropboxFilesFromDB = async (userId: number) => {
         where: { userId },
     })
 }
+
+export const createSyncLog = async (userId: number) => {
+    const syncLog = await Models.SyncLogModel.create({
+        userId,
+    })
+
+    return syncLog.id
+}
+
+export const updateSyncLog = async (
+    id: number,
+    newCount: number,
+    changedCount: number,
+    deletedCount: number,
+    runTime: number,
+) => {
+    await Models.SyncLogModel.update(
+        {
+            newCount,
+            changedCount,
+            deletedCount,
+            runTime,
+        },
+        {
+            where: {
+                id,
+            },
+        },
+    )
+}
