@@ -159,11 +159,6 @@ const newUpdatedDeletedFileListComparison = (
     const newFilePaths = apiFilePathKeys.filter((apiFilePath) => !dbFilePathKeys.includes(apiFilePath))
     const deletedFilePaths = dbFilePathKeys.filter((dbFilePath) => !apiFilePathKeys.includes(dbFilePath))
 
-    console.log({
-        newFilePaths,
-        deletedFilePaths,
-    })
-
     const newFiles: Types.DropboxFile[] = newFilePaths.map((filePath) => apiFiles[filePath])
     const deletedFiles: Models.DropboxFileInstance[] = deletedFilePaths.map((filePath) => dbFiles[filePath])
 
