@@ -10,6 +10,8 @@ import * as DropboxUtil from '../dropboxConnector'
 import APITypeDefs from './apiDef'
 import Query from './queries'
 import Mutation from './mutations'
+import Logger from '../services/logging'
+import * as DBConnection from '../db/connection'
 
 import * as AuthUtil from '../util/auth'
 
@@ -55,6 +57,16 @@ const startApolloServer = async (typeDefs, resolvers) => {
 
     httpServer.listen({ port: 4000 }, () => {
         console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+    })
+
+    process.on('SIGTERM', async () => {
+        Logger.info('SIGTERM received, shutting down.')
+        // close server to the world
+        await httpServer.close()
+        await server.stop()
+        // close db connection
+        await DBConnection.disconnect()
+        process.exit(0)
     })
 }
 
