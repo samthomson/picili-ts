@@ -1,16 +1,18 @@
 import * as DropboxUtil from '../util/dropbox'
+import * as DBUtil from '../util/db'
 import * as fs from 'fs'
 
 const main = async () => {
     // console.log('get all dropbox files')
     // await DropboxUtil.listAllDropboxfiles(3)
-    readDropboxFileData()
+    // await readDropboxFileData()
+    await DropboxUtil.checkForDropboxChanges(3)
 }
 
-const readDropboxFileData = () => {
-    const data = fs.readFileSync('test-data/dropboxFiles.json', 'utf-8')
-    const files = JSON.parse(data)
+const readDropboxFileData = async () => {
+    const files = DropboxUtil.listAllDropboxFilesFromJSONFile()
     console.log('# files: ', files.length)
+    await DBUtil.bulkInsertNewDropboxFiles(files, 3)
 }
 
 main()

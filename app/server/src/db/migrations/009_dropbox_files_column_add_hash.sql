@@ -1,0 +1,1 @@
+ALTER TABLE `dropbox_files` ADD `hash` VARCHAR(255) NOT NULL AFTER `dropbox_id`; 

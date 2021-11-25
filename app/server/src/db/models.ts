@@ -33,7 +33,7 @@ export const UserModel = Database.define<UserInstance>(
 interface DropboxConnectionAttributes {
     id: string
     userId: number
-    token: string
+    refreshToken: string
     syncPath?: string
     syncEnabled?: boolean
 }
@@ -55,9 +55,44 @@ export const DropboxConnectionModel = Database.define<DropboxConnectionInstance>
             primaryKey: true,
         },
         userId: Sequelize.INTEGER.UNSIGNED,
-        token: Sequelize.STRING,
+        refreshToken: Sequelize.STRING,
         syncPath: Sequelize.STRING,
         syncEnabled: Sequelize.BOOLEAN,
+    },
+    {
+        timestamps: true,
+        underscored: true,
+    },
+)
+
+interface DropboxFileAttributes {
+    id: number
+    userId: number
+    path: string
+    dropboxId: string
+    hash: string
+}
+type DropboxFileCreationAttributes = Sequelize.Optional<DropboxFileAttributes, 'id'>
+
+export interface DropboxFileInstance
+    extends Sequelize.Model<DropboxFileAttributes, DropboxFileCreationAttributes>,
+        DropboxFileAttributes {
+    createdAt?: Date
+    updatedAt?: Date
+}
+
+export const DropboxFileModel = Database.define<DropboxFileInstance>(
+    'dropbox_file',
+    {
+        id: {
+            type: Sequelize.INTEGER.UNSIGNED,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        userId: Sequelize.INTEGER.UNSIGNED,
+        path: Sequelize.STRING,
+        dropboxId: Sequelize.STRING,
+        hash: Sequelize.STRING,
     },
     {
         timestamps: true,

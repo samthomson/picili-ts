@@ -1,4 +1,4 @@
-
+import * as Models from '../server/src/db/models'
 export namespace API {
 	export interface DropboxConnection {
 		syncPath: string
@@ -32,4 +32,14 @@ export interface DropboxFile {
 	path: string
 	id: string
 	hash: string
+}
+
+export interface ChangedDropboxFile {
+	dropboxFileId: number
+	hash: string
+}
+export interface DropboxFileListChanges {
+	new: DropboxFile[]
+	changed: ChangedDropboxFile[]
+	deleted: Models.DropboxFileInstance[]
 }

@@ -1,0 +1,1 @@
+ALTER TABLE `picili`.`dropbox_files` ADD INDEX `user_id` (`id`); 

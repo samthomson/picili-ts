@@ -50,11 +50,11 @@ export const getDropboxConnection = async (userId: number): Promise<Models.Dropb
 
 export const createDropboxConnection = async (
     userId: number,
-    token: string,
+    refreshToken: string,
 ): Promise<Models.DropboxConnectionInstance> => {
     const dropboxConnection = await Models.DropboxConnectionModel.create({
         userId,
-        token,
+        refreshToken,
     })
 
     return dropboxConnection
@@ -69,6 +69,48 @@ export const updateDropboxConnection = async (
 
 export const removeDropboxConnection = async (userId: number): Promise<void> => {
     await Models.DropboxConnectionModel.destroy({
+        where: { userId },
+    })
+}
+
+export const bulkInsertNewDropboxFiles = async (newFiles: Types.DropboxFile[], userId: number) => {
+    const newDropboxFiles = newFiles.map(({ path, id: dropboxId, hash }) => ({ path, dropboxId, userId, hash }))
+
+    await Models.DropboxFileModel.bulkCreate(newDropboxFiles)
+}
+
+export const insertNewDropboxFile = async (newDropboxFile: Types.DropboxFile, userId: number) => {
+    await Models.DropboxFileModel.create({
+        path: newDropboxFile.path,
+        dropboxId: newDropboxFile.id,
+        hash: newDropboxFile.hash,
+        userId,
+    })
+}
+
+export const removeDropboxFile = async (dropboxFileId: number) => {
+    await Models.DropboxFileModel.destroy({
+        where: {
+            id: dropboxFileId,
+        },
+    })
+}
+
+export const updateDropboxFile = async (changedDropboxFile: Types.ChangedDropboxFile) => {
+    await Models.DropboxFileModel.update(
+        {
+            hash: changedDropboxFile.hash,
+        },
+        {
+            where: {
+                id: changedDropboxFile.dropboxFileId,
+            },
+        },
+    )
+}
+
+export const getAllDropboxFilesFromDB = async (userId: number) => {
+    return await Models.DropboxFileModel.findAll({
         where: { userId },
     })
 }
