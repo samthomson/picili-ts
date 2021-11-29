@@ -1,3 +1,4 @@
+// todo: move all this into shared types
 export namespace API {
     export namespace Response {
         export type Auth = {

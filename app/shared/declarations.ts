@@ -1,4 +1,6 @@
 import * as Models from '../server/src/db/models'
+import * as Enums from './enums'
+
 export namespace API {
 	export interface DropboxConnection {
 		syncPath: string
@@ -43,3 +45,24 @@ export interface DropboxFileListChanges {
 	changed: ChangedDropboxFile[]
 	deleted: Models.DropboxFileInstance[]
 }
+
+export namespace Core {
+	export namespace Inputs {
+		export interface CreateTaskInput {
+			taskType: Enums.TaskType
+			relatedPiciliFileId: number
+			from?: string // date
+			after?: number // other task id
+			importTask?: boolean // default true
+			priority: number
+		}
+
+		export interface CreateTaskProcessedLog {
+			taskType: Enums.TaskType
+			processingTime: number
+			success: boolean
+		}
+	}
+}
+
+export type TaskTypeEnum = Enums.TaskType

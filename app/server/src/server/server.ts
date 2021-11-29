@@ -15,10 +15,15 @@ import * as DBConnection from '../db/connection'
 
 import * as AuthUtil from '../util/auth'
 
+// todo: move task manager to a services dir
+import { TaskManager } from '../util/TaskManager'
+
 const resolvers = {
     Query,
     Mutation,
 }
+
+const taskManager = TaskManager.getInstance()
 
 const startApolloServer = async (typeDefs, resolvers) => {
     const app = express()
@@ -58,6 +63,8 @@ const startApolloServer = async (typeDefs, resolvers) => {
     httpServer.listen({ port: 4000 }, () => {
         console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
     })
+
+    taskManager.start()
 
     process.on('SIGTERM', async () => {
         Logger.info('SIGTERM received, shutting down.')

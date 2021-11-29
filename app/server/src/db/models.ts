@@ -1,5 +1,6 @@
 import * as Sequelize from 'sequelize'
 import Database from './connection'
+import * as Enums from '@shared/enums'
 
 interface UserAttributes {
     id: string
@@ -129,6 +130,113 @@ export const SyncLogModel = Database.define<SyncLogInstance>(
         changedCount: Sequelize.INTEGER.UNSIGNED,
         deletedCount: Sequelize.INTEGER.UNSIGNED,
         runTime: Sequelize.INTEGER.UNSIGNED,
+    },
+    {
+        timestamps: true,
+        updatedAt: false,
+        underscored: true,
+    },
+)
+
+// export enum TaskType {
+//     DROPBOX_SYNC,
+//     DROPBOX_FILE_IMPORT,
+//     PHYSICAL_FILE,
+//     REMOVE_FILE,
+//     ADDRESS_LOOKUP,
+//     ELEVATION_LOOKUP,
+//     PLANT_LOOKUP,
+//     OCR_GENERIC,
+//     OCR_NUMBERPLATE,
+//     SUBJECT_DETECTION,
+// }
+
+interface TaskAttributes {
+    id: number
+    taskType: Enums.TaskType
+    relatedPiciliFileId: number
+    from: string // date
+    after: number // other task id (optional, default null)
+    importTask: boolean // default false
+    priority: number
+    timesSeen: number
+}
+type TaskCreationAttributes = Sequelize.Optional<TaskAttributes, 'id' | 'timesSeen' | 'from' | 'after' | 'importTask'>
+
+export interface TaskInstance extends Sequelize.Model<TaskAttributes, TaskCreationAttributes>, TaskAttributes {
+    createdAt?: Date
+}
+
+export const TaskModel = Database.define<TaskInstance>(
+    'task',
+    {
+        id: {
+            type: Sequelize.INTEGER.UNSIGNED,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        taskType: Sequelize.ENUM(
+            'DROPBOX_SYNC',
+            'DROPBOX_FILE_IMPORT',
+            'PHYSICAL_FILE',
+            'REMOVE_FILE',
+            'ADDRESS_LOOKUP',
+            'ELEVATION_LOOKUP',
+            'PLANT_LOOKUP',
+            'OCR_GENERIC',
+            'OCR_NUMBERPLATE',
+            'SUBJECT_DETECTION',
+        ),
+        relatedPiciliFileId: Sequelize.INTEGER.UNSIGNED,
+        from: Sequelize.DATE,
+        after: Sequelize.INTEGER.UNSIGNED,
+        importTask: Sequelize.BOOLEAN,
+        priority: Sequelize.TINYINT.UNSIGNED,
+        timesSeen: Sequelize.SMALLINT.UNSIGNED,
+    },
+    {
+        timestamps: true,
+        updatedAt: false,
+        underscored: true,
+    },
+)
+
+interface TaskProcessingLogAttributes {
+    id: number
+    taskType: Enums.TaskType
+    processingTime: number
+    success: boolean
+}
+type TaskProcessingLogCreationAttributes = Sequelize.Optional<TaskProcessingLogAttributes, 'id'>
+
+export interface TaskProcessingLogInstance
+    extends Sequelize.Model<TaskProcessingLogAttributes, TaskProcessingLogCreationAttributes>,
+        TaskProcessingLogAttributes {
+    createdAt?: Date
+}
+
+export const TaskProcessingLogModel = Database.define<TaskProcessingLogInstance>(
+    'task_processed_log',
+    {
+        id: {
+            type: Sequelize.INTEGER.UNSIGNED,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        taskType: Sequelize.ENUM(
+            'DROPBOX_SYNC',
+            'DROPBOX_FILE_IMPORT',
+            'PHYSICAL_FILE',
+            'REMOVE_FILE',
+            'ADDRESS_LOOKUP',
+            'ELEVATION_LOOKUP',
+            'PLANT_LOOKUP',
+            'OCR_GENERIC',
+            'OCR_NUMBERPLATE',
+            'SUBJECT_DETECTION',
+        ),
+        processingTime: Sequelize.INTEGER.UNSIGNED,
+        success: Sequelize.BOOLEAN,
     },
     {
         timestamps: true,

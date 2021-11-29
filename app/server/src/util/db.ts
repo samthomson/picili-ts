@@ -1,6 +1,8 @@
 import * as Models from '../db/models'
 import * as Types from '@shared/declarations'
 import bcrypt from 'bcrypt'
+import moment from 'moment'
+import * as Sequelize from 'sequelize'
 
 export const getUser = async (email: string, password: string): Promise<Models.UserInstance> => {
     const user = await Models.UserModel.findOne({
@@ -143,4 +145,74 @@ export const updateSyncLog = async (
             },
         },
     )
+}
+
+export const createTask = async (createTaskInput: Types.Core.Inputs.CreateTaskInput) => {
+    const syncLog = await Models.TaskModel.create({
+        ...createTaskInput,
+    })
+
+    return syncLog.id
+}
+
+export const ensureTaskExists = async (taskType: Types.TaskTypeEnum, relatedPiciliFileId: number): Promise<void> => {
+    // task type
+    // related id
+    const exists = await Models.TaskModel.findOne({ where: { taskType, relatedPiciliFileId } })
+
+    if (!exists) {
+        await Models.TaskModel.create({
+            taskType,
+            relatedPiciliFileId,
+            priority: 1,
+        })
+    } else {
+        // if it already existed, reschedule it for asap
+        exists.from = moment().toISOString()
+        await exists.save()
+    }
+}
+
+export const startProcessingATask = async (task: Models.TaskInstance): Promise<void> => {
+    task.timesSeen = task.timesSeen + 1
+    // block this task for next 3 mins
+    task.from = moment().add(3, 'minute').toISOString()
+    await task.save()
+}
+
+const taskSelectionWhere = {
+    from: {
+        [Sequelize.Op.lte]: moment().toISOString(),
+    },
+    after: null,
+}
+
+export const getNextTaskId = async (): Promise<number | null> => {
+    const nextTask = await Models.TaskModel.findOne({
+        where: taskSelectionWhere,
+        order: [
+            ['priority', 'DESC'],
+            ['created_at', 'ASC'],
+        ],
+    })
+
+    return nextTask?.id ?? null
+}
+
+export const howManyProcessableTasksAreThere = async (): Promise<number> => {
+    return (
+        await Models.TaskModel.findAndCountAll({
+            where: taskSelectionWhere,
+        })
+    ).count
+}
+
+export const getTask = async (taskId: number): Promise<Models.TaskInstance> => {
+    return await Models.TaskModel.findOne({
+        where: { id: taskId },
+    })
+}
+
+export const createTaskProcessedLog = async (createObject: Types.Core.Inputs.CreateTaskProcessedLog) => {
+    await Models.TaskProcessingLogModel.create(createObject)
 }

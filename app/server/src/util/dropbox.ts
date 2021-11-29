@@ -203,41 +203,46 @@ const newUpdatedDeletedFileListComparison = (
 }
 
 export const checkForDropboxChanges = async (userId: number): Promise<boolean> => {
-    const startTime = moment()
-    // create a sync log, and retain it's id.
-    const syncLogId = await DBUtil.createSyncLog(userId)
-    const databaseFiles = await DBUtil.getAllDropboxFilesFromDB(userId)
-    // const apiFiles = await listAllDropboxFilesFromJSONFile()
-    const apiFiles = await listAllDropboxfiles(userId)
+    try {
+        const startTime = moment()
+        // create a sync log, and retain it's id.
+        const syncLogId = await DBUtil.createSyncLog(userId)
+        const databaseFiles = await DBUtil.getAllDropboxFilesFromDB(userId)
+        // const apiFiles = await listAllDropboxFilesFromJSONFile()
+        const apiFiles = await listAllDropboxfiles(userId)
 
-    const fileDelta = newUpdatedDeletedFileListComparison(databaseFiles, apiFiles)
+        const fileDelta = newUpdatedDeletedFileListComparison(databaseFiles, apiFiles)
 
-    // if there were new files, add them to picili
-    for (let i = 0; i < fileDelta.new.length; i++) {
-        await CoreUtil.addAFileToTheSystem(userId, fileDelta.new[i])
+        // if there were new files, add them to picili
+        for (let i = 0; i < fileDelta.new.length; i++) {
+            await CoreUtil.addAFileToTheSystem(userId, fileDelta.new[i])
+        }
+
+        // if there were deleted files, remove them from picili
+        for (let i = 0; i < fileDelta.deleted.length; i++) {
+            await CoreUtil.removeAFileFromTheSystem(fileDelta.deleted[i].id)
+        }
+
+        // if there were changed files, update them in picili
+        for (let i = 0; i < fileDelta.changed.length; i++) {
+            await CoreUtil.updateAFileInTheSystem(fileDelta.changed[i])
+        }
+
+        // update the sync log with file event numbers and run time.
+        const endTime = moment()
+        const milliseconds = endTime.diff(startTime)
+        await DBUtil.updateSyncLog(
+            syncLogId,
+            fileDelta.new.length,
+            fileDelta.changed.length,
+            fileDelta.deleted.length,
+            milliseconds,
+        )
+
+        // reaching the end is a success - otherwise this task would be re-run until it finishes, meaning all files were processed
+        return true
+    } catch (err) {
+        Logger.error(err)
+        return false
     }
-
-    // if there were deleted files, remove them from picili
-    for (let i = 0; i < fileDelta.deleted.length; i++) {
-        await CoreUtil.removeAFileFromTheSystem(fileDelta.deleted[i].id)
-    }
-
-    // if there were changed files, update them in picili
-    for (let i = 0; i < fileDelta.changed.length; i++) {
-        await CoreUtil.updateAFileInTheSystem(fileDelta.changed[i])
-    }
-
-    // update the sync log with file event numbers and run time.
-    const endTime = moment()
-    const milliseconds = endTime.diff(startTime)
-    await DBUtil.updateSyncLog(
-        syncLogId,
-        fileDelta.new.length,
-        fileDelta.changed.length,
-        fileDelta.deleted.length,
-        milliseconds,
-    )
-
-    // reaching the end is a success - otherwise this task would be re-run until it finishes, meaning all files were processed
-    return true
 }

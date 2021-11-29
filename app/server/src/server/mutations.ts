@@ -2,6 +2,7 @@ import * as DBUtil from '../util/db'
 import * as AuthUtil from '../util/auth'
 import * as DropboxUtil from '../util/dropbox'
 import * as Types from '../declarations'
+import * as Enums from '../../../shared/enums'
 
 const login = async (parent, args, context): Promise<Types.API.Response.Auth> => {
     const user = await DBUtil.getUser(args.authInput.email, args.authInput.password)
@@ -126,6 +127,13 @@ const dropboxUpdate = async (parent, args, context): Promise<any> => {
     }
 
     await DBUtil.updateDropboxConnection(userId, { syncPath, syncEnabled })
+
+    // todo: if enabled, ensure sync task exists
+    await DBUtil.ensureTaskExists(Enums.TaskType.DROPBOX_SYNC, userId)
+
+    // todo: if disabled, remove sync tasks
+
+    // todo: remove all old import tasks?
 
     return {
         success: true,

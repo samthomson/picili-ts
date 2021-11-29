@@ -1,4 +1,4 @@
-CREATE TABLE `picili`.`sync_logs` (
+CREATE TABLE `sync_logs` (
 	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`new_count` MEDIUMINT UNSIGNED NOT NULL,
 	`changed_count` MEDIUMINT UNSIGNED NOT NULL,
