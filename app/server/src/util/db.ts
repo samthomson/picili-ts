@@ -216,3 +216,12 @@ export const getTask = async (taskId: number): Promise<Models.TaskInstance> => {
 export const createTaskProcessedLog = async (createObject: Types.Core.Inputs.CreateTaskProcessedLog) => {
     await Models.TaskProcessingLogModel.create(createObject)
 }
+
+export const updateDependentTasks = async (taskId: number) => {
+    await Models.TaskModel.update({ after: null }, { where: { after: taskId } })
+}
+export const removeTask = async (taskId: number): Promise<void> => {
+    await Models.TaskModel.destroy({
+        where: { id: taskId },
+    })
+}

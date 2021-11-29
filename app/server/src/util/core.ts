@@ -4,7 +4,7 @@ import * as DBUtil from './db'
 
 export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.DropboxFile) => {
     // todo: create picili file
-    // todo: create import tasks
+    // create import tasks
     await DBUtil.createTask({
         taskType: Enums.TaskType.DROPBOX_FILE_IMPORT,
         // todo: what related id to go here?
