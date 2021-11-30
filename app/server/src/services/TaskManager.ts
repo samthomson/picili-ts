@@ -1,6 +1,6 @@
-import * as TaskUtil from './tasks'
-import * as HelperUtil from './helper'
-import * as DBUtil from './db'
+import * as TaskUtil from '../util/tasks'
+import * as HelperUtil from '../util/helper'
+import * as DBUtil from '../util/db'
 
 export class TaskManager {
     public static getInstance(): TaskManager {

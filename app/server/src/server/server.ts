@@ -15,8 +15,7 @@ import * as DBConnection from '../db/connection'
 
 import * as AuthUtil from '../util/auth'
 
-// todo: move task manager to a services dir
-import { TaskManager } from '../util/TaskManager'
+import { TaskManager } from '../services/TaskManager'
 
 const resolvers = {
     Query,
