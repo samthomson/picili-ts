@@ -244,3 +244,55 @@ export const TaskProcessingLogModel = Database.define<TaskProcessingLogInstance>
         underscored: true,
     },
 )
+
+interface FileAttributes {
+    id: number
+    userId: number
+    dropboxFileId: number
+    uuid: string
+    is_thumbnailed: boolean
+    is_corrupt: boolean
+    latitude?: number
+    longitude?: number
+    elevation?: number
+    address?: string
+    file_directory: string
+    file_name: string
+    file_extension: string
+    datetime?: string
+    medium_height?: number
+    medium_width?: number
+}
+type FileCreationAttributes = Sequelize.Optional<FileAttributes, 'id' | 'is_thumbnailed' | 'is_corrupt'>
+
+export interface FileInstance extends Sequelize.Model<FileAttributes, FileCreationAttributes>, FileAttributes {}
+
+export const FileModel = Database.define<FileInstance>(
+    'task_processed_log',
+    {
+        id: {
+            type: Sequelize.INTEGER.UNSIGNED,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        userId: Sequelize.INTEGER.UNSIGNED,
+        dropboxFileId: Sequelize.INTEGER.UNSIGNED,
+        uuid: Sequelize.UUIDV4,
+        is_thumbnailed: Sequelize.BOOLEAN,
+        is_corrupt: Sequelize.BOOLEAN,
+        latitude: Sequelize.DECIMAL(8, 6),
+        longitude: Sequelize.DECIMAL(9, 6),
+        elevation: Sequelize.DECIMAL(8, 4),
+        address: Sequelize.STRING,
+        file_directory: Sequelize.STRING,
+        file_name: Sequelize.STRING,
+        file_extension: Sequelize.STRING,
+        datetime: Sequelize.DATE,
+        medium_height: Sequelize.MEDIUMINT.UNSIGNED,
+        medium_width: Sequelize.MEDIUMINT.UNSIGNED,
+    },
+    {
+        timestamps: false,
+        underscored: true,
+    },
+)
