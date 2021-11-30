@@ -12,7 +12,7 @@ export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.
         priority: 1,
     })
     // add to dropbox files
-    DBUtil.insertNewDropboxFile(newDropboxFile, userId)
+    await DBUtil.insertNewDropboxFile(newDropboxFile, userId)
 }
 export const updateAFileInTheSystem = async (changedDropboxFile: Types.ChangedDropboxFile) => {
     // todo: remove old picili file
@@ -21,7 +21,7 @@ export const updateAFileInTheSystem = async (changedDropboxFile: Types.ChangedDr
     // todo: remove other import tasks for this file
     // todo: create import tasks
     // update dropbox file
-    DBUtil.updateDropboxFile(changedDropboxFile)
+    await DBUtil.updateDropboxFile(changedDropboxFile)
 }
 export const removeAFileFromTheSystem = async (dropboxFileId: number) => {
     // todo: remove tags
