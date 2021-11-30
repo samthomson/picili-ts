@@ -2,6 +2,12 @@ import * as Models from '../server/src/db/models'
 import * as Enums from './enums'
 
 export namespace API {
+	export namespace Response {
+        export type Auth = {
+            token?: string
+            error?: string
+        }
+    }
 	export interface DropboxConnection {
 		syncPath: string
 		syncEnabled: boolean

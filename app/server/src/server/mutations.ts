@@ -1,7 +1,7 @@
 import * as DBUtil from '../util/db'
 import * as AuthUtil from '../util/auth'
 import * as DropboxUtil from '../util/dropbox'
-import * as Types from '../declarations'
+import * as Types from '@shared/declarations'
 import * as Enums from '../../../shared/enums'
 
 const login = async (parent, args, context): Promise<Types.API.Response.Auth> => {
