@@ -93,7 +93,11 @@ export const exchangeRefreshTokenForAccessToken = async (refreshToken: string): 
         const data = await result.json()
         return data.access_token
     } catch (err) {
-        Logger.error(err)
+        if (err.code === 'EAI_AGAIN') {
+            Logger.info('unable to reach dropbox API - no connectivity?')
+        } else {
+            Logger.error('encountered an error calling dropbox api', { err })
+        }
         return null
     }
 }
@@ -134,7 +138,11 @@ const dropboxListFolder = async (
 
         return data
     } catch (err) {
-        Logger.error(err)
+        if (err.code === 'EAI_AGAIN') {
+            Logger.info('unable to reach dropbox API - no connectivity?')
+        } else {
+            Logger.error('encountered an error calling dropbox api', { err })
+        }
         return null
     }
 }
