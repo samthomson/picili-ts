@@ -75,19 +75,23 @@ export const removeDropboxConnection = async (userId: number): Promise<void> => 
     })
 }
 
-export const bulkInsertNewDropboxFiles = async (newFiles: Types.DropboxFile[], userId: number) => {
+export const bulkInsertNewDropboxFiles = async (newFiles: Types.ShadowDropboxAPIFile[], userId: number) => {
     const newDropboxFiles = newFiles.map(({ path, id: dropboxId, hash }) => ({ path, dropboxId, userId, hash }))
 
     await Models.DropboxFileModel.bulkCreate(newDropboxFiles)
 }
 
-export const insertNewDropboxFile = async (newDropboxFile: Types.DropboxFile, userId: number) => {
-    await Models.DropboxFileModel.create({
+export const insertNewDropboxFile = async (
+    newDropboxFile: Types.ShadowDropboxAPIFile,
+    userId: number,
+): Promise<number> => {
+    const newDropboxFileInstance = await Models.DropboxFileModel.create({
         path: newDropboxFile.path,
         dropboxId: newDropboxFile.id,
         hash: newDropboxFile.hash,
         userId,
     })
+    return newDropboxFileInstance.id
 }
 
 export const removeDropboxFile = async (dropboxFileId: number) => {
@@ -224,4 +228,8 @@ export const removeTask = async (taskId: number): Promise<void> => {
     await Models.TaskModel.destroy({
         where: { id: taskId },
     })
+}
+
+export const createFile = async (fileCreationParams: Types.Core.Inputs.CreateFileInput) => {
+    await Models.FileModel.create(fileCreationParams)
 }

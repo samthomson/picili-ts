@@ -1,9 +1,30 @@
 import * as Types from '@shared/declarations'
 import * as Enums from '../../../shared/enums'
 import * as DBUtil from './db'
+import * as HelperUtil from './helper'
 
-export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.DropboxFile) => {
-    // todo: create picili file
+import * as UUID from 'uuid'
+
+export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.ShadowDropboxAPIFile) => {
+    // add to dropbox files
+    const dropboxFileId = await DBUtil.insertNewDropboxFile(newDropboxFile, userId)
+
+    // create picili file
+    const { path } = newDropboxFile
+    // split path into file parts
+    const { fileDirectory, fileName, fileExtension } = HelperUtil.splitPathIntoParts(path)
+
+    const uuid = UUID.v4()
+    const fileCreationParams = {
+        userId,
+        dropboxFileId,
+        fileDirectory,
+        fileName,
+        fileExtension,
+        uuid,
+    }
+    await DBUtil.createFile(fileCreationParams)
+
     // create import tasks
     await DBUtil.createTask({
         taskType: Enums.TaskType.DROPBOX_FILE_IMPORT,
@@ -11,9 +32,8 @@ export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.
         relatedPiciliFileId: 55,
         priority: 1,
     })
-    // add to dropbox files
-    await DBUtil.insertNewDropboxFile(newDropboxFile, userId)
 }
+
 export const updateAFileInTheSystem = async (changedDropboxFile: Types.ChangedDropboxFile) => {
     // todo: remove old picili file
     // todo: remove old thumbs

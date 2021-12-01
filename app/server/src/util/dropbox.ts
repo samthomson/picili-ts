@@ -7,7 +7,7 @@ import Logger from '../services/logging'
 import * as fs from 'fs'
 import moment from 'moment'
 
-export const listAllDropboxfiles = async (userId: number): Promise<Types.DropboxFile[]> => {
+export const listAllDropboxfiles = async (userId: number): Promise<Types.ShadowDropboxAPIFile[]> => {
     // get dropbox connection details for user
     const dropboxConnection = await DBUtil.getDropboxConnection(userId)
     const { refreshToken: token, syncPath } = dropboxConnection
@@ -40,7 +40,7 @@ export const listAllDropboxfiles = async (userId: number): Promise<Types.Dropbox
 
 export const listAllDropboxFilesFromJSONFile = () => {
     const data = fs.readFileSync('test-data/dropboxFiles.json', 'utf-8')
-    const files: Types.DropboxFile[] = JSON.parse(data)
+    const files: Types.ShadowDropboxAPIFile[] = JSON.parse(data)
     return files
 }
 
@@ -137,7 +137,7 @@ const dropboxListFolder = async (
 
 const newUpdatedDeletedFileListComparison = (
     databaseFiles: Models.DropboxFileInstance[],
-    dropboxFiles: Types.DropboxFile[],
+    dropboxFiles: Types.ShadowDropboxAPIFile[],
 ): Types.DropboxFileListChanges => {
     const dbFiles = {}
     const apiFiles = {}
@@ -159,7 +159,7 @@ const newUpdatedDeletedFileListComparison = (
     const newFilePaths = apiFilePathKeys.filter((apiFilePath) => !dbFilePathKeys.includes(apiFilePath))
     const deletedFilePaths = dbFilePathKeys.filter((dbFilePath) => !apiFilePathKeys.includes(dbFilePath))
 
-    const newFiles: Types.DropboxFile[] = newFilePaths.map((filePath) => apiFiles[filePath])
+    const newFiles: Types.ShadowDropboxAPIFile[] = newFilePaths.map((filePath) => apiFiles[filePath])
     const deletedFiles: Models.DropboxFileInstance[] = deletedFilePaths.map((filePath) => dbFiles[filePath])
 
     // changed files

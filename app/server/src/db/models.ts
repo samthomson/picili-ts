@@ -250,20 +250,20 @@ interface FileAttributes {
     userId: number
     dropboxFileId: number
     uuid: string
-    is_thumbnailed: boolean
-    is_corrupt: boolean
+    isThumbnailed: boolean
+    isCorrupt: boolean
     latitude?: number
     longitude?: number
     elevation?: number
     address?: string
-    file_directory: string
-    file_name: string
-    file_extension: string
+    fileDirectory: string
+    fileName: string
+    fileExtension: string
     datetime?: string
-    medium_height?: number
-    medium_width?: number
+    mediumHeight?: number
+    mediumWidth?: number
 }
-type FileCreationAttributes = Sequelize.Optional<FileAttributes, 'id' | 'is_thumbnailed' | 'is_corrupt'>
+type FileCreationAttributes = Sequelize.Optional<FileAttributes, 'id' | 'isThumbnailed' | 'isCorrupt'>
 
 export interface FileInstance extends Sequelize.Model<FileAttributes, FileCreationAttributes>, FileAttributes {}
 
@@ -278,18 +278,18 @@ export const FileModel = Database.define<FileInstance>(
         userId: Sequelize.INTEGER.UNSIGNED,
         dropboxFileId: Sequelize.INTEGER.UNSIGNED,
         uuid: Sequelize.UUIDV4,
-        is_thumbnailed: Sequelize.BOOLEAN,
-        is_corrupt: Sequelize.BOOLEAN,
+        isThumbnailed: Sequelize.BOOLEAN,
+        isCorrupt: Sequelize.BOOLEAN,
         latitude: Sequelize.DECIMAL(8, 6),
         longitude: Sequelize.DECIMAL(9, 6),
         elevation: Sequelize.DECIMAL(8, 4),
         address: Sequelize.STRING,
-        file_directory: Sequelize.STRING,
-        file_name: Sequelize.STRING,
-        file_extension: Sequelize.STRING,
+        fileDirectory: Sequelize.STRING,
+        fileName: Sequelize.STRING,
+        fileExtension: Sequelize.STRING,
         datetime: Sequelize.DATE,
-        medium_height: Sequelize.MEDIUMINT.UNSIGNED,
-        medium_width: Sequelize.MEDIUMINT.UNSIGNED,
+        mediumHeight: Sequelize.MEDIUMINT.UNSIGNED,
+        mediumWidth: Sequelize.MEDIUMINT.UNSIGNED,
     },
     {
         timestamps: false,

@@ -36,9 +36,9 @@ export namespace DropboxAPI {
 	}
 }
 
-export interface DropboxFile {
+export interface ShadowDropboxAPIFile {
+	id: string // external dropbox id
 	path: string
-	id: string
 	hash: string
 }
 
@@ -47,7 +47,7 @@ export interface ChangedDropboxFile {
 	hash: string
 }
 export interface DropboxFileListChanges {
-	new: DropboxFile[]
+	new: ShadowDropboxAPIFile[]
 	changed: ChangedDropboxFile[]
 	deleted: Models.DropboxFileInstance[]
 }
@@ -68,6 +68,20 @@ export namespace Core {
 			processingTime: number
 			success: boolean
 		}
+
+		export interface CreateFileInput {
+			userId: number
+			dropboxFileId: number
+			fileDirectory: string
+			fileName: string
+			fileExtension: string
+			uuid: string
+		}
+	}
+	export type FileParts = {
+		fileDirectory: string
+		fileName: string
+		fileExtension: string
 	}
 }
 
