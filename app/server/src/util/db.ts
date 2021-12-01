@@ -184,16 +184,18 @@ export const startProcessingATask = async (task: Models.TaskInstance): Promise<v
     await task.save()
 }
 
-const taskSelectionWhere = {
-    from: {
-        [Sequelize.Op.lte]: moment().toISOString(),
-    },
-    after: null,
+const taskSelectionWhere = () => {
+    return {
+        from: {
+            [Sequelize.Op.lte]: moment().toISOString(),
+        },
+        after: null,
+    }
 }
 
 export const getNextTaskId = async (): Promise<number | null> => {
     const nextTask = await Models.TaskModel.findOne({
-        where: taskSelectionWhere,
+        where: taskSelectionWhere(),
         order: [
             ['priority', 'DESC'],
             ['created_at', 'ASC'],
@@ -204,11 +206,9 @@ export const getNextTaskId = async (): Promise<number | null> => {
 }
 
 export const howManyProcessableTasksAreThere = async (): Promise<number> => {
-    return (
-        await Models.TaskModel.findAndCountAll({
-            where: taskSelectionWhere,
-        })
-    ).count
+    return await Models.TaskModel.count({
+        where: taskSelectionWhere(),
+    })
 }
 
 export const getTask = async (taskId: number): Promise<Models.TaskInstance> => {

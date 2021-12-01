@@ -1,6 +1,7 @@
 import * as TaskUtil from '../util/tasks'
 import * as HelperUtil from '../util/helper'
 import * as DBUtil from '../util/db'
+import Logger from '../services/logging'
 
 export class TaskManager {
     public static getInstance(): TaskManager {
@@ -22,18 +23,26 @@ export class TaskManager {
         this.howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere()
 
         while (this.howManyProcessableTasksAreThere > 0) {
-            console.log('# processable tasks: ', this.howManyProcessableTasksAreThere)
             // process a task
             const nextTaskId = await DBUtil.getNextTaskId()
-            console.log('nextTaskId: ', nextTaskId)
-            await TaskUtil.processTask(nextTaskId)
+
+            if (!nextTaskId) {
+                Logger.warn('no task id received for next task')
+            }
+            if (nextTaskId) {
+                Logger.info('nextTaskId: ', nextTaskId)
+                await TaskUtil.processTask(nextTaskId)
+            }
+
+            // refresh available task count
+            this.howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere()
         }
 
         // there are no tasks, but there might be soon, so let's keep checking
         if (this.howManyProcessableTasksAreThere === 0) {
-            console.log('no tasks, waiting 30s')
-            await HelperUtil.delay(30000)
-            this.start()
+            Logger.info('no tasks, waiting 10s')
+            await HelperUtil.delay(10000)
+            await this.start()
         }
     }
 }

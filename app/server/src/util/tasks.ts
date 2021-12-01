@@ -14,6 +14,9 @@ export const processTask = async (taskId: number) => {
     let success = undefined
     const task = await DBUtil.getTask(taskId)
 
+    if (!task) {
+        Logger.warn('no task found when went to process', taskId)
+    }
     try {
         // 'start' task (inc update its from time)
         await DBUtil.startProcessingATask(task)
@@ -32,11 +35,17 @@ export const processTask = async (taskId: number) => {
             // todo: OCR_NUMBERPLATE
             // todo: SUBJECT_DETECTION
             default:
+                success = false
                 Logger.warn('unknown task type', task.taskType)
+                break
         }
 
         // finish a task (inc reschedule dropbox sync)
-        await finishATask(task)
+        if (success) {
+            await finishATask(task)
+        } else {
+            Logger.info('task manager processed a task, but was not successful. id:', taskId)
+        }
     } catch (err) {
         Logger.error('error processing task: ', err)
         success = false
