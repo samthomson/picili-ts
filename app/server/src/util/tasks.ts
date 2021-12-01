@@ -32,7 +32,7 @@ export const processTask = async (taskId: number) => {
             // todo: OCR_NUMBERPLATE
             // todo: SUBJECT_DETECTION
             default:
-                Logger.warning('unknown task type', task.taskType)
+                Logger.warn('unknown task type', task.taskType)
         }
 
         // finish a task (inc reschedule dropbox sync)
