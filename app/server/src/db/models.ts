@@ -268,7 +268,7 @@ type FileCreationAttributes = Sequelize.Optional<FileAttributes, 'id' | 'isThumb
 export interface FileInstance extends Sequelize.Model<FileAttributes, FileCreationAttributes>, FileAttributes {}
 
 export const FileModel = Database.define<FileInstance>(
-    'task_processed_log',
+    'file',
     {
         id: {
             type: Sequelize.INTEGER.UNSIGNED,
