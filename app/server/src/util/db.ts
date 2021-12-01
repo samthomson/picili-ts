@@ -212,9 +212,7 @@ export const howManyProcessableTasksAreThere = async (): Promise<number> => {
 }
 
 export const getTask = async (taskId: number): Promise<Models.TaskInstance> => {
-    return await Models.TaskModel.findOne({
-        where: { id: taskId },
-    })
+    return await Models.TaskModel.findByPk(taskId)
 }
 
 export const createTaskProcessedLog = async (createObject: Types.Core.Inputs.CreateTaskProcessedLog) => {
