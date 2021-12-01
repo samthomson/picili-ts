@@ -63,7 +63,8 @@ const startApolloServer = async (typeDefs, resolvers) => {
         console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
     })
 
-    taskManager.start()
+    // todo: reinstate this?
+    // taskManager.start()
 
     process.on('SIGTERM', async () => {
         Logger.info('SIGTERM received, shutting down.')

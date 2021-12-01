@@ -31,7 +31,8 @@
     "lint-summary": "eslint '*/**/*.{js,ts,tsx}'",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
     "migrate": "ts-node src/db/migrate.ts",
-    "run": "ts-node src/tasks/filesync.ts"
+    "run": "ts-node src/tasks/filesync.ts",
+    "tasks": "ts-node src/tasks/start-task-manager.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
