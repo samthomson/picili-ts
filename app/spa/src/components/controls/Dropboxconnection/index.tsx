@@ -24,8 +24,6 @@ const DropboxConnection: React.FunctionComponent = () => {
 		return <>{error?.message}</>
 	}
 
-	console.log('connected', data.dropboxConnection)
-
 	const hasDropboxConnection = data.dropboxConnection
 
 	return (
