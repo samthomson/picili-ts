@@ -11,6 +11,9 @@ const getDropboxConnection = async (parents, args, context): Promise<Types.API.D
 
     const connection = await DBUtil.getDropboxConnection(userId)
 
+    if (!connection) {
+        return null
+    }
     const { syncPath, syncEnabled } = connection
     return { syncPath, syncEnabled }
 }
