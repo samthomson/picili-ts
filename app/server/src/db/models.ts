@@ -262,6 +262,7 @@ interface FileAttributes {
     fileDirectory: string
     fileName: string
     fileExtension: string
+    fileType: Enums.FileType
     datetime?: string
     mediumHeight?: number
     mediumWidth?: number
@@ -290,6 +291,7 @@ export const FileModel = Database.define<FileInstance>(
         fileDirectory: Sequelize.STRING,
         fileName: Sequelize.STRING,
         fileExtension: Sequelize.STRING,
+        fileType: Sequelize.ENUM('IMAGE', 'VIDEO'),
         datetime: Sequelize.DATE,
         mediumHeight: Sequelize.MEDIUMINT.UNSIGNED,
         mediumWidth: Sequelize.MEDIUMINT.UNSIGNED,

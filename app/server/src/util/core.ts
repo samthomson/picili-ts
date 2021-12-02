@@ -14,6 +14,8 @@ export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.
     // split path into file parts
     const { fileDirectory, fileName, fileExtension } = HelperUtil.splitPathIntoParts(path)
 
+    const fileType = HelperUtil.fileTypeFromExtension(fileExtension)
+
     const uuid = UUID.v4()
     const fileCreationParams = {
         userId,
@@ -21,6 +23,7 @@ export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.
         fileDirectory,
         fileName,
         fileExtension,
+        fileType,
         uuid,
     }
     const newFileId = await DBUtil.createFile(fileCreationParams)

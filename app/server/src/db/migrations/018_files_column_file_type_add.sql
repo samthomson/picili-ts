@@ -1,0 +1,1 @@
+ALTER TABLE `files` ADD `file_type` ENUM('IMAGE','VIDEO') NOT NULL AFTER `file_extension`; 

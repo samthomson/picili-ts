@@ -12,3 +12,8 @@ export enum TaskType {
     OCR_NUMBERPLATE = 'OCR_NUMBERPLATE',
     SUBJECT_DETECTION = 'SUBJECT_DETECTION',
 }
+
+export enum FileType {
+    IMAGE = 'IMAGE',
+    VIDEO = 'VIDEO'
+}

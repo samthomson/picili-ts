@@ -99,6 +99,7 @@ export namespace Core {
 			fileDirectory: string
 			fileName: string
 			fileExtension: string
+			fileType: Enums.FileType
 			uuid: string
 		}
 	}
@@ -110,3 +111,5 @@ export namespace Core {
 }
 
 export type TaskTypeEnum = Enums.TaskType
+
+export type FileTypeEnum = Enums.FileType
