@@ -18,6 +18,27 @@ const typeDefs = gql`
         syncPath: String
         syncEnabled: Boolean
     }
+    type TaskQueue {
+        type: String
+        count: Int
+    }
+    type TasksProcessable {
+        total: Int
+        queues: [TaskQueue]
+    }
+    type TasksProcessedSummary {
+        from: String
+        to: String
+        count: Int
+    }
+    type TasksProcessed {
+        recent: [TasksProcessedSummary]
+    }
+    type TaskSummary {
+        oldest: String
+        processable: TasksProcessable
+        processed: TasksProcessed
+    }
 
     input DropboxConnectInput {
         token: String!
@@ -39,6 +60,7 @@ const typeDefs = gql`
     type Query {
         validateToken(token: String!): Boolean
         dropboxConnection: DropboxConnection
+        taskSummary: TaskSummary
     }
     type Mutation {
         login(authInput: LoginInput!): AuthResponse

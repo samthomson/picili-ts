@@ -18,9 +18,42 @@ const getDropboxConnection = async (parents, args, context): Promise<Types.API.D
     return { syncPath, syncEnabled }
 }
 
+const taskSummary = async (): Promise<Types.API.TaskSummary> => {
+    return {
+        oldest: 'todo: real date',
+        processable: {
+            total: 0,
+            queues: [
+                {
+                    type: 'todo: type 1',
+                    count: 58,
+                },
+                {
+                    type: 'todo: type 2',
+                    count: 235,
+                },
+                {
+                    type: 'todo: type 4',
+                    count: 654,
+                },
+            ],
+        },
+        processed: {
+            recent: [
+                {
+                    from: 'todo: date',
+                    to: 'todo: date',
+                    count: 325,
+                },
+            ],
+        },
+    }
+}
+
 const queries = {
     validateToken: (parent, args, ctx) => AuthUtil.requestHasValidCookieToken(ctx),
     dropboxConnection: getDropboxConnection,
+    taskSummary,
 }
 
 export default queries

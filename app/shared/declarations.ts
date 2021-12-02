@@ -12,6 +12,30 @@ export namespace API {
 		syncPath: string
 		syncEnabled: boolean
 	}
+
+	type TaskQueue = {
+        type: string
+        count: number
+	}
+	type TasksProcessable = {
+        total: number
+        queues: TaskQueue[]
+	}
+
+	type TasksProcessedSummary = {
+        from: string // date
+        to: string // date
+        count: number
+	}
+	type TasksProcessed = {
+        recent: TasksProcessedSummary[]
+	}
+	
+	export interface TaskSummary {
+		oldest: string // date
+        processable: TasksProcessable
+        processed: TasksProcessed
+	}
 }
 
 export namespace DropboxAPI {
