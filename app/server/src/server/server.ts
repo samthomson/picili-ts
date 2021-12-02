@@ -53,6 +53,14 @@ const startApolloServer = async (typeDefs, resolvers) => {
                 userId,
             }
         },
+        formatError: (err) => {
+            // log internal - issues with my code - errors
+            if (err.extensions.code === 'INTERNAL_SERVER_ERROR') {
+                Logger.error(err)
+            }
+            // return underlying error - to client - either way
+            return err
+        },
     })
 
     await server.start()
@@ -60,7 +68,7 @@ const startApolloServer = async (typeDefs, resolvers) => {
     server.applyMiddleware({ app, cors: false })
 
     httpServer.listen({ port: 4000 }, () => {
-        console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+        Logger.info(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
     })
 
     // todo: reinstate this?
