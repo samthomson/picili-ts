@@ -13,7 +13,7 @@ export namespace API {
 		syncEnabled: boolean
 	}
 
-	type TaskQueue = {
+	export type TaskQueue = {
         type: string
         count: number
 	}
@@ -23,9 +23,8 @@ export namespace API {
         queues: TaskQueue[]
 	}
 
-	type TasksProcessedSummary = {
-        from: string // date
-        to: string // date
+	export type TasksProcessedSummary = {
+        date: string // date
         count: number
 	}
 	type TasksProcessed = {

@@ -28,8 +28,7 @@ const typeDefs = gql`
         queues: [TaskQueue]
     }
     type TasksProcessedSummary {
-        from: String
-        to: String
+        date: String
         count: Int
     }
     type TasksProcessed {

@@ -4,6 +4,7 @@ import moment from 'moment'
 
 import * as Types from '@shared/declarations'
 import * as Models from '../db/models'
+import Database from '../db/connection'
 import * as Enums from '../../../shared/enums'
 
 export const getUser = async (email: string, password: string): Promise<Models.UserInstance> => {
@@ -226,8 +227,28 @@ export const getTask = async (taskId: number): Promise<Models.TaskInstance> => {
     return await Models.TaskModel.findByPk(taskId)
 }
 
+export const getTaskTypeBreakdown = async (): Promise<Types.API.TaskQueue[]> => {
+    const query = `SELECT task_type as type, COUNT(*) as count FROM tasks GROUP BY type; `
+    const taskBreakdownResult = await Database.query(query, {
+        type: Sequelize.QueryTypes.SELECT,
+    })
+
+    // @ts-ignore
+    return taskBreakdownResult?.map((row) => ({ type: row.type, count: row.count })) ?? []
+}
+
 export const createTaskProcessedLog = async (createObject: Types.Core.Inputs.CreateTaskProcessedLog) => {
     await Models.TaskProcessingLogModel.create(createObject)
+}
+
+export const taskProcessorMonthLog = async (): Promise<Types.API.TasksProcessedSummary[]> => {
+    const query = `SELECT DATE(created_at) as date, COUNT(*) as count FROM task_processed_logs WHERE created_at > (NOW() - INTERVAL 1 MONTH) GROUP BY date;`
+    const taskProcessorMonthLogResult = await Database.query(query, {
+        type: Sequelize.QueryTypes.SELECT,
+    })
+
+    // @ts-ignore
+    return taskProcessorMonthLogResult?.map(({ date, count }) => ({ date, count })) ?? []
 }
 
 export const updateDependentTasks = async (taskId: number) => {

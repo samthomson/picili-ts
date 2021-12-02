@@ -22,35 +22,18 @@ const taskSummary = async (): Promise<Types.API.TaskSummary> => {
     const oldestTaskDate = await DBUtil.getOldestTaskDate()
     const howManyTasksToProcessAreThere = await DBUtil.howManyTasksToProcessAreThere()
     const howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere()
+    const queues = await DBUtil.getTaskTypeBreakdown()
+    const lastMonthsProcessorLog = await DBUtil.taskProcessorMonthLog()
 
     return {
         oldest: oldestTaskDate,
         processable: {
             total: howManyTasksToProcessAreThere,
             actionable: howManyProcessableTasksAreThere,
-            queues: [
-                {
-                    type: 'todo: type 1',
-                    count: 58,
-                },
-                {
-                    type: 'todo: type 2',
-                    count: 235,
-                },
-                {
-                    type: 'todo: type 4',
-                    count: 654,
-                },
-            ],
+            queues,
         },
         processed: {
-            recent: [
-                {
-                    from: 'todo: date',
-                    to: 'todo: date',
-                    count: 325,
-                },
-            ],
+            recent: lastMonthsProcessorLog,
         },
     }
 }
