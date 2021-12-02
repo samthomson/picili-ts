@@ -1,8 +1,10 @@
-import * as Models from '../db/models'
-import * as Types from '@shared/declarations'
+import * as Sequelize from 'sequelize'
 import bcrypt from 'bcrypt'
 import moment from 'moment'
-import * as Sequelize from 'sequelize'
+
+import * as Types from '@shared/declarations'
+import * as Models from '../db/models'
+import * as Enums from '../../../shared/enums'
 
 export const getUser = async (email: string, password: string): Promise<Models.UserInstance> => {
     const user = await Models.UserModel.findOne({
@@ -208,6 +210,15 @@ export const getNextTaskId = async (): Promise<number | null> => {
 export const howManyProcessableTasksAreThere = async (): Promise<number> => {
     return await Models.TaskModel.count({
         where: taskSelectionWhere(),
+    })
+}
+export const howManyTasksToProcessAreThere = async (): Promise<number> => {
+    return await Models.TaskModel.count({
+        where: {
+            taskType: {
+                [Sequelize.Op.not]: Enums.TaskType.DROPBOX_SYNC,
+            },
+        },
     })
 }
 

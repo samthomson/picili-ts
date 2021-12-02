@@ -20,10 +20,14 @@ const getDropboxConnection = async (parents, args, context): Promise<Types.API.D
 
 const taskSummary = async (): Promise<Types.API.TaskSummary> => {
     const oldestTaskDate = await DBUtil.getOldestTaskDate()
+    const howManyTasksToProcessAreThere = await DBUtil.howManyTasksToProcessAreThere()
+    const howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere()
+
     return {
         oldest: oldestTaskDate,
         processable: {
-            total: 0,
+            total: howManyTasksToProcessAreThere,
+            actionable: howManyProcessableTasksAreThere,
             queues: [
                 {
                     type: 'todo: type 1',

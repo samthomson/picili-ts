@@ -24,6 +24,7 @@ const typeDefs = gql`
     }
     type TasksProcessable {
         total: Int
+        actionable: Int
         queues: [TaskQueue]
     }
     type TasksProcessedSummary {
