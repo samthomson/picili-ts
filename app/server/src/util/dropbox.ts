@@ -68,7 +68,7 @@ export const exchangeCodeForRefreshToken = async (code: string): Promise<string 
         if (err.code === 'EAI_AGAIN') {
             Logger.info('unable to reach dropbox API - no connectivity?')
         } else {
-            Logger.error('encountered an error calling dropbox api', { err })
+            Logger.error('encountered an error calling dropbox api to exchange code for token', { err })
         }
         return null
     }
@@ -96,7 +96,7 @@ export const exchangeRefreshTokenForAccessToken = async (refreshToken: string): 
         if (err.code === 'EAI_AGAIN') {
             Logger.info('unable to reach dropbox API - no connectivity?')
         } else {
-            Logger.error('encountered an error calling dropbox api', { err })
+            Logger.error('encountered an error calling dropbox api to exchange refresh token', { err })
         }
         return null
     }
@@ -141,7 +141,7 @@ const dropboxListFolder = async (
         if (err.code === 'EAI_AGAIN') {
             Logger.info('unable to reach dropbox API - no connectivity?')
         } else {
-            Logger.error('encountered an error calling dropbox api', { err })
+            Logger.error('encountered an error calling dropbox api to list folder', { err })
         }
         return null
     }
