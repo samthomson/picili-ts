@@ -26,7 +26,8 @@ export const processTask = async (taskId: number) => {
                 success = await DropboxUtil.checkForDropboxChanges(task.relatedPiciliFileId)
                 break
             // todo: DROPBOX_FILE_IMPORT
-            // todo: PHYSICAL_FILE
+            // todo: PROCESS_IMAGE_FILE
+            // todo: PROCESS_VIDEO_FILE
             // todo: REMOVE_FILE
             // todo: ADDRESS_LOOKUP
             // todo: ELEVATION_LOOKUP
