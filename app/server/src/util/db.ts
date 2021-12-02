@@ -154,12 +154,12 @@ export const updateSyncLog = async (
     )
 }
 
-export const createTask = async (createTaskInput: Types.Core.Inputs.CreateTaskInput) => {
-    const syncLog = await Models.TaskModel.create({
+export const createTask = async (createTaskInput: Types.Core.Inputs.CreateTaskInput): Promise<number> => {
+    const newTask = await Models.TaskModel.create({
         ...createTaskInput,
     })
 
-    return syncLog.id
+    return newTask.id
 }
 
 export const ensureTaskExists = async (taskType: Types.TaskTypeEnum, relatedPiciliFileId: number): Promise<void> => {

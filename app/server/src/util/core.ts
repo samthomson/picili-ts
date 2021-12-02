@@ -29,10 +29,38 @@ export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.
     const newFileId = await DBUtil.createFile(fileCreationParams)
 
     // create import tasks
-    await DBUtil.createTask({
+    const downloadTaskId = await DBUtil.createTask({
         taskType: Enums.TaskType.DROPBOX_FILE_IMPORT,
         relatedPiciliFileId: newFileId,
         priority: 1,
+    })
+    // processing task (either image or video, need the id so depend delete task on)
+    const processingTaskId = await (async (): Promise<number> => {
+        if (fileType === Enums.FileType.IMAGE) {
+            const imageProcessingTaskId = await DBUtil.createTask({
+                taskType: Enums.TaskType.PROCESS_IMAGE_FILE,
+                relatedPiciliFileId: newFileId,
+                priority: 2,
+                after: downloadTaskId,
+            })
+            return imageProcessingTaskId
+        } else {
+            const videoProcessingTaskId = await DBUtil.createTask({
+                taskType: Enums.TaskType.PROCESS_VIDEO_FILE,
+                relatedPiciliFileId: newFileId,
+                priority: 2,
+                after: downloadTaskId,
+            })
+            return videoProcessingTaskId
+        }
+    })()
+
+    // delete
+    await DBUtil.createTask({
+        taskType: Enums.TaskType.REMOVE_FILE,
+        relatedPiciliFileId: newFileId,
+        priority: 3,
+        after: processingTaskId,
     })
 }
 
