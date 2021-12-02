@@ -27,7 +27,7 @@ const taskSummaryQuery = gql`
 `
 
 const TasksOverview: React.FunctionComponent = () => {
-	const { loading, error, data } = useQuery(taskSummaryQuery)
+	const { loading, error, data, refetch } = useQuery(taskSummaryQuery)
 
 	if (loading) {
 		return <>loading...</>
@@ -94,6 +94,8 @@ const TasksOverview: React.FunctionComponent = () => {
 					))}
 				</table>
 			)}
+			<hr />
+			<button onClick={() => refetch()}>refetch data</button>
 		</React.Fragment>
 	)
 }
