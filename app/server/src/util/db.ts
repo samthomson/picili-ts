@@ -228,6 +228,15 @@ export const removeTask = async (taskId: number): Promise<void> => {
     })
 }
 
+export const getOldestTaskDate = async (): Promise<string | null> => {
+    const oldestTask = await Models.TaskModel.findOne({
+        where: taskSelectionWhere(),
+        order: [['created_at', 'ASC']],
+    })
+
+    return oldestTask?.createdAt.toISOString() ?? null
+}
+
 export const createFile = async (fileCreationParams: Types.Core.Inputs.CreateFileInput) => {
     await Models.FileModel.create(fileCreationParams)
 }
