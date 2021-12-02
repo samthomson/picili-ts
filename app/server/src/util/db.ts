@@ -269,6 +269,7 @@ export const getOldestTaskDate = async (): Promise<string | null> => {
     return oldestTask?.createdAt.toISOString() ?? null
 }
 
-export const createFile = async (fileCreationParams: Types.Core.Inputs.CreateFileInput) => {
-    await Models.FileModel.create(fileCreationParams)
+export const createFile = async (fileCreationParams: Types.Core.Inputs.CreateFileInput): Promise<number> => {
+    const newFile = await Models.FileModel.create(fileCreationParams)
+    return newFile.id
 }
