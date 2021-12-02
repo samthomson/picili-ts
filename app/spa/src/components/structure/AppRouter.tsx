@@ -18,6 +18,7 @@ import CalendarPage from 'src/components/pages/Search/CalendarPage'
 
 import AdminOverview from 'src/components/pages/Admin/AdminOverview'
 import AdminDropbox from 'src/components/pages/Admin/AdminDropbox'
+import AdminTasks from 'src/components/pages/Admin/AdminTasks'
 
 const AppRouter: React.FunctionComponent = () => {
 	const isAuthenticated = ReactRedux.useSelector(
@@ -84,6 +85,12 @@ const AppRouter: React.FunctionComponent = () => {
 							{...defaultProtectedRouteProps}
 							path={`${url}/dropbox`}
 							component={AdminDropbox}
+							exact
+						/>
+						<ProtectedRoute
+							{...defaultProtectedRouteProps}
+							path={`${url}/tasks`}
+							component={AdminTasks}
 							exact
 						/>
 					</>

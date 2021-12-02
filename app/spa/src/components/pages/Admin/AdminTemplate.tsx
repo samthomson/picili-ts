@@ -27,15 +27,17 @@ const AdminTemplate: React.FunctionComponent<Props> = ({ children }: Props) => {
 								Dropbox
 							</NavLink>
 						</li>
-
-						{/* <NavLink
+						<li>
+							<NavLink
 								exact={true}
 								className="item"
-								to="/admin/queues"
+								to="/admin/tasks"
 							>
-								Queues
+								tasks
 							</NavLink>
+						</li>
 
+						{/*
 							<NavLink
 								exact={true}
 								className="item"
