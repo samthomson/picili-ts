@@ -2,3 +2,4 @@ app/server/node_modules
 .env
 app/server/logs
 app/server/test-data
+app/server/processing

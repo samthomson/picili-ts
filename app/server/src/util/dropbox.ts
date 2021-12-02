@@ -258,3 +258,48 @@ export const checkForDropboxChanges = async (userId: number): Promise<boolean> =
         return false
     }
 }
+
+export const downloadDropboxFile = async (
+    dropboxFileId: string,
+    userId: number,
+    uuid: string,
+    fileExtension: string,
+): Promise<boolean> => {
+    try {
+        const dropboxConnection = await DBUtil.getDropboxConnection(userId)
+        const { refreshToken: token } = dropboxConnection
+        const access = await exchangeRefreshTokenForAccessToken(token)
+
+        const writeDir = 'processing'
+        if (!fs.existsSync(writeDir)) {
+            fs.mkdirSync(writeDir)
+        }
+
+        const url = 'https://content.dropboxapi.com/2/files/download'
+        const options = {
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + access,
+                'Dropbox-API-Arg': `{"path": "${dropboxFileId}"}`,
+            },
+        }
+        const result = await fetch(url, options)
+
+        switch (result.status) {
+            case 200:
+                const fileStream = fs.createWriteStream(`${writeDir}/${uuid}.${fileExtension}`)
+                await new Promise((resolve, reject) => {
+                    result.body.pipe(fileStream)
+                    result.body.on('error', reject)
+                    fileStream.on('finish', resolve)
+                })
+                break
+            default:
+                Logger.error('non-200 code received when downloading dropbox file', { status: result.status })
+        }
+        return true
+    } catch (err) {
+        Logger.error(err)
+        return false
+    }
+}

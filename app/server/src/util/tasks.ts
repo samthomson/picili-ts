@@ -1,4 +1,3 @@
-import * as HelperUtil from './helper'
 import * as DBUtil from './db'
 import * as DropboxUtil from './dropbox'
 import * as Types from '@shared/declarations'
@@ -79,4 +78,15 @@ export const finishATask = async (task: Models.TaskInstance): Promise<void> => {
             priority: 2,
         })
     }
+}
+
+export const fileImport = async (fileId: number): Promise<boolean> => {
+    // get local picili file
+    // todo: define file->dropboxFile relation, and so do this with one ORM operation
+    const file = await Models.FileModel.findByPk(fileId)
+    const { dropboxFileId, uuid, fileExtension } = file
+    const dropboxFile = await Models.DropboxFileModel.findByPk(dropboxFileId)
+    const { dropboxId, userId } = dropboxFile
+
+    return await DropboxUtil.downloadDropboxFile(dropboxId, userId, uuid, fileExtension)
 }

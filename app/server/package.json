@@ -31,7 +31,7 @@
     "lint-summary": "eslint '*/**/*.{js,ts,tsx}'",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
     "migrate": "ts-node src/db/migrate.ts",
-    "run": "ts-node src/tasks/filesync.ts",
+    "down": "ts-node src/tasks/file-download.ts",
     "tasks": "ts-node src/tasks/start-task-manager.ts"
   },
   "devDependencies": {
