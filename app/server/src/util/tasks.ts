@@ -21,7 +21,8 @@ export const processTask = async (taskId: number) => {
         // 'start' task (inc update its from time)
         await DBUtil.startProcessingATask(task)
 
-        switch (task.taskType) {
+        const { taskType } = task
+        switch (taskType) {
             case Enums.TaskType.DROPBOX_SYNC:
                 success = await DropboxUtil.checkForDropboxChanges(task.relatedPiciliFileId)
                 break
@@ -36,7 +37,7 @@ export const processTask = async (taskId: number) => {
             // todo: SUBJECT_DETECTION
             default:
                 success = false
-                Logger.warn('unknown task type', task.taskType)
+                Logger.warn('unknown task type', { taskType })
                 break
         }
 
