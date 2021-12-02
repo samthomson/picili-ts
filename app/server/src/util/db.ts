@@ -6,6 +6,7 @@ import * as Types from '@shared/declarations'
 import * as Models from '../db/models'
 import Database from '../db/connection'
 import * as Enums from '../../../shared/enums'
+import * as TasksUtil from './tasks'
 
 export const getUser = async (email: string, password: string): Promise<Models.UserInstance> => {
     const user = await Models.UserModel.findOne({
@@ -171,7 +172,7 @@ export const ensureTaskExists = async (taskType: Types.TaskTypeEnum, relatedPici
         await Models.TaskModel.create({
             taskType,
             relatedPiciliFileId,
-            priority: 1,
+            priority: TasksUtil.taskTypeToPriority(taskType),
         })
     } else {
         // if it already existed, reschedule it for asap

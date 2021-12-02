@@ -1,5 +1,6 @@
 import * as DBUtil from './db'
 import * as DropboxUtil from './dropbox'
+import * as TasksUtil from './tasks'
 import * as Types from '@shared/declarations'
 import moment from 'moment'
 import Logger from '../services/logging'
@@ -78,7 +79,7 @@ export const finishATask = async (task: Models.TaskInstance): Promise<void> => {
             relatedPiciliFileId,
             from: moment().add(15, 'minutes').toISOString(),
             // todo: use an enum or something
-            priority: 2,
+            priority: TasksUtil.taskTypeToPriority(Enums.TaskType.DROPBOX_SYNC),
         })
     }
 }
@@ -92,4 +93,31 @@ export const fileImport = async (fileId: number): Promise<boolean> => {
     const { dropboxId, userId } = dropboxFile
 
     return await DropboxUtil.downloadDropboxFile(dropboxId, userId, uuid, fileExtension)
+}
+
+export const taskTypeToPriority = (taskType: Enums.TaskType): number => {
+    switch (taskType) {
+        case Enums.TaskType.DROPBOX_SYNC:
+            return 8
+        case Enums.TaskType.DROPBOX_FILE_IMPORT:
+            return 1
+        case Enums.TaskType.PROCESS_IMAGE_FILE:
+            return 7
+        case Enums.TaskType.PROCESS_VIDEO_FILE:
+            return 7
+        case Enums.TaskType.REMOVE_FILE:
+            return 10 // removing processed files is the highest priority, so that once processed we free up disk space
+        case Enums.TaskType.ADDRESS_LOOKUP:
+            return 6
+        case Enums.TaskType.ELEVATION_LOOKUP:
+            return 3
+        case Enums.TaskType.PLANT_LOOKUP:
+            return 3
+        case Enums.TaskType.OCR_GENERIC:
+            return 3
+        case Enums.TaskType.OCR_NUMBERPLATE:
+            return 3
+        case Enums.TaskType.SUBJECT_DETECTION:
+            return 4
+    }
 }

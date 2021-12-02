@@ -2,6 +2,7 @@ import * as Types from '@shared/declarations'
 import * as Enums from '../../../shared/enums'
 import * as DBUtil from './db'
 import * as HelperUtil from './helper'
+import * as TasksUtil from './tasks'
 
 import * as UUID from 'uuid'
 
@@ -32,7 +33,7 @@ export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.
     const downloadTaskId = await DBUtil.createTask({
         taskType: Enums.TaskType.DROPBOX_FILE_IMPORT,
         relatedPiciliFileId: newFileId,
-        priority: 1,
+        priority: TasksUtil.taskTypeToPriority(Enums.TaskType.DROPBOX_FILE_IMPORT),
     })
     // processing task (either image or video, need the id so depend delete task on)
     const processingTaskId = await (async (): Promise<number> => {
@@ -40,7 +41,7 @@ export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.
             const imageProcessingTaskId = await DBUtil.createTask({
                 taskType: Enums.TaskType.PROCESS_IMAGE_FILE,
                 relatedPiciliFileId: newFileId,
-                priority: 2,
+                priority: TasksUtil.taskTypeToPriority(Enums.TaskType.PROCESS_IMAGE_FILE),
                 after: downloadTaskId,
             })
             return imageProcessingTaskId
@@ -48,7 +49,7 @@ export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.
             const videoProcessingTaskId = await DBUtil.createTask({
                 taskType: Enums.TaskType.PROCESS_VIDEO_FILE,
                 relatedPiciliFileId: newFileId,
-                priority: 2,
+                priority: TasksUtil.taskTypeToPriority(Enums.TaskType.PROCESS_VIDEO_FILE),
                 after: downloadTaskId,
             })
             return videoProcessingTaskId
@@ -59,7 +60,7 @@ export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.
     await DBUtil.createTask({
         taskType: Enums.TaskType.REMOVE_FILE,
         relatedPiciliFileId: newFileId,
-        priority: 3,
+        priority: TasksUtil.taskTypeToPriority(Enums.TaskType.REMOVE_FILE),
         after: processingTaskId,
     })
 }
