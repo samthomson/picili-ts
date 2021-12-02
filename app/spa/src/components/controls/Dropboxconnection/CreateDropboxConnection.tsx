@@ -33,19 +33,21 @@ const CreateDropboxConnection: React.FunctionComponent<IProps> = ({
 	] = useMutation(createDropboxConnectionGQL)
 
 	React.useEffect(() => {
-		if (token) {
-			// there was a token in the url, so we'll call the mutation to set it to the account
-			createDropboxConnectionMutation({
-				variables: {
-					dropboxConnectInput: {
-						token,
+		;(async () => {
+			if (token) {
+				// there was a token in the url, so we'll call the mutation to set it to the account
+				await createDropboxConnectionMutation({
+					variables: {
+						dropboxConnectInput: {
+							token,
+						},
 					},
-				},
-			})
-			// remove the token/code from the URL so that a reconnection is not triggered accidentally
-			history.push(window.location.pathname)
-			refetch()
-		}
+				})
+				// remove the token/code from the URL so that a reconnection is not triggered accidentally
+				history.push(window.location.pathname)
+				await refetch()
+			}
+		})()
 	}, [token])
 
 	React.useEffect(() => {
@@ -56,6 +58,7 @@ const CreateDropboxConnection: React.FunctionComponent<IProps> = ({
 		httpError?.message || data?.dropbox.connect.error
 
 	const dropboxOAuth = () => {
+		// todo: make this protocol/domain/port agnostic
 		window.location.replace(`http://localhost:3501/oauth/dropbox`)
 	}
 
