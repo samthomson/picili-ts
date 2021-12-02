@@ -25,7 +25,9 @@ export const processTask = async (taskId: number) => {
             case Enums.TaskType.DROPBOX_SYNC:
                 success = await DropboxUtil.checkForDropboxChanges(task.relatedPiciliFileId)
                 break
-            // todo: DROPBOX_FILE_IMPORT
+            case Enums.TaskType.DROPBOX_FILE_IMPORT:
+                success = await fileImport(task.relatedPiciliFileId)
+                break
             // todo: PROCESS_IMAGE_FILE
             // todo: PROCESS_VIDEO_FILE
             // todo: REMOVE_FILE
