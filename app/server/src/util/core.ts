@@ -23,13 +23,12 @@ export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.
         fileExtension,
         uuid,
     }
-    await DBUtil.createFile(fileCreationParams)
+    const newFileId = await DBUtil.createFile(fileCreationParams)
 
     // create import tasks
     await DBUtil.createTask({
         taskType: Enums.TaskType.DROPBOX_FILE_IMPORT,
-        // todo: what related id to go here?
-        relatedPiciliFileId: 55,
+        relatedPiciliFileId: newFileId,
         priority: 1,
     })
 }
