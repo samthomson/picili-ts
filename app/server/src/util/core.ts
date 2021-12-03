@@ -74,6 +74,7 @@ export const updateAFileInTheSystem = async (changedDropboxFile: Types.ChangedDr
     // update dropbox file
     await DBUtil.updateDropboxFile(changedDropboxFile)
 }
+
 export const removeAFileFromTheSystem = async (dropboxFileId: number) => {
     // todo: remove tags
     // todo: remove thumbnails
