@@ -3,3 +3,4 @@ app/server/node_modules
 app/server/logs
 app/server/test-data
 app/server/processing
+app/server/thumbs

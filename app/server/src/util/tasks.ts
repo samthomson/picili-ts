@@ -1,6 +1,7 @@
 import * as DBUtil from './db'
 import * as DropboxUtil from './dropbox'
 import * as TasksUtil from './tasks'
+import * as FileUtil from './file'
 import * as Types from '@shared/declarations'
 import moment from 'moment'
 import Logger from '../services/logging'
@@ -120,4 +121,24 @@ export const taskTypeToPriority = (taskType: Enums.TaskType): number => {
         case Enums.TaskType.SUBJECT_DETECTION:
             return 4
     }
+}
+
+export const processImage = async (fileId: number): Promise<boolean> => {
+    const { userId, uuid, fileExtension } = await Models.FileModel.findByPk(fileId)
+    const processingPath = FileUtil.getProcessingPath(uuid, fileExtension)
+
+    // test it's not corrupt
+
+    // create thumbnails
+    const thumbnailingResult = await FileUtil.generateThumbnails(userId, uuid, fileExtension)
+    console.log({ thumbnailingResult })
+    const { success: isThumbnailed, mediumWidth, mediumHeight } = thumbnailingResult
+
+    // get medium width/height dimensions
+
+    // read exif data and generate array of tags, and separate lat/long/elevation data
+
+    // set on row: isThumbnailed, isCorrupt, latitude, longitude, elevation, datetime, mediumHeight, mediumWidth
+
+    return true
 }

@@ -1,7 +1,7 @@
 import * as TasksUtil from '../util/tasks'
 
 const main = async () => {
-    await TasksUtil.fileImport(1)
+    await TasksUtil.processImage(6)
 }
 
 main()

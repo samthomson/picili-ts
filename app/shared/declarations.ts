@@ -108,6 +108,12 @@ export namespace Core {
 		fileName: string
 		fileExtension: string
 	}
+	export type ThumbnailCreationResponse = {
+		success: boolean
+		mediumPreview?: string
+		mediumWidth?: number
+		mediumHeight?: number
+	}
 }
 
 export type TaskTypeEnum = Enums.TaskType
