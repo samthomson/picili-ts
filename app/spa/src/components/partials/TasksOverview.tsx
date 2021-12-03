@@ -62,18 +62,24 @@ const TasksOverview: React.FunctionComponent = () => {
 			{queues.length === 0 && <>no tasks queued...</>}
 			{queues.length > 0 && (
 				<table>
-					<tr>
-						<td>type</td>
-						<td>count</td>
-					</tr>
-					{queues.map((row, i) => (
-						<tr key={i}>
-							<td>
-								{row.type.replaceAll('_', ' ').toLowerCase()}
-							</td>
-							<td>{row.count}</td>
+					<thead>
+						<tr>
+							<td>type</td>
+							<td>count</td>
 						</tr>
-					))}
+					</thead>
+					<tbody>
+						{queues.map((row, i) => (
+							<tr key={i}>
+								<td>
+									{row.type
+										.replaceAll('_', ' ')
+										.toLowerCase()}
+								</td>
+								<td>{row.count}</td>
+							</tr>
+						))}
+					</tbody>
 				</table>
 			)}
 			<h2>processed</h2>
@@ -82,16 +88,20 @@ const TasksOverview: React.FunctionComponent = () => {
 			)}
 			{recent.length > 0 && (
 				<table>
-					<tr>
-						<td>date</td>
-						<td>count</td>
-					</tr>
-					{recent.map((row, i) => (
-						<tr key={i}>
-							<td>{moment(row.date).format('MMM Do')}</td>
-							<td>{row.count}</td>
+					<thead>
+						<tr>
+							<td>date</td>
+							<td>count</td>
 						</tr>
-					))}
+					</thead>
+					<tbody>
+						{recent.map((row, i) => (
+							<tr key={i}>
+								<td>{moment(row.date).format('MMM Do')}</td>
+								<td>{row.count}</td>
+							</tr>
+						))}
+					</tbody>
 				</table>
 			)}
 			<hr />
