@@ -13,7 +13,9 @@ export const splitPathIntoParts = (path: string): Types.Core.FileParts => {
     const file = parts.pop()
     const fileDirectory = parts.length > 0 ? parts.pop() : '/'
 
-    const [fileName, fileExtension] = file.split('.')
+    const fileNameParts = file.split('.')
+    const fileExtension = fileNameParts.pop()
+    const fileName = fileNameParts.join('')
 
     return {
         fileDirectory,
