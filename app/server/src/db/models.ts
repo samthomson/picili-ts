@@ -315,7 +315,7 @@ type TagCreationAttributes = Sequelize.Optional<TagAttributes, 'id' | 'subtype'>
 export interface TagInstance extends Sequelize.Model<TagAttributes, TagCreationAttributes>, TagAttributes {}
 
 export const TagModel = Database.define<TagInstance>(
-    'file',
+    'tag',
     {
         id: {
             type: Sequelize.INTEGER.UNSIGNED,
