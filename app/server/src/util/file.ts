@@ -22,16 +22,6 @@ export const THUMB_SIZES = [
     { name: 's', height: 125, width: 125, fit: 'fill' },
     { name: 'i', height: 32, width: 32, fit: 'fill' },
 ]
-export const isCorrupt = async (uuid: string, extension: string): Promise<boolean> => {
-    const inPath = getProcessingPath(uuid, extension)
-    try {
-        await sharp(inPath)
-        return true
-    } catch (err) {
-        Logger.info('corrupt image', { uuid })
-        return false
-    }
-}
 
 export const readExif = async (sharpInstance: sharp.Sharp): Promise<Types.Core.ExifData> => {
     const exif = (await sharpInstance.metadata()).exif
@@ -104,34 +94,9 @@ export const generateThumbnails = async (
     const inPath = getProcessingPath(uuid, extension)
     const outPathDirectory = `thumbs/${userId}/${uuid}`
 
-    let sharpImage = undefined
-    Logger.info('will try to read image next...')
+    let base64MediumThumbBuffer = undefined
     try {
-        sharpImage = await sharp(inPath)
-    } catch {
-        // do nothing, image was corrupt
-        Logger.info('failed reading image, assuming corrupt.', { uuid, extension })
-        return { success: true, isCorrupt: true }
-    }
-    Logger.info('got past corrupt test...', { isCorrupt })
-
-    try {
-        // ensure uuid dir exists
-        // todo: use this lib/method when creating processing dir
-        await FSExtra.ensureDir(outPathDirectory)
-
-        let mediumWidth = undefined
-        THUMB_SIZES.forEach(async (thumbSize) => {
-            const { name: size, width, height } = thumbSize
-            const outPathFull = `thumbs/${userId}/${uuid}/${size}.jpg`
-            // todo: lower quality to reduce filesizes
-            const data = sharpImage.resize(width, height).toFormat('jpeg').toFile(outPathFull)
-
-            if (size === 'm') {
-                mediumWidth = data.width
-            }
-        })
-        const base64MediumThumbBuffer = await sharpImage
+        base64MediumThumbBuffer = await sharp(inPath)
             .jpeg({
                 quality: 55,
             })
@@ -139,7 +104,29 @@ export const generateThumbnails = async (
             .resize(undefined, 300)
             .toFormat('jpeg')
             .toBuffer()
+    } catch {
+        // do nothing, image was corrupt
+        Logger.info('failed reading image, assuming corrupt.', { uuid, extension })
+        return { success: true, isCorrupt: true }
+    }
 
+    try {
+        // ensure uuid dir exists
+        // todo: use this lib/method when creating processing dir
+        await FSExtra.ensureDir(outPathDirectory)
+
+        const sharpImage = sharp(inPath)
+        let mediumWidth = undefined
+        THUMB_SIZES.forEach(async (thumbSize) => {
+            const { name: size, width, height } = thumbSize
+            const outPathFull = `thumbs/${userId}/${uuid}/${size}.jpg`
+            // todo: lower quality to reduce filesizes
+            const data = await sharpImage.resize(width, height).toFormat('jpeg').toFile(outPathFull)
+
+            if (size === 'm') {
+                mediumWidth = data.width
+            }
+        })
         // gamma >2.2 && <= 3: makes images pop a little, with a more saturated contrast
         // await sharp(inPath).resize(1620, undefined).gamma(3).toFormat('jpeg').toFile(outPathFull)
 
