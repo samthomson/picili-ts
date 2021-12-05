@@ -132,8 +132,13 @@ export const generateThumbnails = async (
 
         const mediumPreview = base64MediumThumbBuffer.toString('base64')
 
-        const exifData = await readExif(sharpImage)
+        const exifData = undefined
 
+        try {
+            await readExif(sharpImage)
+        } catch (err) {
+            // no exif data
+        }
         return {
             success: true,
             isCorrupt: false,

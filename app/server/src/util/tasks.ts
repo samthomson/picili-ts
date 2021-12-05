@@ -30,6 +30,9 @@ export const processTask = async (taskId: number) => {
             case Enums.TaskType.DROPBOX_FILE_IMPORT:
                 success = await fileImport(task.relatedPiciliFileId)
                 break
+            case Enums.TaskType.PROCESS_IMAGE_FILE:
+                success = await processImage(task.relatedPiciliFileId)
+                break
             // todo: PROCESS_IMAGE_FILE
             // todo: PROCESS_VIDEO_FILE
             // todo: REMOVE_FILE
@@ -124,124 +127,134 @@ export const taskTypeToPriority = (taskType: Enums.TaskType): number => {
 }
 
 export const processImage = async (fileId: number): Promise<boolean> => {
-    const file = await Models.FileModel.findByPk(fileId)
-    const { userId, uuid, fileExtension } = file
-    const processingPath = FileUtil.getProcessingPath(uuid, fileExtension)
+    try {
+        const file = await Models.FileModel.findByPk(fileId)
+        const { userId, uuid, fileExtension } = file
 
-    // create thumbnails, while testing if corrupt and getting other image data
-    const thumbnailingResult = await FileUtil.generateThumbnails(userId, uuid, fileExtension)
-    // get medium width/height dimensions
-    const { success: isThumbnailed, mediumWidth, mediumHeight, isCorrupt, exifData } = thumbnailingResult
+        // create thumbnails, while testing if corrupt and getting other image data
+        const thumbnailingResult = await FileUtil.generateThumbnails(userId, uuid, fileExtension)
+        // get medium width/height dimensions
+        const { success: isThumbnailed, mediumWidth, mediumHeight, isCorrupt, exifData } = thumbnailingResult
 
-    console.log({ thumbnailingResult })
+        // update file model with gleamed data
 
-    // update file model with gleamed data
-    file.isCorrupt = isCorrupt
-    if (!isCorrupt) {
-        file.isThumbnailed = isThumbnailed
-        file.mediumWidth = mediumWidth
-        file.mediumHeight = mediumHeight
-    }
-    await file.save()
-
-    // create tags from exif data
-    const newExifTags: Types.Core.Inputs.CreateTagInput[] = []
-
-    // exif
-    if (exifData?.cameraMake) {
-        newExifTags.push({
-            fileId,
-            type: 'exif',
-            subtype: 'cameramake',
-            value: exifData.cameraMake,
-            confidence: 100,
-        })
-    }
-    if (exifData?.cameraModel) {
-        newExifTags.push({
-            fileId,
-            type: 'exif',
-            subtype: 'cameramodel',
-            value: exifData.cameraModel,
-            confidence: 100,
-        })
-    }
-    if (exifData?.lensModel) {
-        newExifTags.push({
-            fileId,
-            type: 'exif',
-            subtype: 'lensmodel',
-            value: exifData.lensModel,
-            confidence: 100,
-        })
-    }
-    if (exifData?.orientation) {
-        newExifTags.push({
-            fileId,
-            type: 'exif',
-            subtype: 'orientation',
-            value: exifData.orientation.toString(),
-            confidence: 100,
-        })
-    }
-    if (exifData?.exposureTime) {
-        newExifTags.push({
-            fileId,
-            type: 'exif',
-            subtype: 'exposuretime',
-            value: exifData.exposureTime.toString(),
-            confidence: 100,
-        })
-    }
-    if (exifData?.aperture) {
-        newExifTags.push({
-            fileId,
-            type: 'exif',
-            subtype: 'aperture',
-            value: exifData.aperture.toString(),
-            confidence: 100,
-        })
-    }
-    if (exifData?.ISO) {
-        newExifTags.push({
-            fileId,
-            type: 'exif',
-            subtype: 'iso',
-            value: exifData.ISO.toString(),
-            confidence: 100,
-        })
-    }
-    if (exifData?.focalLength) {
-        newExifTags.push({
-            fileId,
-            type: 'exif',
-            subtype: 'focallength',
-            value: exifData.focalLength.toString(),
-            confidence: 100,
-        })
-    }
-    await DBUtil.createMultipleTags(newExifTags)
-
-    let updatedAgain = false
-    if (exifData?.latitude) {
-        file.latitude = exifData.latitude
-        updatedAgain = true
-    }
-    if (exifData?.longitude) {
-        file.longitude = exifData.longitude
-        updatedAgain = true
-    }
-    if (exifData?.altitude) {
-        file.elevation = exifData.altitude
-        updatedAgain = true
-    }
-    if (exifData?.datetime) {
-        file.datetime = exifData.datetime
-        updatedAgain = true
-    }
-    if (updatedAgain) {
+        if (!isThumbnailed) {
+            // was it unsuccessful?
+            // don't continue
+            return false
+        }
+        file.isCorrupt = isCorrupt
+        if (!isCorrupt) {
+            file.isThumbnailed = isThumbnailed
+            file.mediumWidth = mediumWidth
+            file.mediumHeight = mediumHeight
+        }
         await file.save()
-    }
 
-    return true
+        // create tags from exif data
+        const newExifTags: Types.Core.Inputs.CreateTagInput[] = []
+
+        // exif
+        if (exifData?.cameraMake) {
+            newExifTags.push({
+                fileId,
+                type: 'exif',
+                subtype: 'cameramake',
+                value: exifData.cameraMake,
+                confidence: 100,
+            })
+        }
+        if (exifData?.cameraModel) {
+            newExifTags.push({
+                fileId,
+                type: 'exif',
+                subtype: 'cameramodel',
+                value: exifData.cameraModel,
+                confidence: 100,
+            })
+        }
+        if (exifData?.lensModel) {
+            newExifTags.push({
+                fileId,
+                type: 'exif',
+                subtype: 'lensmodel',
+                value: exifData.lensModel,
+                confidence: 100,
+            })
+        }
+        if (exifData?.orientation) {
+            newExifTags.push({
+                fileId,
+                type: 'exif',
+                subtype: 'orientation',
+                value: exifData.orientation.toString(),
+                confidence: 100,
+            })
+        }
+        if (exifData?.exposureTime) {
+            newExifTags.push({
+                fileId,
+                type: 'exif',
+                subtype: 'exposuretime',
+                value: exifData.exposureTime.toString(),
+                confidence: 100,
+            })
+        }
+        if (exifData?.aperture) {
+            newExifTags.push({
+                fileId,
+                type: 'exif',
+                subtype: 'aperture',
+                value: exifData.aperture.toString(),
+                confidence: 100,
+            })
+        }
+        if (exifData?.ISO) {
+            newExifTags.push({
+                fileId,
+                type: 'exif',
+                subtype: 'iso',
+                value: exifData.ISO.toString(),
+                confidence: 100,
+            })
+        }
+        if (exifData?.focalLength) {
+            newExifTags.push({
+                fileId,
+                type: 'exif',
+                subtype: 'focallength',
+                value: exifData.focalLength.toString(),
+                confidence: 100,
+            })
+        }
+        if (newExifTags.length > 0) {
+            await DBUtil.createMultipleTags(newExifTags)
+        }
+
+        let updatedAgain = false
+        if (exifData?.latitude && exifData.latitude >= -90 && exifData?.latitude <= 90) {
+            file.latitude = exifData.latitude
+            updatedAgain = true
+        }
+        if (exifData?.longitude && exifData.longitude >= -180 && exifData?.longitude <= 180) {
+            file.longitude = exifData.longitude
+            updatedAgain = true
+        }
+        if (exifData?.altitude) {
+            file.elevation = exifData.altitude
+            updatedAgain = true
+        }
+        if (exifData?.datetime) {
+            file.datetime = exifData.datetime
+            updatedAgain = true
+        }
+        if (updatedAgain) {
+            await file.save()
+        }
+
+        return true
+    } catch (err) {
+        Logger.error('err processing image', { err })
+        return false
+    }
 }
