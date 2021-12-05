@@ -274,3 +274,19 @@ export const createFile = async (fileCreationParams: Types.Core.Inputs.CreateFil
     const newFile = await Models.FileModel.create(fileCreationParams)
     return newFile.id
 }
+
+export const createTag = async (tagCreationParams: Types.Core.Inputs.CreateTagInput): Promise<number> => {
+    const newTag = await Models.TagModel.create(tagCreationParams)
+    return newTag.id
+}
+
+export const createMultipleTags = async (tagCreationParams: Types.Core.Inputs.CreateTagInput[]): Promise<boolean> => {
+    const lowerCased = tagCreationParams.map((params) => ({
+        ...params,
+        type: params.type.toLowerCase(),
+        subtype: params.subtype.toLowerCase(),
+        value: params.value.toLowerCase(),
+    }))
+    await Models.TagModel.bulkCreate(lowerCased)
+    return true
+}
