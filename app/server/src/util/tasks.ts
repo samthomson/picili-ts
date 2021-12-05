@@ -144,9 +144,104 @@ export const processImage = async (fileId: number): Promise<boolean> => {
     }
     await file.save()
 
-    // todo: something with exif data, and lat/long/elevation
+    // create tags from exif data
+    const newExifTags: Types.Core.Inputs.CreateTagInput[] = []
 
-    // todo: set on row: isThumbnailed, isCorrupt, latitude, longitude, elevation, datetime, mediumHeight, mediumWidth
+    // exif
+    if (exifData?.cameraMake) {
+        newExifTags.push({
+            fileId,
+            type: 'exif',
+            subtype: 'cameramake',
+            value: exifData.cameraMake,
+            confidence: 100,
+        })
+    }
+    if (exifData?.cameraModel) {
+        newExifTags.push({
+            fileId,
+            type: 'exif',
+            subtype: 'cameramodel',
+            value: exifData.cameraModel,
+            confidence: 100,
+        })
+    }
+    if (exifData?.lensModel) {
+        newExifTags.push({
+            fileId,
+            type: 'exif',
+            subtype: 'lensmodel',
+            value: exifData.lensModel,
+            confidence: 100,
+        })
+    }
+    if (exifData?.orientation) {
+        newExifTags.push({
+            fileId,
+            type: 'exif',
+            subtype: 'orientation',
+            value: exifData.orientation.toString(),
+            confidence: 100,
+        })
+    }
+    if (exifData?.exposureTime) {
+        newExifTags.push({
+            fileId,
+            type: 'exif',
+            subtype: 'exposuretime',
+            value: exifData.exposureTime.toString(),
+            confidence: 100,
+        })
+    }
+    if (exifData?.aperture) {
+        newExifTags.push({
+            fileId,
+            type: 'exif',
+            subtype: 'aperture',
+            value: exifData.aperture.toString(),
+            confidence: 100,
+        })
+    }
+    if (exifData?.ISO) {
+        newExifTags.push({
+            fileId,
+            type: 'exif',
+            subtype: 'iso',
+            value: exifData.ISO.toString(),
+            confidence: 100,
+        })
+    }
+    if (exifData?.focalLength) {
+        newExifTags.push({
+            fileId,
+            type: 'exif',
+            subtype: 'focallength',
+            value: exifData.focalLength.toString(),
+            confidence: 100,
+        })
+    }
+    await DBUtil.createMultipleTags(newExifTags)
+
+    let updatedAgain = false
+    if (exifData?.latitude) {
+        file.latitude = exifData.latitude
+        updatedAgain = true
+    }
+    if (exifData?.longitude) {
+        file.longitude = exifData.longitude
+        updatedAgain = true
+    }
+    if (exifData?.altitude) {
+        file.elevation = exifData.altitude
+        updatedAgain = true
+    }
+    if (exifData?.datetime) {
+        file.datetime = exifData.datetime
+        updatedAgain = true
+    }
+    if (updatedAgain) {
+        await file.save()
+    }
 
     return true
 }

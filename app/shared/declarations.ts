@@ -102,7 +102,17 @@ export namespace Core {
 			fileType: Enums.FileType
 			uuid: string
 		}
+
+		export interface CreateTagInput {
+			fileId: number
+			// todo: enum?
+			type: string
+			subtype: string
+			value: string
+			confidence: number
+		}
 	}
+
 	export type FileParts = {
 		fileDirectory: string
 		fileName: string
@@ -124,9 +134,9 @@ export namespace Core {
 		exposureTime?: number
 		aperture?: number 
 		ISO?: number
-		datetime?: string
 		focalLength?: number
 
+		datetime?: string
 		latitude?: number
 		longitude?: number
 		altitude?: number
