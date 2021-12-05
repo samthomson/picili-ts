@@ -301,3 +301,35 @@ export const FileModel = Database.define<FileInstance>(
         underscored: true,
     },
 )
+
+interface TagAttributes {
+    id: number
+    fileId: number
+    type: string
+    subtype?: string
+    value: string
+    confidence: number
+}
+type TagCreationAttributes = Sequelize.Optional<TagAttributes, 'id' | 'subtype'>
+
+export interface TagInstance extends Sequelize.Model<TagAttributes, TagCreationAttributes>, TagAttributes {}
+
+export const TagModel = Database.define<TagInstance>(
+    'file',
+    {
+        id: {
+            type: Sequelize.INTEGER.UNSIGNED,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        fileId: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.STRING,
+        subtype: Sequelize.STRING,
+        value: Sequelize.STRING,
+        confidence: Sequelize.TINYINT.UNSIGNED,
+    },
+    {
+        timestamps: false,
+        underscored: true,
+    },
+)
