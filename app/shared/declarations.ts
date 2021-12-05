@@ -110,9 +110,26 @@ export namespace Core {
 	}
 	export type ThumbnailCreationResponse = {
 		success: boolean
+		isCorrupt?: boolean
 		mediumPreview?: string
 		mediumWidth?: number
 		mediumHeight?: number
+		exifData?: ExifData
+	}
+	export type ExifData = {
+		cameraMake?: string
+		cameraModel?: string
+		lensModel?: string
+		orientation?: number
+		exposureTime?: number
+		aperture?: number 
+		ISO?: number
+		datetime?: string
+		focalLength?: number
+
+		latitude?: number
+		longitude?: number
+		altitude?: number
 	}
 }
 

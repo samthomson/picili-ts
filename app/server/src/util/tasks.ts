@@ -124,21 +124,29 @@ export const taskTypeToPriority = (taskType: Enums.TaskType): number => {
 }
 
 export const processImage = async (fileId: number): Promise<boolean> => {
-    const { userId, uuid, fileExtension } = await Models.FileModel.findByPk(fileId)
+    const file = await Models.FileModel.findByPk(fileId)
+    const { userId, uuid, fileExtension } = file
     const processingPath = FileUtil.getProcessingPath(uuid, fileExtension)
 
-    // test it's not corrupt
-
-    // create thumbnails
+    // create thumbnails, while testing if corrupt and getting other image data
     const thumbnailingResult = await FileUtil.generateThumbnails(userId, uuid, fileExtension)
-    console.log({ thumbnailingResult })
-    const { success: isThumbnailed, mediumWidth, mediumHeight } = thumbnailingResult
-
     // get medium width/height dimensions
+    const { success: isThumbnailed, mediumWidth, mediumHeight, isCorrupt, exifData } = thumbnailingResult
 
-    // read exif data and generate array of tags, and separate lat/long/elevation data
+    console.log({ thumbnailingResult })
 
-    // set on row: isThumbnailed, isCorrupt, latitude, longitude, elevation, datetime, mediumHeight, mediumWidth
+    // update file model with gleamed data
+    file.isCorrupt = isCorrupt
+    if (!isCorrupt) {
+        file.isThumbnailed = isThumbnailed
+        file.mediumWidth = mediumWidth
+        file.mediumHeight = mediumHeight
+    }
+    await file.save()
+
+    // todo: something with exif data, and lat/long/elevation
+
+    // todo: set on row: isThumbnailed, isCorrupt, latitude, longitude, elevation, datetime, mediumHeight, mediumWidth
 
     return true
 }
