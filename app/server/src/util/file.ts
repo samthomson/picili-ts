@@ -1,5 +1,6 @@
 import sharp from 'sharp'
 import FSExtra from 'fs-extra'
+import fs from 'fs'
 import Logger from '../services/logging'
 import * as Types from '@shared/declarations'
 import exifReader from 'exif-reader'
@@ -150,5 +151,20 @@ export const generateThumbnails = async (
     } catch (err) {
         Logger.error('hit error whle thumbnailing: ', { err })
         return { success: false }
+    }
+}
+
+export const removeProcessingFile = (uuid, extension): boolean => {
+    const processingPath = getProcessingPath(uuid, extension)
+    // `unlinkSync` will throw an error if the file didn't exist
+    if (FSExtra.pathExistsSync(processingPath)) {
+        fs.unlinkSync(processingPath)
+    }
+
+    // check and return if we were successful
+    if (!FSExtra.pathExistsSync(processingPath)) {
+        return true
+    } else {
+        return false
     }
 }

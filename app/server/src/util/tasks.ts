@@ -33,9 +33,10 @@ export const processTask = async (taskId: number) => {
             case Enums.TaskType.PROCESS_IMAGE_FILE:
                 success = await processImage(task.relatedPiciliFileId)
                 break
-            // todo: PROCESS_IMAGE_FILE
+            case Enums.TaskType.REMOVE_PROCESSING_FILE:
+                success = await removeProcessingImage(task.relatedPiciliFileId)
+                break
             // todo: PROCESS_VIDEO_FILE
-            // todo: REMOVE_PROCESSING_FILE
             // todo: ADDRESS_LOOKUP
             // todo: ELEVATION_LOOKUP
             // todo: PLANT_LOOKUP
@@ -257,4 +258,11 @@ export const processImage = async (fileId: number): Promise<boolean> => {
         Logger.error('err processing image', { err })
         return false
     }
+}
+
+export const removeProcessingImage = async (fileId: number): Promise<boolean> => {
+    const file = await Models.FileModel.findByPk(fileId)
+    const { uuid, fileExtension } = file
+
+    return FileUtil.removeProcessingFile(uuid, fileExtension)
 }
