@@ -58,9 +58,9 @@ export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.
 
     // delete
     await DBUtil.createTask({
-        taskType: Enums.TaskType.REMOVE_FILE,
+        taskType: Enums.TaskType.REMOVE_PROCESSING_FILE,
         relatedPiciliFileId: newFileId,
-        priority: TasksUtil.taskTypeToPriority(Enums.TaskType.REMOVE_FILE),
+        priority: TasksUtil.taskTypeToPriority(Enums.TaskType.REMOVE_PROCESSING_FILE),
         after: processingTaskId,
     })
 }

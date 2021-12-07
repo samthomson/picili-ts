@@ -35,7 +35,7 @@ export const processTask = async (taskId: number) => {
                 break
             // todo: PROCESS_IMAGE_FILE
             // todo: PROCESS_VIDEO_FILE
-            // todo: REMOVE_FILE
+            // todo: REMOVE_PROCESSING_FILE
             // todo: ADDRESS_LOOKUP
             // todo: ELEVATION_LOOKUP
             // todo: PLANT_LOOKUP
@@ -109,7 +109,7 @@ export const taskTypeToPriority = (taskType: Enums.TaskType): number => {
             return 7
         case Enums.TaskType.PROCESS_VIDEO_FILE:
             return 7
-        case Enums.TaskType.REMOVE_FILE:
+        case Enums.TaskType.REMOVE_PROCESSING_FILE:
             return 10 // removing processed files is the highest priority, so that once processed we free up disk space
         case Enums.TaskType.ADDRESS_LOOKUP:
             return 6
