@@ -36,11 +36,9 @@ export const imagga = async (largeThumbnailPath: string): Promise<Types.Core.Ima
             switch (result.status) {
                 case 200:
                     const data: Types.ExternalAPI.Imagga.TaggingResponse = await result.json()
-                    const tags = data?.result?.tags ?? []
-                    tags.map((tag) => console.log(tag))
                     return {
                         success: true,
-                        tags,
+                        tags: data?.result?.tags ?? [],
                     }
                 default:
                     Logger.error('non 200 result from imagga', { status: result.status, largeThumbnailPath })
