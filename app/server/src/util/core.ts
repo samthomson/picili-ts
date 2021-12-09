@@ -56,6 +56,15 @@ export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.
         }
     })()
 
+    // if it was an image, queue for subject detection
+    if (fileType === Enums.FileType.IMAGE) {
+        await DBUtil.createTask({
+            taskType: Enums.TaskType.SUBJECT_DETECTION,
+            relatedPiciliFileId: newFileId,
+            after: processingTaskId,
+        })
+    }
+
     // delete
     await DBUtil.createTask({
         taskType: Enums.TaskType.REMOVE_PROCESSING_FILE,
