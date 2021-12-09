@@ -4,3 +4,4 @@ app/server/logs
 app/server/test-data
 app/server/processing
 app/server/thumbs
+app/server/yarn-error.log

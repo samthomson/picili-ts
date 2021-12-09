@@ -2,6 +2,7 @@ import * as DBUtil from './db'
 import * as DropboxUtil from './dropbox'
 import * as TasksUtil from './tasks'
 import * as FileUtil from './file'
+import * as APIUtil from './apis'
 import * as Types from '@shared/declarations'
 import moment from 'moment'
 import Logger from '../services/logging'
@@ -36,13 +37,20 @@ export const processTask = async (taskId: number) => {
             case Enums.TaskType.REMOVE_PROCESSING_FILE:
                 success = await removeProcessingImage(task.relatedPiciliFileId)
                 break
+            case Enums.TaskType.SUBJECT_DETECTION:
+                const taskOutcome = await subjectDetection(task.relatedPiciliFileId)
+                success = taskOutcome.success
+                if (!taskOutcome.success) {
+                    // requeue the task
+                    await DBUtil.postponeTask(task, taskOutcome.retryInHours)
+                }
+                break
             // todo: PROCESS_VIDEO_FILE
             // todo: ADDRESS_LOOKUP
             // todo: ELEVATION_LOOKUP
             // todo: PLANT_LOOKUP
             // todo: OCR_GENERIC
             // todo: OCR_NUMBERPLATE
-            // todo: SUBJECT_DETECTION
             default:
                 success = false
                 Logger.warn('unknown task type', { taskType })
@@ -265,4 +273,31 @@ export const removeProcessingImage = async (fileId: number): Promise<boolean> =>
     const { uuid, fileExtension } = file
 
     return FileUtil.removeProcessingFile(uuid, fileExtension)
+}
+
+export const subjectDetection = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
+    const file = await Models.FileModel.findByPk(fileId)
+    const { userId, uuid } = file
+    const largeThumbPath = FileUtil.thumbPath(userId, uuid, 'l')
+
+    // get imagga tags
+    const imaggaTaggingResult = await APIUtil.imagga(largeThumbPath)
+
+    if (imaggaTaggingResult.success) {
+        const { tags } = imaggaTaggingResult
+        const newSubjectTags: Types.Core.Inputs.CreateTagInput[] = tags.map(({ tag: { en: value }, confidence }) => ({
+            fileId,
+            type: 'subject',
+            subtype: 'imagga',
+            value,
+            confidence,
+        }))
+        if (newSubjectTags.length > 0) {
+            await DBUtil.createMultipleTags(newSubjectTags)
+        }
+        return { success: true }
+    } else {
+        // either the api returned a non-200 response, or we encountered successive exceptions while attempting to reach it. requeue the task accordingly.
+        return { success: false, retryInHours: imaggaTaggingResult.requeueDelay }
+    }
 }

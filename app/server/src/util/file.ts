@@ -10,9 +10,10 @@ export const getProcessingPath = (uuid: string, extension: string) => {
     return `processing/${uuid}.${extension}`
 }
 
-//todo: this method
-export const thumbPath = () => {
+//todo: use thumbsizes enum
+export const thumbPath = (userId: number, uuid: string, size: string) => {
     // thumbs/[userId]/[uuid]/[size].jpg
+    return `thumbs/${userId}/${uuid}/${size}.jpg`
 }
 
 // todo: is large size obsolete now, use xl only?

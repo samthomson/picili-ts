@@ -39,6 +39,8 @@ export namespace API {
 }
 
 export namespace DropboxAPI {
+
+	// todo: refactor this in to external API thing
 	export interface DropboxFile {
 		'.tag': string
 		name: string
@@ -57,6 +59,22 @@ export namespace DropboxAPI {
 		cursor: string
 		entries: DropboxFile[]
 		has_more: boolean
+	}
+}
+
+export namespace ExternalAPI {
+	export namespace Imagga {
+		export type Tag = {
+			confidence: number
+			tag: {
+				en: string
+			}
+		}
+		export type TaggingResponse = {
+			result: {
+				tags: Tag[]
+			}
+		}
 	}
 }
 
@@ -140,6 +158,16 @@ export namespace Core {
 		latitude?: number
 		longitude?: number
 		altitude?: number
+	}
+	export type ImaggaTaggingResult = {
+		success: boolean
+		tags?: ExternalAPI.Imagga.Tag[]
+		requeueDelay?: number // number of hours to requeue the task for
+	}
+
+	export type TaskProcessorResult = {
+		success: boolean
+		retryInHours?: number
 	}
 }
 
