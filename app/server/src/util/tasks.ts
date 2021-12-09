@@ -296,10 +296,45 @@ export const subjectDetection = async (fileId: number): Promise<Types.Core.TaskP
             }))
         if (newSubjectTags.length > 0) {
             await DBUtil.createMultipleTags(newSubjectTags)
+
+            // check for certain tags, in order to queue for other processors
+            await createConditionalTags(
+                fileId,
+                newSubjectTags.map(({ value }) => value),
+            )
         }
         return { success: true }
     } else {
         // either the api returned a non-200 response, or we encountered successive exceptions while attempting to reach it. requeue the task accordingly.
         return { success: false, retryInHours: imaggaTaggingResult.requeueDelay }
+    }
+}
+
+const createConditionalTags = async (fileId: number, subjectTags: string[]): Promise<void> => {
+    // look for plant key words
+    const matchingPlantTags = subjectTags.filter((keyword) => Constants.PLANT_NET_TRIGGERS.includes(keyword))
+    if (matchingPlantTags.length > 0) {
+        await DBUtil.createTask({
+            taskType: Enums.TaskType.PLANT_LOOKUP,
+            relatedPiciliFileId: fileId,
+        })
+    }
+
+    // look for ocr key words
+    const matchingOCRTags = subjectTags.filter((keyword) => Constants.OCR_TEXT_TRIGGERS.includes(keyword))
+    if (matchingOCRTags.length > 0) {
+        await DBUtil.createTask({
+            taskType: Enums.TaskType.OCR_GENERIC,
+            relatedPiciliFileId: fileId,
+        })
+    }
+
+    // look for numberplate ocr key words
+    const matchingNumberPlateTags = subjectTags.filter((keyword) => Constants.NUMBER_PLATE_TRIGGERS.includes(keyword))
+    if (matchingNumberPlateTags.length > 0) {
+        await DBUtil.createTask({
+            taskType: Enums.TaskType.OCR_NUMBERPLATE,
+            relatedPiciliFileId: fileId,
+        })
     }
 }

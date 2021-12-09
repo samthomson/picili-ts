@@ -102,7 +102,7 @@ export namespace Core {
 			from?: string // date
 			after?: number // other task id
 			importTask?: boolean // default true
-			priority: number
+			priority?: number
 		}
 
 		export interface CreateTaskProcessedLog {

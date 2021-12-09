@@ -155,6 +155,7 @@ export const updateSyncLog = async (
     )
 }
 
+// todo: update calls to this function to not pass a priority
 export const createTask = async (createTaskInput: Types.Core.Inputs.CreateTaskInput): Promise<number> => {
     // use overloaded priority or standard priority for that task type
     const priority = createTaskInput?.priority ?? TasksUtil.taskTypeToPriority(createTaskInput.taskType)
