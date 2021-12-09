@@ -1,0 +1,1 @@
+export const MIN_IMAGGA_TAG_CONFIDENCE = 10

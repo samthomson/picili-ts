@@ -20,7 +20,7 @@ const file = async () => {
 
 const imaggaTest = async () => {
     // await TasksUtil.subjectDetection(25)
-    await TasksUtil.processTask(606)
+    await TasksUtil.processTask(607)
 }
 
 // file()

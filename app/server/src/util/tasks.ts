@@ -4,13 +4,13 @@ import * as TasksUtil from './tasks'
 import * as FileUtil from './file'
 import * as APIUtil from './apis'
 import * as Types from '@shared/declarations'
+import * as Constants from '../../../shared/constants'
 import moment from 'moment'
 import Logger from '../services/logging'
 import * as Enums from '../../../shared/enums'
 import * as Models from '../db/models'
 
 export const processTask = async (taskId: number) => {
-    console.log('processTask: ', taskId)
     // start timing
     const startTime = moment()
     let success = undefined
@@ -285,13 +285,15 @@ export const subjectDetection = async (fileId: number): Promise<Types.Core.TaskP
 
     if (imaggaTaggingResult.success) {
         const { tags } = imaggaTaggingResult
-        const newSubjectTags: Types.Core.Inputs.CreateTagInput[] = tags.map(({ tag: { en: value }, confidence }) => ({
-            fileId,
-            type: 'subject',
-            subtype: 'imagga',
-            value,
-            confidence,
-        }))
+        const newSubjectTags: Types.Core.Inputs.CreateTagInput[] = tags
+            .filter(({ confidence }) => confidence > Constants.MIN_IMAGGA_TAG_CONFIDENCE)
+            .map(({ tag: { en: value }, confidence }) => ({
+                fileId,
+                type: 'subject',
+                subtype: 'imagga',
+                value,
+                confidence,
+            }))
         if (newSubjectTags.length > 0) {
             await DBUtil.createMultipleTags(newSubjectTags)
         }
