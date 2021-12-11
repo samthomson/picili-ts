@@ -53,7 +53,7 @@ export const processTask = async (taskId: number) => {
             // todo: OCR_NUMBERPLATE
             default:
                 success = false
-                Logger.warn('unknown task type', { taskType })
+                Logger.warn('unknown task type', { taskType, id: task.id })
                 break
         }
 
