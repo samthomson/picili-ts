@@ -30,7 +30,6 @@ export class TaskManager {
                 Logger.warn('no task id received for next task')
             }
             if (nextTaskId) {
-                Logger.info('nextTaskId: ', nextTaskId)
                 await TaskUtil.processTask(nextTaskId)
             }
 
@@ -40,7 +39,6 @@ export class TaskManager {
 
         // there are no tasks, but there might be soon, so let's keep checking
         if (this.howManyProcessableTasksAreThere === 0) {
-            Logger.info('no tasks, waiting 10s')
             await HelperUtil.delay(10000)
             await this.start()
         }
