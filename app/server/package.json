@@ -32,12 +32,13 @@
   },
   "scripts": {
     "start-server": "node --inspect=0.0.0.0:9229 -r ts-node/register src/server/server.ts",
-    "watch-server": "tsc-watch --onSuccess \"yarn run start-server\"",
+    "watch-server": "tsc-watch --onSuccess \"yarn run start-server\" --onFailure \"echo Compilation failed...\"",
     "lint-summary": "eslint '*/**/*.{js,ts,tsx}'",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
     "migrate": "ts-node src/db/migrate.ts",
     "image": "ts-node src/tasks/image-process.ts",
-    "tasks": "ts-node src/tasks/start-task-manager.ts"
+    "tasks": "ts-node src/tasks/start-task-manager.ts",
+    "clean": "ts-node src/tasks/clean.ts"
   },
   "devDependencies": {
     "@types/app-root-path": "^1.2.4",
