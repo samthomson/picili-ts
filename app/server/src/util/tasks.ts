@@ -67,7 +67,7 @@ export const processTask = async (taskId: number) => {
         if (success) {
             await finishATask(task)
         } else {
-            Logger.info('task manager processed a task, but was not successful. id:', { taskId })
+            Logger.info('task manager processed a task, but was not successful. id:', { taskId, taskType })
         }
     } catch (err) {
         Logger.error('error processing task: ', err)

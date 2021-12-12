@@ -5,7 +5,8 @@ import * as Models from '../db/models'
 import Logger from '../services/logging'
 
 const file = async () => {
-    // await TasksUtil.processImage(6)
+    // await TasksUtil.fileImport(1)
+    await TasksUtil.processImage(1)
     // corrupt test
     // await TasksUtil.processImage(32)
     // invalid geo test
@@ -54,6 +55,6 @@ const geo = async () => {
     await TasksUtil.addressLookup(1)
 }
 
-// file()
-imaggaTest()
-geo()
+file()
+// imaggaTest()
+// geo()
