@@ -75,12 +75,13 @@ const startApolloServer = async (typeDefs, resolvers) => {
     // taskManager.start()
 
     process.on('SIGTERM', async () => {
-        Logger.info('SIGTERM received, shutting down.')
+        Logger.info('SIGTERM received, shutting down...')
         // close server to the world
         await httpServer.close()
         await server.stop()
         // close db connection
         await DBConnection.disconnect()
+        Logger.info('...finished shutting down')
         process.exit(0)
     })
 }
