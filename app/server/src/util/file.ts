@@ -106,9 +106,9 @@ export const generateThumbnails = async (
             .resize(undefined, 300)
             .toFormat('jpeg')
             .toBuffer()
-    } catch {
+    } catch (error) {
         // do nothing, image was corrupt
-        Logger.info('failed reading image, assuming corrupt.', { uuid, extension })
+        Logger.info('failed reading image, assuming corrupt.', { uuid, extension, error })
         return { success: true, isCorrupt: true }
     }
 
@@ -138,10 +138,10 @@ export const generateThumbnails = async (
 
         const mediumPreview = base64MediumThumbBuffer.toString('base64')
 
-        const exifData = undefined
+        let exifData = undefined
 
         try {
-            await readExif(sharpImage)
+            exifData = await readExif(sharpImage)
         } catch (err) {
             // no exif data
         }
