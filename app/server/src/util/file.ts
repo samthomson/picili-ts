@@ -124,6 +124,11 @@ export const generateThumbnails = async (
             // todo: lower quality to reduce filesizes
             const data = await sharpImage.resize(width, height).toFormat('jpeg').toFile(outPathFull)
 
+            if (!FSExtra.pathExistsSync(outPathFull)) {
+                Logger.warn("thumbnailing completed but the file doesn't exist", { ...thumbSize, outPathFull })
+                return { success: false }
+            }
+
             if (size === 'm') {
                 mediumWidth = data.width
             }
