@@ -96,8 +96,6 @@ export const finishATask = async (task: Models.TaskInstance): Promise<void> => {
             taskType,
             relatedPiciliFileId,
             from: moment().add(15, 'minutes').toISOString(),
-            // todo: use an enum or something
-            priority: TasksUtil.taskTypeToPriority(Enums.TaskType.DROPBOX_SYNC),
         })
     }
 }
