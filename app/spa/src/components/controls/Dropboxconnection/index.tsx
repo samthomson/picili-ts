@@ -14,7 +14,9 @@ const dropboxConnectionQuery = gql`
 `
 
 const DropboxConnection: React.FunctionComponent = () => {
-	const { loading, error, data, refetch } = useQuery(dropboxConnectionQuery)
+	const { loading, error, data, refetch } = useQuery(dropboxConnectionQuery, {
+		fetchPolicy: 'no-cache',
+	})
 
 	if (loading) {
 		return <>loading...</>

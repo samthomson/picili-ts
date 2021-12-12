@@ -27,7 +27,9 @@ const taskSummaryQuery = gql`
 `
 
 const TasksOverview: React.FunctionComponent = () => {
-	const { loading, error, data, refetch } = useQuery(taskSummaryQuery)
+	const { loading, error, data, refetch } = useQuery(taskSummaryQuery, {
+		fetchPolicy: 'no-cache',
+	})
 
 	if (loading) {
 		return <>loading...</>
