@@ -45,12 +45,17 @@ export const processTask = async (taskId: number) => {
                     await DBUtil.postponeTask(task, taskOutcome.retryInHours)
                 }
                 break
-            // todo: PROCESS_VIDEO_FILE
-            // todo: ADDRESS_LOOKUP
-            // todo: ELEVATION_LOOKUP
-            // todo: PLANT_LOOKUP
-            // todo: OCR_GENERIC
-            // todo: OCR_NUMBERPLATE
+
+            // todo: implement these taggers
+            case Enums.TaskType.PROCESS_VIDEO_FILE:
+            case Enums.TaskType.ADDRESS_LOOKUP:
+            case Enums.TaskType.ELEVATION_LOOKUP:
+            case Enums.TaskType.PLANT_LOOKUP:
+            case Enums.TaskType.OCR_GENERIC:
+            case Enums.TaskType.OCR_NUMBERPLATE:
+                success = false
+                Logger.info('to implement', { taskType })
+                break
             default:
                 success = false
                 Logger.warn('unknown task type', { taskType, id: task.id })
@@ -298,7 +303,7 @@ export const subjectDetection = async (fileId: number): Promise<Types.Core.TaskP
             await DBUtil.createMultipleTags(newSubjectTags)
 
             // check for certain tags, in order to queue for other processors
-            await createConditionalTags(
+            await createConditionalTasks(
                 fileId,
                 newSubjectTags.map(({ value }) => value),
             )
@@ -310,7 +315,7 @@ export const subjectDetection = async (fileId: number): Promise<Types.Core.TaskP
     }
 }
 
-const createConditionalTags = async (fileId: number, subjectTags: string[]): Promise<void> => {
+const createConditionalTasks = async (fileId: number, subjectTags: string[]): Promise<void> => {
     // look for plant key words
     const matchingPlantTags = subjectTags.filter((keyword) => Constants.PLANT_NET_TRIGGERS.includes(keyword))
     if (matchingPlantTags.length > 0) {
