@@ -1,5 +1,7 @@
 import * as TasksUtil from '../util/tasks'
 import * as FileUtil from '../util/file'
+import * as APIUtil from '../util/apis'
+import * as Models from '../db/models'
 import Logger from '../services/logging'
 
 const file = async () => {
@@ -18,9 +20,34 @@ const file = async () => {
     // FileUtil.removeProcessingFile('0cbe5464-6477-4f49-81f7-af99accb8963', 'jpg')
 }
 
+const bulkImaggaTest = async () => {
+    const files = await Models.FileModel.findAll()
+    const ids = files.map(({ id }) => id)
+
+    let successes = 0,
+        failures = 0
+    for (let i = 0; i < files.length; i++) {
+        const { id, userId, uuid } = files[i]
+
+        const largeThumbPath = FileUtil.thumbPath(userId, uuid, 'l')
+
+        const outcome = await APIUtil.imagga(largeThumbPath)
+
+        if (outcome.success) {
+            Logger.info('success', { id })
+            successes++
+        } else {
+            Logger.error('failure', { ...outcome, id, largeThumbPath })
+            failures++
+        }
+    }
+    Logger.info('end result', { successes, failures })
+}
+
 const imaggaTest = async () => {
-    await TasksUtil.subjectDetection(1)
+    // await TasksUtil.subjectDetection(9)
     // await TasksUtil.processTask(607)
+    await bulkImaggaTest()
 }
 
 // file()
