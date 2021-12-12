@@ -50,6 +50,7 @@ const typeDefs = gql`
     type DropboxMutationResponse {
         success: Boolean!
         error: String
+        dropboxConnection: DropboxConnection
     }
 
     type DropboxMutations {

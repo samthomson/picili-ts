@@ -105,6 +105,12 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
     const connection = await DBUtil.createDropboxConnection(userId, refreshToken)
     return {
         success: !!connection,
+        connection: connection
+            ? {
+                  syncPath: connection.syncPath,
+                  syncEnabled: connection.syncEnabled,
+              }
+            : undefined,
     }
 }
 const dropboxUpdate = async (parent, args, context): Promise<any> => {
@@ -126,7 +132,7 @@ const dropboxUpdate = async (parent, args, context): Promise<any> => {
         }
     }
 
-    await DBUtil.updateDropboxConnection(userId, { syncPath, syncEnabled })
+    const updatedConnection = await DBUtil.updateDropboxConnection(userId, { syncPath, syncEnabled })
 
     // todo: if enabled, ensure sync task exists
     await DBUtil.ensureTaskExists(Enums.TaskType.DROPBOX_SYNC, userId)
@@ -137,6 +143,10 @@ const dropboxUpdate = async (parent, args, context): Promise<any> => {
 
     return {
         success: true,
+        dropboxConnection: {
+            syncPath: updatedConnection?.syncPath,
+            syncEnabled: updatedConnection?.syncEnabled,
+        },
     }
 }
 const dropboxDisconnect = async (parent, args, context): Promise<any> => {

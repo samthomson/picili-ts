@@ -8,6 +8,10 @@ const updateDropboxConnectionGQL = gql`
 			update(dropboxUpdateInput: $dropboxUpdateInput) {
 				success
 				error
+				dropboxConnection {
+					syncPath
+					syncEnabled
+				}
 			}
 		}
 	}
@@ -20,6 +24,10 @@ interface IProps {
 const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 	dropboxConnection,
 }) => {
+	const [lastSavedConnection, setLastSavedConnection] =
+		React.useState<Types.API.DropboxConnection>(
+			dropboxConnection ?? undefined,
+		)
 	const [syncPath, setSyncPath] = React.useState<string>(
 		dropboxConnection?.syncPath ?? undefined,
 	)
@@ -32,11 +40,17 @@ const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 		{ error: httpError, data, loading = false },
 	] = useMutation(updateDropboxConnectionGQL)
 
+	React.useEffect(() => {
+		if (data?.dropbox.update.dropboxConnection) {
+			setLastSavedConnection(data.dropbox.update.dropboxConnection)
+		}
+	}, [data])
+
 	const dropboxUpdateFailed = httpError?.message || data?.dropbox.update.error
 
 	const isUpdateButtonDisabled =
-		(dropboxConnection.syncPath === syncPath &&
-			dropboxConnection.syncEnabled === syncEnabled) ||
+		(lastSavedConnection.syncPath === syncPath &&
+			lastSavedConnection.syncEnabled === syncEnabled) ||
 		loading
 
 	const disconnectHandler = async (e: React.FormEvent) => {
