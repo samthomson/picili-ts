@@ -2,9 +2,11 @@ import * as Types from '@shared/declarations'
 import * as Models from '../db/models'
 import * as DBUtil from './db'
 import * as CoreUtil from './core'
+import * as FileUtil from './file'
 import fetch from 'node-fetch'
 import Logger from '../services/logging'
 import * as fs from 'fs'
+import FSExtra from 'fs-extra'
 import moment from 'moment'
 
 export const listAllDropboxfiles = async (userId: number): Promise<Types.ShadowDropboxAPIFile[]> => {
@@ -271,9 +273,7 @@ export const downloadDropboxFile = async (
         const access = await exchangeRefreshTokenForAccessToken(token)
 
         const writeDir = 'processing'
-        if (!fs.existsSync(writeDir)) {
-            fs.mkdirSync(writeDir)
-        }
+        await FSExtra.ensureDir(writeDir)
 
         const url = 'https://content.dropboxapi.com/2/files/download'
         const options = {
@@ -287,7 +287,8 @@ export const downloadDropboxFile = async (
 
         switch (result.status) {
             case 200:
-                const fileStream = fs.createWriteStream(`${writeDir}/${uuid}.${fileExtension}`)
+                const outPath = FileUtil.getProcessingPath(uuid, fileExtension)
+                const fileStream = fs.createWriteStream(outPath)
                 await new Promise((resolve, reject) => {
                     result.body.pipe(fileStream)
                     result.body.on('error', reject)

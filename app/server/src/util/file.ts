@@ -114,7 +114,6 @@ export const generateThumbnails = async (
 
     try {
         // ensure uuid dir exists
-        // todo: use this lib/method when creating processing dir
         await FSExtra.ensureDir(outPathDirectory)
 
         const sharpImage = sharp(inPath)
