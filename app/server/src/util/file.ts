@@ -150,7 +150,7 @@ export const generateThumbnails = async (
             exifData,
         }
     } catch (err) {
-        Logger.error('hit error whle thumbnailing: ', { err })
+        Logger.error('hit error while thumbnailing: ', { err })
         return { success: false }
     }
 }
