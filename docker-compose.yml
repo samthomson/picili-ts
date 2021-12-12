@@ -14,6 +14,7 @@ services:
         - LOG_LEVEL=info
         - IMAGGA_KEY=${IMAGGA_KEY}
         - IMAGGA_SECRET=${IMAGGA_SECRET}
+        - API_OPEN_CAGE_KEY=${API_OPEN_CAGE_KEY}
       ports:
         - "3500:3000"
         - "3501:4000"

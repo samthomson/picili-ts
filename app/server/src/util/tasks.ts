@@ -45,10 +45,11 @@ export const processTask = async (taskId: number) => {
                     await DBUtil.postponeTask(task, taskOutcome.retryInHours)
                 }
                 break
+            case Enums.TaskType.ADDRESS_LOOKUP:
+                break
 
             // todo: implement these taggers
             case Enums.TaskType.PROCESS_VIDEO_FILE:
-            case Enums.TaskType.ADDRESS_LOOKUP:
             case Enums.TaskType.ELEVATION_LOOKUP:
             case Enums.TaskType.PLANT_LOOKUP:
             case Enums.TaskType.OCR_GENERIC:
@@ -338,6 +339,24 @@ const createConditionalTasks = async (fileId: number, subjectTags: string[]): Pr
         await DBUtil.createTask({
             taskType: Enums.TaskType.OCR_NUMBERPLATE,
             relatedPiciliFileId: fileId,
+        })
+    }
+}
+
+// todo: correct return type
+export const addressLookup = async (fileId: number): Promise<void> => {
+    const file = await Models.FileModel.findByPk(fileId)
+    const { userId, latitude, longitude } = file
+
+    if (latitude && longitude) {
+        // get address data and save wherever
+        const lookup = await APIUtil.openCage(latitude, longitude)
+        console.log(lookup, { lookup })
+    } else {
+        Logger.warn('no latitude/longitude on file queued for `ADDRESS_LOOKUP`', {
+            userId,
+            latitude,
+            longitude,
         })
     }
 }

@@ -91,3 +91,34 @@ export const imagga = async (largeThumbnailPath: string): Promise<Types.Core.Ima
         }
     }
 }
+
+// todo: type response
+export const openCage = async (latitude: number, longitude: number) => {
+    const apiKey = process.env.API_OPEN_CAGE_KEY
+
+    const url = 'http://api.opencagedata.com/geocode/v1/json'
+    const params = new URLSearchParams()
+    params.append('no_annotations', '1')
+    params.append('q', `${latitude}+${longitude}`)
+    params.append('key', apiKey)
+
+    const options = {
+        method: 'GET',
+        body: params,
+    }
+    // todo: wrap in retry mechanism
+    const result = await fetch(url, options)
+    switch (result.status) {
+        case 200:
+            // todo: type this response
+            const data = await result.json()
+            Logger.info('data', { data })
+            break
+        default:
+            Logger.error('non 200 result from open cage', {
+                status: result.status,
+                location: { latitude, longitude },
+            })
+            break
+    }
+}
