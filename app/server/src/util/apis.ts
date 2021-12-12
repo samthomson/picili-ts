@@ -96,7 +96,7 @@ export const imagga = async (largeThumbnailPath: string): Promise<Types.Core.Ima
 export const openCage = async (latitude: number, longitude: number) => {
     const apiKey = process.env.API_OPEN_CAGE_KEY
 
-    const url = 'http://api.opencagedata.com/geocode/v1/json'
+    const url = 'http://api.opencagedata.com/geocode/v1/json?'
     const params = new URLSearchParams()
     params.append('no_annotations', '1')
     params.append('q', `${latitude}+${longitude}`)
@@ -104,10 +104,9 @@ export const openCage = async (latitude: number, longitude: number) => {
 
     const options = {
         method: 'GET',
-        body: params,
     }
     // todo: wrap in retry mechanism
-    const result = await fetch(url, options)
+    const result = await fetch(url + params, options)
     switch (result.status) {
         case 200:
             // todo: type this response
@@ -118,6 +117,7 @@ export const openCage = async (latitude: number, longitude: number) => {
             Logger.error('non 200 result from open cage', {
                 status: result.status,
                 location: { latitude, longitude },
+                result,
             })
             break
     }
