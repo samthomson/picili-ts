@@ -187,8 +187,8 @@ export const ensureTaskExists = async (taskType: Types.TaskTypeEnum, relatedPici
 
 export const startProcessingATask = async (task: Models.TaskInstance): Promise<void> => {
     task.timesSeen = task.timesSeen + 1
-    // block this task for next 3 mins
-    task.from = moment().add(3, 'minute').toISOString()
+    // block this task for next 2 mins
+    task.from = moment().add(2, 'minute').toISOString()
     await task.save()
 }
 
