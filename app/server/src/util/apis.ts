@@ -1,6 +1,7 @@
 import fs from 'fs'
 import fetch from 'node-fetch'
 import FormData from 'form-data'
+import FSExtra from 'fs-extra'
 
 import * as Types from '@shared/declarations'
 import Logger from '../services/logging'
@@ -10,13 +11,23 @@ export const imagga = async (largeThumbnailPath: string): Promise<Types.Core.Ima
     // try to call the API, retry a couple of times if request fails
     // return tags, or a throttle code
     const retryLimit = 3
-    const retryDelay = 5000
+    const retryDelay = 15000
     let requestAttempts = 0
 
     const url = 'https://api.imagga.com/v2/tags'
     const apiKey = process.env.IMAGGA_KEY
     const apiSecret = process.env.IMAGGA_SECRET
-    const image = fs.createReadStream(largeThumbnailPath)
+
+    if (!FSExtra.pathExistsSync(largeThumbnailPath)) {
+        Logger.error('thumbnail file did not exist', { largeThumbnailPath })
+        return { success: false }
+    }
+    // const image = fs.createReadStream(largeThumbnailPath)
+    const image = fs.readFileSync(largeThumbnailPath)
+    if (image.length === 0) {
+        Logger.error("image buffer is empty, can't send to imagga api", { largeThumbnailPath })
+        return { success: false }
+    }
 
     const formData = new FormData()
     formData.append('image', image)
@@ -40,8 +51,26 @@ export const imagga = async (largeThumbnailPath: string): Promise<Types.Core.Ima
                         success: true,
                         tags: data?.result?.tags ?? [],
                     }
+
+                // todo: remove once I solve the mystery empty image buffer problem
+                case 400:
+                    const failedCall = await result.json()
+                    const ImaggaError = failedCall?.status?.text ?? '[no error text found]'
+
+                    Logger.error('400 result from imagga', {
+                        error: ImaggaError,
+                    })
+                    return {
+                        success: false,
+                        // requeueDelay: 24,
+                    }
+
                 default:
-                    Logger.error('non 200 result from imagga', { status: result.status, largeThumbnailPath })
+                    Logger.error('non 200 result from imagga', {
+                        status: result.status,
+                        largeThumbnailPath,
+                        error: result?.status?.text ?? '[no error text found]',
+                    })
                     // an error that should be handled programmatically, requeue for one day so that the daily email picks it up as a task seen multiple times
                     return {
                         success: false,
