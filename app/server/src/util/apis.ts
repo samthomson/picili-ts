@@ -74,7 +74,7 @@ export const imagga = async (largeThumbnailPath: string): Promise<Types.Core.Ima
                     // an error that should be handled programmatically, requeue for one day so that the daily email picks it up as a task seen multiple times
                     return {
                         success: false,
-                        requeueDelay: 24,
+                        requeueDelay: 24 * 60,
                     }
             }
         } catch (err) {
@@ -85,21 +85,21 @@ export const imagga = async (largeThumbnailPath: string): Promise<Types.Core.Ima
                 Logger.warn(`hit exception calling imagga api #${retryLimit} times in a row.`)
                 return {
                     success: false,
-                    requeueDelay: 1,
+                    requeueDelay: 1 * 60,
                 }
             }
         }
     }
 }
 
-// todo: type response
-export const openCage = async (latitude: number, longitude: number) => {
-    const apiKey = process.env.API_OPEN_CAGE_KEY
+export const locationIQ = async (latitude: number, longitude: number): Promise<Types.Core.LocationIQTaggingResult> => {
+    const apiKey = process.env.API_LOCATION_IQ_KEY
 
-    const url = 'http://api.opencagedata.com/geocode/v1/json?'
+    const url = 'https://eu1.locationiq.com/v1/reverse.php?'
     const params = new URLSearchParams()
-    params.append('no_annotations', '1')
-    params.append('q', `${latitude}+${longitude}`)
+    params.append('format', 'json')
+    params.append('lat', String(latitude))
+    params.append('lon', String(longitude))
     params.append('key', apiKey)
 
     const options = {
@@ -109,12 +109,25 @@ export const openCage = async (latitude: number, longitude: number) => {
     const result = await fetch(url + params, options)
     switch (result.status) {
         case 200:
-            // todo: type this response
-            const data = await result.json()
-            Logger.info('data', { data })
+            const data: Types.ExternalAPI.LocationIQ.ReverseGeocodeResponse = await result.json()
+            return { success: true, data }
+            break
+        case 429:
+            const error = await result.json()
+            const errorText = error?.error
+            switch (errorText) {
+                case 'Rate Limited Second':
+                case 'Rate Limited Minute':
+                    return { success: false, requeueDelayMinutes: 1 }
+                    break
+                case 'Rate Limited Day':
+                    return { success: false, requeueDelayMinutes: 60 * 24 }
+                    break
+            }
+
             break
         default:
-            Logger.error('non 200 result from open cage', {
+            Logger.error('non 200 result from location iq', {
                 status: result.status,
                 location: { latitude, longitude },
                 result,

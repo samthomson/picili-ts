@@ -194,8 +194,8 @@ export const startProcessingATask = async (task: Models.TaskInstance): Promise<v
     await task.save()
 }
 
-export const postponeTask = async (task: Models.TaskInstance, delayByHours: number): Promise<void> => {
-    task.from = moment().add(delayByHours, 'hour').toISOString()
+export const postponeTask = async (task: Models.TaskInstance, delayByMinutes: number): Promise<void> => {
+    task.from = moment().add(delayByMinutes, 'minute').toISOString()
     await task.save()
 }
 

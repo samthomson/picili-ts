@@ -40,12 +40,18 @@ export const processTask = async (taskId: number) => {
             case Enums.TaskType.SUBJECT_DETECTION:
                 const taskOutcome = await subjectDetection(task.relatedPiciliFileId)
                 success = taskOutcome.success
-                if (!taskOutcome.success) {
+                if (!success) {
                     // requeue the task
-                    await DBUtil.postponeTask(task, taskOutcome.retryInHours)
+                    await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
                 }
                 break
             case Enums.TaskType.ADDRESS_LOOKUP:
+                const geocodeTaskOutcome = await addressLookup(task.relatedPiciliFileId)
+                success = geocodeTaskOutcome.success
+                if (!success) {
+                    // requeue the task
+                    await DBUtil.postponeTask(task, geocodeTaskOutcome.retryInMinutes)
+                }
                 break
 
             // todo: implement these taggers
@@ -310,7 +316,7 @@ export const subjectDetection = async (fileId: number): Promise<Types.Core.TaskP
         return { success: true }
     } else {
         // either the api returned a non-200 response, or we encountered successive exceptions while attempting to reach it. requeue the task accordingly.
-        return { success: false, retryInHours: imaggaTaggingResult.requeueDelay }
+        return { success: false, retryInMinutes: imaggaTaggingResult.requeueDelay }
     }
 }
 
@@ -344,19 +350,45 @@ const createConditionalTasks = async (fileId: number, subjectTags: string[]): Pr
 }
 
 // todo: correct return type
-export const addressLookup = async (fileId: number): Promise<void> => {
+export const addressLookup = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
     const file = await Models.FileModel.findByPk(fileId)
     const { userId, latitude, longitude } = file
 
     if (latitude && longitude) {
         // get address data and save wherever
-        const lookup = await APIUtil.openCage(latitude, longitude)
-        console.log(lookup, { lookup })
+        const lookup = await APIUtil.locationIQ(latitude, longitude)
+
+        if (lookup.success) {
+            const formattedAddress = lookup.data.display_name
+            file.address = formattedAddress
+            await file.save()
+
+            const newLocationTags: Types.Core.Inputs.CreateTagInput[] = []
+            const addressParts = lookup.data.address
+            Object.keys(addressParts).forEach((key) => {
+                const value = addressParts[key]
+                newLocationTags.push({
+                    fileId,
+                    type: 'location',
+                    subtype: key,
+                    value,
+                    confidence: 75,
+                })
+            })
+            if (newLocationTags.length > 0) {
+                await DBUtil.createMultipleTags(newLocationTags)
+            }
+        } else {
+            // requeue ?
+            return { success: false, retryInMinutes: lookup.requeueDelayMinutes }
+        }
     } else {
         Logger.warn('no latitude/longitude on file queued for `ADDRESS_LOOKUP`', {
             userId,
             latitude,
             longitude,
         })
+        // not really a success, but the correct outcome as geocoding can't happen without a lat/lon
+        return { success: true }
     }
 }

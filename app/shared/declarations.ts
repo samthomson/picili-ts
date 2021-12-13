@@ -3,38 +3,38 @@ import * as Enums from './enums'
 
 export namespace API {
 	export namespace Response {
-        export type Auth = {
-            token?: string
-            error?: string
-        }
-    }
+		export type Auth = {
+			token?: string
+			error?: string
+		}
+	}
 	export interface DropboxConnection {
 		syncPath: string
 		syncEnabled: boolean
 	}
 
 	export type TaskQueue = {
-        type: string
-        count: number
+		type: string
+		count: number
 	}
 	type TasksProcessable = {
-        total: number
-        actionable: number
-        queues: TaskQueue[]
+		total: number
+		actionable: number
+		queues: TaskQueue[]
 	}
 
 	export type TasksProcessedSummary = {
-        date: string // date
-        count: number
+		date: string // date
+		count: number
 	}
 	type TasksProcessed = {
-        recent: TasksProcessedSummary[]
+		recent: TasksProcessedSummary[]
 	}
-	
+
 	export interface TaskSummary {
 		oldest: string // date
-        processable: TasksProcessable
-        processed: TasksProcessed
+		processable: TasksProcessable
+		processed: TasksProcessed
 	}
 }
 
@@ -74,6 +74,19 @@ export namespace ExternalAPI {
 			result: {
 				tags: Tag[]
 			}
+		}
+	}
+	export namespace LocationIQ {
+		export type ReverseGeocodeResponse = {
+			address: {
+				// country: string,
+				// country_code: string,
+				// road: string,
+				// state: string,
+				// village: string
+				[key: string]: string
+			},
+			display_name: string
 		}
 	}
 }
@@ -150,7 +163,7 @@ export namespace Core {
 		lensModel?: string
 		orientation?: number
 		exposureTime?: number
-		aperture?: number 
+		aperture?: number
 		ISO?: number
 		focalLength?: number
 
@@ -162,12 +175,19 @@ export namespace Core {
 	export type ImaggaTaggingResult = {
 		success: boolean
 		tags?: ExternalAPI.Imagga.Tag[]
+		// todo: rename this to append hours?
 		requeueDelay?: number // number of hours to requeue the task for
+	}
+
+	export type LocationIQTaggingResult = {
+		success: boolean
+		data?: ExternalAPI.LocationIQ.ReverseGeocodeResponse
+		requeueDelayMinutes?: number
 	}
 
 	export type TaskProcessorResult = {
 		success: boolean
-		retryInHours?: number
+		retryInMinutes?: number
 	}
 }
 

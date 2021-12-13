@@ -55,6 +55,13 @@ const geo = async () => {
     await TasksUtil.addressLookup(1)
 }
 
+const geoThrottleTest = async () => {
+    for (let i = 0; i < 10; i++) {
+        APIUtil.locationIQ(42.3744547256523, -84.33708411917792)
+    }
+}
+
 // file()
 // imaggaTest()
-geo()
+// geo()
+geoThrottleTest()
