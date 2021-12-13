@@ -398,6 +398,7 @@ export const addressLookup = async (fileId: number): Promise<Types.Core.TaskProc
             if (newLocationTags.length > 0) {
                 await DBUtil.createMultipleTags(newLocationTags)
             }
+            return { success: true }
         } else {
             // requeue ?
             return { success: false, retryInMinutes: lookup.requeueDelayMinutes }
