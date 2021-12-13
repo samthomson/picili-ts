@@ -251,13 +251,17 @@ export const processImage = async (fileId: number): Promise<boolean> => {
         }
 
         let updatedAgain = false
+        let hasLatitude = false
+        let hasLongitude = false
         if (exifData?.latitude && exifData.latitude >= -90 && exifData?.latitude <= 90) {
             file.latitude = exifData.latitude
             updatedAgain = true
+            hasLatitude = true
         }
         if (exifData?.longitude && exifData.longitude >= -180 && exifData?.longitude <= 180) {
             file.longitude = exifData.longitude
             updatedAgain = true
+            hasLongitude = true
         }
         if (exifData?.altitude) {
             file.elevation = exifData.altitude
@@ -269,6 +273,22 @@ export const processImage = async (fileId: number): Promise<boolean> => {
         }
         if (updatedAgain) {
             await file.save()
+        }
+
+        // conditional queueing
+        // if lat & lon - queue for reverse geocoding
+        if (hasLatitude && hasLongitude) {
+            await DBUtil.createTask({
+                taskType: Enums.TaskType.ADDRESS_LOOKUP,
+                relatedPiciliFileId: fileId,
+            })
+            // if also missing elevation, queue for elevation lookup
+            if (!file.elevation) {
+                await DBUtil.createTask({
+                    taskType: Enums.TaskType.ELEVATION_LOOKUP,
+                    relatedPiciliFileId: fileId,
+                })
+            }
         }
 
         return true
