@@ -105,33 +105,53 @@ export const locationIQ = async (latitude: number, longitude: number): Promise<T
     const options = {
         method: 'GET',
     }
-    // todo: wrap in retry mechanism
-    const result = await fetch(url + params, options)
-    switch (result.status) {
-        case 200:
-            const data: Types.ExternalAPI.LocationIQ.ReverseGeocodeResponse = await result.json()
-            return { success: true, data }
-            break
-        case 429:
-            const error = await result.json()
-            const errorText = error?.error
-            switch (errorText) {
-                case 'Rate Limited Second':
-                case 'Rate Limited Minute':
-                    return { success: false, requeueDelayMinutes: 1 }
+
+    const retryLimit = 3
+    const retryDelay = 15000
+    let requestAttempts = 0
+
+    while (requestAttempts < retryLimit) {
+        requestAttempts++
+        try {
+            const result = await fetch(url + params, options)
+            switch (result.status) {
+                case 200:
+                    const data: Types.ExternalAPI.LocationIQ.ReverseGeocodeResponse = await result.json()
+                    return { success: true, data }
                     break
-                case 'Rate Limited Day':
-                    return { success: false, requeueDelayMinutes: 60 * 24 }
+                case 429:
+                    const error = await result.json()
+                    const errorText = error?.error
+                    switch (errorText) {
+                        case 'Rate Limited Second':
+                        case 'Rate Limited Minute':
+                            return { success: false, requeueDelayMinutes: 1 }
+                            break
+                        case 'Rate Limited Day':
+                            return { success: false, requeueDelayMinutes: 60 * 24 }
+                            break
+                    }
+
+                    break
+                default:
+                    Logger.error('non 200 result from location iq', {
+                        status: result.status,
+                        location: { latitude, longitude },
+                        result,
+                    })
                     break
             }
-
-            break
-        default:
-            Logger.error('non 200 result from location iq', {
-                status: result.status,
-                location: { latitude, longitude },
-                result,
-            })
-            break
+        } catch (err) {
+            Logger.warn('unexpected exception when calling imagga API', { err })
+            if (requestAttempts < retryLimit) {
+                await HelperUtil.delay(retryDelay)
+            } else {
+                Logger.warn(`hit exception calling imagga api #${retryLimit} times in a row.`)
+                return {
+                    success: false,
+                    requeueDelayMinutes: 1 * 60,
+                }
+            }
+        }
     }
 }
