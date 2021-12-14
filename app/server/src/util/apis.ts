@@ -284,7 +284,107 @@ export const ocrGeneric = async (largeThumbnailPath: string): Promise<Types.Core
 }
 
 // todo: type this response
-export const ocrNumberplate = async () => { }
+export const ocrNumberplate = async (largeThumbnailPath: string): Promise<Types.Core.OCRNumberPlateResult> => {
+    const retryLimit = 3
+    const retryDelay = 15000
+    let requestAttempts = 0
+
+    const url = 'https://api.platerecognizer.com/v1/plate-reader'
+    const apiKey = process.env.API_PLATE_RECOGNIZER
+
+    if (!FSExtra.pathExistsSync(largeThumbnailPath)) {
+        Logger.error('thumbnail file did not exist', { largeThumbnailPath })
+        return { success: false }
+    }
+    const image = fs.readFileSync(largeThumbnailPath)
+    if (image.length === 0) {
+        Logger.error("image buffer is empty, can't send to ocr numberplate api", { largeThumbnailPath })
+        return { success: false }
+    }
+    const base64EncodedFile = Buffer.from(image).toString('base64')
+
+    const formData = new FormData()
+    formData.append('upload', base64EncodedFile)
+
+    const options = {
+        method: 'POST',
+        body: formData,
+        headers: {
+            Authorization: `Token ${apiKey}`,
+        },
+    }
+
+    while (requestAttempts < retryLimit) {
+        requestAttempts++
+        try {
+            const result = await fetch(url, options)
+            switch (result.status) {
+                case 201:
+                    const data: Types.ExternalAPI.PlateRecognizer.PlateRecognizerResponse = await result.json()
+                    const bestResult = data?.results?.[0] ?? undefined
+
+                    const numberPlateData =
+                        bestResult?.region?.code &&
+                            bestResult?.region?.score &&
+                            bestResult?.candidates?.[0]?.plate &&
+                            bestResult?.candidates?.[0]?.score &&
+                            bestResult?.vehicle?.type &&
+                            bestResult?.vehicle?.score
+                            ? {
+                                region: {
+                                    code: bestResult.region.code,
+                                    score: bestResult.region.score,
+                                },
+                                candidates: {
+                                    plate: bestResult.candidates[0].plate,
+                                    score: bestResult.candidates[0].score,
+                                },
+                                vehicle: {
+                                    type: bestResult.vehicle.type,
+                                    score: bestResult.vehicle.score,
+                                },
+                            }
+                            : undefined
+
+                    return {
+                        success: true,
+                        numberPlateData,
+                    }
+
+                case 429:
+                    // throttled
+                    return {
+                        success: false,
+                        requeueDelayMinutes: 24 * 60,
+                    }
+
+                default:
+                    Logger.error('non 200 result from ocr numberplate', {
+                        status: result.status,
+                        largeThumbnailPath,
+                        result,
+                        error: result?.status ?? '[no error parsed]',
+                    })
+                    // an error that should be handled programmatically, requeue for one day so that the daily email picks it up as a task seen multiple times
+                    return {
+                        success: false,
+                        requeueDelayMinutes: 24 * 60,
+                    }
+            }
+        } catch (err) {
+            Logger.warn('unexpected exception when calling ocr numberplate API', { err })
+            if (requestAttempts < retryLimit) {
+                await HelperUtil.delay(retryDelay)
+            } else {
+                Logger.warn(`hit exception calling ocr numberplate api #${retryLimit} times in a row.`)
+                return {
+                    success: false,
+                    requeueDelayMinutes: 1 * 60,
+                }
+            }
+        }
+    }
+}
 
 // todo: type this response
 export const plantLookup = async () => { }

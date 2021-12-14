@@ -114,6 +114,27 @@ export namespace ExternalAPI {
 			ErrorDetails: string
 		}
 	}
+
+	export namespace PlateRecognizer {
+		export type PlateRecognizerResult = {
+			region: {
+				code: string
+				score: number
+			}
+			candidates: {
+				plate: string
+				score: number
+			}
+			vehicle: {
+				type: string
+				score: number
+			}
+		}
+
+		export type PlateRecognizerResponse = {
+			results: PlateRecognizerResult[]
+		}
+	}
 }
 
 export interface ShadowDropboxAPIFile {
@@ -219,6 +240,12 @@ export namespace Core {
 	export type OCRGenericResult = {
 		success: boolean
 		parsedText?: string
+		requeueDelayMinutes?: number
+	}
+
+	export type OCRNumberPlateResult = {
+		success: boolean
+		numberPlateData?: ExternalAPI.PlateRecognizer.PlateRecognizerResult
 		requeueDelayMinutes?: number
 	}
 
