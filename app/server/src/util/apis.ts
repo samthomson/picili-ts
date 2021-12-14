@@ -385,5 +385,105 @@ export const ocrNumberplate = async (largeThumbnailPath: string): Promise<Types.
     }
 }
 
-// todo: type this response
-export const plantLookup = async () => { }
+export const plantLookup = async (thumbnail: string): Promise<Types.Core.PlantNetLookupResult> => {
+    const retryLimit = 3
+    const retryDelay = 15000
+    let requestAttempts = 0
+
+    const apiKey = process.env.API_PLANT_NET_KEY
+    const url = `https://my-api.plantnet.org/v2/identify/all?api-key=${apiKey}`
+
+    if (!FSExtra.pathExistsSync(thumbnail)) {
+        Logger.error('thumbnail file did not exist', { thumbnail })
+        return { success: false }
+    }
+    const image = fs.createReadStream(thumbnail)
+
+    const formData = new FormData()
+    formData.append('organs', 'flower')
+    formData.append('images', image)
+
+    const options = {
+        method: 'POST',
+        body: formData,
+        headers: formData.getHeaders(),
+    }
+
+    while (requestAttempts < retryLimit) {
+        requestAttempts++
+        try {
+            const result = await fetch(url, options)
+            switch (result.status) {
+                case 200:
+                    const data: Types.ExternalAPI.PlantNet.PlantNetResponse = await result.json()
+                    let plantData = undefined
+
+                    if (data.results?.[0]) {
+                        const bestResult = data.results[0]
+
+                        const {
+                            score,
+                            gbif: { id: gbifId },
+                        } = bestResult
+
+                        const scientificName = bestResult.species.scientificNameWithoutAuthor
+                        const genus = bestResult.species.genus.scientificNameWithoutAuthor
+                        const family = bestResult.species.family.scientificNameWithoutAuthor
+                        const commonNames = bestResult.species.commonNames
+
+                        plantData = {
+                            score,
+                            scientificName,
+                            genus,
+                            family,
+                            commonNames,
+                            gbif: gbifId,
+                        }
+                    }
+
+                    return {
+                        success: true,
+                        plantData,
+                    }
+
+                case 404:
+                    // api call was successful but api found no plants
+                    return {
+                        success: true,
+                        plantData: undefined,
+                    }
+                    break
+                case 429:
+                    // throttled
+                    return {
+                        success: false,
+                        requeueDelayMinutes: 24 * 60,
+                    }
+
+                default:
+                    Logger.error('non 200 result from plant net', {
+                        status: result.status,
+                        thumbnail,
+                        result,
+                        error: result?.statusText ?? '[no error parsed]',
+                    })
+                    // an error that should be handled programmatically, requeue for one day so that the daily email picks it up as a task seen multiple times
+                    return {
+                        success: false,
+                        requeueDelayMinutes: 24 * 60,
+                    }
+            }
+        } catch (err) {
+            Logger.warn('unexpected exception when calling plant net API', { err })
+            if (requestAttempts < retryLimit) {
+                await HelperUtil.delay(retryDelay)
+            } else {
+                Logger.warn(`hit exception calling plant net api #${retryLimit} times in a row.`)
+                return {
+                    success: false,
+                    requeueDelayMinutes: 1 * 60,
+                }
+            }
+        }
+    }
+}

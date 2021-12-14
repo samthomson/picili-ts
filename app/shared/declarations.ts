@@ -135,8 +135,36 @@ export namespace ExternalAPI {
 			results: PlateRecognizerResult[]
 		}
 	}
-}
 
+	export namespace PlantNet {
+		export type PlantNetResult = {
+			score: number,
+			species: {
+				scientificNameWithoutAuthor: string,
+				scientificNameAuthorship: string,
+				scientificName: string,
+				genus: {
+					scientificNameWithoutAuthor: string,
+					scientificNameAuthorship: string,
+					scientificName: string
+				},
+				family: {
+					scientificNameWithoutAuthor: string,
+					scientificNameAuthorship: string,
+					scientificName: string
+				},
+				commonNames: string[]
+			},
+			gbif: {
+				id: string
+			}
+		}
+
+		export type PlantNetResponse = {
+			results: PlantNetResult[]
+		}
+	}
+}
 export interface ShadowDropboxAPIFile {
 	id: string // external dropbox id
 	path: string
@@ -246,6 +274,21 @@ export namespace Core {
 	export type OCRNumberPlateResult = {
 		success: boolean
 		numberPlateData?: ExternalAPI.PlateRecognizer.PlateRecognizerResult
+		requeueDelayMinutes?: number
+	}
+
+	export type PlantNetResult = {
+		score: number
+		scientificName: string
+		genus: string
+		family: string
+		commonNames: string[]
+		gbif: string
+	}
+
+	export type PlantNetLookupResult = {
+		success: boolean
+		plantData?: PlantNetResult
 		requeueDelayMinutes?: number
 	}
 
