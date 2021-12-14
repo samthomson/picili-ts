@@ -287,8 +287,8 @@ export const createFile = async (fileCreationParams: Types.Core.Inputs.CreateFil
 }
 
 export const createTag = async (tagCreationParams: Types.Core.Inputs.CreateTagInput): Promise<number> => {
-    const newTag = await Models.TagModel.create(tagCreationParams)
-    return newTag.id
+    const newTag = await Models.TagModel.upsert(tagCreationParams)
+    return newTag[0].id
 }
 
 export const createMultipleTags = async (tagCreationParams: Types.Core.Inputs.CreateTagInput[]): Promise<boolean> => {
