@@ -283,7 +283,6 @@ export const ocrGeneric = async (largeThumbnailPath: string): Promise<Types.Core
     }
 }
 
-// todo: type this response
 export const ocrNumberplate = async (largeThumbnailPath: string): Promise<Types.Core.OCRNumberPlateResult> => {
     const retryLimit = 3
     const retryDelay = 15000
