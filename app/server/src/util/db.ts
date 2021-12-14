@@ -161,12 +161,12 @@ export const updateSyncLog = async (
 export const createTask = async (createTaskInput: Types.Core.Inputs.CreateTaskInput): Promise<number> => {
     // use overloaded priority or standard priority for that task type
     const priority = createTaskInput?.priority ?? TasksUtil.taskTypeToPriority(createTaskInput.taskType)
-    const newTask = await Models.TaskModel.create({
+    const newTask = await Models.TaskModel.upsert({
         ...createTaskInput,
         priority,
     })
 
-    return newTask.id
+    return newTask[0].id
 }
 
 export const ensureTaskExists = async (taskType: Types.TaskTypeEnum, relatedPiciliFileId: number): Promise<void> => {

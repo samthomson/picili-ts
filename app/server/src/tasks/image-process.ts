@@ -1,8 +1,11 @@
+import * as Types from '@shared/declarations'
 import * as TasksUtil from '../util/tasks'
 import * as FileUtil from '../util/file'
 import * as APIUtil from '../util/apis'
+import * as DBUtil from '../util/db'
 import * as Models from '../db/models'
 import Logger from '../services/logging'
+import * as Enums from '../../../shared/enums'
 
 const file = async () => {
     // await TasksUtil.fileImport(1)
@@ -61,7 +64,20 @@ const geoThrottleTest = async () => {
     }
 }
 
+const dupTagTest = async () => {
+    const dupTasks: Types.Core.Inputs.CreateTaskInput[] = [
+        {
+            taskType: Enums.TaskType.ADDRESS_LOOKUP,
+            relatedPiciliFileId: 1,
+            importTask: true,
+        },
+    ]
+
+    await DBUtil.createTask(dupTasks[0])
+}
+
 // file()
 // imaggaTest()
 // geo()
-geoThrottleTest()
+// geoThrottleTest()
+dupTagTest()
