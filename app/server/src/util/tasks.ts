@@ -369,7 +369,6 @@ const createConditionalTasks = async (fileId: number, subjectTags: string[]): Pr
     }
 }
 
-// todo: correct return type
 export const addressLookup = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
     const file = await Models.FileModel.findByPk(fileId)
     const { userId, latitude, longitude } = file
