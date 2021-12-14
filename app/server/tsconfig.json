@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"lib": [
 			"dom",
-			"ES2015"
+			"ES2021"
 		],
 		"downlevelIteration": true,
 		"esModuleInterop": true,
@@ -10,7 +10,9 @@
 		"target": "ES5",
 		"noEmit": true,
 		"paths": {
-			"@shared/*": ["../shared/*"]
+			"@shared/*": [
+				"../shared/*"
+			]
 		},
-  	}
+	}
 }
