@@ -89,6 +89,17 @@ export namespace ExternalAPI {
 			display_name: string
 		}
 	}
+
+	export namespace GoogleElevation {
+		type GoogleElevationResult = {
+			elevation: number
+		}
+
+		export type GoogleElevationResponse = {
+			results: GoogleElevationResult[]
+			status: string
+		}
+	}
 }
 
 export interface ShadowDropboxAPIFile {
@@ -182,6 +193,12 @@ export namespace Core {
 	export type LocationIQTaggingResult = {
 		success: boolean
 		data?: ExternalAPI.LocationIQ.ReverseGeocodeResponse
+		requeueDelayMinutes?: number
+	}
+
+	export type ElevationLookupResult = {
+		success: boolean
+		elevation?: number
 		requeueDelayMinutes?: number
 	}
 

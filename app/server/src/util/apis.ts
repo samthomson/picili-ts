@@ -142,11 +142,66 @@ export const locationIQ = async (latitude: number, longitude: number): Promise<T
                     break
             }
         } catch (err) {
-            Logger.warn('unexpected exception when calling imagga API', { err })
+            Logger.warn('unexpected exception when calling location iq API', { err })
             if (requestAttempts < retryLimit) {
                 await HelperUtil.delay(retryDelay)
             } else {
-                Logger.warn(`hit exception calling imagga api #${retryLimit} times in a row.`)
+                Logger.warn(`hit exception calling location iq api #${retryLimit} times in a row.`)
+                // try again in an hour
+                return {
+                    success: false,
+                    requeueDelayMinutes: 1 * 60,
+                }
+            }
+        }
+    }
+}
+
+export const googleElevationLookup = async (
+    latitude: number,
+    longitude: number,
+): Promise<Types.Core.ElevationLookupResult> => {
+    const apiKey = process.env.API_GOOGLE_ELEVATION_KEY
+
+    const url = `https://maps.googleapis.com/maps/api/elevation/json?locations=${latitude},${longitude}&key=${apiKey}`
+
+    const options = {
+        method: 'GET',
+    }
+
+    const retryLimit = 3
+    const retryDelay = 15000
+    let requestAttempts = 0
+
+    while (requestAttempts < retryLimit) {
+        requestAttempts++
+        try {
+            const result = await fetch(url, options)
+            switch (result.status) {
+                case 200:
+                    const data: Types.ExternalAPI.GoogleElevation.GoogleElevationResponse = await result.json()
+                    const { elevation } = data.results[0]
+                    return { success: true, elevation }
+                    break
+                case 403:
+                    // throttled, wait a day/24hr
+                    return { success: false, requeueDelayMinutes: 60 * 24 }
+                    break
+                default:
+                    Logger.error('non 200 result from google elevation', {
+                        status: result.status,
+                        location: { latitude, longitude },
+                        result,
+                    })
+                    break
+            }
+        } catch (err) {
+            Logger.warn('unexpected exception when calling google elevation API', { err })
+            if (requestAttempts < retryLimit) {
+                await HelperUtil.delay(retryDelay)
+            } else {
+                Logger.warn(`hit exception calling google elevation api #${retryLimit} times in a row.`)
+                // try again in an hour
                 return {
                     success: false,
                     requeueDelayMinutes: 1 * 60,

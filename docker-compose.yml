@@ -1,30 +1,37 @@
 version: "2"
 services:
   app:
-      build: ./
-      command: [sh, -c, "cd /app/server && yarn run watch-server & cd /app/spa && yarn run start"]
-      environment:
-        - DROPBOX_APP_KEY=${DROPBOX_APP_KEY}
-        - DROPBOX_APP_SECRET=${DROPBOX_APP_SECRET}
-        - JWT_COOKIE_SECRET=${JWT_COOKIE_SECRET}
-        - MYSQL_DATABASE=${MYSQL_DATABASE}
-        - MYSQL_DATABASE_TESTING=${MYSQL_DATABASE_TESTING}
-        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-        - NODE_ENV=development
-        - LOG_LEVEL=info
-        - IMAGGA_KEY=${IMAGGA_KEY}
-        - IMAGGA_SECRET=${IMAGGA_SECRET}
-        - API_LOCATION_IQ_KEY=${API_LOCATION_IQ_KEY}
-      ports:
-        - "3500:3000"
-        - "3501:4000"
-      volumes:
-        - ./app:/app
-      expose:
-        - "3500"
-        - "3501"
-      depends_on:
-        - mysql
+    build: ./
+    command:
+      [
+        sh,
+        -c,
+        "cd /app/server && yarn run watch-server & cd /app/spa && yarn run
+          start"
+      ]
+    environment:
+      - DROPBOX_APP_KEY=${DROPBOX_APP_KEY}
+      - DROPBOX_APP_SECRET=${DROPBOX_APP_SECRET}
+      - JWT_COOKIE_SECRET=${JWT_COOKIE_SECRET}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_DATABASE_TESTING=${MYSQL_DATABASE_TESTING}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - NODE_ENV=development
+      - LOG_LEVEL=info
+      - IMAGGA_KEY=${IMAGGA_KEY}
+      - IMAGGA_SECRET=${IMAGGA_SECRET}
+      - API_LOCATION_IQ_KEY=${API_LOCATION_IQ_KEY}
+      - API_GOOGLE_ELEVATION_KEY=${API_GOOGLE_ELEVATION_KEY}
+    ports:
+      - "3500:3000"
+      - "3501:4000"
+    volumes:
+      - ./app:/app
+    expose:
+      - "3500"
+      - "3501"
+    depends_on:
+      - mysql
 
   mysql:
     image: mysql:5.7
@@ -47,7 +54,7 @@ services:
       - UPLOAD_LIMIT=2G
     ports:
       - "8083:80"
-    expose: 
+    expose:
       - "80"
     volumes:
       - /sessions
