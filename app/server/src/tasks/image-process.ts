@@ -82,7 +82,7 @@ const apiTest = async () => {
     console.log(apiResult)
 }
 const taskTest = async () => {
-    const apiResult = await TasksUtil.ocrNumberplate(7)
+    const apiResult = await TasksUtil.plantLookup(14)
     // console.log(apiResult)
 }
 
@@ -92,4 +92,4 @@ const taskTest = async () => {
 // geoThrottleTest()
 // dupTagTest()
 // elevationLookup()
-apiTest()
+taskTest()
