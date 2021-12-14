@@ -210,3 +210,81 @@ export const googleElevationLookup = async (
         }
     }
 }
+
+export const ocrGeneric = async (largeThumbnailPath: string): Promise<Types.Core.OCRGenericResult> => {
+    const retryLimit = 3
+    const retryDelay = 15000
+    let requestAttempts = 0
+
+    const url = 'https://api.ocr.space/parse/image'
+    const apiKey = process.env.API_OCR_SPACE_KEY
+
+    if (!FSExtra.pathExistsSync(largeThumbnailPath)) {
+        Logger.error('thumbnail file did not exist', { largeThumbnailPath })
+        return { success: false }
+    }
+    const image = fs.readFileSync(largeThumbnailPath)
+    if (image.length === 0) {
+        Logger.error("image buffer is empty, can't send to ocr generic api", { largeThumbnailPath })
+        return { success: false }
+    }
+    const base64EncodedFile = Buffer.from(image).toString('base64')
+    const base64Image = `data:image/jpg;base64,${base64EncodedFile}`
+
+    const formData = new FormData()
+    formData.append('base64image', base64Image)
+    formData.append('apikey', apiKey)
+    formData.append('OCREngine', 2)
+
+    const options = {
+        method: 'POST',
+        body: formData,
+    }
+
+    while (requestAttempts < retryLimit) {
+        requestAttempts++
+        try {
+            const result = await fetch(url, options)
+            switch (result.status) {
+                case 200:
+                    const data: Types.ExternalAPI.OCRSpace.OCRSpaceResponse = await result.json()
+                    const parsedText = data?.ParsedResults?.[0]?.ParsedText ?? ''
+
+                    return {
+                        success: true,
+                        parsedText,
+                    }
+
+                default:
+                    Logger.error('non 200 result from ocr generic', {
+                        status: result.status,
+                        largeThumbnailPath,
+                        error: `${result?.ErrorMessage ?? '[no error message]'}: ${result?.ErrorDetails ?? '[no error details]'
+                            }`,
+                    })
+                    // an error that should be handled programmatically, requeue for one day so that the daily email picks it up as a task seen multiple times
+                    return {
+                        success: false,
+                        requeueDelayMinutes: 24 * 60,
+                    }
+            }
+        } catch (err) {
+            Logger.warn('unexpected exception when calling ocr generic API', { err })
+            if (requestAttempts < retryLimit) {
+                await HelperUtil.delay(retryDelay)
+            } else {
+                Logger.warn(`hit exception calling ocr generic api #${retryLimit} times in a row.`)
+                return {
+                    success: false,
+                    requeueDelayMinutes: 1 * 60,
+                }
+            }
+        }
+    }
+}
+
+// todo: type this response
+export const ocrNumberplate = async () => { }
+
+// todo: type this response
+export const plantLookup = async () => { }

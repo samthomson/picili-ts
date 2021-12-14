@@ -76,8 +76,13 @@ const dupTagTest = async () => {
     await DBUtil.createTask(dupTasks[0])
 }
 
-const elevationLookup = async () => {
-    const apiResult = await TasksUtil.elevationLookup(1)
+const apiTest = async () => {
+    const largeThumbPath = FileUtil.thumbPath(3, '756c5741-6f9b-413d-ad9f-8ea589bd467a', 'xl')
+    const apiResult = await APIUtil.ocrGeneric(largeThumbPath)
+    console.log(apiResult)
+}
+const taskTest = async () => {
+    const apiResult = await TasksUtil.ocrGeneric(1)
     console.log(apiResult)
 }
 
@@ -86,4 +91,5 @@ const elevationLookup = async () => {
 // geo()
 // geoThrottleTest()
 // dupTagTest()
-elevationLookup()
+// elevationLookup()
+taskTest()

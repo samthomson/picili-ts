@@ -61,11 +61,18 @@ export const processTask = async (taskId: number) => {
                     await DBUtil.postponeTask(task, elevationLookupTaskOutcome.retryInMinutes)
                 }
                 break
+            case Enums.TaskType.OCR_GENERIC:
+                const ocrGenericTaskOutcome = await ocrGeneric(task.relatedPiciliFileId)
+                success = ocrGenericTaskOutcome.success
+                if (!success) {
+                    // requeue the task
+                    await DBUtil.postponeTask(task, ocrGenericTaskOutcome.retryInMinutes)
+                }
+                break
 
             // todo: implement these taggers
             case Enums.TaskType.PROCESS_VIDEO_FILE:
             case Enums.TaskType.PLANT_LOOKUP:
-            case Enums.TaskType.OCR_GENERIC:
             case Enums.TaskType.OCR_NUMBERPLATE:
                 success = false
                 Logger.info('to implement', { taskType })
@@ -448,3 +455,47 @@ export const elevationLookup = async (fileId: number): Promise<Types.Core.TaskPr
         return { success: true }
     }
 }
+
+export const ocrGeneric = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
+    const file = await Models.FileModel.findByPk(fileId)
+    const { userId, uuid } = file
+    const thumbPath = FileUtil.thumbPath(userId, uuid, 'xl')
+
+    const ocrResult = await APIUtil.ocrGeneric(thumbPath)
+
+    if (ocrResult.success) {
+        const { parsedText } = ocrResult
+
+        const newTags: Types.Core.Inputs.CreateTagInput[] = []
+
+        const words = parsedText
+            .replaceAll('\n', ' ')
+            .replaceAll('\r', ' ')
+            .replaceAll(',', ' ')
+            .replaceAll('.', ' ')
+            .split(' ')
+            .filter((word) => word !== '')
+
+        words.map((value) => {
+            newTags.push({
+                fileId,
+                type: 'ocr',
+                subtype: 'text',
+                value,
+                confidence: 75,
+            })
+        })
+
+        if (newTags.length > 0) {
+            await DBUtil.createMultipleTags(newTags)
+        }
+        return { success: true }
+    } else {
+        // requeue ?
+        return { success: false, retryInMinutes: ocrResult.requeueDelayMinutes }
+    }
+}
+
+// export const ocrNumberplate = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => { }
+
+// export const plantLookup = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => { }

@@ -100,6 +100,20 @@ export namespace ExternalAPI {
 			status: string
 		}
 	}
+
+	export namespace OCRSpace {
+		type OCRSpaceResult = {
+			ParsedText: string
+		}
+
+		export type OCRSpaceResponse = {
+			ParsedResults: OCRSpaceResult[]
+			OCRExitCode: number, // 1 is success
+			IsErroredOnProcessing: boolean,
+			ErrorMessage: string,
+			ErrorDetails: string
+		}
+	}
 }
 
 export interface ShadowDropboxAPIFile {
@@ -199,6 +213,12 @@ export namespace Core {
 	export type ElevationLookupResult = {
 		success: boolean
 		elevation?: number
+		requeueDelayMinutes?: number
+	}
+
+	export type OCRGenericResult = {
+		success: boolean
+		parsedText?: string
 		requeueDelayMinutes?: number
 	}
 
