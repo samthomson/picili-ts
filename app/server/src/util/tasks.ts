@@ -77,14 +77,18 @@ export const processTask = async (taskId: number) => {
                     await DBUtil.postponeTask(task, ocrNumberplateTaskOutcome.retryInMinutes)
                 }
                 break
+            case Enums.TaskType.PLANT_LOOKUP:
+                const plantnetTaskOutcome = await plantLookup(task.relatedPiciliFileId)
+                success = plantnetTaskOutcome.success
+                if (!success) {
+                    // requeue the task
+                    await DBUtil.postponeTask(task, plantnetTaskOutcome.retryInMinutes)
+                }
+                break
 
             // todo: implement these taggers
             case Enums.TaskType.PROCESS_VIDEO_FILE:
-            case Enums.TaskType.PLANT_LOOKUP:
-            case Enums.TaskType.OCR_NUMBERPLATE:
-                success = false
-                Logger.info('to implement', { taskType })
-                break
+
             default:
                 success = false
                 Logger.warn('unknown task type', { taskType, id: task.id })
@@ -550,4 +554,76 @@ export const ocrNumberplate = async (fileId: number): Promise<Types.Core.TaskPro
     }
 }
 
-// export const plantLookup = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => { }
+export const plantLookup = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
+    const file = await Models.FileModel.findByPk(fileId)
+    const { userId, uuid } = file
+    const thumbPath = FileUtil.thumbPath(userId, uuid, 'xl')
+
+    const plantnetResult = await APIUtil.plantLookup(thumbPath)
+
+    if (plantnetResult.success) {
+        const { plantData } = plantnetResult
+
+        const newTags: Types.Core.Inputs.CreateTagInput[] = []
+
+        // the api method may be a success and still return no data
+        if (plantData) {
+            const confidence = plantData.score * 100
+
+            // scientific name
+            newTags.push({
+                fileId,
+                type: 'plant',
+                subtype: 'scientificname',
+                value: plantData.scientificName,
+                confidence,
+            })
+
+            // genus
+            newTags.push({
+                fileId,
+                type: 'plant',
+                subtype: 'genus',
+                value: plantData.genus,
+                confidence,
+            })
+
+            // family
+            newTags.push({
+                fileId,
+                type: 'plant',
+                subtype: 'family',
+                value: plantData.family,
+                confidence,
+            })
+
+            // gbif
+            newTags.push({
+                fileId,
+                type: 'plant',
+                subtype: 'gbif',
+                value: plantData.gbif,
+                confidence,
+            })
+
+            // common names
+            plantData.commonNames.map((value) => {
+                newTags.push({
+                    fileId,
+                    type: 'plant',
+                    subtype: 'commonname',
+                    value,
+                    confidence,
+                })
+            })
+        }
+
+        if (newTags.length > 0) {
+            await DBUtil.createMultipleTags(newTags)
+        }
+        return { success: true }
+    } else {
+        // requeue ?
+        return { success: false, retryInMinutes: plantnetResult.requeueDelayMinutes }
+    }
+}
