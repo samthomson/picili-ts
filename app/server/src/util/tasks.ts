@@ -53,10 +53,17 @@ export const processTask = async (taskId: number) => {
                     await DBUtil.postponeTask(task, geocodeTaskOutcome.retryInMinutes)
                 }
                 break
+            case Enums.TaskType.ELEVATION_LOOKUP:
+                const elevationLookupTaskOutcome = await elevationLookup(task.relatedPiciliFileId)
+                success = elevationLookupTaskOutcome.success
+                if (!success) {
+                    // requeue the task
+                    await DBUtil.postponeTask(task, elevationLookupTaskOutcome.retryInMinutes)
+                }
+                break
 
             // todo: implement these taggers
             case Enums.TaskType.PROCESS_VIDEO_FILE:
-            case Enums.TaskType.ELEVATION_LOOKUP:
             case Enums.TaskType.PLANT_LOOKUP:
             case Enums.TaskType.OCR_GENERIC:
             case Enums.TaskType.OCR_NUMBERPLATE:
@@ -409,6 +416,35 @@ export const addressLookup = async (fileId: number): Promise<Types.Core.TaskProc
             longitude,
         })
         // not really a success, but the correct outcome as geocoding can't happen without a lat/lon
+        return { success: true }
+    }
+}
+
+export const elevationLookup = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
+    const file = await Models.FileModel.findByPk(fileId)
+    const { userId, latitude, longitude } = file
+
+    if (latitude && longitude) {
+        // get elevation data and save on file model
+        const lookupElevation = await APIUtil.googleElevationLookup(latitude, longitude)
+
+        if (lookupElevation.success) {
+            const { elevation } = lookupElevation
+            file.elevation = elevation
+            await file.save()
+
+            return { success: true }
+        } else {
+            // requeue ?
+            return { success: false, retryInMinutes: lookupElevation.requeueDelayMinutes }
+        }
+    } else {
+        Logger.warn('no latitude/longitude on file queued for `ELEVATION_LOOKUP`', {
+            userId,
+            latitude,
+            longitude,
+        })
+        // not really a success, but the correct outcome as address lookup can't happen without a lat/lon
         return { success: true }
     }
 }
