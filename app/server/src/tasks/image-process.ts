@@ -76,8 +76,14 @@ const dupTagTest = async () => {
     await DBUtil.createTask(dupTasks[0])
 }
 
+const elevationLookup = async () => {
+    const apiResult = await TasksUtil.elevationLookup(1)
+    console.log(apiResult)
+}
+
 // file()
 // imaggaTest()
 // geo()
 // geoThrottleTest()
-dupTagTest()
+// dupTagTest()
+elevationLookup()
