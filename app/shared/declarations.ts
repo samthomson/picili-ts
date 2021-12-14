@@ -184,7 +184,7 @@ export namespace Core {
 			fileId: number
 			// todo: enum?
 			type: string
-			subtype: string
+			subtype?: string
 			value: string
 			confidence: number
 		}

@@ -69,6 +69,14 @@ export const processTask = async (taskId: number) => {
                     await DBUtil.postponeTask(task, ocrGenericTaskOutcome.retryInMinutes)
                 }
                 break
+            case Enums.TaskType.OCR_NUMBERPLATE:
+                const ocrNumberplateTaskOutcome = await ocrNumberplate(task.relatedPiciliFileId)
+                success = ocrNumberplateTaskOutcome.success
+                if (!success) {
+                    // requeue the task
+                    await DBUtil.postponeTask(task, ocrNumberplateTaskOutcome.retryInMinutes)
+                }
+                break
 
             // todo: implement these taggers
             case Enums.TaskType.PROCESS_VIDEO_FILE:
@@ -479,8 +487,7 @@ export const ocrGeneric = async (fileId: number): Promise<Types.Core.TaskProcess
         words.map((value) => {
             newTags.push({
                 fileId,
-                type: 'ocr',
-                subtype: 'text',
+                type: 'ocr.text',
                 value,
                 confidence: 75,
             })
@@ -496,6 +503,51 @@ export const ocrGeneric = async (fileId: number): Promise<Types.Core.TaskProcess
     }
 }
 
-// export const ocrNumberplate = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => { }
+export const ocrNumberplate = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
+    const file = await Models.FileModel.findByPk(fileId)
+    const { userId, uuid } = file
+    const thumbPath = FileUtil.thumbPath(userId, uuid, 'xl')
+
+    const ocrNumberplateResult = await APIUtil.ocrNumberplate(thumbPath)
+
+    if (ocrNumberplateResult.success) {
+        const { numberPlateData } = ocrNumberplateResult
+
+        const newTags: Types.Core.Inputs.CreateTagInput[] = []
+
+        // the api method may be a success and still return no data
+        if (numberPlateData) {
+            newTags.push({
+                fileId,
+                type: 'ocr.numberplate',
+                subtype: 'region',
+                value: numberPlateData.region.code,
+                confidence: numberPlateData.region.score * 100,
+            })
+            newTags.push({
+                fileId,
+                type: 'ocr.numberplate',
+                subtype: 'plate',
+                value: numberPlateData.candidates.plate,
+                confidence: numberPlateData.candidates.score * 100,
+            })
+            newTags.push({
+                fileId,
+                type: 'ocr.numberplate',
+                subtype: 'vehicle',
+                value: numberPlateData.vehicle.type,
+                confidence: numberPlateData.vehicle.score * 100,
+            })
+        }
+
+        if (newTags.length > 0) {
+            await DBUtil.createMultipleTags(newTags)
+        }
+        return { success: true }
+    } else {
+        // requeue ?
+        return { success: false, retryInMinutes: ocrNumberplateResult.requeueDelayMinutes }
+    }
+}
 
 // export const plantLookup = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => { }
