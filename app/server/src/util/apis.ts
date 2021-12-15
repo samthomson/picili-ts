@@ -52,6 +52,15 @@ export const imagga = async (largeThumbnailPath: string): Promise<Types.Core.Ima
                         tags: data?.result?.tags ?? [],
                     }
 
+                case 429:
+                    // throttled (as from their docs - never actually seen this response)
+                    return {
+                        success: false,
+                        throttled: true,
+                        // docs say just to wait a minute
+                        requeueDelayMinutes: 5,
+                    }
+
                 default:
                     Logger.error('non 200 result from imagga', {
                         status: result.status,

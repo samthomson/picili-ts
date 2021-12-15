@@ -248,6 +248,7 @@ export namespace Core {
 	}
 	export type ImaggaTaggingResult = {
 		success: boolean
+		throttled?: boolean
 		tags?: ExternalAPI.Imagga.Tag[]
 		requeueDelayMinutes?: number
 	}

@@ -368,7 +368,11 @@ export const subjectDetection = async (fileId: number): Promise<Types.Core.TaskP
         return { success: true }
     } else {
         // either the api returned a non-200 response, or we encountered successive exceptions while attempting to reach it. requeue the task accordingly.
-        return { success: false, retryInMinutes: imaggaTaggingResult.requeueDelayMinutes }
+        return {
+            success: false,
+            throttled: imaggaTaggingResult?.throttled ?? false,
+            retryInMinutes: imaggaTaggingResult.requeueDelayMinutes,
+        }
     }
 }
 
