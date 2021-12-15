@@ -13,7 +13,7 @@ import * as Models from '../db/models'
 export const processTask = async (taskId: number) => {
     // start timing
     const startTime = moment()
-    let success = undefined
+    let taskOutcome: Types.Core.TaskProcessorResult = undefined
     const task = await DBUtil.getTask(taskId)
 
     if (!task) {
@@ -26,61 +26,55 @@ export const processTask = async (taskId: number) => {
         const { taskType } = task
         switch (taskType) {
             case Enums.TaskType.DROPBOX_SYNC:
-                success = await DropboxUtil.checkForDropboxChanges(task.relatedPiciliFileId)
+                taskOutcome = await DropboxUtil.checkForDropboxChanges(task.relatedPiciliFileId)
                 break
             case Enums.TaskType.DROPBOX_FILE_IMPORT:
-                success = await fileImport(task.relatedPiciliFileId)
+                taskOutcome = await fileImport(task.relatedPiciliFileId)
                 break
             case Enums.TaskType.PROCESS_IMAGE_FILE:
-                success = await processImage(task.relatedPiciliFileId)
+                taskOutcome = await processImage(task.relatedPiciliFileId)
                 break
             case Enums.TaskType.REMOVE_PROCESSING_FILE:
-                success = await removeProcessingImage(task.relatedPiciliFileId)
+                taskOutcome = await removeProcessingImage(task.relatedPiciliFileId)
                 break
             case Enums.TaskType.SUBJECT_DETECTION:
-                const taskOutcome = await subjectDetection(task.relatedPiciliFileId)
-                success = taskOutcome.success
-                if (!success) {
+                taskOutcome = await subjectDetection(task.relatedPiciliFileId)
+                if (!taskOutcome.success) {
                     // requeue the task
                     await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
                 }
                 break
             case Enums.TaskType.ADDRESS_LOOKUP:
                 const geocodeTaskOutcome = await addressLookup(task.relatedPiciliFileId)
-                success = geocodeTaskOutcome.success
-                if (!success) {
+                if (!taskOutcome.success) {
                     // requeue the task
                     await DBUtil.postponeTask(task, geocodeTaskOutcome.retryInMinutes)
                 }
                 break
             case Enums.TaskType.ELEVATION_LOOKUP:
                 const elevationLookupTaskOutcome = await elevationLookup(task.relatedPiciliFileId)
-                success = elevationLookupTaskOutcome.success
-                if (!success) {
+                if (!taskOutcome.success) {
                     // requeue the task
                     await DBUtil.postponeTask(task, elevationLookupTaskOutcome.retryInMinutes)
                 }
                 break
             case Enums.TaskType.OCR_GENERIC:
                 const ocrGenericTaskOutcome = await ocrGeneric(task.relatedPiciliFileId)
-                success = ocrGenericTaskOutcome.success
-                if (!success) {
+                if (!taskOutcome.success) {
                     // requeue the task
                     await DBUtil.postponeTask(task, ocrGenericTaskOutcome.retryInMinutes)
                 }
                 break
             case Enums.TaskType.OCR_NUMBERPLATE:
                 const ocrNumberplateTaskOutcome = await ocrNumberplate(task.relatedPiciliFileId)
-                success = ocrNumberplateTaskOutcome.success
-                if (!success) {
+                if (!taskOutcome.success) {
                     // requeue the task
                     await DBUtil.postponeTask(task, ocrNumberplateTaskOutcome.retryInMinutes)
                 }
                 break
             case Enums.TaskType.PLANT_LOOKUP:
                 const plantnetTaskOutcome = await plantLookup(task.relatedPiciliFileId)
-                success = plantnetTaskOutcome.success
-                if (!success) {
+                if (!taskOutcome.success) {
                     // requeue the task
                     await DBUtil.postponeTask(task, plantnetTaskOutcome.retryInMinutes)
                 }
@@ -90,20 +84,30 @@ export const processTask = async (taskId: number) => {
             case Enums.TaskType.PROCESS_VIDEO_FILE:
 
             default:
-                success = false
+                taskOutcome = { success: false }
                 Logger.warn('unknown task type', { taskType, id: task.id })
                 break
         }
 
         // finish a task (inc reschedule dropbox sync)
-        if (success) {
+        if (taskOutcome?.success) {
             await finishATask(task)
         } else {
             Logger.info('task manager processed a task, but was not successful. id:', { taskId, taskType })
         }
+
+        // optionally requeue all such tasks (if throttled by underlying API)
+        if (taskOutcome?.throttled) {
+            Logger.info('task processor received a throttled response, requeueing all such tasks accordingly', {
+                taskType,
+                retryInMinutes: taskOutcome?.retryInMinutes,
+            })
+            // throttle by provided delay or default to 24 hours
+            const throttleByMinutes = taskOutcome?.retryInMinutes ?? 24 * 60
+            await DBUtil.postponeAllTasksOfType(taskType, throttleByMinutes)
+        }
     } catch (err) {
-        Logger.error('error processing task: ', err)
-        success = false
+        Logger.error('error processing task: ', { err, taskId })
     }
     // end timing
     const endTime = moment()
@@ -113,7 +117,7 @@ export const processTask = async (taskId: number) => {
     await DBUtil.createTaskProcessedLog({
         taskType: task.taskType,
         processingTime: milliseconds,
-        success: success,
+        success: taskOutcome?.success ?? false,
     })
 }
 
@@ -133,7 +137,7 @@ export const finishATask = async (task: Models.TaskInstance): Promise<void> => {
     }
 }
 
-export const fileImport = async (fileId: number): Promise<boolean> => {
+export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
     // get local picili file
     // todo: define file->dropboxFile relation, and so do this with one ORM operation
     const file = await Models.FileModel.findByPk(fileId)
@@ -141,7 +145,8 @@ export const fileImport = async (fileId: number): Promise<boolean> => {
     const dropboxFile = await Models.DropboxFileModel.findByPk(dropboxFileId)
     const { dropboxId, userId } = dropboxFile
 
-    return await DropboxUtil.downloadDropboxFile(dropboxId, userId, uuid, fileExtension)
+    const success = await DropboxUtil.downloadDropboxFile(dropboxId, userId, uuid, fileExtension)
+    return { success }
 }
 
 export const taskTypeToPriority = (taskType: Enums.TaskType): number => {
@@ -171,7 +176,7 @@ export const taskTypeToPriority = (taskType: Enums.TaskType): number => {
     }
 }
 
-export const processImage = async (fileId: number): Promise<boolean> => {
+export const processImage = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
     try {
         const file = await Models.FileModel.findByPk(fileId)
         const { userId, uuid, fileExtension } = file
@@ -186,7 +191,7 @@ export const processImage = async (fileId: number): Promise<boolean> => {
         if (!isThumbnailed) {
             // was it unsuccessful?
             // don't continue
-            return false
+            return { success: false }
         }
         file.isCorrupt = isCorrupt
         if (!isCorrupt) {
@@ -317,18 +322,19 @@ export const processImage = async (fileId: number): Promise<boolean> => {
             }
         }
 
-        return true
+        return { success: true }
     } catch (err) {
         Logger.error('err processing image', { err })
-        return false
+        return { success: false }
     }
 }
 
-export const removeProcessingImage = async (fileId: number): Promise<boolean> => {
+export const removeProcessingImage = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
     const file = await Models.FileModel.findByPk(fileId)
     const { uuid, fileExtension } = file
 
-    return FileUtil.removeProcessingFile(uuid, fileExtension)
+    const success = FileUtil.removeProcessingFile(uuid, fileExtension)
+    return { success }
 }
 
 export const subjectDetection = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
@@ -362,7 +368,7 @@ export const subjectDetection = async (fileId: number): Promise<Types.Core.TaskP
         return { success: true }
     } else {
         // either the api returned a non-200 response, or we encountered successive exceptions while attempting to reach it. requeue the task accordingly.
-        return { success: false, retryInMinutes: imaggaTaggingResult.requeueDelay }
+        return { success: false, retryInMinutes: imaggaTaggingResult.requeueDelayMinutes }
     }
 }
 
@@ -426,7 +432,7 @@ export const addressLookup = async (fileId: number): Promise<Types.Core.TaskProc
             return { success: true }
         } else {
             // requeue ?
-            return { success: false, retryInMinutes: lookup.requeueDelayMinutes }
+            return { success: false, retryInMinutes: lookup.requeueDelayMinutes, throttled: lookup?.throttled ?? false }
         }
     } else {
         Logger.warn('no latitude/longitude on file queued for `ADDRESS_LOOKUP`', {
@@ -455,7 +461,11 @@ export const elevationLookup = async (fileId: number): Promise<Types.Core.TaskPr
             return { success: true }
         } else {
             // requeue ?
-            return { success: false, retryInMinutes: lookupElevation.requeueDelayMinutes }
+            return {
+                success: false,
+                retryInMinutes: lookupElevation.requeueDelayMinutes,
+                throttled: lookupElevation?.throttled ?? false,
+            }
         }
     } else {
         Logger.warn('no latitude/longitude on file queued for `ELEVATION_LOOKUP`', {
@@ -503,7 +513,7 @@ export const ocrGeneric = async (fileId: number): Promise<Types.Core.TaskProcess
         return { success: true }
     } else {
         // requeue ?
-        return { success: false, retryInMinutes: ocrResult.requeueDelayMinutes }
+        return { success: false, retryInMinutes: ocrResult.requeueDelayMinutes, throttled: ocrResult?.throttled }
     }
 }
 
@@ -550,7 +560,11 @@ export const ocrNumberplate = async (fileId: number): Promise<Types.Core.TaskPro
         return { success: true }
     } else {
         // requeue ?
-        return { success: false, retryInMinutes: ocrNumberplateResult.requeueDelayMinutes }
+        return {
+            success: false,
+            throttled: ocrNumberplateResult?.throttled ?? false,
+            retryInMinutes: ocrNumberplateResult.requeueDelayMinutes,
+        }
     }
 }
 
@@ -624,6 +638,10 @@ export const plantLookup = async (fileId: number): Promise<Types.Core.TaskProces
         return { success: true }
     } else {
         // requeue ?
-        return { success: false, retryInMinutes: plantnetResult.requeueDelayMinutes }
+        return {
+            success: false,
+            throttled: plantnetResult?.throttled ?? false,
+            retryInMinutes: plantnetResult.requeueDelayMinutes,
+        }
     }
 }

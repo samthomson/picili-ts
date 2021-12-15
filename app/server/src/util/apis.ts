@@ -52,19 +52,6 @@ export const imagga = async (largeThumbnailPath: string): Promise<Types.Core.Ima
                         tags: data?.result?.tags ?? [],
                     }
 
-                // todo: remove once I solve the mystery empty image buffer problem
-                case 400:
-                    const failedCall = await result.json()
-                    const ImaggaError = failedCall?.status?.text ?? '[no error text found]'
-
-                    Logger.error('400 result from imagga', {
-                        error: ImaggaError,
-                    })
-                    return {
-                        success: false,
-                        // requeueDelay: 24,
-                    }
-
                 default:
                     Logger.error('non 200 result from imagga', {
                         status: result.status,
@@ -74,7 +61,7 @@ export const imagga = async (largeThumbnailPath: string): Promise<Types.Core.Ima
                     // an error that should be handled programmatically, requeue for one day so that the daily email picks it up as a task seen multiple times
                     return {
                         success: false,
-                        requeueDelay: 24 * 60,
+                        requeueDelayMinutes: 24 * 60,
                     }
             }
         } catch (err) {
@@ -85,7 +72,7 @@ export const imagga = async (largeThumbnailPath: string): Promise<Types.Core.Ima
                 Logger.warn(`hit exception calling imagga api #${retryLimit} times in a row.`)
                 return {
                     success: false,
-                    requeueDelay: 1 * 60,
+                    requeueDelayMinutes: 1 * 60,
                 }
             }
         }
@@ -125,10 +112,10 @@ export const locationIQ = async (latitude: number, longitude: number): Promise<T
                     switch (errorText) {
                         case 'Rate Limited Second':
                         case 'Rate Limited Minute':
-                            return { success: false, requeueDelayMinutes: 1 }
+                            return { success: false, throttled: true, requeueDelayMinutes: 1 }
                             break
                         case 'Rate Limited Day':
-                            return { success: false, requeueDelayMinutes: 60 * 24 }
+                            return { success: false, throttled: true, requeueDelayMinutes: 60 * 24 }
                             break
                     }
 
@@ -185,7 +172,7 @@ export const googleElevationLookup = async (
                     break
                 case 403:
                     // throttled, wait a day/24hr
-                    return { success: false, requeueDelayMinutes: 60 * 24 }
+                    return { success: false, throttled: true, requeueDelayMinutes: 60 * 24 }
                     break
                 default:
                     Logger.error('non 200 result from google elevation', {
@@ -254,6 +241,9 @@ export const ocrGeneric = async (largeThumbnailPath: string): Promise<Types.Core
                         success: true,
                         parsedText,
                     }
+
+                // todo: handle throttled response from api
+                // return { success: false, throttled: true, requeueDelayMinutes: 60 * 24 }
 
                 default:
                     Logger.error('non 200 result from ocr generic', {
@@ -354,6 +344,7 @@ export const ocrNumberplate = async (largeThumbnailPath: string): Promise<Types.
                     // throttled
                     return {
                         success: false,
+                        throttled: true,
                         requeueDelayMinutes: 24 * 60,
                     }
 
@@ -457,6 +448,7 @@ export const plantLookup = async (thumbnail: string): Promise<Types.Core.PlantNe
                     // throttled
                     return {
                         success: false,
+                        throttled: true,
                         requeueDelayMinutes: 24 * 60,
                     }
 

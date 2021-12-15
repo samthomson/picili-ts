@@ -249,30 +249,33 @@ export namespace Core {
 	export type ImaggaTaggingResult = {
 		success: boolean
 		tags?: ExternalAPI.Imagga.Tag[]
-		// todo: rename this to append hours?
-		requeueDelay?: number // number of hours to requeue the task for
+		requeueDelayMinutes?: number
 	}
 
 	export type LocationIQTaggingResult = {
 		success: boolean
+		throttled?: boolean
 		data?: ExternalAPI.LocationIQ.ReverseGeocodeResponse
 		requeueDelayMinutes?: number
 	}
 
 	export type ElevationLookupResult = {
 		success: boolean
+		throttled?: boolean
 		elevation?: number
 		requeueDelayMinutes?: number
 	}
 
 	export type OCRGenericResult = {
 		success: boolean
+		throttled?: boolean
 		parsedText?: string
 		requeueDelayMinutes?: number
 	}
 
 	export type OCRNumberPlateResult = {
 		success: boolean
+		throttled?: boolean
 		numberPlateData?: ExternalAPI.PlateRecognizer.PlateRecognizerResult
 		requeueDelayMinutes?: number
 	}
@@ -288,6 +291,7 @@ export namespace Core {
 
 	export type PlantNetLookupResult = {
 		success: boolean
+		throttled?: boolean
 		plantData?: PlantNetResult
 		requeueDelayMinutes?: number
 	}
@@ -295,6 +299,7 @@ export namespace Core {
 	export type TaskProcessorResult = {
 		success: boolean
 		retryInMinutes?: number
+		throttled?: boolean
 	}
 }
 

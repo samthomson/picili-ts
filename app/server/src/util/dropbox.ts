@@ -116,14 +116,14 @@ const dropboxListFolder = async (
 
         const endpointSpecificParams = cursor
             ? {
-                  cursor,
-              }
+                cursor,
+            }
             : {
-                  path,
-                  recursive: true,
-                  limit: 2000,
-                  include_media_info: false,
-              }
+                path,
+                recursive: true,
+                limit: 2000,
+                include_media_info: false,
+            }
 
         const options = {
             method: 'POST',
@@ -216,7 +216,7 @@ const newUpdatedDeletedFileListComparison = (
     }
 }
 
-export const checkForDropboxChanges = async (userId: number): Promise<boolean> => {
+export const checkForDropboxChanges = async (userId: number): Promise<Types.Core.TaskProcessorResult> => {
     try {
         const startTime = moment()
         // create a sync log, and retain it's id.
@@ -254,10 +254,10 @@ export const checkForDropboxChanges = async (userId: number): Promise<boolean> =
         )
 
         // reaching the end is a success - otherwise this task would be re-run until it finishes, meaning all files were processed
-        return true
+        return { success: true }
     } catch (err) {
         Logger.error(err)
-        return false
+        return { success: false }
     }
 }
 
