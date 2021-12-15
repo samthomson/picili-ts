@@ -58,10 +58,40 @@ const typeDefs = gql`
         update(dropboxUpdateInput: DropboxUpdateInput!): DropboxMutationResponse
         disconnect: DropboxMutationResponse
     }
+    input LatLong {
+        latitude: Float!
+        longitude: Float!
+    }
+
+    input MapBounds {
+        ne: LatLong!
+        sw: LatLong!
+    }
+
+    input SearchFilter {
+        mapBounds: MapBounds
+    }
+
+    type SearchResult {
+        uuid: String
+        mediumWidth: Int
+        mediumHeight: Int
+        latitude: Float
+        longitude: Float
+        address: String
+    }
+
+    type SearchQueryResponse {
+        items: [SearchResult]
+        # pageInfo: PaginationInfo
+    }
     type Query {
         validateToken(token: String!): Boolean
         dropboxConnection: DropboxConnection
         taskSummary: TaskSummary
+        # todo: add sort enum param
+        # todo: add pagination params
+        search(filter: SearchFilter): SearchQueryResponse
     }
     type Mutation {
         login(authInput: LoginInput!): AuthResponse

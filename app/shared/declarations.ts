@@ -36,6 +36,15 @@ export namespace API {
 		processable: TasksProcessable
 		processed: TasksProcessed
 	}
+
+	export interface SearchResultItem {
+
+	}
+
+	export type SearchResult = {
+		items: SearchResultItem[]
+		// todo: add pagination data
+	}
 }
 
 export namespace DropboxAPI {

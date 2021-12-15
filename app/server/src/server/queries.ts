@@ -1,5 +1,6 @@
 import * as AuthUtil from '../util/auth'
 import * as DBUtil from '../util/db'
+import * as SearchUtil from '../util/search'
 import * as Types from '@shared/declarations'
 
 const getDropboxConnection = async (parents, args, context): Promise<Types.API.DropboxConnection> => {
@@ -38,10 +39,27 @@ const taskSummary = async (): Promise<Types.API.TaskSummary> => {
     }
 }
 
+const search = async (): Promise<Types.API.SearchResult> => {
+    const files = await SearchUtil.prototypeSearch()
+    const items = files.map((file) => {
+        const { uuid, mediumWidth, mediumHeight, latitude, longitude, address } = file
+        return {
+            uuid,
+            mediumWidth,
+            mediumHeight,
+            latitude,
+            longitude,
+            address,
+        }
+    })
+    return { items }
+}
+
 const queries = {
     validateToken: (parent, args, ctx) => AuthUtil.requestHasValidCookieToken(ctx),
     dropboxConnection: getDropboxConnection,
     taskSummary,
+    search,
 }
 
 export default queries
