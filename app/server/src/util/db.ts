@@ -199,6 +199,22 @@ export const postponeTask = async (task: Models.TaskInstance, delayByMinutes: nu
     await task.save()
 }
 
+export const postponeAllTasksOfType = async (
+    taskType: Enums.TaskType,
+    minutesFromNowToDelayBy: number,
+): Promise<void> => {
+    await Models.TaskModel.update(
+        {
+            from: moment().add(minutesFromNowToDelayBy, 'minute').toISOString(),
+        },
+        {
+            where: {
+                taskType,
+            },
+        },
+    )
+}
+
 const taskSelectionWhere = () => {
     return {
         from: {
