@@ -38,12 +38,9 @@ function* search() {
 			`,
 		})
 
-		const searchResultItems = response?.data?.search?.items
-		if (searchResultItems) {
-			const firstResultUUID = searchResultItems?.[0].uuid ?? [
-				'no first item',
-			]
-			yield put(Actions.attemptSearchSucceeded(firstResultUUID))
+		const searchResult = response?.data?.search
+		if (searchResult) {
+			yield put(Actions.attemptSearchSucceeded(searchResult))
 		} else {
 			console.log('search query has empty payload')
 			put(Actions.attemptSearchFailed())

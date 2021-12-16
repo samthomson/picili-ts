@@ -1,3 +1,5 @@
+import * as Types from '@shared/declarations'
+
 export enum ActionType {
 	LOGIN_ATTEMPT = 'LOGIN_ATTEMPT',
 	LOGIN_SUCCEEDED = 'LOGIN_SUCCEEDED',
@@ -39,10 +41,11 @@ export type Action =
 	  }
 	| {
 			type: ActionType.SEARCH_SUCCEEDED
-			searchResults: string
+			searchResult: Types.API.SearchResult
 	  }
 	| {
 			type: ActionType.SEARCH_FAILED
+			searchResult?: Types.API.SearchResult
 	  }
 
 export type LoginAction = {
@@ -103,10 +106,12 @@ export const attemptSearch = (): Action => {
 	}
 }
 
-export const attemptSearchSucceeded = (searchResults: string): Action => {
+export const attemptSearchSucceeded = (
+	searchResult: Types.API.SearchResult,
+): Action => {
 	return {
 		type: ActionType.SEARCH_SUCCEEDED,
-		searchResults,
+		searchResult,
 	}
 }
 

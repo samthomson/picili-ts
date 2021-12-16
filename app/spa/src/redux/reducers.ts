@@ -6,7 +6,7 @@ const initialState: Store = {
 	userAuthStatusIsKnown: false,
 	userIsAuthenticated: false,
 	somethingIsLoading: false,
-	searchResults: '',
+	searchResult: undefined,
 }
 
 export function appReducers(
@@ -42,12 +42,12 @@ export function appReducers(
 		case ActionType.SEARCH_SUCCEEDED:
 			return {
 				...state,
-				searchResults: action.searchResults,
+				searchResult: action.searchResult,
 			}
 		case ActionType.SEARCH_FAILED:
 			return {
 				...state,
-				// searchResults: [],
+				searchResult: undefined,
 			}
 
 		default:

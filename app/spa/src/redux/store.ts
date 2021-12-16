@@ -1,6 +1,8 @@
+import * as Types from '@shared/declarations'
+
 export type Store = {
 	userAuthStatusIsKnown: boolean
 	userIsAuthenticated: boolean
 	somethingIsLoading: boolean
-	searchResults: string
+	searchResult?: Types.API.SearchResult
 }
