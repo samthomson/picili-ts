@@ -6,6 +6,9 @@ export enum ActionType {
 	AUTH_STATUS_VERIFIED = 'AUTH_STATUS_VERIFIED',
 	AUTH_STATUS_VERIFY = 'AUTH_STATUS_VERIFY',
 	SET_GLOBAL_LOADING_STATE = 'SET_GLOBAL_LOADING_STATE',
+	SEARCH_ATTEMPT = 'SEARCH_ATTEMPT',
+	SEARCH_SUCCEEDED = 'SEARCH_SUCCEEDED',
+	SEARCH_FAILED = 'SEARCH_FAILED',
 }
 
 export type Action =
@@ -30,6 +33,16 @@ export type Action =
 	| {
 			type: ActionType.SET_GLOBAL_LOADING_STATE
 			somethingIsLoading: boolean
+	  }
+	| {
+			type: ActionType.SEARCH_ATTEMPT
+	  }
+	| {
+			type: ActionType.SEARCH_SUCCEEDED
+			searchResults: string
+	  }
+	| {
+			type: ActionType.SEARCH_FAILED
 	  }
 
 export type LoginAction = {
@@ -81,5 +94,24 @@ export const setGlobalLoadingState = (somethingIsLoading: boolean): Action => {
 	return {
 		type: ActionType.SET_GLOBAL_LOADING_STATE,
 		somethingIsLoading,
+	}
+}
+
+export const attemptSearch = (): Action => {
+	return {
+		type: ActionType.SEARCH_ATTEMPT,
+	}
+}
+
+export const attemptSearchSucceeded = (searchResults: string): Action => {
+	return {
+		type: ActionType.SEARCH_SUCCEEDED,
+		searchResults,
+	}
+}
+
+export const attemptSearchFailed = (): Action => {
+	return {
+		type: ActionType.SEARCH_FAILED,
 	}
 }

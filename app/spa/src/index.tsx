@@ -13,8 +13,11 @@ import {
 } from '@apollo/client'
 
 import App from 'src/components/structure/App'
+import * as Actions from 'src/redux/actions'
 import { appReducers } from 'src/redux/reducers'
 import { Store } from 'src/redux/store'
+import rootSaga from 'src/redux/sagas'
+
 import reportWebVitals from './reportWebVitals'
 
 import 'src/style.scss'
@@ -47,6 +50,10 @@ const store: Redux.Store<Store> = Redux.createStore(
 	appReducers,
 	composeWithDevTools(Redux.applyMiddleware(sagaMiddleware)),
 )
+sagaMiddleware.run(rootSaga)
+
+// todo: remove this later, this was just a test
+store.dispatch(Actions.attemptSearch())
 
 ReactDOM.render(
 	<React.StrictMode>
