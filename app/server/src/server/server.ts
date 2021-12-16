@@ -34,6 +34,8 @@ const startApolloServer = async (typeDefs, resolvers) => {
     }
     app.use(cors(corsOptions))
 
+    app.use('/thumbs', express.static('./thumbs'))
+
     app.get('/oauth/dropbox', async (req, res) => {
         const redirectURL = await DropboxUtil.getConnectionURL()
         res.writeHead(302, { Location: redirectURL })
