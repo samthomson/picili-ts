@@ -18,7 +18,7 @@ const TestSearchResults: React.FunctionComponent<IProps> = ({
 					<img
 						title={result.uuid}
 						key={id}
-						src={`thumbs/${result.uuid}s.jpg`}
+						src={`${window.location.protocol}//${window.location.hostname}:3501/thumbs/3/${result.uuid}/s.jpg`}
 					/>
 				)
 			})}
