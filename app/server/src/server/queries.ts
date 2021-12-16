@@ -19,7 +19,8 @@ const getDropboxConnection = async (parents, args, context): Promise<Types.API.D
     return { syncPath, syncEnabled }
 }
 
-const taskSummary = async (): Promise<Types.API.TaskSummary> => {
+const taskSummary = async (parents, args, context): Promise<Types.API.TaskSummary> => {
+    AuthUtil.verifyRequestIsAuthenticated(context)
     const oldestTaskDate = await DBUtil.getOldestTaskDate()
     const howManyTasksToProcessAreThere = await DBUtil.howManyTasksToProcessAreThere()
     const howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere()
