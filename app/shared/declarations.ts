@@ -38,7 +38,7 @@ export namespace API {
 	}
 
 	export interface SearchResultItem {
-
+		uuid: string
 	}
 
 	export type SearchResult = {
