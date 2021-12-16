@@ -44,9 +44,10 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
     AuthUtil.verifyRequestIsAuthenticated(context)
     const files = await SearchUtil.prototypeSearch()
     const items = files.map((file) => {
-        const { uuid, mediumWidth, mediumHeight, latitude, longitude, address } = file
+        const { uuid, userId, mediumWidth, mediumHeight, latitude, longitude, address } = file
         return {
             uuid,
+            userId,
             mediumWidth,
             mediumHeight,
             latitude,

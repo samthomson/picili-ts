@@ -38,6 +38,7 @@ export namespace API {
 	}
 
 	export interface SearchResultItem {
+		userId: number
 		uuid: string
 	}
 

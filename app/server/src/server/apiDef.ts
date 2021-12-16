@@ -74,6 +74,7 @@ const typeDefs = gql`
 
     type SearchResult {
         uuid: String
+        userId: Int
         mediumWidth: Int
         mediumHeight: Int
         latitude: Float

@@ -28,6 +28,7 @@ function* search() {
 					search {
 						items {
 							uuid
+							userId
 							mediumWidth
 							mediumHeight
 							address
