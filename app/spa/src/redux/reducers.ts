@@ -7,6 +7,7 @@ const initialState: Store = {
 	userIsAuthenticated: false,
 	somethingIsLoading: false,
 	searchResult: undefined,
+	searchQuery: undefined,
 }
 
 export function appReducers(

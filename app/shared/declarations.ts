@@ -46,6 +46,16 @@ export namespace API {
 		items: SearchResultItem[]
 		// todo: add pagination data
 	}
+
+	export type IndividualSearchQuery = {
+		type: string
+		subtype?: string
+		value: string
+	}
+
+	export type SearchQuery = {
+		individualQueries: IndividualSearchQuery[]
+	}
 }
 
 export namespace DropboxAPI {
