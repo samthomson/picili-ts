@@ -11,6 +11,9 @@ export enum ActionType {
 	SEARCH_ATTEMPT = 'SEARCH_ATTEMPT',
 	SEARCH_SUCCEEDED = 'SEARCH_SUCCEEDED',
 	SEARCH_FAILED = 'SEARCH_FAILED',
+	SEARCH_QUERY_RESET = 'SEARCH_QUERY_RESET',
+	SEARCH_QUERY_ADD = 'SEARCH_QUERY_ADD',
+	SEARCH_QUERY_REMOVE = 'SEARCH_QUERY_REMOVE',
 }
 
 export type Action =
@@ -46,6 +49,17 @@ export type Action =
 	| {
 			type: ActionType.SEARCH_FAILED
 			searchResult?: Types.API.SearchResult
+	  }
+	| {
+			type: ActionType.SEARCH_QUERY_ADD
+			addSearchQuery: Types.API.IndividualSearchQuery
+	  }
+	| {
+			type: ActionType.SEARCH_QUERY_REMOVE
+			removeSearchQuery: Types.API.IndividualSearchQuery
+	  }
+	| {
+			type: ActionType.SEARCH_QUERY_RESET
 	  }
 
 export type LoginAction = {
@@ -118,5 +132,29 @@ export const attemptSearchSucceeded = (
 export const attemptSearchFailed = (): Action => {
 	return {
 		type: ActionType.SEARCH_FAILED,
+	}
+}
+
+export const searchQueryAdd = (
+	addSearchQuery: Types.API.IndividualSearchQuery,
+): Action => {
+	return {
+		type: ActionType.SEARCH_QUERY_ADD,
+		addSearchQuery,
+	}
+}
+
+export const searchQueryRemove = (
+	removeSearchQuery: Types.API.IndividualSearchQuery,
+): Action => {
+	return {
+		type: ActionType.SEARCH_QUERY_REMOVE,
+		removeSearchQuery,
+	}
+}
+
+export const searchQueryReset = (): Action => {
+	return {
+		type: ActionType.SEARCH_QUERY_RESET,
 	}
 }

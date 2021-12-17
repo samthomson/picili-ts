@@ -1,6 +1,7 @@
 import * as AuthUtil from 'src/util/auth'
 import { Action, ActionType } from 'src/redux/actions'
 import { Store } from 'src/redux/store'
+import { searchQuery } from './selectors'
 
 const initialState: Store = {
 	userAuthStatusIsKnown: false,
@@ -51,6 +52,58 @@ export function appReducers(
 			return {
 				...state,
 				searchResult: undefined,
+			}
+
+		case ActionType.SEARCH_QUERY_ADD:
+			// add to existing queries, unless it's of a certain type, then replace any similar query first
+			const { addSearchQuery } = action
+			const onlyAllowOneOfThisType = ['map', 'date']
+			const oldIndividualQueries = state.searchQuery.individualQueries
+			const filteredQueries = oldIndividualQueries.filter(
+				({ type }) => !onlyAllowOneOfThisType.includes(type),
+			)
+			const newQuery = {
+				...state.searchQuery,
+				individualQueries: [...filteredQueries, addSearchQuery],
+			}
+
+			return {
+				...state,
+				searchQuery: newQuery,
+			}
+		case ActionType.SEARCH_QUERY_REMOVE:
+			const { removeSearchQuery } = action
+			const queriesAfterRemoval =
+				state.searchQuery.individualQueries.filter(
+					(individualQueryToCheck) => {
+						if (
+							individualQueryToCheck.type ===
+								removeSearchQuery.type &&
+							individualQueryToCheck.subtype ===
+								removeSearchQuery.subtype &&
+							individualQueryToCheck.value ===
+								removeSearchQuery.value
+						) {
+							return false
+						} else {
+							return true
+						}
+					},
+				)
+			return {
+				...state,
+				searchQuery: {
+					...state.searchQuery,
+					individualQueries: queriesAfterRemoval,
+				},
+			}
+		case ActionType.SEARCH_QUERY_RESET:
+			return {
+				...state,
+				searchQuery: {
+					...searchQuery,
+					individualQueries: [],
+				},
 			}
 
 		default:
