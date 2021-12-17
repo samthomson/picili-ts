@@ -7,7 +7,9 @@ const initialState: Store = {
 	userIsAuthenticated: false,
 	somethingIsLoading: false,
 	searchResult: undefined,
-	searchQuery: undefined,
+	searchQuery: {
+		individualQueries: [],
+	},
 }
 
 export function appReducers(

@@ -5,5 +5,5 @@ export type Store = {
 	userIsAuthenticated: boolean
 	somethingIsLoading: boolean
 	searchResult?: Types.API.SearchResult
-	searchQuery?: Types.API.SearchQuery
+	searchQuery: Types.API.SearchQuery
 }

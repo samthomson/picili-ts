@@ -15,3 +15,7 @@ export const somethingIsLoading = (state: Store): boolean => {
 export const searchResults = (state: Store): Types.API.SearchResultItem[] => {
 	return state?.searchResult?.items ?? []
 }
+
+export const searchQuery = (state: Store): Types.API.SearchQuery => {
+	return state.searchQuery
+}
