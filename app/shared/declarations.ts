@@ -38,8 +38,12 @@ export namespace API {
 	}
 
 	export interface SearchResultItem {
+		fileId: number
 		userId: number
 		uuid: string
+		address: string
+		latitude: number
+		longitude: number
 	}
 
 	export type SearchResult = {

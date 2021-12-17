@@ -58,21 +58,19 @@ const typeDefs = gql`
         update(dropboxUpdateInput: DropboxUpdateInput!): DropboxMutationResponse
         disconnect: DropboxMutationResponse
     }
-    input LatLong {
-        latitude: Float!
-        longitude: Float!
-    }
 
-    input MapBounds {
-        ne: LatLong!
-        sw: LatLong!
+    input IndividualQuery {
+        type: String!
+        subtype: String
+        value: String!
     }
 
     input SearchFilter {
-        mapBounds: MapBounds
+        individualQueries: [IndividualQuery]
     }
 
     type SearchResult {
+        fileId: Int
         uuid: String
         userId: Int
         mediumWidth: Int
@@ -92,7 +90,7 @@ const typeDefs = gql`
         taskSummary: TaskSummary
         # todo: add sort enum param
         # todo: add pagination params
-        search(filter: SearchFilter): SearchQueryResponse
+        search(filter: SearchFilter!): SearchQueryResponse
     }
     type Mutation {
         login(authInput: LoginInput!): AuthResponse

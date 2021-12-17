@@ -42,20 +42,17 @@ const taskSummary = async (parents, args, context): Promise<Types.API.TaskSummar
 
 const search = async (parents, args, context): Promise<Types.API.SearchResult> => {
     AuthUtil.verifyRequestIsAuthenticated(context)
-    const files = await SearchUtil.prototypeSearch()
-    const items = files.map((file) => {
-        const { uuid, userId, mediumWidth, mediumHeight, latitude, longitude, address } = file
-        return {
-            uuid,
-            userId,
-            mediumWidth,
-            mediumHeight,
-            latitude,
-            longitude,
-            address,
-        }
-    })
-    return { items }
+    // lift arguments
+    // search query
+    const searchQuery = args.filter
+    // user
+    const { userId } = context
+
+    const results = await SearchUtil.search(userId, searchQuery)
+
+    return {
+        items: results,
+    }
 }
 
 const queries = {

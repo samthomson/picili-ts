@@ -317,3 +317,49 @@ export const createMultipleTags = async (tagCreationParams: Types.Core.Inputs.Cr
     await Models.TagModel.bulkCreate(lowerCased, { updateOnDuplicate: ['confidence'] })
     return true
 }
+
+export const performSearchQuery = async (
+    userId: number,
+    individualQuery: Types.API.IndividualSearchQuery,
+): Promise<Types.API.SearchResultItem[]> => {
+    const { type, subtype, value } = individualQuery
+
+    // depending on query type, perform relevant query
+    switch (type) {
+        case 'map':
+            // todo: program map query
+            return []
+            break
+        default:
+            // todo: add min confidence threshold?
+            const query = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude FROM tags JOIN files ON tags.file_id = files.id where tags.type=:type ${
+                subtype ? `and tags.subtype=:subtype ` : ''
+            }and tags.value = :value and files.is_thumbnailed and files.user_id = :userId;`
+            const results = await Database.query(query, {
+                type: Sequelize.QueryTypes.SELECT,
+                replacements: {
+                    userId,
+                    type,
+                    subtype,
+                    value,
+                },
+            })
+            return results.map((result) => {
+                // todo: type above result, and skip ts-ignores
+                return {
+                    // @ts-ignore
+                    fileId: result.id,
+                    userId,
+                    // @ts-ignore
+                    uuid: result.uuid,
+                    // @ts-ignore
+                    address: result.address,
+                    // @ts-ignore
+                    latitude: result.latitude,
+                    // @ts-ignore
+                    longitude: result.longitude,
+                }
+            })
+            break
+    }
+}
