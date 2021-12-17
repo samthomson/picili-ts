@@ -233,6 +233,10 @@ export const ocrGeneric = async (largeThumbnailPath: string): Promise<Types.Core
     formData.append('apikey', apiKey)
     formData.append('OCREngine', 2)
 
+    console.log({ base64Image })
+
+    fs.writeFileSync('output.txt', base64Image)
+
     const options = {
         method: 'POST',
         body: formData,

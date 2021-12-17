@@ -79,8 +79,8 @@ const dupTagTest = async () => {
 }
 
 const apiTest = async () => {
-    const largeThumbPath = FileUtil.thumbPath(3, 'ed601c90-7e5e-4bac-88b7-19ca478aad12', 'xl')
-    const apiResult = await APIUtil.plantLookup(largeThumbPath)
+    const largeThumbPath = FileUtil.thumbPath(3, '7c6f4ecd-c50e-40e4-88dc-9e4b0144c815', 'l')
+    const apiResult = await APIUtil.ocrGeneric(largeThumbPath)
     console.log(apiResult)
 }
 const taskTest = async () => {
@@ -94,4 +94,4 @@ const taskTest = async () => {
 // geoThrottleTest()
 // dupTagTest()
 // elevationLookup()
-geoThrottleTest()
+apiTest()
