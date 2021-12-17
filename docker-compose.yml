@@ -28,11 +28,13 @@ services:
     ports:
       - "3500:3000"
       - "3501:4000"
+      - "9229:9229"
     volumes:
       - ./app:/app
     expose:
       - "3500"
       - "3501"
+      - "9229"
     depends_on:
       - mysql
 
