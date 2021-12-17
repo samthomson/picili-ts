@@ -32,6 +32,8 @@ const TestSearchQueryModifiers: React.FunctionComponent = () => {
 	}
 	const resetQuery = () => dispatch(Actions.searchQueryReset())
 
+	const search = () => dispatch(Actions.attemptSearch())
+
 	const [addQueryType, setAddQueryType] = React.useState<string>('')
 	const [addQuerySubtype, setAddQuerySubtype] = React.useState<string>('')
 	const [addQueryValue, setAddQueryValue] = React.useState<string>('')
@@ -83,6 +85,9 @@ const TestSearchQueryModifiers: React.FunctionComponent = () => {
 
 			<h4>reset query</h4>
 			<button onClick={resetQuery}>reset query</button>
+
+			<h4>search</h4>
+			<button onClick={search}>search</button>
 		</React.Fragment>
 	)
 }
