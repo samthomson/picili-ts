@@ -2,9 +2,12 @@ import * as React from 'react'
 import * as ReactRedux from 'react-redux'
 
 import * as Actions from 'src/redux/actions'
+import * as Selectors from 'src/redux/selectors'
 
 const TestSearchQueryModifiers: React.FunctionComponent = () => {
 	const dispatch = ReactRedux.useDispatch()
+
+	const searchQuery = ReactRedux.useSelector(Selectors.searchQuery)
 
 	const addQuery = () => {
 		dispatch(
@@ -18,17 +21,18 @@ const TestSearchQueryModifiers: React.FunctionComponent = () => {
 		setAddQuerySubtype('')
 		setAddQueryValue('')
 	}
-	const removeQuery = () => {
+	const removeQuery = (
+		type: string,
+		subtype: string | undefined = undefined,
+		value: string,
+	) => {
 		dispatch(
 			Actions.searchQueryRemove({
-				type: removeQueryType,
-				subtype: removeQuerySubtype,
-				value: removeQueryValue,
+				type,
+				subtype,
+				value,
 			}),
 		)
-		setRemoveQueryType('')
-		setRemoveQuerySubtype('')
-		setRemoveQueryValue('')
 	}
 	const resetQuery = () => dispatch(Actions.searchQueryReset())
 
@@ -38,13 +42,9 @@ const TestSearchQueryModifiers: React.FunctionComponent = () => {
 	const [addQuerySubtype, setAddQuerySubtype] = React.useState<string>('')
 	const [addQueryValue, setAddQueryValue] = React.useState<string>('')
 
-	const [removeQueryType, setRemoveQueryType] = React.useState<string>('')
-	const [removeQuerySubtype, setRemoveQuerySubtype] =
-		React.useState<string>('')
-	const [removeQueryValue, setRemoveQueryValue] = React.useState<string>('')
-
 	return (
 		<React.Fragment>
+			{JSON.stringify(searchQuery)}
 			<h4>add query</h4>
 
 			<input
@@ -66,22 +66,24 @@ const TestSearchQueryModifiers: React.FunctionComponent = () => {
 
 			<h4>remove query</h4>
 
-			<input
-				type="text"
-				value={removeQueryType}
-				onChange={(e) => setRemoveQueryType(e.currentTarget.value)}
-			/>
-			<input
-				type="text"
-				value={removeQuerySubtype}
-				onChange={(e) => setRemoveQuerySubtype(e.currentTarget.value)}
-			/>
-			<input
-				type="text"
-				value={removeQueryValue}
-				onChange={(e) => setRemoveQueryValue(e.currentTarget.value)}
-			/>
-			<button onClick={removeQuery}>remove</button>
+			{searchQuery.individualQueries.map((query, i) => {
+				return (
+					<p key={i}>
+						{JSON.stringify(query)}
+						<button
+							onClick={() =>
+								removeQuery(
+									query.type,
+									query?.subtype ?? undefined,
+									query.value,
+								)
+							}
+						>
+							remove
+						</button>
+					</p>
+				)
+			})}
 
 			<h4>reset query</h4>
 			<button onClick={resetQuery}>reset query</button>
