@@ -213,7 +213,8 @@ export const ocrGeneric = async (largeThumbnailPath: string): Promise<Types.Core
     let requestAttempts = 0
 
     const url = 'https://api.ocr.space/parse/image'
-    const apiKey = process.env.API_OCR_SPACE_KEY
+    // const apiKey = process.env.API_OCR_SPACE_KEY
+    const apiKey = 'helloworld'
 
     if (!FSExtra.pathExistsSync(largeThumbnailPath)) {
         Logger.error('thumbnail file did not exist', { largeThumbnailPath })
@@ -243,12 +244,16 @@ export const ocrGeneric = async (largeThumbnailPath: string): Promise<Types.Core
             const result = await fetch(url, options)
             switch (result.status) {
                 case 200:
-                    const data: Types.ExternalAPI.OCRSpace.OCRSpaceResponse = await result.json()
-                    const parsedText = data?.ParsedResults?.[0]?.ParsedText ?? ''
+                    try {
+                        const data: Types.ExternalAPI.OCRSpace.OCRSpaceResponse = await result.json()
+                        const parsedText = data?.ParsedResults?.[0]?.ParsedText ?? ''
 
-                    return {
-                        success: true,
-                        parsedText,
+                        return {
+                            success: true,
+                            parsedText,
+                        }
+                    } catch (error) {
+                        Logger.warn('got error while parsing 200 response from OCR API', { error, result })
                     }
 
                 // todo: handle throttled response from api
@@ -258,8 +263,13 @@ export const ocrGeneric = async (largeThumbnailPath: string): Promise<Types.Core
                     Logger.error('non 200 result from ocr generic', {
                         status: result.status,
                         largeThumbnailPath,
-                        error: `${result?.ErrorMessage ?? '[no error message]'}: ${result?.ErrorDetails ?? '[no error details]'
-                            }`,
+                        error: `${result?.ErrorMessage ?? '[no error message]'}: ${
+                            result?.ErrorDetails ?? '[no error details]'
+                        }`,
+                        result: result,
+                        jsonResult: JSON.stringify(result),
+                        data: result.data,
+                        jsonData: JSON.stringify(result?.data ?? ''),
                     })
                     // an error that should be handled programmatically, requeue for one day so that the daily email picks it up as a task seen multiple times
                     return {
@@ -323,25 +333,25 @@ export const ocrNumberplate = async (largeThumbnailPath: string): Promise<Types.
 
                     const numberPlateData =
                         bestResult?.region?.code &&
-                            bestResult?.region?.score &&
-                            bestResult?.candidates?.[0]?.plate &&
-                            bestResult?.candidates?.[0]?.score &&
-                            bestResult?.vehicle?.type &&
-                            bestResult?.vehicle?.score
+                        bestResult?.region?.score &&
+                        bestResult?.candidates?.[0]?.plate &&
+                        bestResult?.candidates?.[0]?.score &&
+                        bestResult?.vehicle?.type &&
+                        bestResult?.vehicle?.score
                             ? {
-                                region: {
-                                    code: bestResult.region.code,
-                                    score: bestResult.region.score,
-                                },
-                                candidates: {
-                                    plate: bestResult.candidates[0].plate,
-                                    score: bestResult.candidates[0].score,
-                                },
-                                vehicle: {
-                                    type: bestResult.vehicle.type,
-                                    score: bestResult.vehicle.score,
-                                },
-                            }
+                                  region: {
+                                      code: bestResult.region.code,
+                                      score: bestResult.region.score,
+                                  },
+                                  candidates: {
+                                      plate: bestResult.candidates[0].plate,
+                                      score: bestResult.candidates[0].score,
+                                  },
+                                  vehicle: {
+                                      type: bestResult.vehicle.type,
+                                      score: bestResult.vehicle.score,
+                                  },
+                              }
                             : undefined
 
                     return {

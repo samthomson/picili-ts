@@ -59,8 +59,10 @@ const geo = async () => {
 }
 
 const geoThrottleTest = async () => {
-    for (let i = 0; i < 10; i++) {
-        APIUtil.locationIQ(42.3744547256523, -84.33708411917792)
+    const largeThumbPath = FileUtil.thumbPath(3, '7c6f4ecd-c50e-40e4-88dc-9e4b0144c815', 'xl')
+    for (let i = 0; i < 5; i++) {
+        const res = await APIUtil.ocrGeneric(largeThumbPath)
+        console.log(JSON.stringify(res))
     }
 }
 
@@ -92,4 +94,4 @@ const taskTest = async () => {
 // geoThrottleTest()
 // dupTagTest()
 // elevationLookup()
-taskTest()
+geoThrottleTest()
