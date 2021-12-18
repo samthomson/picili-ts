@@ -251,15 +251,16 @@ export const ocrGeneric = async (largeThumbnailPath: string): Promise<Types.Core
                         parsedText,
                     }
 
-                // todo: handle throttled response from api
-                // return { success: false, throttled: true, requeueDelayMinutes: 60 * 24 }
+                case 403:
+                    return { success: false, throttled: true, requeueDelayMinutes: 60 * 24 }
 
                 default:
                     Logger.error('non 200 result from ocr generic', {
                         status: result.status,
                         largeThumbnailPath,
-                        error: `${result?.ErrorMessage ?? '[no error message]'}: ${result?.ErrorDetails ?? '[no error details]'
-                            }`,
+                        error: `${result?.ErrorMessage ?? '[no error message]'}: ${
+                            result?.ErrorDetails ?? '[no error details]'
+                        }`,
                     })
                     // an error that should be handled programmatically, requeue for one day so that the daily email picks it up as a task seen multiple times
                     return {
@@ -323,25 +324,25 @@ export const ocrNumberplate = async (largeThumbnailPath: string): Promise<Types.
 
                     const numberPlateData =
                         bestResult?.region?.code &&
-                            bestResult?.region?.score &&
-                            bestResult?.candidates?.[0]?.plate &&
-                            bestResult?.candidates?.[0]?.score &&
-                            bestResult?.vehicle?.type &&
-                            bestResult?.vehicle?.score
+                        bestResult?.region?.score &&
+                        bestResult?.candidates?.[0]?.plate &&
+                        bestResult?.candidates?.[0]?.score &&
+                        bestResult?.vehicle?.type &&
+                        bestResult?.vehicle?.score
                             ? {
-                                region: {
-                                    code: bestResult.region.code,
-                                    score: bestResult.region.score,
-                                },
-                                candidates: {
-                                    plate: bestResult.candidates[0].plate,
-                                    score: bestResult.candidates[0].score,
-                                },
-                                vehicle: {
-                                    type: bestResult.vehicle.type,
-                                    score: bestResult.vehicle.score,
-                                },
-                            }
+                                  region: {
+                                      code: bestResult.region.code,
+                                      score: bestResult.region.score,
+                                  },
+                                  candidates: {
+                                      plate: bestResult.candidates[0].plate,
+                                      score: bestResult.candidates[0].score,
+                                  },
+                                  vehicle: {
+                                      type: bestResult.vehicle.type,
+                                      score: bestResult.vehicle.score,
+                                  },
+                              }
                             : undefined
 
                     return {
