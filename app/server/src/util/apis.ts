@@ -213,8 +213,7 @@ export const ocrGeneric = async (largeThumbnailPath: string): Promise<Types.Core
     let requestAttempts = 0
 
     const url = 'https://api.ocr.space/parse/image'
-    // const apiKey = process.env.API_OCR_SPACE_KEY
-    const apiKey = 'helloworld'
+    const apiKey = process.env.API_OCR_SPACE_KEY
 
     if (!FSExtra.pathExistsSync(largeThumbnailPath)) {
         Logger.error('thumbnail file did not exist', { largeThumbnailPath })
@@ -233,10 +232,6 @@ export const ocrGeneric = async (largeThumbnailPath: string): Promise<Types.Core
     formData.append('apikey', apiKey)
     formData.append('OCREngine', 2)
 
-    console.log({ base64Image })
-
-    fs.writeFileSync('output.txt', base64Image)
-
     const options = {
         method: 'POST',
         body: formData,
@@ -248,20 +243,16 @@ export const ocrGeneric = async (largeThumbnailPath: string): Promise<Types.Core
             const result = await fetch(url, options)
             switch (result.status) {
                 case 200:
-                    try {
-                        const data: Types.ExternalAPI.OCRSpace.OCRSpaceResponse = await result.json()
-                        const parsedText = data?.ParsedResults?.[0]?.ParsedText ?? ''
+                    const data: Types.ExternalAPI.OCRSpace.OCRSpaceResponse = await result.json()
+                    const parsedText = data?.ParsedResults?.[0]?.ParsedText ?? ''
 
-                        return {
-                            success: true,
-                            parsedText,
-                        }
-                    } catch (error) {
-                        Logger.warn('got error while parsing 200 response from OCR API', { error, result })
+                    return {
+                        success: true,
+                        parsedText,
                     }
 
-                // todo: handle throttled response from api
-                // return { success: false, throttled: true, requeueDelayMinutes: 60 * 24 }
+                case 403:
+                    return { success: false, throttled: true, requeueDelayMinutes: 60 * 24 }
 
                 default:
                     Logger.error('non 200 result from ocr generic', {
