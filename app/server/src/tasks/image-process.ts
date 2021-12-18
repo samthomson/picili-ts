@@ -58,7 +58,7 @@ const geo = async () => {
     await TasksUtil.addressLookup(1)
 }
 
-const geoThrottleTest = async () => {
+const throttleTest = async () => {
     const largeThumbPath = FileUtil.thumbPath(3, '7c6f4ecd-c50e-40e4-88dc-9e4b0144c815', 'xl')
     for (let i = 0; i < 5; i++) {
         const res = await APIUtil.ocrGeneric(largeThumbPath)
@@ -94,4 +94,4 @@ const taskTest = async () => {
 // geoThrottleTest()
 // dupTagTest()
 // elevationLookup()
-apiTest()
+throttleTest()
