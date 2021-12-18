@@ -118,13 +118,6 @@ const dropboxUpdate = async (parent, args, context): Promise<any> => {
     const { syncPath, syncEnabled } = parent.dropboxUpdateInput
     const { userId } = args
 
-    if (!userId) {
-        return {
-            success: false,
-            error: 'missing userId - not logged in?',
-        }
-    }
-
     if (!syncPath && syncEnabled === undefined) {
         return {
             success: false,
@@ -152,13 +145,6 @@ const dropboxUpdate = async (parent, args, context): Promise<any> => {
 const dropboxDisconnect = async (parent, args, context): Promise<any> => {
     AuthUtil.verifyRequestIsAuthenticated(args)
     const { userId } = args
-
-    if (!userId) {
-        return {
-            success: false,
-            error: 'missing userId - not logged in?',
-        }
-    }
 
     await DBUtil.removeDropboxConnection(userId)
     return {
