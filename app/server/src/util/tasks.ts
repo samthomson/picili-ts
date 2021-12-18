@@ -82,6 +82,8 @@ export const processTask = async (taskId: number) => {
 
             // todo: implement these taggers
             case Enums.TaskType.PROCESS_VIDEO_FILE:
+                Logger.info('video processor not implemented yet', { taskType, id: task.id })
+                break
 
             default:
                 taskOutcome = { success: false }
