@@ -261,10 +261,6 @@ export const ocrGeneric = async (largeThumbnailPath: string): Promise<Types.Core
                         error: `${result?.ErrorMessage ?? '[no error message]'}: ${
                             result?.ErrorDetails ?? '[no error details]'
                         }`,
-                        result: result,
-                        jsonResult: JSON.stringify(result),
-                        data: result.data,
-                        jsonData: JSON.stringify(result?.data ?? ''),
                     })
                     // an error that should be handled programmatically, requeue for one day so that the daily email picks it up as a task seen multiple times
                     return {
