@@ -224,9 +224,10 @@ const taskSelectionWhere = () => {
     }
 }
 
-export const getNextTaskId = async (): Promise<number | null> => {
+export const getNextTaskId = async (isStopping: boolean): Promise<number | null> => {
+    const where = isStopping ? { ...taskSelectionWhere(), importTask: false } : { ...taskSelectionWhere() }
     const nextTask = await Models.TaskModel.findOne({
-        where: taskSelectionWhere(),
+        where,
         order: [
             ['priority', 'DESC'],
             ['created_at', 'ASC'],

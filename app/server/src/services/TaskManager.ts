@@ -11,6 +11,9 @@ export class TaskManager {
     public static _instance: TaskManager = new TaskManager()
 
     public howManyProcessableTasksAreThere = 0
+    private isStopping = false
+    private isStopped = true
+    private tasksBeingProcessed: number[] = []
 
     constructor() {
         if (TaskManager._instance) {
@@ -19,12 +22,30 @@ export class TaskManager {
         TaskManager._instance = this
     }
 
+    public getStopping() {
+        return this.isStopping
+    }
+    public setStopping(stopping: boolean) {
+        this.isStopping = stopping
+    }
+
+    public getStopped() {
+        return this.isStopped
+    }
+    public addTaskBeingProcessed(taskId: number) {
+        this.tasksBeingProcessed.push(taskId)
+    }
+    public removeTaskBeingProcessed(taskId: number) {
+        this.tasksBeingProcessed = this.tasksBeingProcessed.filter((task) => task !== taskId)
+    }
+
     public async start(): Promise<void> {
+        this.isStopped = false
         this.howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere()
 
         while (this.howManyProcessableTasksAreThere > 0) {
             // process a task
-            const nextTaskId = await DBUtil.getNextTaskId()
+            const nextTaskId = await DBUtil.getNextTaskId(this.isStopping)
 
             if (!nextTaskId) {
                 Logger.warn('no task id received for next task')
