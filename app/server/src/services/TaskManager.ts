@@ -32,6 +32,11 @@ export class TaskManager {
     public getStopped() {
         return this.isStopped
     }
+
+    public getTasksBeingProcessed(): number[] {
+        return this.tasksBeingProcessed
+    }
+
     public addTaskBeingProcessed(taskId: number) {
         this.tasksBeingProcessed.push(taskId)
     }

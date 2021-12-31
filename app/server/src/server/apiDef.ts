@@ -40,6 +40,19 @@ const typeDefs = gql`
         processed: TasksProcessed
     }
 
+    type Task {
+        id: Int
+        taskType: String
+        importTask: Boolean
+    }
+
+    type TaskProcessor {
+        stopping: Boolean
+        stopped: Boolean
+        # currentTasksBeingProcessed: [Task]
+        currentTasksBeingProcessed: [Int]
+    }
+
     input DropboxConnectInput {
         token: String!
     }
@@ -88,6 +101,7 @@ const typeDefs = gql`
         validateToken(token: String!): Boolean
         dropboxConnection: DropboxConnection
         taskSummary: TaskSummary
+        taskProcessor: TaskProcessor
         # todo: add sort enum param
         # todo: add pagination params
         search(filter: SearchFilter!): SearchQueryResponse

@@ -37,6 +37,13 @@ export namespace API {
 		processed: TasksProcessed
 	}
 
+	export interface TaskProcessor {
+		stopping: boolean
+		stopped: boolean
+		// currentTasksBeingProcessed: Models.TaskInstance[]
+		currentTasksBeingProcessed: number[]
+	}
+
 	export interface SearchResultItem {
 		fileId: number
 		userId: number

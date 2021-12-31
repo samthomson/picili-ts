@@ -1,6 +1,7 @@
 import * as AuthUtil from '../util/auth'
 import * as DBUtil from '../util/db'
 import * as SearchUtil from '../util/search'
+import { TaskManager } from '../services/TaskManager'
 import * as Types from '@shared/declarations'
 
 const getDropboxConnection = async (parents, args, context): Promise<Types.API.DropboxConnection> => {
@@ -55,11 +56,28 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
     }
 }
 
+const taskProcessor = async (parents, args, context): Promise<Types.API.TaskProcessor> => {
+    AuthUtil.verifyRequestIsAuthenticated(context)
+
+    const taskManager = TaskManager.getInstance()
+
+    const stopping = taskManager.getStopping()
+    const stopped = taskManager.getStopped()
+    const currentTasksBeingProcessed = taskManager.getTasksBeingProcessed()
+
+    return {
+        stopping,
+        stopped,
+        currentTasksBeingProcessed,
+    }
+}
+
 const queries = {
     validateToken: (parent, args, ctx) => AuthUtil.requestHasValidCookieToken(ctx),
     dropboxConnection: getDropboxConnection,
     taskSummary,
     search,
+    taskProcessor,
 }
 
 export default queries
