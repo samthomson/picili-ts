@@ -5,6 +5,8 @@ import { NavLink } from 'react-router-dom'
 import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
 
+import ProcessorSummaryHeader from 'src/components/controls/ProcessorSummaryHeader'
+
 const Header: React.FunctionComponent = () => {
 	// const loadingSomething = false // searchService.bSearching || httpService.bMakingRequestToServer
 	const isAuthenticated = ReactRedux.useSelector(
@@ -36,6 +38,7 @@ const Header: React.FunctionComponent = () => {
 				<div id="top-right-links">
 					{isAuthenticated && (
 						<div>
+							<ProcessorSummaryHeader />
 							{/* <span
 								id="processing-header-output"
 								*ngIf="bProcessing"
