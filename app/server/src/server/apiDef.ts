@@ -48,7 +48,7 @@ const typeDefs = gql`
 
     type TaskProcessor {
         stopping: Boolean
-        stopped: Boolean
+        isImportingEnabled: Boolean
         # currentTasksBeingProcessed: [Task]
         currentTasksBeingProcessed: [Int]
     }

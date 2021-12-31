@@ -12,7 +12,7 @@ export class TaskManager {
 
     public howManyProcessableTasksAreThere = 0
     private isStopping = false
-    private isStopped = true
+    private isImportingEnabled = false
     private tasksBeingProcessed: number[] = []
 
     constructor() {
@@ -29,8 +29,8 @@ export class TaskManager {
         this.isStopping = stopping
     }
 
-    public getStopped() {
-        return this.isStopped
+    public getImportingEnabled() {
+        return this.isImportingEnabled
     }
 
     public getTasksBeingProcessed(): number[] {
@@ -45,7 +45,7 @@ export class TaskManager {
     }
 
     public async start(): Promise<void> {
-        this.isStopped = false
+        this.isImportingEnabled = true
         this.howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere()
 
         while (this.howManyProcessableTasksAreThere > 0) {

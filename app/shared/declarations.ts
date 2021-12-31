@@ -39,7 +39,7 @@ export namespace API {
 
 	export interface TaskProcessor {
 		stopping: boolean
-		stopped: boolean
+		isImportingEnabled: boolean
 		// currentTasksBeingProcessed: Models.TaskInstance[]
 		currentTasksBeingProcessed: number[]
 	}
