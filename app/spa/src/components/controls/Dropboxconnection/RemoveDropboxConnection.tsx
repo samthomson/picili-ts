@@ -13,10 +13,12 @@ const disconnectDropboxConnectionGQL = gql`
 `
 interface IProps {
 	refetch: () => void
+	disabled: boolean
 }
 
 const RemoveDropboxConnection: React.FunctionComponent<IProps> = ({
 	refetch,
+	disabled,
 }) => {
 	const [
 		disconnectDropboxConnectionMutation,
@@ -43,7 +45,7 @@ const RemoveDropboxConnection: React.FunctionComponent<IProps> = ({
 		<div>
 			{loading && <>loading...</>}
 			{dropboxDisconnectFailed && { dropboxDisconnectFailed }}
-			<button onClick={disconnectHandler} disabled={loading}>
+			<button onClick={disconnectHandler} disabled={loading || disabled}>
 				disconnect dropbox
 			</button>
 		</div>

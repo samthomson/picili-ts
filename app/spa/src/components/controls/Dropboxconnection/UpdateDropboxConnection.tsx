@@ -19,10 +19,12 @@ const updateDropboxConnectionGQL = gql`
 
 interface IProps {
 	dropboxConnection: Types.API.DropboxConnection
+	disabled: boolean
 }
 
 const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 	dropboxConnection,
+	disabled,
 }) => {
 	const [lastSavedConnection, setLastSavedConnection] =
 		React.useState<Types.API.DropboxConnection>(
@@ -51,7 +53,8 @@ const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 	const isUpdateButtonDisabled =
 		(lastSavedConnection.syncPath === syncPath &&
 			lastSavedConnection.syncEnabled === syncEnabled) ||
-		loading
+		loading ||
+		disabled
 
 	const disconnectHandler = async (e: React.FormEvent) => {
 		e.preventDefault()
@@ -69,12 +72,14 @@ const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 					placeholder="path on dropbox to sync with"
 					value={syncPath}
 					onChange={(e) => setSyncPath(e.target.value)}
+					disabled={disabled}
 				/>
 
 				<input
 					type="checkbox"
 					checked={syncEnabled}
 					onChange={(e) => setSyncEnabled(e.target.checked)}
+					disabled={disabled}
 				/>
 			</form>
 			<button

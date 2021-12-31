@@ -3,12 +3,17 @@ import { useQuery, gql } from '@apollo/client'
 import CreateDropboxConnection from './CreateDropboxConnection'
 import UpdateDropboxConnection from './UpdateDropboxConnection'
 import RemoveDropboxConnection from './RemoveDropboxConnection'
+import ImportState from './ImportState'
 
 const dropboxConnectionQuery = gql`
 	query dropboxConnection {
 		dropboxConnection {
 			syncPath
 			syncEnabled
+		}
+		taskProcessor {
+			stopping
+			isImportingEnabled
 		}
 	}
 `
@@ -36,11 +41,22 @@ const DropboxConnection: React.FunctionComponent = () => {
 					<div>
 						<UpdateDropboxConnection
 							dropboxConnection={data.dropboxConnection}
+							disabled={data.taskProcessor.isImportingEnabled}
 						/>
 					</div>
 					<div>
-						<RemoveDropboxConnection refetch={refetch} />
+						<RemoveDropboxConnection
+							refetch={refetch}
+							disabled={data.taskProcessor.isImportingEnabled}
+						/>
 					</div>
+					<ImportState
+						stopping={data.taskProcessor.stopping}
+						isImportingEnabled={
+							data.taskProcessor.isImportingEnabled
+						}
+						refetch={refetch}
+					/>
 				</>
 			)}
 			{!hasDropboxConnection && (
