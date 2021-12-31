@@ -4,6 +4,7 @@ import * as DropboxUtil from '../util/dropbox'
 import * as TasksUtil from '../util/tasks'
 import * as Types from '@shared/declarations'
 import * as Enums from '../../../shared/enums'
+import { TaskManager } from '../services/TaskManager'
 
 const login = async (parent, args, context): Promise<Types.API.Response.Auth> => {
     const user = await DBUtil.getUser(args.authInput.email, args.authInput.password)
@@ -160,16 +161,28 @@ const dropboxDisconnect = async (parent, args, context): Promise<any> => {
     }
 }
 
+const stopProcessingImportTasks = (): boolean => {
+    const taskManager = TaskManager.getInstance()
+    taskManager.setStopping(true)
+
+    return true
+}
+
 const dropbox = () => ({
     connect: dropboxConnect,
     update: dropboxUpdate,
     disconnect: dropboxDisconnect,
 })
 
+const taskProcessor = () => ({
+    stopProcessingImportTasks,
+})
+
 const mutations = {
     login,
     register,
     dropbox,
+    taskProcessor,
 }
 
 export default mutations

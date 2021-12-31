@@ -72,6 +72,10 @@ const typeDefs = gql`
         disconnect: DropboxMutationResponse
     }
 
+    type TaskProcessorMutations {
+        stopProcessingImportTasks: Boolean
+    }
+
     input IndividualQuery {
         type: String!
         subtype: String
@@ -110,6 +114,7 @@ const typeDefs = gql`
         login(authInput: LoginInput!): AuthResponse
         register(authInput: RegisterInput!): AuthResponse
         dropbox: DropboxMutations
+        taskProcessor: TaskProcessorMutations
     }
 `
 export default typeDefs
