@@ -1,6 +1,5 @@
 import * as DBUtil from './db'
 import * as DropboxUtil from './dropbox'
-import * as TasksUtil from './tasks'
 import * as FileUtil from './file'
 import * as APIUtil from './apis'
 import * as Types from '@shared/declarations'
@@ -9,6 +8,7 @@ import moment from 'moment'
 import Logger from '../services/logging'
 import * as Enums from '../../../shared/enums'
 import * as Models from '../db/models'
+import { TaskManager } from '../services/TaskManager'
 
 export const processTask = async (taskId: number) => {
     // start timing
@@ -650,4 +650,9 @@ export const plantLookup = async (fileId: number): Promise<Types.Core.TaskProces
             retryInMinutes: plantnetResult.requeueDelayMinutes,
         }
     }
+}
+
+export const ensureTaskProcessorIsRunning = () => {
+    const taskManager = TaskManager.getInstance()
+    taskManager.setStopping(false)
 }

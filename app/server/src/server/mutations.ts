@@ -1,6 +1,7 @@
 import * as DBUtil from '../util/db'
 import * as AuthUtil from '../util/auth'
 import * as DropboxUtil from '../util/dropbox'
+import * as TasksUtil from '../util/tasks'
 import * as Types from '@shared/declarations'
 import * as Enums from '../../../shared/enums'
 
@@ -103,6 +104,10 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
     const refreshToken = await DropboxUtil.exchangeCodeForRefreshToken(token)
 
     const connection = await DBUtil.createDropboxConnection(userId, refreshToken)
+
+    // ensure task processor is running
+    TasksUtil.ensureTaskProcessorIsRunning()
+
     return {
         success: !!connection,
         connection: connection
@@ -126,6 +131,9 @@ const dropboxUpdate = async (parent, args, context): Promise<any> => {
     }
 
     const updatedConnection = await DBUtil.updateDropboxConnection(userId, { syncPath, syncEnabled })
+
+    // ensure task processor is running
+    TasksUtil.ensureTaskProcessorIsRunning()
 
     // todo: if enabled, ensure sync task exists
     await DBUtil.ensureTaskExists(Enums.TaskType.DROPBOX_SYNC, userId)
