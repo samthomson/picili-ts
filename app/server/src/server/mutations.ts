@@ -151,10 +151,22 @@ const dropboxUpdate = async (parent, args, context): Promise<any> => {
         },
     }
 }
+
 const dropboxDisconnect = async (parent, args, context): Promise<any> => {
     AuthUtil.verifyRequestIsAuthenticated(args)
     const { userId } = args
 
+    // remove dropbox sync task
+    await DBUtil.removeDropboxImportTask(userId)
+
+    // remove all import tasks
+    await DBUtil.removeAllImportTasks()
+
+    // get all files for user with their dropbox file, and queue remove file task
+    const dropboxFileIds = await DBUtil.getAllDropboxFileIdsForUser(userId)
+    await TasksUtil.bulkCreateRemovalTasks(dropboxFileIds)
+
+    // finally remove the dropbox connection
     await DBUtil.removeDropboxConnection(userId)
     return {
         success: true,

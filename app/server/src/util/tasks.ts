@@ -678,3 +678,15 @@ export const removeAFileFromTheSystem = async (fileId: number): Promise<Types.Co
 
     return { success: thumbnailRemovalSuccess }
 }
+
+export const bulkCreateRemovalTasks = async (dropboxFileIds: number[]): Promise<void> => {
+    const removalTasks = dropboxFileIds.map((dropboxFileId) => {
+        return {
+            taskType: Enums.TaskType.REMOVE_FILE,
+            relatedPiciliFileId: dropboxFileId,
+            importTask: false,
+            priority: taskTypeToPriority(Enums.TaskType.REMOVE_FILE),
+        }
+    })
+    await Models.TaskModel.bulkCreate(removalTasks)
+}

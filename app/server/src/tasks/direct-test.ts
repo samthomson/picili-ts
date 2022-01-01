@@ -93,10 +93,30 @@ const removeThumbnailTest = async () => {
     console.log(result)
 }
 
+const mixedFileList = async () => {
+    const result = await Models.FileModel.findAll({
+        where: { userId: 3 },
+        include: [{ model: Models.DropboxFileModel }],
+    })
+    // @ts-ignore
+    const dropboxFileIds = result.map((file) => file.dropbox_file.id)
+
+    const removalTasks = dropboxFileIds.map((dropboxFileId) => {
+        return {
+            taskType: Enums.TaskType.REMOVE_FILE,
+            relatedPiciliFileId: dropboxFileId,
+            importTask: false,
+            priority: TasksUtil.taskTypeToPriority(Enums.TaskType.REMOVE_FILE),
+        }
+    })
+
+    await Models.TaskModel.bulkCreate(removalTasks)
+}
+
 // file()
 // imaggaTest()
 // geo()
 // geoThrottleTest()
 // dupTagTest()
 // elevationLookup()
-removeThumbnailTest()
+mixedFileList()

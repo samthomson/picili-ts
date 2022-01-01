@@ -290,6 +290,8 @@ export const FileModel = Database.define<FileInstance>(
     },
 )
 
+FileModel.belongsTo(DropboxFileModel)
+
 interface TagAttributes {
     id: number
     fileId: number
