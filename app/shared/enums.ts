@@ -11,6 +11,7 @@ export enum TaskType {
     OCR_GENERIC = 'OCR_GENERIC',
     OCR_NUMBERPLATE = 'OCR_NUMBERPLATE',
     SUBJECT_DETECTION = 'SUBJECT_DETECTION',
+    REMOVE_FILE = 'REMOVE_FILE',
 }
 
 export enum FileType {

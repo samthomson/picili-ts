@@ -153,6 +153,8 @@ export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcess
 
 export const taskTypeToPriority = (taskType: Enums.TaskType): number => {
     switch (taskType) {
+        case Enums.TaskType.REMOVE_FILE:
+            return 9
         case Enums.TaskType.DROPBOX_SYNC:
             return 8
         case Enums.TaskType.DROPBOX_FILE_IMPORT:

@@ -138,20 +138,6 @@ export const SyncLogModel = Database.define<SyncLogInstance>(
     },
 )
 
-// export enum TaskType {
-//     DROPBOX_SYNC,
-//     DROPBOX_FILE_IMPORT,
-//     PROCESS_IMAGE_FILE,
-//     PROCESS_VIDEO_FILE,
-//     REMOVE_PROCESSING_FILE,
-//     ADDRESS_LOOKUP,
-//     ELEVATION_LOOKUP,
-//     PLANT_LOOKUP,
-//     OCR_GENERIC,
-//     OCR_NUMBERPLATE,
-//     SUBJECT_DETECTION,
-// }
-
 interface TaskAttributes {
     id: number
     taskType: Enums.TaskType
@@ -188,6 +174,7 @@ export const TaskModel = Database.define<TaskInstance>(
             'OCR_GENERIC',
             'OCR_NUMBERPLATE',
             'SUBJECT_DETECTION',
+            'REMOVE_FILE',
         ),
         relatedPiciliFileId: Sequelize.INTEGER.UNSIGNED,
         from: Sequelize.DATE,
@@ -237,6 +224,7 @@ export const TaskProcessingLogModel = Database.define<TaskProcessingLogInstance>
             'OCR_GENERIC',
             'OCR_NUMBERPLATE',
             'SUBJECT_DETECTION',
+            'REMOVE_FILE',
         ),
         processingTime: Sequelize.INTEGER.UNSIGNED,
         success: Sequelize.BOOLEAN,
