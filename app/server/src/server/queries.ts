@@ -24,7 +24,9 @@ const taskSummary = async (parents, args, context): Promise<Types.API.TaskSummar
     AuthUtil.verifyRequestIsAuthenticated(context)
     const oldestTaskDate = await DBUtil.getOldestTaskDate()
     const howManyTasksToProcessAreThere = await DBUtil.howManyTasksToProcessAreThere()
-    const howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere()
+    // we pass false, as we want to know all the tasks not just those that can be done in the current state
+    // todo: get a second count with the real is stopping value as that is interesting too
+    const howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere(false)
     const queues = await DBUtil.getTaskTypeBreakdown()
     const lastMonthsProcessorLog = await DBUtil.taskProcessorMonthLog()
 
