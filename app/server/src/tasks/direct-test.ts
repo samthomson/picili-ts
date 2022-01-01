@@ -3,6 +3,7 @@ import * as TasksUtil from '../util/tasks'
 import * as FileUtil from '../util/file'
 import * as APIUtil from '../util/apis'
 import * as DBUtil from '../util/db'
+import * as DropboxUtil from '../util/dropbox'
 import * as Models from '../db/models'
 import Logger from '../services/logging'
 import * as Enums from '../../../shared/enums'
@@ -113,10 +114,15 @@ const mixedFileList = async () => {
     await Models.TaskModel.bulkCreate(removalTasks)
 }
 
+const testDropboxSync = async () => {
+    await DropboxUtil.checkForDropboxChanges(3)
+}
+
 // file()
 // imaggaTest()
 // geo()
 // geoThrottleTest()
 // dupTagTest()
 // elevationLookup()
-mixedFileList()
+// mixedFileList()
+testDropboxSync()
