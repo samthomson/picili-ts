@@ -4,6 +4,7 @@ import * as DBUtil from './db'
 import * as HelperUtil from './helper'
 
 import * as UUID from 'uuid'
+import moment from 'moment'
 
 export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.ShadowDropboxAPIFile) => {
     // add to dropbox files
@@ -70,20 +71,39 @@ export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.
 }
 
 export const updateAFileInTheSystem = async (changedDropboxFile: Types.ChangedDropboxFile) => {
-    // todo: remove old picili file
-    // todo: remove old thumbs
-    // todo: remove old tags
-    // todo: remove other import tasks for this file
-    // todo: create import tasks
+    const piciliFile = await DBUtil.getFileByDropboxId(changedDropboxFile.dropboxFileId)
+
+    // remove any import tasks
+    await DBUtil.removeImportTasksForFile(piciliFile.id)
+
+    // create tasks to remove/add the file (in the future)
+    const removalTaskId = await DBUtil.createTask({
+        taskType: Enums.TaskType.REMOVE_FILE,
+        relatedPiciliFileId: piciliFile.id,
+        from: moment().add(2, 'minute').toISOString(),
+    })
+    await DBUtil.createTask({
+        taskType: Enums.TaskType.DROPBOX_FILE_IMPORT,
+        relatedPiciliFileId: piciliFile.id,
+        after: removalTaskId,
+    })
+
     // update dropbox file
     await DBUtil.updateDropboxFile(changedDropboxFile)
 }
 
 export const removeAFileFromTheSystem = async (dropboxFileId: number) => {
-    // todo: remove tags
-    // todo: remove thumbnails
-    // todo: remove picili file
-    // todo: remove other import tasks for this file
-    // remove dropbox file entry
+    // remove other tasks immediately
+    const piciliFile = await DBUtil.getFileByDropboxId(dropboxFileId)
+    await DBUtil.removeImportTasksForFile(piciliFile.id)
+
+    // then queue removal task for two minutes time (so that any other running tasks have completed)
+    await DBUtil.createTask({
+        taskType: Enums.TaskType.REMOVE_FILE,
+        relatedPiciliFileId: piciliFile.id,
+        from: moment().add(2, 'minute').toISOString(),
+    })
+
+    // lastly, remove dropbox file entry
     await DBUtil.removeDropboxFile(dropboxFileId)
 }

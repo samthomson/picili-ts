@@ -364,3 +364,13 @@ export const performSearchQuery = async (
             break
     }
 }
+
+export const removeImportTasksForFile = async (fileId: number) => {
+    await Models.TaskModel.destroy({
+        where: { relatedPiciliFileId: fileId, importTask: true },
+    })
+}
+
+export const getFileByDropboxId = async (dropboxFileId: number): Promise<Models.FileInstance> => {
+    return await Models.FileModel.findOne({ where: { dropboxFileId } })
+}

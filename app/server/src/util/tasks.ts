@@ -658,3 +658,10 @@ export const ensureTaskProcessorIsRunning = () => {
     const taskManager = TaskManager.getInstance()
     taskManager.setStopping(false)
 }
+
+export const removeAFileFromTheSystem = (fileId: number): Promise<boolean> => {
+    // todo: remove tags
+    // todo: remove thumbnails
+    // todo: remove picili file
+    // todo: remove other import tasks for this file
+}
