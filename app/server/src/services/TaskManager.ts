@@ -56,7 +56,9 @@ export class TaskManager {
                 Logger.warn('no task id received for next task')
             }
             if (nextTaskId) {
+                this.addTaskBeingProcessed(nextTaskId)
                 await TaskUtil.processTask(nextTaskId)
+                this.removeTaskBeingProcessed(nextTaskId)
             }
 
             // refresh available task count
@@ -65,6 +67,7 @@ export class TaskManager {
 
         // there are no tasks, but there might be soon, so let's keep checking
         if (this.howManyProcessableTasksAreThere === 0) {
+            Logger.info('no tasks to process, delaying...')
             await HelperUtil.delay(10000)
             await this.start()
         }
