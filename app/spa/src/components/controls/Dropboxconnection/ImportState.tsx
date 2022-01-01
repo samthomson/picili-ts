@@ -22,6 +22,17 @@ const ImportState: React.FunctionComponent<IProps> = ({
 	const [stopImportingMutation, { error: httpError, data, loading = false }] =
 		useMutation(stopImportingGQL)
 
+	const refetchData = () => {
+		refetch()
+		setTimeout(refetchData, 15000)
+	}
+
+	React.useEffect(() => {
+		setTimeout(() => {
+			refetchData()
+		}, 5000)
+	}, [])
+
 	const stopImportingFailed =
 		httpError?.message ||
 		data?.taskProcessor.stopProcessingImportTasks.error
@@ -44,7 +55,7 @@ const ImportState: React.FunctionComponent<IProps> = ({
 			{isImportingEnabled && stopping && (
 				<>
 					Picili is stopping the tasks it is already processing.
-					Please wait/refresh.
+					Please wait/<a onClick={() => refetch()}>refresh</a>.
 				</>
 			)}
 			{isImportingEnabled && !stopping && (
