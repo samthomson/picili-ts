@@ -45,38 +45,45 @@ export const processTask = async (taskId: number) => {
                 }
                 break
             case Enums.TaskType.ADDRESS_LOOKUP:
-                const geocodeTaskOutcome = await addressLookup(task.relatedPiciliFileId)
+                taskOutcome = await addressLookup(task.relatedPiciliFileId)
                 if (!taskOutcome.success) {
                     // requeue the task
-                    await DBUtil.postponeTask(task, geocodeTaskOutcome.retryInMinutes)
+                    await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
                 }
                 break
             case Enums.TaskType.ELEVATION_LOOKUP:
-                const elevationLookupTaskOutcome = await elevationLookup(task.relatedPiciliFileId)
+                taskOutcome = await elevationLookup(task.relatedPiciliFileId)
                 if (!taskOutcome.success) {
                     // requeue the task
-                    await DBUtil.postponeTask(task, elevationLookupTaskOutcome.retryInMinutes)
+                    await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
                 }
                 break
             case Enums.TaskType.OCR_GENERIC:
-                const ocrGenericTaskOutcome = await ocrGeneric(task.relatedPiciliFileId)
+                taskOutcome = await ocrGeneric(task.relatedPiciliFileId)
                 if (!taskOutcome.success) {
                     // requeue the task
-                    await DBUtil.postponeTask(task, ocrGenericTaskOutcome.retryInMinutes)
+                    await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
                 }
                 break
             case Enums.TaskType.OCR_NUMBERPLATE:
-                const ocrNumberplateTaskOutcome = await ocrNumberplate(task.relatedPiciliFileId)
+                taskOutcome = await ocrNumberplate(task.relatedPiciliFileId)
                 if (!taskOutcome.success) {
                     // requeue the task
-                    await DBUtil.postponeTask(task, ocrNumberplateTaskOutcome.retryInMinutes)
+                    await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
                 }
                 break
             case Enums.TaskType.PLANT_LOOKUP:
-                const plantnetTaskOutcome = await plantLookup(task.relatedPiciliFileId)
+                taskOutcome = await plantLookup(task.relatedPiciliFileId)
                 if (!taskOutcome.success) {
                     // requeue the task
-                    await DBUtil.postponeTask(task, plantnetTaskOutcome.retryInMinutes)
+                    await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
+                }
+                break
+            case Enums.TaskType.REMOVE_FILE:
+                taskOutcome = await removeAFileFromTheSystem(task.relatedPiciliFileId)
+                if (!taskOutcome.success) {
+                    // requeue the task
+                    await DBUtil.postponeTask(task, 1)
                 }
                 break
 
@@ -659,9 +666,15 @@ export const ensureTaskProcessorIsRunning = () => {
     taskManager.setStopping(false)
 }
 
-export const removeAFileFromTheSystem = (fileId: number): Promise<boolean> => {
-    // todo: remove tags
-    // todo: remove thumbnails
-    // todo: remove picili file
-    // todo: remove other import tasks for this file
+export const removeAFileFromTheSystem = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
+    const file = await Models.FileModel.findByPk(fileId)
+    // remove tags
+    await DBUtil.removeTagsForFile(fileId)
+    // remove picili file
+    await DBUtil.removeFile(fileId)
+
+    // remove thumbnails
+    const thumbnailRemovalSuccess = await FileUtil.removeThumbnails(file.userId, file.uuid)
+
+    return { success: thumbnailRemovalSuccess }
 }

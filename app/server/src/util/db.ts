@@ -374,3 +374,15 @@ export const removeImportTasksForFile = async (fileId: number) => {
 export const getFileByDropboxId = async (dropboxFileId: number): Promise<Models.FileInstance> => {
     return await Models.FileModel.findOne({ where: { dropboxFileId } })
 }
+
+export const removeTagsForFile = async (fileId: number) => {
+    await Models.TagModel.destroy({
+        where: { fileId },
+    })
+}
+
+export const removeFile = async (fileId: number) => {
+    await Models.FileModel.destroy({
+        where: { id: fileId },
+    })
+}

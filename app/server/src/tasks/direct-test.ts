@@ -88,10 +88,15 @@ const taskTest = async () => {
     // console.log(apiResult)
 }
 
+const removeThumbnailTest = async () => {
+    const result = await FileUtil.removeThumbnails(3, '8b6f6934-22eb-4227-8bf4-7b729b0dd6ea')
+    console.log(result)
+}
+
 // file()
 // imaggaTest()
 // geo()
 // geoThrottleTest()
 // dupTagTest()
 // elevationLookup()
-throttleTest()
+removeThumbnailTest()

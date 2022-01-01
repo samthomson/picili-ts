@@ -10,6 +10,9 @@ export const getProcessingPath = (uuid: string, extension: string) => {
     return `processing/${uuid}.${extension}`
 }
 
+const getBaseThumbpathDirectory = (userId: number, uuid: string) => {
+    return `thumbs/${userId}/${uuid}`
+}
 //todo: use thumbsizes enum
 export const thumbPath = (userId: number, uuid: string, size: string) => {
     // thumbs/[userId]/[uuid]/[size].jpg
@@ -168,6 +171,23 @@ export const removeProcessingFile = (uuid, extension): boolean => {
 
     // check and return if we were successful
     if (!FSExtra.pathExistsSync(processingPath)) {
+        return true
+    } else {
+        return false
+    }
+}
+
+export const removeThumbnails = (userId: number, uuid: string): boolean => {
+    const directory = getBaseThumbpathDirectory(userId, uuid)
+    // `unlinkSync` will throw an error if the file didn't exist
+    if (FSExtra.pathExistsSync(directory)) {
+        fs.rmSync(directory, { recursive: true, force: true })
+    } else {
+        return true
+    }
+
+    // check and return if we were successful
+    if (!FSExtra.pathExistsSync(directory)) {
         return true
     } else {
         return false
