@@ -36,7 +36,7 @@
     "lint-summary": "eslint '*/**/*.{js,ts,tsx}'",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
     "migrate": "ts-node src/db/migrate.ts",
-    "image": "ts-node src/tasks/image-process.ts",
+    "direct-test": "ts-node src/tasks/direct-test.ts",
     "tasks": "ts-node src/tasks/start-task-manager.ts",
     "clean": "ts-node src/tasks/clean.ts"
   },
