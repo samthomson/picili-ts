@@ -377,6 +377,15 @@ export const removeAllImportTasks = async () => {
     })
 }
 
+export const updateNonImportTasksToHaveNoDependencies = async () => {
+    await Models.TaskModel.update(
+        { after: null },
+        {
+            where: { importTask: false },
+        },
+    )
+}
+
 export const getFileByDropboxId = async (dropboxFileId: number): Promise<Models.FileInstance> => {
     return await Models.FileModel.findOne({ where: { dropboxFileId } })
 }

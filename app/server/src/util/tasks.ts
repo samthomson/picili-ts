@@ -152,11 +152,11 @@ export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcess
         // get local picili file
         // todo: define file->dropboxFile relation, and so do this with one ORM operation
         const file = await Models.FileModel.findByPk(fileId)
-        const { dropboxFileId, uuid, fileExtension } = file
+        const { dropboxFileId, fileExtension } = file
         const dropboxFile = await Models.DropboxFileModel.findByPk(dropboxFileId)
         const { dropboxId, userId } = dropboxFile
 
-        const success = await DropboxUtil.downloadDropboxFile(dropboxId, userId, uuid, fileExtension)
+        const success = await DropboxUtil.downloadDropboxFile(dropboxId, userId, fileId, fileExtension)
         return { success }
     } catch (err) {
         Logger.error('error importing file', err)
@@ -199,7 +199,7 @@ export const processImage = async (fileId: number): Promise<Types.Core.TaskProce
         const { userId, uuid, fileExtension } = file
 
         // create thumbnails, while testing if corrupt and getting other image data
-        const thumbnailingResult = await FileUtil.generateThumbnails(userId, uuid, fileExtension)
+        const thumbnailingResult = await FileUtil.generateThumbnails(userId, fileId, uuid, fileExtension)
         // get medium width/height dimensions
         const { success: isThumbnailed, mediumWidth, mediumHeight, isCorrupt, exifData } = thumbnailingResult
 
@@ -350,9 +350,9 @@ export const processImage = async (fileId: number): Promise<Types.Core.TaskProce
 
 export const removeProcessingImage = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
     const file = await Models.FileModel.findByPk(fileId)
-    const { uuid, fileExtension } = file
+    const { fileExtension } = file
 
-    const success = FileUtil.removeProcessingFile(uuid, fileExtension)
+    const success = FileUtil.removeProcessingFile(fileId, fileExtension)
     return { success }
 }
 

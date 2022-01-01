@@ -264,7 +264,7 @@ export const checkForDropboxChanges = async (userId: number): Promise<Types.Core
 export const downloadDropboxFile = async (
     dropboxFileId: string,
     userId: number,
-    uuid: string,
+    piciliFileId: number,
     fileExtension: string,
 ): Promise<boolean> => {
     try {
@@ -287,7 +287,7 @@ export const downloadDropboxFile = async (
 
         switch (result.status) {
             case 200:
-                const outPath = FileUtil.getProcessingPath(uuid, fileExtension)
+                const outPath = FileUtil.getProcessingPath(piciliFileId, fileExtension)
                 const fileStream = fs.createWriteStream(outPath)
                 await new Promise((resolve, reject) => {
                     result.body.pipe(fileStream)

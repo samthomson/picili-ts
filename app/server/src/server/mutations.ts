@@ -162,6 +162,9 @@ const dropboxDisconnect = async (parent, args, context): Promise<any> => {
     // remove all import tasks
     await DBUtil.removeAllImportTasks()
 
+    // likewise update any remaining non-import tasks to not be dependent on other tasks (that have just been removed)
+    await DBUtil.updateNonImportTasksToHaveNoDependencies()
+
     // get all files for user with their dropbox file, and queue remove file task
     const dropboxFileIds = await DBUtil.getAllDropboxFileIdsForUser(userId)
     await TasksUtil.bulkCreateRemovalTasks(dropboxFileIds)
@@ -170,6 +173,9 @@ const dropboxDisconnect = async (parent, args, context): Promise<any> => {
 
     // finally remove the dropbox connection
     await DBUtil.removeDropboxConnection(userId)
+
+    // ensure task processor continues to run (for cleanup tasks)
+    TasksUtil.ensureTaskProcessorIsRunning()
     return {
         success: true,
     }

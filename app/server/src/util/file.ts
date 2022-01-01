@@ -6,8 +6,8 @@ import * as Types from '@shared/declarations'
 import exifReader from 'exif-reader'
 import dms2dec from 'dms2dec'
 
-export const getProcessingPath = (uuid: string, extension: string) => {
-    return `processing/${uuid}.${extension}`
+export const getProcessingPath = (piciliFileId: number, extension: string) => {
+    return `processing/${piciliFileId}.${extension}`
 }
 
 const getBaseThumbpathDirectory = (userId: number, uuid: string) => {
@@ -88,6 +88,7 @@ export const readExif = async (sharpInstance: sharp.Sharp): Promise<Types.Core.E
 
 export const generateThumbnails = async (
     userId: number,
+    piciliFileId: number,
     uuid: string,
     extension: string,
 ): Promise<Types.Core.ThumbnailCreationResponse> => {
@@ -96,7 +97,7 @@ export const generateThumbnails = async (
     // medium		m
     // large		l
     // extra large	xl
-    const inPath = getProcessingPath(uuid, extension)
+    const inPath = getProcessingPath(piciliFileId, extension)
     const outPathDirectory = `thumbs/${userId}/${uuid}`
 
     let base64MediumThumbBuffer = undefined
@@ -162,8 +163,8 @@ export const generateThumbnails = async (
     }
 }
 
-export const removeProcessingFile = (uuid, extension): boolean => {
-    const processingPath = getProcessingPath(uuid, extension)
+export const removeProcessingFile = (piciliFileId: number, extension: string): boolean => {
+    const processingPath = getProcessingPath(piciliFileId, extension)
     // `unlinkSync` will throw an error if the file didn't exist
     if (FSExtra.pathExistsSync(processingPath)) {
         fs.unlinkSync(processingPath)
