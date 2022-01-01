@@ -701,3 +701,8 @@ export const bulkCreateRemovalTasks = async (dropboxFileIds: number[]): Promise<
     })
     await Models.TaskModel.bulkCreate(removalTasks)
 }
+
+export const isTaskProcessorTooBusyToBeInterrupted = (): boolean => {
+    const taskManager = TaskManager.getInstance()
+    return taskManager.howManyProcessableTasksAreThere > 0
+}

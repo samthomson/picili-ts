@@ -119,8 +119,17 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
             : undefined,
     }
 }
+
 const dropboxUpdate = async (parent, args, context): Promise<any> => {
     AuthUtil.verifyRequestIsAuthenticated(args)
+
+    // don't allow a change to the dropbox connection if the task manager is working on a task
+    if (TasksUtil.isTaskProcessorTooBusyToBeInterrupted()) {
+        return {
+            success: false,
+        }
+    }
+
     const { syncPath, syncEnabled } = parent.dropboxUpdateInput
     const { userId } = args
 
@@ -154,6 +163,14 @@ const dropboxUpdate = async (parent, args, context): Promise<any> => {
 
 const dropboxDisconnect = async (parent, args, context): Promise<any> => {
     AuthUtil.verifyRequestIsAuthenticated(args)
+
+    // don't allow a change to the dropbox connection if the task manager is working on a task
+    if (TasksUtil.isTaskProcessorTooBusyToBeInterrupted()) {
+        return {
+            success: false,
+        }
+    }
+
     const { userId } = args
 
     // remove dropbox sync task
