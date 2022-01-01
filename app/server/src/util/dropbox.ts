@@ -116,14 +116,14 @@ const dropboxListFolder = async (
 
         const endpointSpecificParams = cursor
             ? {
-                cursor,
-            }
+                  cursor,
+              }
             : {
-                path,
-                recursive: true,
-                limit: 2000,
-                include_media_info: false,
-            }
+                  path,
+                  recursive: true,
+                  limit: 2000,
+                  include_media_info: false,
+              }
 
         const options = {
             method: 'POST',
@@ -256,7 +256,7 @@ export const checkForDropboxChanges = async (userId: number): Promise<Types.Core
         // reaching the end is a success - otherwise this task would be re-run until it finishes, meaning all files were processed
         return { success: true }
     } catch (err) {
-        Logger.error(err)
+        Logger.error('encountered an error checking for dropbox changes', err)
         return { success: false }
     }
 }
