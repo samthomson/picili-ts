@@ -56,6 +56,7 @@ export class TaskManager {
                 Logger.warn('no task id received for next task')
             }
             if (nextTaskId) {
+                // todo: put whole task in there and expose in API
                 this.addTaskBeingProcessed(nextTaskId)
                 await TaskUtil.processTask(nextTaskId)
                 this.removeTaskBeingProcessed(nextTaskId)
