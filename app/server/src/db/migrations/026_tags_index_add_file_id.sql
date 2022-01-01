@@ -1,0 +1,1 @@
+ALTER TABLE `picili`.`tags` ADD INDEX `file_id` (`file_id`); 
