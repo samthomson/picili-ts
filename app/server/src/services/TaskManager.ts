@@ -46,7 +46,7 @@ export class TaskManager {
 
     public async start(): Promise<void> {
         this.isImportingEnabled = true
-        this.howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere()
+        this.howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere(this.isStopping)
 
         while (this.howManyProcessableTasksAreThere > 0) {
             // process a task
@@ -63,7 +63,7 @@ export class TaskManager {
             }
 
             // refresh available task count
-            this.howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere()
+            this.howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere(this.isStopping)
         }
 
         // there are no tasks, but there might be soon, so let's keep checking

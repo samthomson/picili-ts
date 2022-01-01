@@ -215,19 +215,19 @@ export const postponeAllTasksOfType = async (
     )
 }
 
-const taskSelectionWhere = () => {
-    return {
+const taskSelectionWhere = (isStopping: boolean) => {
+    const baseWhere = {
         from: {
             [Sequelize.Op.lte]: moment().toISOString(),
         },
         after: null,
     }
+    return isStopping ? { ...baseWhere, importTask: false } : { ...baseWhere }
 }
 
 export const getNextTaskId = async (isStopping: boolean): Promise<number | null> => {
-    const where = isStopping ? { ...taskSelectionWhere(), importTask: false } : { ...taskSelectionWhere() }
     const nextTask = await Models.TaskModel.findOne({
-        where,
+        where: taskSelectionWhere(isStopping),
         order: [
             ['priority', 'DESC'],
             ['created_at', 'ASC'],
@@ -237,9 +237,9 @@ export const getNextTaskId = async (isStopping: boolean): Promise<number | null>
     return nextTask?.id ?? null
 }
 
-export const howManyProcessableTasksAreThere = async (): Promise<number> => {
+export const howManyProcessableTasksAreThere = async (isStopping: boolean): Promise<number> => {
     return await Models.TaskModel.count({
-        where: taskSelectionWhere(),
+        where: taskSelectionWhere(isStopping),
     })
 }
 export const howManyTasksToProcessAreThere = async (): Promise<number> => {
