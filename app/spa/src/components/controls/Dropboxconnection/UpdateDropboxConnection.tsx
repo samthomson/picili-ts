@@ -70,7 +70,7 @@ const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 				<input
 					type="text"
 					placeholder="path on dropbox to sync with"
-					value={syncPath}
+					value={syncPath ?? ''}
 					onChange={(e) => setSyncPath(e.target.value)}
 					disabled={disabled}
 				/>
