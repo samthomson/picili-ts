@@ -142,6 +142,7 @@ export const finishATask = async (task: Models.TaskInstance): Promise<void> => {
             taskType,
             relatedPiciliFileId,
             from: moment().add(15, 'minutes').toISOString(),
+            importTask: true,
         })
     }
 }
@@ -328,12 +329,14 @@ export const processImage = async (fileId: number): Promise<Types.Core.TaskProce
             await DBUtil.createTask({
                 taskType: Enums.TaskType.ADDRESS_LOOKUP,
                 relatedPiciliFileId: fileId,
+                importTask: true,
             })
             // if also missing elevation, queue for elevation lookup
             if (!file.elevation) {
                 await DBUtil.createTask({
                     taskType: Enums.TaskType.ELEVATION_LOOKUP,
                     relatedPiciliFileId: fileId,
+                    importTask: true,
                 })
             }
         }
@@ -399,6 +402,7 @@ const createConditionalTasks = async (fileId: number, subjectTags: string[]): Pr
         await DBUtil.createTask({
             taskType: Enums.TaskType.PLANT_LOOKUP,
             relatedPiciliFileId: fileId,
+            importTask: true,
         })
     }
 
@@ -408,6 +412,7 @@ const createConditionalTasks = async (fileId: number, subjectTags: string[]): Pr
         await DBUtil.createTask({
             taskType: Enums.TaskType.OCR_GENERIC,
             relatedPiciliFileId: fileId,
+            importTask: true,
         })
     }
 
@@ -417,6 +422,7 @@ const createConditionalTasks = async (fileId: number, subjectTags: string[]): Pr
         await DBUtil.createTask({
             taskType: Enums.TaskType.OCR_NUMBERPLATE,
             relatedPiciliFileId: fileId,
+            importTask: true,
         })
     }
 }
