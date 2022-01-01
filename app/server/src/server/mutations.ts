@@ -145,12 +145,13 @@ const dropboxUpdate = async (parent, args, context): Promise<any> => {
     // ensure task processor is running
     TasksUtil.ensureTaskProcessorIsRunning()
 
-    // todo: if enabled, ensure sync task exists
-    await DBUtil.ensureTaskExists(Enums.TaskType.DROPBOX_SYNC, userId)
-
-    // todo: if disabled, remove sync tasks
-
-    // todo: remove all old import tasks?
+    // if enabled, ensure sync task exists
+    if (syncEnabled) {
+        await DBUtil.ensureTaskExists(Enums.TaskType.DROPBOX_SYNC, userId)
+    } else {
+        // if disabled, remove sync tasks
+        await DBUtil.removeDropboxImportTask(userId)
+    }
 
     return {
         success: true,
