@@ -65,6 +65,7 @@ function* watchSearch() {
 	yield takeLatest(Actions.ActionType.SEARCH_ATTEMPT, search)
 }
 
+// eslint-disable-next-line
 export default function* rootSaga() {
 	yield all([watchSearch()])
 }
