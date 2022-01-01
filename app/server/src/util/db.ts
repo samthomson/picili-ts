@@ -399,6 +399,12 @@ export const removeDropboxImportTask = async (userId: number): Promise<void> => 
     })
 }
 
+export const removeUsersDropboxFiles = async (userId: number): Promise<void> => {
+    await Models.DropboxFileModel.destroy({
+        where: { userId },
+    })
+}
+
 export const getAllDropboxFileIdsForUser = async (userId: number): Promise<number[]> => {
     const result = await Models.FileModel.findAll({
         where: { userId },

@@ -95,14 +95,18 @@ export const updateAFileInTheSystem = async (changedDropboxFile: Types.ChangedDr
 export const removeAFileFromTheSystem = async (dropboxFileId: number) => {
     // remove other tasks immediately
     const piciliFile = await DBUtil.getFileByDropboxId(dropboxFileId)
-    await DBUtil.removeImportTasksForFile(piciliFile.id)
 
-    // then queue removal task for two minutes time (so that any other running tasks have completed)
-    await DBUtil.createTask({
-        taskType: Enums.TaskType.REMOVE_FILE,
-        relatedPiciliFileId: piciliFile.id,
-        from: moment().add(2, 'minute').toISOString(),
-    })
+    // in case somehow it has been deleted already
+    if (piciliFile) {
+        await DBUtil.removeImportTasksForFile(piciliFile.id)
+
+        // then queue removal task for two minutes time (so that any other running tasks have completed)
+        await DBUtil.createTask({
+            taskType: Enums.TaskType.REMOVE_FILE,
+            relatedPiciliFileId: piciliFile.id,
+            from: moment().add(2, 'minute').toISOString(),
+        })
+    }
 
     // lastly, remove dropbox file entry
     await DBUtil.removeDropboxFile(dropboxFileId)

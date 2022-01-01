@@ -147,15 +147,20 @@ export const finishATask = async (task: Models.TaskInstance): Promise<void> => {
 }
 
 export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
-    // get local picili file
-    // todo: define file->dropboxFile relation, and so do this with one ORM operation
-    const file = await Models.FileModel.findByPk(fileId)
-    const { dropboxFileId, uuid, fileExtension } = file
-    const dropboxFile = await Models.DropboxFileModel.findByPk(dropboxFileId)
-    const { dropboxId, userId } = dropboxFile
+    try {
+        // get local picili file
+        // todo: define file->dropboxFile relation, and so do this with one ORM operation
+        const file = await Models.FileModel.findByPk(fileId)
+        const { dropboxFileId, uuid, fileExtension } = file
+        const dropboxFile = await Models.DropboxFileModel.findByPk(dropboxFileId)
+        const { dropboxId, userId } = dropboxFile
 
-    const success = await DropboxUtil.downloadDropboxFile(dropboxId, userId, uuid, fileExtension)
-    return { success }
+        const success = await DropboxUtil.downloadDropboxFile(dropboxId, userId, uuid, fileExtension)
+        return { success }
+    } catch (err) {
+        Logger.error('error importing file', err)
+        return { success: false }
+    }
 }
 
 export const taskTypeToPriority = (taskType: Enums.TaskType): number => {
