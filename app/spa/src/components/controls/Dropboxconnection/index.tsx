@@ -14,6 +14,7 @@ const dropboxConnectionQuery = gql`
 		taskProcessor {
 			stopping
 			isImportingEnabled
+			currentTasksBeingProcessed
 		}
 	}
 `
@@ -32,6 +33,7 @@ const DropboxConnection: React.FunctionComponent = () => {
 	}
 
 	const hasDropboxConnection = data.dropboxConnection
+	const isBusyImporting = data.taskProcessor.currentTasksBeingProcessed > 0
 
 	return (
 		<div>
@@ -41,20 +43,18 @@ const DropboxConnection: React.FunctionComponent = () => {
 					<div>
 						<UpdateDropboxConnection
 							dropboxConnection={data.dropboxConnection}
-							disabled={data.taskProcessor.isImportingEnabled}
+							disabled={isBusyImporting}
 						/>
 					</div>
 					<div>
 						<RemoveDropboxConnection
 							refetch={refetch}
-							disabled={data.taskProcessor.isImportingEnabled}
+							disabled={isBusyImporting}
 						/>
 					</div>
 					<ImportState
 						stopping={data.taskProcessor.stopping}
-						isImportingEnabled={
-							data.taskProcessor.isImportingEnabled
-						}
+						isImportingEnabled={isBusyImporting}
 						refetch={refetch}
 					/>
 				</>
