@@ -1,0 +1,1 @@
+ALTER TABLE `picili`.`tasks` ADD INDEX (`related_picili_file_id`, `import_task`); 
