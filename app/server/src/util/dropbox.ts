@@ -1,8 +1,10 @@
 import * as Types from '@shared/declarations'
+import * as Enums from '../../../shared/enums'
 import * as Models from '../db/models'
 import * as DBUtil from './db'
 import * as CoreUtil from './core'
 import * as FileUtil from './file'
+import * as HelperUtil from './helper'
 import fetch from 'node-fetch'
 import Logger from '../services/logging'
 import * as fs from 'fs'
@@ -32,9 +34,16 @@ export const listAllDropboxfiles = async (userId: number): Promise<Types.ShadowD
         cursor = listFolderResp.cursor
     }
 
-    // todo: filter also to just images/videos
     const dropboxFiles = allDropboxFiles
+        // files not directories on dropbox
         .filter((file) => file['.tag'] === 'file')
+        // filter also to just images/videos
+        .filter(({ name }) => {
+            const { fileExtension } = HelperUtil.splitPathIntoParts(name)
+            const fileType = HelperUtil.fileTypeFromExtension(fileExtension)
+
+            return fileType === Enums.FileType.IMAGE || fileType === Enums.FileType.VIDEO
+        })
         .map(({ path_lower: path, id, content_hash: hash }) => ({ path, id, hash }))
 
     return dropboxFiles
