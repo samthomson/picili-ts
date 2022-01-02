@@ -148,11 +148,11 @@ export const finishATask = async (task: Models.TaskInstance): Promise<void> => {
 
 export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
     try {
-        // get local picili file
-        // todo: define file->dropboxFile relation, and so do this with one ORM operation
-        const file = await Models.FileModel.findByPk(fileId)
-        const { dropboxFileId, fileExtension } = file
-        const dropboxFile = await Models.DropboxFileModel.findByPk(dropboxFileId)
+        // get local picili file with dropbox file
+        const file = await Models.FileModel.findByPk(fileId, { include: Models.DropboxFileModel })
+        const { fileExtension } = file
+        // @ts-ignore
+        const dropboxFile = file.dropbox_file
         const { dropboxId, userId } = dropboxFile
 
         const success = await DropboxUtil.downloadDropboxFile(dropboxId, userId, fileId, fileExtension)

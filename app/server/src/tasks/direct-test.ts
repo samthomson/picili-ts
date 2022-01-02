@@ -9,8 +9,8 @@ import Logger from '../services/logging'
 import * as Enums from '../../../shared/enums'
 
 const file = async () => {
-    // await TasksUtil.fileImport(1)
-    await TasksUtil.processImage(1)
+    await TasksUtil.fileImport(31)
+    // await TasksUtil.processImage(1)
     // corrupt test
     // await TasksUtil.processImage(32)
     // invalid geo test
@@ -118,11 +118,11 @@ const testDropboxSync = async () => {
     await DropboxUtil.checkForDropboxChanges(3)
 }
 
-// file()
+file()
 // imaggaTest()
 // geo()
 // geoThrottleTest()
 // dupTagTest()
 // elevationLookup()
 // mixedFileList()
-testDropboxSync()
+// testDropboxSync()
