@@ -69,8 +69,11 @@ const startApolloServer = async (typeDefs, resolvers) => {
 
     server.applyMiddleware({ app, cors: false })
 
-    httpServer.listen({ port: 4000 }, () => {
-        Logger.info(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+    const port = process.env.API_INTERNAL_PORT
+    const APIHost = process.env.API_HOST
+
+    httpServer.listen({ port }, () => {
+        Logger.info(`🚀 Server ready at http://${APIHost}:${port}${server.graphqlPath}`)
     })
 
     if (process.env.NODE_ENV === 'production') {

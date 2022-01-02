@@ -1,6 +1,8 @@
 import { Dropbox } from 'dropbox'
 
-const redirectURL = 'http://localhost:3500/admin/dropbox'
+const SPAExternalPort = process.env.SPA_EXTERNAL_PORT
+const SPAHost = process.env.SPA_HOST
+const redirectURL = `http://${SPAHost}:${SPAExternalPort}/admin/dropbox`
 
 export const getConnectionURL = async () => {
     const dbx = new Dropbox({

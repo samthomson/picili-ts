@@ -57,14 +57,16 @@ export const listAllDropboxFilesFromJSONFile = () => {
 
 export const exchangeCodeForRefreshToken = async (code: string): Promise<string | null> => {
     try {
+        const SPAExternalPort = process.env.SPA_EXTERNAL_PORT
+        const SPAHost = process.env.SPA_HOST
         const url = 'https://api.dropbox.com/oauth2/token'
 
         // create a param object so that node-fetch auto sets the correct form encoding
         const params = new URLSearchParams()
         params.append('code', code)
         params.append('grant_type', 'authorization_code')
-        // todo: update this to be url/port agnostic
-        params.append('redirect_uri', 'http://localhost:3500/admin/dropbox')
+        // todo: later make this protocol agnostic for prod when https works there
+        params.append('redirect_uri', `http://${SPAHost}:${SPAExternalPort}/admin/dropbox`)
         params.append('client_id', process.env.DROPBOX_APP_KEY)
         params.append('client_secret', process.env.DROPBOX_APP_SECRET)
 
