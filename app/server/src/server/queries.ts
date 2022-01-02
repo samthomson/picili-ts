@@ -23,18 +23,25 @@ const getDropboxConnection = async (parents, args, context): Promise<Types.API.D
 const taskSummary = async (parents, args, context): Promise<Types.API.TaskSummary> => {
     AuthUtil.verifyRequestIsAuthenticated(context)
     const oldestTaskDate = await DBUtil.getOldestTaskDate()
-    const howManyTasksToProcessAreThere = await DBUtil.howManyTasksToProcessAreThere()
+    const howManyTasksAreThere = await DBUtil.howManyTasksAreThere()
     // we pass false, as we want to know all the tasks not just those that can be done in the current state
-    // todo: get a second count with the real is stopping value as that is interesting too
     const howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere(false)
+
+    // get a second count with the real is stopping value as that is interesting too
+    const taskManager = TaskManager.getInstance()
+    const howManyProcessableTasksAreThereThatAreActionable = await DBUtil.howManyProcessableTasksAreThere(
+        taskManager.getStopping(),
+    )
+
     const queues = await DBUtil.getTaskTypeBreakdown()
     const lastMonthsProcessorLog = await DBUtil.taskProcessorMonthLog()
 
     return {
         oldest: oldestTaskDate,
         processable: {
-            total: howManyTasksToProcessAreThere,
-            actionable: howManyProcessableTasksAreThere,
+            total: howManyTasksAreThere,
+            processable: howManyProcessableTasksAreThere,
+            actionable: howManyProcessableTasksAreThereThatAreActionable,
             queues,
         },
         processed: {

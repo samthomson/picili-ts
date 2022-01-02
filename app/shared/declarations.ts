@@ -19,6 +19,7 @@ export namespace API {
 	}
 	type TasksProcessable = {
 		total: number
+		processable: number
 		actionable: number
 		queues: TaskQueue[]
 	}

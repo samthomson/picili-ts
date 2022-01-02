@@ -23,7 +23,11 @@ const typeDefs = gql`
         count: Int
     }
     type TasksProcessable {
+        "total number of tasks"
         total: Int
+        "number of tasks that are ready to be processed now (considering both dependencies and start from)"
+        processable: Int
+        "tasks which can be actioned (also considering the task processor stopping state)"
         actionable: Int
         queues: [TaskQueue]
     }

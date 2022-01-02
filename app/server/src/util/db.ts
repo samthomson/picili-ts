@@ -237,6 +237,9 @@ export const getNextTaskId = async (isStopping: boolean): Promise<number | null>
     return nextTask?.id ?? null
 }
 
+export const howManyTasksAreThere = async (): Promise<number> => {
+    return await Models.TaskModel.count()
+}
 export const howManyProcessableTasksAreThere = async (isStopping: boolean): Promise<number> => {
     return await Models.TaskModel.count({
         where: taskSelectionWhere(isStopping),
