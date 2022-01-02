@@ -151,7 +151,7 @@ export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcess
     try {
         // get local picili file with dropbox file
         const file = await Models.FileModel.findByPk(fileId, { include: Models.DropboxFileModel })
-        const { fileExtension } = file
+        const { fileExtension, fileName } = file
         // @ts-ignore
         const dropboxFile = file.dropbox_file
         const { dropboxId, userId, path } = dropboxFile
@@ -165,6 +165,12 @@ export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcess
             value: dir,
             confidence: 100,
         }))
+        newDirectoryTags.push({
+            fileId,
+            type: 'filename',
+            value: fileName,
+            confidence: 100,
+        })
         await DBUtil.createMultipleTags(newDirectoryTags)
 
         const success = await DropboxUtil.downloadDropboxFile(dropboxId, userId, fileId, fileExtension)
