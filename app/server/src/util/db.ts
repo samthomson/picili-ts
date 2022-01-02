@@ -327,6 +327,7 @@ export const performSearchQuery = async (
     individualQuery: Types.API.IndividualSearchQuery,
 ): Promise<Types.API.SearchResultItem[]> => {
     const { type, subtype, value } = individualQuery
+    const { SEARCH_CONFIDENCE_THRESHOLD: confidence } = process.env
 
     // depending on query type, perform relevant query
     switch (type) {
@@ -335,10 +336,9 @@ export const performSearchQuery = async (
             return []
             break
         default:
-            // todo: add min confidence threshold?
             const query = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude FROM tags JOIN files ON tags.file_id = files.id where tags.type=:type ${
                 subtype ? `and tags.subtype=:subtype ` : ''
-            }and tags.value = :value and files.is_thumbnailed and files.user_id = :userId;`
+            }and tags.value = :value and tags.confidence >= :confidence and files.is_thumbnailed and files.user_id = :userId;`
             const results: Types.Core.DBSearchResult[] = await Database.query(query, {
                 type: Sequelize.QueryTypes.SELECT,
                 replacements: {
@@ -346,6 +346,7 @@ export const performSearchQuery = async (
                     type,
                     subtype,
                     value,
+                    confidence,
                 },
             })
             return results.map((result) => {
