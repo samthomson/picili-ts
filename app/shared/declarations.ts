@@ -56,7 +56,6 @@ export namespace API {
 
 	export type SearchResult = {
 		items: SearchResultItem[]
-		// todo: add pagination data
 	}
 
 	export type IndividualSearchQuery = {
@@ -242,7 +241,6 @@ export namespace Core {
 
 		export interface CreateTagInput {
 			fileId: number
-			// todo: enum?
 			type: string
 			subtype?: string
 			value: string
