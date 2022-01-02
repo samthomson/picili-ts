@@ -74,7 +74,7 @@ const startApolloServer = async (typeDefs, resolvers) => {
     })
 
     // todo: reinstate this?
-    // taskManager.start()
+    taskManager.start()
 
     process.on('SIGTERM', async () => {
         Logger.info('SIGTERM received, shutting down...')
