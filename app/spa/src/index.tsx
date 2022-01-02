@@ -52,9 +52,6 @@ const store: Redux.Store<Store> = Redux.createStore(
 )
 sagaMiddleware.run(rootSaga)
 
-// todo: remove this later, this was just a test
-store.dispatch(Actions.attemptSearch())
-
 ReactDOM.render(
 	<React.StrictMode>
 		<Provider store={store}>
