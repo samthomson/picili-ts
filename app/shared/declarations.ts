@@ -41,8 +41,7 @@ export namespace API {
 	export interface TaskProcessor {
 		stopping: boolean
 		isImportingEnabled: boolean
-		// currentTasksBeingProcessed: Models.TaskInstance[]
-		currentTasksBeingProcessed: number[]
+		currentTasksBeingProcessed: Models.TaskInstance[]
 	}
 
 	export interface SearchResultItem {
@@ -92,7 +91,7 @@ export namespace ExternalAPI {
 			has_more: boolean
 		}
 	}
-	
+
 	export namespace Imagga {
 		export type Tag = {
 			confidence: number

@@ -225,7 +225,7 @@ const taskSelectionWhere = (isStopping: boolean) => {
     return isStopping ? { ...baseWhere, importTask: false } : { ...baseWhere }
 }
 
-export const getNextTaskId = async (isStopping: boolean): Promise<number | null> => {
+export const getNextTaskId = async (isStopping: boolean): Promise<Models.TaskInstance | null> => {
     const nextTask = await Models.TaskModel.findOne({
         where: taskSelectionWhere(isStopping),
         order: [
@@ -234,7 +234,7 @@ export const getNextTaskId = async (isStopping: boolean): Promise<number | null>
         ],
     })
 
-    return nextTask?.id ?? null
+    return nextTask ?? null
 }
 
 export const howManyTasksAreThere = async (): Promise<number> => {

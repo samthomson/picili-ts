@@ -14,7 +14,10 @@ const dropboxConnectionQuery = gql`
 		taskProcessor {
 			stopping
 			isImportingEnabled
-			currentTasksBeingProcessed
+			currentTasksBeingProcessed {
+				id
+				taskType
+			}
 		}
 	}
 `

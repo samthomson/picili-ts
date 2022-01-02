@@ -1,6 +1,7 @@
 import * as TaskUtil from '../util/tasks'
 import * as HelperUtil from '../util/helper'
 import * as DBUtil from '../util/db'
+import * as Models from '../db/models'
 import Logger from '../services/logging'
 
 export class TaskManager {
@@ -15,7 +16,7 @@ export class TaskManager {
     private isImportingEnabled = false
     private isShuttingDown = false
     private hasNowShutDown = false
-    private tasksBeingProcessed: number[] = []
+    private tasksBeingProcessed: Models.TaskInstance[] = []
 
     constructor() {
         if (TaskManager._instance) {
@@ -35,7 +36,7 @@ export class TaskManager {
         return this.isImportingEnabled
     }
 
-    public getTasksBeingProcessed(): number[] {
+    public getTasksBeingProcessed(): Models.TaskInstance[] {
         return this.tasksBeingProcessed
     }
 
@@ -48,11 +49,11 @@ export class TaskManager {
         return true
     }
 
-    public addTaskBeingProcessed(taskId: number) {
-        this.tasksBeingProcessed.push(taskId)
+    public addTaskBeingProcessed(task: Models.TaskInstance) {
+        this.tasksBeingProcessed.push(task)
     }
-    public removeTaskBeingProcessed(taskId: number) {
-        this.tasksBeingProcessed = this.tasksBeingProcessed.filter((task) => task !== taskId)
+    public removeTaskBeingProcessed(task: Models.TaskInstance) {
+        this.tasksBeingProcessed = this.tasksBeingProcessed.filter(({ id }) => task.id !== id)
     }
 
     public async start(): Promise<void> {
@@ -61,16 +62,15 @@ export class TaskManager {
 
         while (this.howManyProcessableTasksAreThere > 0 && !this.isShuttingDown) {
             // process a task
-            const nextTaskId = await DBUtil.getNextTaskId(this.isStopping)
+            const nextTask = await DBUtil.getNextTaskId(this.isStopping)
 
-            if (!nextTaskId) {
-                Logger.warn('no task id received for next task')
+            if (!nextTask) {
+                Logger.warn('no task received for next task')
             }
-            if (nextTaskId) {
-                // todo: put whole task in there and expose in API
-                this.addTaskBeingProcessed(nextTaskId)
-                await TaskUtil.processTask(nextTaskId)
-                this.removeTaskBeingProcessed(nextTaskId)
+            if (nextTask) {
+                this.addTaskBeingProcessed(nextTask)
+                await TaskUtil.processTask(nextTask.id)
+                this.removeTaskBeingProcessed(nextTask)
             }
 
             // refresh available task count

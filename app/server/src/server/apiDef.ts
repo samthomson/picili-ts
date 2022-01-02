@@ -53,8 +53,7 @@ const typeDefs = gql`
     type TaskProcessor {
         stopping: Boolean
         isImportingEnabled: Boolean
-        # currentTasksBeingProcessed: [Task]
-        currentTasksBeingProcessed: [Int]
+        currentTasksBeingProcessed: [Task]
     }
 
     input DropboxConnectInput {
