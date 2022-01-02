@@ -334,6 +334,13 @@ export namespace Core {
 		retryInMinutes?: number
 		throttled?: boolean
 	}
+	export type DBSearchResult = {
+		id: number
+		uuid: string
+		address: string
+		latitude: number
+		longitude: number
+	}
 }
 
 export type TaskTypeEnum = Enums.TaskType
