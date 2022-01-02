@@ -358,7 +358,7 @@ export const removeProcessingImage = async (fileId: number): Promise<Types.Core.
 export const subjectDetection = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
     const file = await Models.FileModel.findByPk(fileId)
     const { userId, uuid } = file
-    const largeThumbPath = FileUtil.thumbPath(userId, uuid, 'l')
+    const largeThumbPath = FileUtil.thumbPath(userId, uuid, 'xl')
 
     // get imagga tags
     const imaggaTaggingResult = await APIUtil.imagga(largeThumbPath)
