@@ -13,6 +13,8 @@ export class TaskManager {
     public howManyProcessableTasksAreThere = 0
     private isStopping = false
     private isImportingEnabled = false
+    private isShuttingDown = false
+    private hasNowShutDown = false
     private tasksBeingProcessed: number[] = []
 
     constructor() {
@@ -37,6 +39,15 @@ export class TaskManager {
         return this.tasksBeingProcessed
     }
 
+    public async safelyShutDown(): Promise<boolean> {
+        // starts shutting down and keeps checking if that has completed until it has
+        this.isShuttingDown = true
+        while (!this.hasNowShutDown) {
+            await HelperUtil.delay(100)
+        }
+        return true
+    }
+
     public addTaskBeingProcessed(taskId: number) {
         this.tasksBeingProcessed.push(taskId)
     }
@@ -48,7 +59,7 @@ export class TaskManager {
         this.isImportingEnabled = true
         this.howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere(this.isStopping)
 
-        while (this.howManyProcessableTasksAreThere > 0) {
+        while (this.howManyProcessableTasksAreThere > 0 && !this.isShuttingDown) {
             // process a task
             const nextTaskId = await DBUtil.getNextTaskId(this.isStopping)
 
@@ -67,10 +78,16 @@ export class TaskManager {
         }
 
         // there are no tasks, but there might be soon, so let's keep checking
-        if (this.howManyProcessableTasksAreThere === 0) {
+        if (this.howManyProcessableTasksAreThere === 0 && !this.isShuttingDown) {
             Logger.info('no tasks to process, delaying...')
             await HelperUtil.delay(10000)
             await this.start()
+        }
+
+        // set above in `safelyShutDown` method
+        if (this.isShuttingDown) {
+            Logger.info('the task processor is shutting down now and will exit.')
+            this.hasNowShutDown = true
         }
     }
 }
