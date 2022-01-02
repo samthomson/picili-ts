@@ -77,7 +77,7 @@ const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 
 				<input
 					type="checkbox"
-					checked={syncEnabled}
+					checked={syncEnabled ?? true}
 					onChange={(e) => setSyncEnabled(e.target.checked)}
 					disabled={disabled}
 				/>
