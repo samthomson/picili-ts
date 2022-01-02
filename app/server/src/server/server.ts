@@ -74,7 +74,9 @@ const startApolloServer = async (typeDefs, resolvers) => {
     })
 
     // todo: reinstate this?
-    taskManager.start()
+    if (process.env.NODE_ENV === 'production') {
+        taskManager.start()
+    }
 
     process.on('SIGTERM', async () => {
         Logger.info('SIGTERM received, shutting down...')
