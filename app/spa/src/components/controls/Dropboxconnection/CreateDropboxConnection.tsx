@@ -58,8 +58,9 @@ const CreateDropboxConnection: React.FunctionComponent<IProps> = ({
 		httpError?.message || data?.dropbox.connect.error
 
 	const dropboxOAuth = () => {
-		// todo: make this protocol/domain/port agnostic
-		window.location.replace(`http://localhost:3501/oauth/dropbox`)
+		window.location.replace(
+			`${window.location.protocol}://${window.location.hostname}:3501/oauth/dropbox`,
+		)
 	}
 
 	return (
