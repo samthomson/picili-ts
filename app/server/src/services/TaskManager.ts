@@ -81,13 +81,15 @@ export class TaskManager {
         if (this.howManyProcessableTasksAreThere === 0 && !this.isShuttingDown) {
             Logger.info('no tasks to process, delaying...')
             await HelperUtil.delay(10000)
-            await this.start()
         }
 
         // set above in `safelyShutDown` method
         if (this.isShuttingDown) {
             Logger.info('the task processor is shutting down now and will exit.')
             this.hasNowShutDown = true
+        } else {
+            // go again
+            await this.start()
         }
     }
 }
