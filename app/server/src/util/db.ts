@@ -316,7 +316,7 @@ export const createMultipleTags = async (tagCreationParams: Types.Core.Inputs.Cr
     const lowerCased = tagCreationParams.map((params) => ({
         ...params,
         type: params.type.toLowerCase(),
-        subtype: params.subtype.toLowerCase(),
+        subtype: params?.subtype?.toLowerCase() ?? null,
         value: params.value.toLowerCase(),
     }))
     await Models.TagModel.bulkCreate(lowerCased, { updateOnDuplicate: ['confidence'] })

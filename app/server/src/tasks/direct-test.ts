@@ -4,12 +4,13 @@ import * as FileUtil from '../util/file'
 import * as APIUtil from '../util/apis'
 import * as DBUtil from '../util/db'
 import * as DropboxUtil from '../util/dropbox'
+import * as HelperUtil from '../util/helper'
 import * as Models from '../db/models'
 import Logger from '../services/logging'
 import * as Enums from '../../../shared/enums'
 
 const file = async () => {
-    await TasksUtil.fileImport(31)
+    await TasksUtil.fileImport(4)
     // await TasksUtil.processImage(1)
     // corrupt test
     // await TasksUtil.processImage(32)
@@ -118,6 +119,14 @@ const testDropboxSync = async () => {
     await DropboxUtil.checkForDropboxChanges(3)
 }
 
+const testParsingFileParts = async () => {
+    const dropboxFiles = await Models.DropboxFileModel.findAll()
+    for (let i = 0; i < dropboxFiles.length; i++) {
+        const { path } = dropboxFiles[i]
+        HelperUtil.individualDirectoriesFromParentDir(path)
+    }
+}
+
 file()
 // imaggaTest()
 // geo()
@@ -126,3 +135,4 @@ file()
 // elevationLookup()
 // mixedFileList()
 // testDropboxSync()
+// testParsingFileParts()

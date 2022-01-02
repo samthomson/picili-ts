@@ -1,6 +1,7 @@
 import * as DBUtil from './db'
 import * as DropboxUtil from './dropbox'
 import * as FileUtil from './file'
+import * as HelperUtil from './helper'
 import * as APIUtil from './apis'
 import * as Types from '@shared/declarations'
 import * as Constants from '../../../shared/constants'
@@ -153,7 +154,18 @@ export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcess
         const { fileExtension } = file
         // @ts-ignore
         const dropboxFile = file.dropbox_file
-        const { dropboxId, userId } = dropboxFile
+        const { dropboxId, userId, path } = dropboxFile
+
+        // create file dir tags
+        const { fileDirectory } = HelperUtil.splitPathIntoParts(path)
+        const directories = HelperUtil.individualDirectoriesFromParentDir(fileDirectory)
+        const newDirectoryTags = directories.map((dir) => ({
+            fileId,
+            type: 'folder',
+            value: dir,
+            confidence: 100,
+        }))
+        await DBUtil.createMultipleTags(newDirectoryTags)
 
         const success = await DropboxUtil.downloadDropboxFile(dropboxId, userId, fileId, fileExtension)
         return { success }

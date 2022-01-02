@@ -40,3 +40,9 @@ export const fileTypeFromExtension = (extension: string): Types.FileTypeEnum => 
             return null
     }
 }
+
+export const individualDirectoriesFromParentDir = (path: string): string[] => {
+    const parts = path.split('/')
+    const nonEmptyParts = parts.filter((part) => part !== '')
+    return nonEmptyParts
+}
