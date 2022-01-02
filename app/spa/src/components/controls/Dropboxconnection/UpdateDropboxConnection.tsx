@@ -34,7 +34,7 @@ const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 		dropboxConnection?.syncPath ?? undefined,
 	)
 	const [syncEnabled, setSyncEnabled] = React.useState<boolean>(
-		dropboxConnection?.syncEnabled ?? false,
+		dropboxConnection?.syncEnabled ?? true,
 	)
 
 	const [
@@ -77,7 +77,7 @@ const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 
 				<input
 					type="checkbox"
-					checked={syncEnabled ?? true}
+					checked={syncEnabled}
 					onChange={(e) => setSyncEnabled(e.target.checked)}
 					disabled={disabled}
 				/>
