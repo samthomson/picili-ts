@@ -73,7 +73,6 @@ const startApolloServer = async (typeDefs, resolvers) => {
         Logger.info(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
     })
 
-    // todo: reinstate this?
     if (process.env.NODE_ENV === 'production') {
         taskManager.start()
     }
