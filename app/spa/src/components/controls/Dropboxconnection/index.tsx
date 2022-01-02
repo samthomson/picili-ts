@@ -36,7 +36,8 @@ const DropboxConnection: React.FunctionComponent = () => {
 	}
 
 	const hasDropboxConnection = data.dropboxConnection
-	const isBusyImporting = data.taskProcessor.currentTasksBeingProcessed > 0
+	const isBusyImporting =
+		(data.taskProcessor.currentTasksBeingProcessed?.length ?? 0) > 0
 
 	return (
 		<div>
