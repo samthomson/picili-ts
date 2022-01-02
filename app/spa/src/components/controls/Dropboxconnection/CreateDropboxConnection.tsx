@@ -59,7 +59,7 @@ const CreateDropboxConnection: React.FunctionComponent<IProps> = ({
 
 	const dropboxOAuth = () => {
 		window.location.replace(
-			`${window.location.protocol}://${window.location.hostname}:3501/oauth/dropbox`,
+			`${window.location.protocol}//${window.location.hostname}:3501/oauth/dropbox`,
 		)
 	}
 
