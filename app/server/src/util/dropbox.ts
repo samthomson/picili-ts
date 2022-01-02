@@ -18,7 +18,7 @@ export const listAllDropboxfiles = async (userId: number): Promise<Types.ShadowD
     const access = await exchangeRefreshTokenForAccessToken(token)
 
     // query dropbox and get all files for that directory (recursively)
-    const allDropboxFiles: Types.DropboxAPI.DropboxFile[] = []
+    const allDropboxFiles: Types.ExternalAPI.Dropbox.DropboxFile[] = []
     let stillReadingDropboxFileList = true
     let requestsMadeToDropbox = 0
     let cursor = undefined
@@ -119,7 +119,7 @@ const dropboxListFolder = async (
     refreshToken: string,
     path: string,
     cursor?: string,
-): Promise<Types.DropboxAPI.ListFolderResponse> => {
+): Promise<Types.ExternalAPI.Dropbox.ListFolderResponse> => {
     try {
         const url = cursor
             ? 'https://api.dropboxapi.com/2/files/list_folder/continue'
