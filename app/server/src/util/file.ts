@@ -19,10 +19,8 @@ export const thumbPath = (userId: number, uuid: string, size: string) => {
     return `thumbs/${userId}/${uuid}/${size}.jpg`
 }
 
-// todo: is large size obsolete now, use xl only?
 export const THUMB_SIZES = [
     { name: 'xl', width: 1620 },
-    { name: 'l', width: 1120 },
     { name: 'm', height: 300 },
     { name: 's', height: 125, width: 125, fit: 'fill' },
     { name: 'i', height: 32, width: 32, fit: 'fill' },
@@ -95,7 +93,7 @@ export const generateThumbnails = async (
     // icon			i
     // small		s
     // medium		m
-    // large		l
+    //// large		l
     // extra large	xl
     const inPath = getProcessingPath(piciliFileId, extension)
     const outPathDirectory = `thumbs/${userId}/${uuid}`
