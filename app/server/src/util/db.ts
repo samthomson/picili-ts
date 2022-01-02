@@ -61,6 +61,7 @@ export const createDropboxConnection = async (
     const dropboxConnection = await Models.DropboxConnectionModel.create({
         userId,
         refreshToken,
+        syncEnabled: true,
     })
 
     return dropboxConnection
