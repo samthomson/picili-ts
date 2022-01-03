@@ -7,6 +7,7 @@ import * as Models from '../db/models'
 import Database from '../db/connection'
 import * as Enums from '../../../shared/enums'
 import * as TasksUtil from './tasks'
+import Logger from '../services/logging'
 
 export const getUser = async (email: string, password: string): Promise<Models.UserInstance> => {
     const user = await Models.UserModel.findOne({
@@ -226,16 +227,42 @@ const taskSelectionWhere = (isStopping: boolean) => {
     return isStopping ? { ...baseWhere, importTask: false } : { ...baseWhere }
 }
 
-export const getNextTaskId = async (isStopping: boolean): Promise<Models.TaskInstance | null> => {
-    const nextTask = await Models.TaskModel.findOne({
-        where: taskSelectionWhere(isStopping),
-        order: [
-            ['priority', 'DESC'],
-            ['created_at', 'ASC'],
-        ],
-    })
+export const getAndReserveNextTaskId = async (isStopping: boolean): Promise<Models.TaskInstance | null> => {
+    try {
+        const result = await Database.transaction(async (getAndReserveTaskTransaction) => {
+            const nextTask = await Models.TaskModel.findOne({
+                where: taskSelectionWhere(isStopping),
+                order: [
+                    ['priority', 'DESC'],
+                    ['created_at', 'ASC'],
+                ],
+                lock: true,
+                skipLocked: true,
+                transaction: getAndReserveTaskTransaction,
+            })
 
-    return nextTask ?? null
+            if (nextTask) {
+                const { timesSeen, id } = nextTask
+
+                await Models.TaskModel.update(
+                    {
+                        timesSeen: timesSeen + 1,
+                        from: moment().add(2, 'minute').toISOString(),
+                    },
+                    { where: { id }, transaction: getAndReserveTaskTransaction },
+                )
+
+                return nextTask
+            } else {
+                return null
+            }
+        })
+
+        return result
+    } catch (err) {
+        Logger.warn('DB error reserving next task', { err })
+        return null
+    }
 }
 
 export const howManyTasksAreThere = async (): Promise<number> => {

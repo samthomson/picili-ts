@@ -21,9 +21,6 @@ export const processTask = async (taskId: number) => {
         Logger.warn('no task found when went to process', taskId)
     }
     try {
-        // 'start' task (inc update its from time)
-        await DBUtil.startProcessingATask(task)
-
         const { taskType } = task
         switch (taskType) {
             case Enums.TaskType.DROPBOX_SYNC:

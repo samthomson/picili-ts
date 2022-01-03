@@ -60,36 +60,34 @@ export class TaskManager {
         this.isImportingEnabled = true
         this.howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere(this.isStopping)
 
-        while (this.howManyProcessableTasksAreThere > 0 && !this.isShuttingDown) {
-            // process a task
-            const nextTask = await DBUtil.getNextTaskId(this.isStopping)
+        const parallelization = 3
 
-            if (!nextTask) {
-                Logger.warn('no task received for next task')
-            }
-            if (nextTask) {
-                this.addTaskBeingProcessed(nextTask)
-                await TaskUtil.processTask(nextTask.id)
-                this.removeTaskBeingProcessed(nextTask)
-            }
+        Logger.info(`creating ${parallelization} workers..`)
+        const workers = [...Array(parallelization).keys()].map((i) => this.work(i))
+        await Promise.all(workers)
 
-            // refresh available task count
-            this.howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere(this.isStopping)
-        }
-
-        // there are no tasks, but there might be soon, so let's keep checking
-        if (this.howManyProcessableTasksAreThere === 0 && !this.isShuttingDown) {
-            Logger.info('no tasks to process, delaying...')
-            await HelperUtil.delay(10000)
-        }
-
-        // set above in `safelyShutDown` method
         if (this.isShuttingDown) {
             Logger.info('the task processor is shutting down now and will exit.')
             this.hasNowShutDown = true
-        } else {
-            // go again
-            await this.start()
+        }
+    }
+
+    private async work(threadNo: number): Promise<void> {
+        // Logger.info(`thread:${threadNo + 1} started`)
+        while (!this.isShuttingDown) {
+            // get next task
+            const nextTask = await DBUtil.getAndReserveNextTaskId(this.isStopping)
+            // if task, process task
+            if (nextTask) {
+                // Logger.info(`thread:${threadNo + 1} will now start next task: ${nextTask.id}:${nextTask.taskType}...`)
+                this.addTaskBeingProcessed(nextTask)
+                await TaskUtil.processTask(nextTask.id)
+                this.removeTaskBeingProcessed(nextTask)
+            } else {
+                Logger.info(`thread:${threadNo + 1} found no task, so delaying...`)
+                // else, delay ten seconds
+                await HelperUtil.delay(10000)
+            }
         }
     }
 }
