@@ -124,7 +124,7 @@ export const generateThumbnails = async (
             const { name: size, width, height } = thumbSize
             const outPathFull = `thumbs/${userId}/${uuid}/${size}.jpg`
             // todo: lower quality to reduce filesizes
-            const data = await sharpImage.resize(width, height).toFormat('jpeg').toFile(outPathFull)
+            const data = await sharpImage.rotate().resize(width, height).toFormat('jpeg').toFile(outPathFull)
 
             if (!FSExtra.pathExistsSync(outPathFull)) {
                 Logger.warn("thumbnailing completed but the file doesn't exist", { ...thumbSize, outPathFull })
