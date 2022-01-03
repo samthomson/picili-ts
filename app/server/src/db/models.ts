@@ -193,6 +193,7 @@ export const TaskModel = Database.define<TaskInstance>(
 interface TaskProcessingLogAttributes {
     id: number
     taskType: Enums.TaskType
+    thread: number
     processingTime: number
     success: boolean
 }
@@ -226,6 +227,7 @@ export const TaskProcessingLogModel = Database.define<TaskProcessingLogInstance>
             'SUBJECT_DETECTION',
             'REMOVE_FILE',
         ),
+        thread: Sequelize.TINYINT.UNSIGNED,
         processingTime: Sequelize.INTEGER.UNSIGNED,
         success: Sequelize.BOOLEAN,
     },

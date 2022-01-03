@@ -11,7 +11,7 @@ import * as Enums from '../../../shared/enums'
 import * as Models from '../db/models'
 import { TaskManager } from '../services/TaskManager'
 
-export const processTask = async (taskId: number) => {
+export const processTask = async (taskId: number, thread: number) => {
     // start timing
     const startTime = moment()
     let taskOutcome: Types.Core.TaskProcessorResult = undefined
@@ -122,6 +122,7 @@ export const processTask = async (taskId: number) => {
     // log task processing
     await DBUtil.createTaskProcessedLog({
         taskType: task.taskType,
+        thread,
         processingTime: milliseconds,
         success: taskOutcome?.success ?? false,
     })

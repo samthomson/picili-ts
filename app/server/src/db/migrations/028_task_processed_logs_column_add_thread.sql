@@ -1,0 +1,1 @@
+ALTER TABLE `task_processed_logs` ADD `thread` TINYINT UNSIGNED NOT NULL AFTER `task_type`; 

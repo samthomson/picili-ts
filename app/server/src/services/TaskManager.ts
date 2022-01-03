@@ -79,12 +79,12 @@ export class TaskManager {
             const nextTask = await DBUtil.getAndReserveNextTaskId(this.isStopping)
             // if task, process task
             if (nextTask) {
-                // Logger.info(`thread:${threadNo + 1} will now start next task: ${nextTask.id}:${nextTask.taskType}...`)
+                Logger.info(`[thread:${threadNo + 1}] will now start next task: ${nextTask.id}:${nextTask.taskType}...`)
                 this.addTaskBeingProcessed(nextTask)
-                await TaskUtil.processTask(nextTask.id)
+                await TaskUtil.processTask(nextTask.id, threadNo)
                 this.removeTaskBeingProcessed(nextTask)
             } else {
-                Logger.info(`thread:${threadNo + 1} found no task, so delaying...`)
+                Logger.info(`[thread:${threadNo + 1}] found no task, so delaying...`)
                 // else, delay ten seconds
                 await HelperUtil.delay(10000)
             }
