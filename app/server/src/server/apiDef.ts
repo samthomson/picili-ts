@@ -48,6 +48,7 @@ const typeDefs = gql`
         id: Int
         taskType: String
         importTask: Boolean
+        timesSeen: Int
     }
 
     type TaskProcessor {
