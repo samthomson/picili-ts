@@ -61,7 +61,7 @@ export class TaskManager {
         this.howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere(this.isStopping)
 
         // todo: experiment with raising this, and later adjusting based on available resources
-        const parallelization = 3
+        const parallelization = 5
 
         Logger.info(`creating ${parallelization} workers..`)
         const workers = [...Array(parallelization).keys()].map((i) => this.work(i))
