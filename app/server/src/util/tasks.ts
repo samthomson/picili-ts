@@ -116,7 +116,7 @@ export const processTask = async (taskId: number) => {
             await DBUtil.postponeAllTasksOfType(taskType, throttleByMinutes)
         }
     } catch (err) {
-        Logger.error('error processing task: ', { err, taskId })
+        Logger.error('error processing task: ', { err, taskId, taskOutcome })
     }
     // end timing
     const endTime = moment()
