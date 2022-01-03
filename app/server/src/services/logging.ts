@@ -23,6 +23,11 @@ const options = {
         filename: `${appRoot}/logs/server-log.json`,
         ...commonLoggingOptions,
     },
+    fileErrors: {
+        filename: `${appRoot}/logs/server-log-errors.json`,
+        level: 'error',
+        ...commonLoggingOptions,
+    },
     console: {
         level: process.env.LOG_LEVEL || 'silly',
         handleExceptions: true,
@@ -38,6 +43,7 @@ const logger = winston.createLogger({
     transports: [
         // output logs to disk
         new winston.transports.DailyRotateFile(options.fileAll),
+        new winston.transports.DailyRotateFile(options.fileErrors),
     ],
     exitOnError: false, // do not exit on handled exceptions
 })
