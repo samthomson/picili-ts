@@ -30,7 +30,7 @@ export const processTask = async (taskId: number, thread: number) => {
                 taskOutcome = await fileImport(task.relatedPiciliFileId)
                 break
             case Enums.TaskType.PROCESS_IMAGE_FILE:
-                taskOutcome = await processImage(task.relatedPiciliFileId)
+                taskOutcome = await processImage(task.relatedPiciliFileId, task.id)
                 break
             case Enums.TaskType.REMOVE_PROCESSING_FILE:
                 taskOutcome = await removeProcessingImage(task.relatedPiciliFileId)
@@ -208,7 +208,10 @@ export const taskTypeToPriority = (taskType: Enums.TaskType): number => {
     }
 }
 
-export const processImage = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
+export const processImage = async (
+    fileId: number,
+    imageProcessingTaskId: number,
+): Promise<Types.Core.TaskProcessorResult> => {
     try {
         const file = await Models.FileModel.findByPk(fileId)
         const { userId, uuid, fileExtension } = file
@@ -230,6 +233,13 @@ export const processImage = async (fileId: number): Promise<Types.Core.TaskProce
             file.isThumbnailed = isThumbnailed
             file.mediumWidth = mediumWidth
             file.mediumHeight = mediumHeight
+            // safe to queue for subject detection
+            await DBUtil.createTask({
+                taskType: Enums.TaskType.SUBJECT_DETECTION,
+                relatedPiciliFileId: fileId,
+                after: imageProcessingTaskId,
+                importTask: true,
+            })
         }
         await file.save()
 
