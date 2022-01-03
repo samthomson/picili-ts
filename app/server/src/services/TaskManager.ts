@@ -60,6 +60,7 @@ export class TaskManager {
         this.isImportingEnabled = true
         this.howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere(this.isStopping)
 
+        // todo: experiment with raising this, and later adjusting based on available resources
         const parallelization = 3
 
         Logger.info(`creating ${parallelization} workers..`)
