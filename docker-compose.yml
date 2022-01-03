@@ -43,6 +43,8 @@ services:
       - "9229"
     depends_on:
       - mysql
+      # only in dev do we need phpmyadmin (so we can just bash into the server and stil use mysql/phpmyadmin)
+      - phpmyadmin
 
   mysql:
     image: mysql:5.7
