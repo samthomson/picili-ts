@@ -10,6 +10,11 @@
 
 While testing, the task processor can be run independently: `docker-compose run app sh -c "cd /app/server && yarn run start-task-manager"`. But should not as a rule, since it should run in the same scope as the server so that they share the same instance.
 
+accessing services:
+SPA: `http://localhost:3500`
+API: `http://localhost:3501/graphql`
+phpmyadmin: `http://localhost:8083`
+
 ## how it works
 
 A `TaskManager` is always running in the background, working through **tasks**. These can be anything from syncing with dropbox, to performing subject detection on a newly imported file.
@@ -37,3 +42,4 @@ Once a connection with dropbox is made via OAuth, and a directory (within your d
 [*] Some APIs require a latitude/longitude, so are only called if the image was geotagged.
 
 [**] These APIs are called conditionally based on the results of subject detection. For example if *plant*, *flower*, or *tree* is detected as a subject tag, then a task will be created to have the plant detection API called for that picture.
+
