@@ -10,6 +10,7 @@ import Logger from '../services/logging'
 import * as fs from 'fs'
 import FSExtra from 'fs-extra'
 import moment from 'moment'
+import { Dropbox } from 'dropbox'
 
 export const listAllDropboxfiles = async (userId: number): Promise<Types.ShadowDropboxAPIFile[]> => {
     // get dropbox connection details for user
@@ -53,6 +54,22 @@ export const listAllDropboxFilesFromJSONFile = () => {
     const data = fs.readFileSync('test-data/dropboxFiles.json', 'utf-8')
     const files: Types.ShadowDropboxAPIFile[] = JSON.parse(data)
     return files
+}
+
+export const getConnectionURL = async () => {
+    const dbx = new Dropbox({
+        clientId: process.env.DROPBOX_APP_KEY,
+        clientSecret: process.env.DROPBOX_APP_SECRET,
+    })
+
+    const SPAExternalPort = process.env.SPA_EXTERNAL_PORT
+    const SPAHost = process.env.SPA_HOST
+    const redirectURL = `http://${SPAHost}:${SPAExternalPort}/admin/dropbox`
+
+    // @ts-ignore
+    const authUrl = await dbx.auth.getAuthenticationUrl(redirectURL, null, 'code', 'offline', null, 'none', false)
+
+    return authUrl
 }
 
 export const exchangeCodeForRefreshToken = async (code: string): Promise<string | null> => {

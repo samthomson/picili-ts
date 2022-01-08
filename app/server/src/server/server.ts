@@ -5,8 +5,6 @@ import http from 'http'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
-import * as DropboxUtil from '../dropboxConnector'
-
 import APITypeDefs from './apiDef'
 import Query from './queries'
 import Mutation from './mutations'
@@ -14,6 +12,7 @@ import Logger from '../services/logging'
 import * as DBConnection from '../db/connection'
 
 import * as AuthUtil from '../util/auth'
+import * as DropboxUtil from '../util/dropbox'
 
 import { TaskManager } from '../services/TaskManager'
 
