@@ -37,42 +37,42 @@ export const processTask = async (taskId: number, thread: number) => {
                 break
             case Enums.TaskType.SUBJECT_DETECTION:
                 taskOutcome = await subjectDetection(task.relatedPiciliFileId)
-                if (!taskOutcome.success) {
+                if (!taskOutcome.success && taskOutcome.retryInMinutes) {
                     // requeue the task
                     await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
                 }
                 break
             case Enums.TaskType.ADDRESS_LOOKUP:
                 taskOutcome = await addressLookup(task.relatedPiciliFileId)
-                if (!taskOutcome.success) {
+                if (!taskOutcome.success && taskOutcome.retryInMinutes) {
                     // requeue the task
                     await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
                 }
                 break
             case Enums.TaskType.ELEVATION_LOOKUP:
                 taskOutcome = await elevationLookup(task.relatedPiciliFileId)
-                if (!taskOutcome.success) {
+                if (!taskOutcome.success && taskOutcome.retryInMinutes) {
                     // requeue the task
                     await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
                 }
                 break
             case Enums.TaskType.OCR_GENERIC:
                 taskOutcome = await ocrGeneric(task.relatedPiciliFileId)
-                if (!taskOutcome.success) {
+                if (!taskOutcome.success && taskOutcome.retryInMinutes) {
                     // requeue the task
                     await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
                 }
                 break
             case Enums.TaskType.OCR_NUMBERPLATE:
                 taskOutcome = await ocrNumberplate(task.relatedPiciliFileId)
-                if (!taskOutcome.success) {
+                if (!taskOutcome.success && taskOutcome.retryInMinutes) {
                     // requeue the task
                     await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
                 }
                 break
             case Enums.TaskType.PLANT_LOOKUP:
                 taskOutcome = await plantLookup(task.relatedPiciliFileId)
-                if (!taskOutcome.success) {
+                if (!taskOutcome.success && taskOutcome.retryInMinutes) {
                     // requeue the task
                     await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
                 }
