@@ -155,6 +155,7 @@ export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcess
         const { dropboxId, userId, path } = dropboxFile
 
         // create file dir tags
+        const fileType = HelperUtil.fileTypeFromExtension(fileExtension)
         const { fileDirectory } = HelperUtil.splitPathIntoParts(path)
         const directories = HelperUtil.individualDirectoriesFromParentDir(fileDirectory)
         const newDirectoryTags = directories.map((dir) => ({
@@ -167,6 +168,12 @@ export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcess
             fileId,
             type: 'filename',
             value: fileName,
+            confidence: 100,
+        })
+        newDirectoryTags.push({
+            fileId,
+            type: 'filetype',
+            value: fileType,
             confidence: 100,
         })
         await DBUtil.createMultipleTags(newDirectoryTags)
