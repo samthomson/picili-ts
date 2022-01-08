@@ -10,8 +10,8 @@ import Logger from '../services/logging'
 import * as Enums from '../../../shared/enums'
 
 const file = async () => {
-    // await TasksUtil.fileImport(619)
-    await TasksUtil.processImage(619, 255)
+    await TasksUtil.fileImport(661)
+    // await TasksUtil.processImage(619, 255)
     // corrupt test
     // await TasksUtil.processImage(32)
     // invalid geo test
