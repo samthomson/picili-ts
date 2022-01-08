@@ -241,7 +241,7 @@ export namespace Core {
 		export interface CreateTagInput {
 			fileId: number
 			type: string
-			subtype?: string
+			subtype: string
 			value: string
 			confidence: number
 		}

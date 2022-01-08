@@ -161,18 +161,21 @@ export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcess
         const newDirectoryTags = directories.map((dir) => ({
             fileId,
             type: 'folder',
+            subtype: '',
             value: dir,
             confidence: 100,
         }))
         newDirectoryTags.push({
             fileId,
             type: 'filename',
+            subtype: '',
             value: fileName,
             confidence: 100,
         })
         newDirectoryTags.push({
             fileId,
             type: 'filetype',
+            subtype: '',
             value: fileType,
             confidence: 100,
         })
@@ -560,6 +563,7 @@ export const ocrGeneric = async (fileId: number): Promise<Types.Core.TaskProcess
             newTags.push({
                 fileId,
                 type: 'ocr.text',
+                subtype: '',
                 value,
                 confidence: 75,
             })
