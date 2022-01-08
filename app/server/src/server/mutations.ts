@@ -106,6 +106,13 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
 
     const connection = await DBUtil.createDropboxConnection(userId, refreshToken)
 
+    if (!refreshToken) {
+        return {
+            success: false,
+            error: 'failed to exchange code for a refresh token, please try connecting again.',
+        }
+    }
+
     // ensure task processor is running
     TasksUtil.ensureTaskProcessorIsRunning()
 
