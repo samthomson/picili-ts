@@ -110,9 +110,10 @@ export const generateThumbnails = async (
             .toBuffer()
     } catch (error) {
         // do nothing, image was corrupt
-        Logger.info('failed reading image, assuming corrupt.', { uuid, extension, error })
         return { success: true, isCorrupt: true }
     }
+    const mediumPreview = base64MediumThumbBuffer.toString('base64')
+    base64MediumThumbBuffer = undefined
 
     try {
         // ensure uuid dir exists
@@ -120,8 +121,8 @@ export const generateThumbnails = async (
 
         const sharpImage = sharp(inPath)
         let mediumWidth = undefined
-        THUMB_SIZES.forEach(async (thumbSize) => {
-            const { name: size, width, height } = thumbSize
+        for (let i = 0; i < THUMB_SIZES.length; i++) {
+            const { name: size, width, height } = THUMB_SIZES[i]
             const outPathFull = `thumbs/${userId}/${uuid}/${size}.jpg`
             // todo: lower quality to reduce filesizes
             const data = await sharpImage.rotate().resize(width, height).toFormat('jpeg').toFile(outPathFull)
@@ -134,11 +135,9 @@ export const generateThumbnails = async (
             if (size === 'm') {
                 mediumWidth = data.width
             }
-        })
+        }
         // gamma >2.2 && <= 3: makes images pop a little, with a more saturated contrast
         // await sharp(inPath).resize(1620, undefined).gamma(3).toFormat('jpeg').toFile(outPathFull)
-
-        const mediumPreview = base64MediumThumbBuffer.toString('base64')
 
         let exifData = undefined
 
