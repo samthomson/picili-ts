@@ -1,0 +1,1 @@
+ALTER TABLE `tags` CHANGE `subtype` `subtype` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL; 
