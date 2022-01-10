@@ -122,7 +122,8 @@ export const generateThumbnails = async (
         const sharpImage = sharp(inPath)
         let mediumWidth = undefined
         for (let i = 0; i < THUMB_SIZES.length; i++) {
-            const { name: size, width, height } = THUMB_SIZES[i]
+            const thumbSize = THUMB_SIZES[i]
+            const { name: size, width, height } = thumbSize
             const outPathFull = `thumbs/${userId}/${uuid}/${size}.jpg`
             // todo: lower quality to reduce filesizes
             const data = await sharpImage.rotate().resize(width, height).toFormat('jpeg').toFile(outPathFull)
