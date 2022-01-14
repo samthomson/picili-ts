@@ -57,7 +57,7 @@ export const listAllDropboxfiles = async (userId: number): Promise<Types.Core.Dr
 
             // if invalidPathDetected was true, then now it is okay, so update/revert that
             if (invalidPathDetected) {
-                await DBUtil.updateDropboxConnectionInvalidDropboxPath(userId, false)
+                await DBUtil.updateDropboxConnection(userId, { syncEnabled: true, invalidPathDetected: false })
             }
         }
     }

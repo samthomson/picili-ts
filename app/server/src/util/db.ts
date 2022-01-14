@@ -84,18 +84,6 @@ export const removeDropboxConnection = async (userId: number): Promise<void> => 
     })
 }
 
-export const updateDropboxConnectionInvalidDropboxPath = async (
-    userId: number,
-    invalidPathDetected: boolean,
-): Promise<void> => {
-    await Models.DropboxConnectionModel.update(
-        { invalidPathDetected },
-        {
-            where: { userId },
-        },
-    )
-}
-
 export const bulkInsertNewDropboxFiles = async (newFiles: Types.ShadowDropboxAPIFile[], userId: number) => {
     const newDropboxFiles = newFiles.map(({ path, id: dropboxId, hash }) => ({ path, dropboxId, userId, hash }))
 

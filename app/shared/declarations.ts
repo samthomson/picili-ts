@@ -9,8 +9,8 @@ export namespace API {
 		}
 	}
 	export interface DropboxConnection {
-		syncPath: string
-		syncEnabled: boolean
+		syncPath?: string
+		syncEnabled?: boolean
 		invalidPathDetected?: boolean
 	}
 
