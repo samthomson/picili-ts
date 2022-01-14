@@ -122,6 +122,7 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
             ? {
                   syncPath: connection.syncPath,
                   syncEnabled: connection.syncEnabled,
+                  invalidPathDetected: connection.invalidPathDetected,
               }
             : undefined,
     }
@@ -165,6 +166,7 @@ const dropboxUpdate = async (parent, args, context): Promise<any> => {
         dropboxConnection: {
             syncPath: updatedConnection?.syncPath,
             syncEnabled: updatedConnection?.syncEnabled,
+            invalidPathDetected: updatedConnection?.invalidPathDetected,
         },
     }
 }

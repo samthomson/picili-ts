@@ -16,8 +16,8 @@ const getDropboxConnection = async (parents, args, context): Promise<Types.API.D
     if (!connection) {
         return null
     }
-    const { syncPath, syncEnabled } = connection
-    return { syncPath, syncEnabled }
+    const { syncPath, syncEnabled, invalidPathDetected } = connection
+    return { syncPath, syncEnabled, invalidPathDetected }
 }
 
 const taskSummary = async (parents, args, context): Promise<Types.API.TaskSummary> => {

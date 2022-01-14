@@ -17,6 +17,7 @@ const typeDefs = gql`
     type DropboxConnection {
         syncPath: String
         syncEnabled: Boolean
+        invalidPathDetected: Boolean
     }
     type TaskQueue {
         type: String
