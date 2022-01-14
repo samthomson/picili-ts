@@ -350,6 +350,14 @@ export const ocrNumberplate = async (largeThumbnailPath: string): Promise<Types.
                         numberPlateData,
                     }
 
+                case 408:
+                    // connectivity issue / timed out
+                    return {
+                        success: false,
+                        throttled: false,
+                        requeueDelayMinutes: 15,
+                    }
+
                 case 429:
                     // throttled
                     return {
