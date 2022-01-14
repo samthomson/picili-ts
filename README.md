@@ -1,10 +1,10 @@
 # picili-ts
 
-## build
+## 1.0 Build
 
 [todo]
 
-## run
+## 2.0 Run
 
 `docker-compose up` 
 
@@ -15,7 +15,7 @@ SPA: `http://localhost:3500`
 API: `http://localhost:3501/graphql`
 phpmyadmin: `http://localhost:8083`
 
-## how it works
+## 3.0 How it works
 
 A `TaskManager` is always running in the background, working through **tasks**. These can be anything from syncing with dropbox, to performing subject detection on a newly imported file.
 Once a connection with dropbox is made via OAuth, and a directory (within your dropbox folder) that picili should sync with, it sets up a recurring task to **sync**.
@@ -42,4 +42,25 @@ Once a connection with dropbox is made via OAuth, and a directory (within your d
 [*] Some APIs require a latitude/longitude, so are only called if the image was geotagged.
 
 [**] These APIs are called conditionally based on the results of subject detection. For example if *plant*, *flower*, or *tree* is detected as a subject tag, then a task will be created to have the plant detection API called for that picture.
+
+## 4.0 Deployment
+
+Testing and targeting Digital Ocean's $5/m VPS.
+
+### 4.1 initial deploy
+
+1. if not done already:
+	- create a VPS as per https://github.com/samthomson/readme/tree/master/docker-machine
+	- [generate an ssh key and add to github](https://github.com/samthomson/readme/tree/master/docker-machine#optional)
+2. `bash ./initial-deployment.sh`
+
+### 4.2 update / redeploy
+
+`bash ./remote-redeploy.sh`
+
+### 4.3 download log files
+
+The prod docker-compose maps the log directory from the container to the host. So can be downloaded via scp (run command from root):
+
+`bash ./bash/download-logs.sh` (to `/serverlogs`)
 
