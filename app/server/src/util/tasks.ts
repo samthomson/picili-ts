@@ -179,6 +179,13 @@ export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcess
             value: fileType,
             confidence: 100,
         })
+        newDirectoryTags.push({
+            fileId,
+            type: 'fileextension',
+            subtype: '',
+            value: fileExtension,
+            confidence: 100,
+        })
         await DBUtil.createMultipleTags(newDirectoryTags)
 
         const success = await DropboxUtil.downloadDropboxFile(dropboxId, userId, fileId, fileExtension)
