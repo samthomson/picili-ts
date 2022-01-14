@@ -2,7 +2,7 @@ version: "2"
 services:
   app:
     build: ./
-    # todo: update this command for prod
+    #// todo: use static server for spa
     command:
       [
         sh,
