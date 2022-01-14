@@ -89,6 +89,7 @@ export namespace ExternalAPI {
 			cursor: string
 			entries: DropboxFile[]
 			has_more: boolean
+			error?: any
 		}
 	}
 
@@ -245,6 +246,12 @@ export namespace Core {
 			value: string
 			confidence: number
 		}
+	}
+
+	export type DropboxListFilesResponse = {
+		success: boolean
+		error?: string
+		files: ShadowDropboxAPIFile[]
 	}
 
 	export type FileParts = {

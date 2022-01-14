@@ -109,3 +109,9 @@ export const removeAFileFromTheSystem = async (dropboxFileId: number) => {
     // lastly, remove dropbox file entry
     await DBUtil.removeDropboxFile(dropboxFileId)
 }
+
+export const raiseEventInvalidDropboxPathDetected = async (userId: number): Promise<void> => {
+    // set flag on dropbox connection
+    await DBUtil.updateDropboxConnectionInvalidDropboxPath(userId, true)
+    // todo: send email notification to user
+}

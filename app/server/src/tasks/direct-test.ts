@@ -86,8 +86,10 @@ const apiTest = async () => {
     console.log(apiResult)
 }
 const taskTest = async () => {
-    const apiResult = await TasksUtil.plantLookup(14)
+    // const apiResult = await TasksUtil.plantLookup(14)
     // console.log(apiResult)
+    const dropboxResult = await DropboxUtil.checkForDropboxChanges(3)
+    Logger.info('dropboxResult', { dropboxResult })
 }
 
 const removeThumbnailTest = async () => {
@@ -127,7 +129,7 @@ const testParsingFileParts = async () => {
     }
 }
 
-file()
+// file()
 // imaggaTest()
 // geo()
 // geoThrottleTest()
@@ -136,3 +138,4 @@ file()
 // mixedFileList()
 // testDropboxSync()
 // testParsingFileParts()
+taskTest()

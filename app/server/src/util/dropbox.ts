@@ -12,10 +12,10 @@ import FSExtra from 'fs-extra'
 import moment from 'moment'
 import { Dropbox } from 'dropbox'
 
-export const listAllDropboxfiles = async (userId: number): Promise<Types.ShadowDropboxAPIFile[]> => {
+export const listAllDropboxfiles = async (userId: number): Promise<Types.Core.DropboxListFilesResponse> => {
     // get dropbox connection details for user
     const dropboxConnection = await DBUtil.getDropboxConnection(userId)
-    const { refreshToken: token, syncPath } = dropboxConnection
+    const { refreshToken: token, syncPath, invalidPathDetected } = dropboxConnection
     const access = await exchangeRefreshTokenForAccessToken(token)
 
     // query dropbox and get all files for that directory (recursively)
@@ -27,12 +27,39 @@ export const listAllDropboxfiles = async (userId: number): Promise<Types.ShadowD
     while (stillReadingDropboxFileList) {
         const listFolderResp = await dropboxListFolder(access, syncPath, cursor)
 
-        stillReadingDropboxFileList = listFolderResp.has_more
+        if (listFolderResp?.error) {
+            /**
+             * if there was an error, we'll exit from this function.
+             * if we catch the invalid path error, return a standard error to subsequently handle.
+             */
 
-        allDropboxFiles.push(...listFolderResp.entries)
+            // path not found error?
+            if (listFolderResp?.error?.path?.['.tag'] === 'not_found') {
+                return {
+                    success: false,
+                    error: 'INVALID_PATH',
+                    files: [],
+                }
+            } else {
+                Logger.warn('unknown error from dropbox', listFolderResp?.error)
+                return {
+                    success: false,
+                    files: [],
+                }
+            }
+        } else {
+            stillReadingDropboxFileList = listFolderResp.has_more
 
-        requestsMadeToDropbox++
-        cursor = listFolderResp.cursor
+            allDropboxFiles.push(...listFolderResp.entries)
+
+            requestsMadeToDropbox++
+            cursor = listFolderResp.cursor
+
+            // if invalidPathDetected was true, then now it is okay, so update/revert that
+            if (invalidPathDetected) {
+                await DBUtil.updateDropboxConnectionInvalidDropboxPath(userId, false)
+            }
+        }
     }
 
     const dropboxFiles = allDropboxFiles
@@ -47,7 +74,7 @@ export const listAllDropboxfiles = async (userId: number): Promise<Types.ShadowD
         })
         .map(({ path_lower: path, id, content_hash: hash }) => ({ path, id, hash }))
 
-    return dropboxFiles
+    return { success: true, files: dropboxFiles }
 }
 
 export const listAllDropboxFilesFromJSONFile = () => {
@@ -250,8 +277,12 @@ export const checkForDropboxChanges = async (userId: number): Promise<Types.Core
         // create a sync log, and retain it's id.
         const syncLogId = await DBUtil.createSyncLog(userId)
         const databaseFiles = await DBUtil.getAllDropboxFilesFromDB(userId)
-        // const apiFiles = await listAllDropboxFilesFromJSONFile()
-        const apiFiles = await listAllDropboxfiles(userId)
+        const { files: apiFiles, success, error } = await listAllDropboxfiles(userId)
+
+        // if invalid path error, raise event in core.
+        if (error === 'INVALID_PATH') {
+            await CoreUtil.raiseEventInvalidDropboxPathDetected(userId)
+        }
 
         const fileDelta = newUpdatedDeletedFileListComparison(databaseFiles, apiFiles)
 
