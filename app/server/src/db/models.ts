@@ -37,6 +37,7 @@ interface DropboxConnectionAttributes {
     refreshToken: string
     syncPath?: string
     syncEnabled?: boolean
+    invalidPathDetected?: boolean
 }
 type DropboxConnectionCreationAttributes = Sequelize.Optional<DropboxConnectionAttributes, 'id'>
 
@@ -59,6 +60,7 @@ export const DropboxConnectionModel = Database.define<DropboxConnectionInstance>
         refreshToken: Sequelize.STRING,
         syncPath: Sequelize.STRING,
         syncEnabled: Sequelize.BOOLEAN,
+        invalidPathDetected: Sequelize.BOOLEAN,
     },
     {
         timestamps: true,

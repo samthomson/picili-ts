@@ -1,0 +1,1 @@
+ALTER TABLE `dropbox_connections` ADD `invalid_path_detected` BOOLEAN NOT NULL DEFAULT FALSE AFTER `sync_enabled`; 
