@@ -32,10 +32,10 @@ const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 			dropboxConnection ?? undefined,
 		)
 	const [syncPath, setSyncPath] = React.useState<string>(
-		dropboxConnection?.syncPath ?? undefined,
+		dropboxConnection?.syncPath ?? '',
 	)
 	const [syncEnabled, setSyncEnabled] = React.useState<boolean>(
-		dropboxConnection?.syncEnabled ?? undefined,
+		dropboxConnection?.syncEnabled ?? true,
 	)
 
 	const [
