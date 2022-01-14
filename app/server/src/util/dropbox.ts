@@ -25,39 +25,44 @@ export const listAllDropboxfiles = async (userId: number): Promise<Types.Core.Dr
     let cursor = undefined
 
     while (stillReadingDropboxFileList) {
-        const listFolderResp = await dropboxListFolder(access, syncPath, cursor)
+        const { listFolderResponse, error, success } = await dropboxListFolder(access, syncPath, cursor)
 
-        if (listFolderResp?.error) {
+        if (listFolderResponse?.error) {
             /**
              * if there was an error, we'll exit from this function.
              * if we catch the invalid path error, return a standard error to subsequently handle.
              */
 
             // path not found error?
-            if (listFolderResp?.error?.path?.['.tag'] === 'not_found') {
+            if (listFolderResponse?.error?.path?.['.tag'] === 'not_found') {
                 return {
                     success: false,
                     error: 'INVALID_PATH',
                     files: [],
                 }
             } else {
-                Logger.warn('unknown error from dropbox', listFolderResp?.error)
+                Logger.warn('unknown error from dropbox', listFolderResponse?.error)
                 return {
                     success: false,
                     files: [],
                 }
             }
         } else {
-            stillReadingDropboxFileList = listFolderResp.has_more
+            if (success) {
+                stillReadingDropboxFileList = listFolderResponse.has_more
 
-            allDropboxFiles.push(...listFolderResp.entries)
+                allDropboxFiles.push(...listFolderResponse.entries)
 
-            requestsMadeToDropbox++
-            cursor = listFolderResp.cursor
+                requestsMadeToDropbox++
+                cursor = listFolderResponse.cursor
 
-            // if invalidPathDetected was true, then now it is okay, so update/revert that
-            if (invalidPathDetected) {
-                await DBUtil.updateDropboxConnection(userId, { syncEnabled: true, invalidPathDetected: false })
+                // if invalidPathDetected was true, then now it is okay, so update/revert that
+                if (invalidPathDetected) {
+                    await DBUtil.updateDropboxConnection(userId, { syncEnabled: true, invalidPathDetected: false })
+                }
+            }
+            if (error) {
+                return { success: false, files: [], error }
             }
         }
     }
@@ -163,7 +168,7 @@ const dropboxListFolder = async (
     refreshToken: string,
     path: string,
     cursor?: string,
-): Promise<Types.ExternalAPI.Dropbox.ListFolderResponse> => {
+): Promise<Types.Core.DropboxListFolderResponse> => {
     try {
         const url = cursor
             ? 'https://api.dropboxapi.com/2/files/list_folder/continue'
@@ -193,14 +198,18 @@ const dropboxListFolder = async (
         const result = await fetch(url, options)
         const data = await result.json()
 
-        return data
+        return { success: true, listFolderResponse: data }
     } catch (err) {
         if (err.code === 'EAI_AGAIN') {
             Logger.info('unable to reach dropbox API - no connectivity?')
         } else {
             Logger.error('encountered an error calling dropbox api to list folder', { err })
         }
-        return null
+        return {
+            success: false,
+            listFolderResponse: null,
+            error: err?.code ?? 'UNKNOWN_ERROR',
+        }
     }
 }
 
@@ -284,36 +293,47 @@ export const checkForDropboxChanges = async (userId: number): Promise<Types.Core
             await CoreUtil.raiseEventInvalidDropboxPathDetected(userId)
         }
 
-        const fileDelta = newUpdatedDeletedFileListComparison(databaseFiles, apiFiles)
-
-        // if there were new files, add them to picili
-        for (let i = 0; i < fileDelta.new.length; i++) {
-            await CoreUtil.addAFileToTheSystem(userId, fileDelta.new[i])
+        if (error === 'EAI_AGAIN') {
+            // connectivity issue, try again in five mins
+            return { success: false, retryInMinutes: 5 }
         }
 
-        // if there were deleted files, remove them from picili
-        for (let i = 0; i < fileDelta.deleted.length; i++) {
-            await CoreUtil.removeAFileFromTheSystem(fileDelta.deleted[i].id)
+        // allow error being INVALID_PATH as then we will remove all files
+        if (success || error === 'INVALID_PATH') {
+            const fileDelta = newUpdatedDeletedFileListComparison(databaseFiles, apiFiles)
+
+            // if there were new files, add them to picili
+            for (let i = 0; i < fileDelta.new.length; i++) {
+                await CoreUtil.addAFileToTheSystem(userId, fileDelta.new[i])
+            }
+
+            // if there were deleted files, remove them from picili
+            for (let i = 0; i < fileDelta.deleted.length; i++) {
+                await CoreUtil.removeAFileFromTheSystem(fileDelta.deleted[i].id)
+            }
+
+            // if there were changed files, update them in picili
+            for (let i = 0; i < fileDelta.changed.length; i++) {
+                await CoreUtil.updateAFileInTheSystem(fileDelta.changed[i])
+            }
+
+            // update the sync log with file event numbers and run time.
+            const endTime = moment()
+            const milliseconds = endTime.diff(startTime)
+            await DBUtil.updateSyncLog(
+                syncLogId,
+                fileDelta.new.length,
+                fileDelta.changed.length,
+                fileDelta.deleted.length,
+                milliseconds,
+            )
+
+            // reaching the end is a success - otherwise this task would be re-run until it finishes, meaning all files were processed
+            return { success: true }
+        } else {
+            Logger.warn('encountered an error checking for dropbox changes', { error })
+            return { success: false }
         }
-
-        // if there were changed files, update them in picili
-        for (let i = 0; i < fileDelta.changed.length; i++) {
-            await CoreUtil.updateAFileInTheSystem(fileDelta.changed[i])
-        }
-
-        // update the sync log with file event numbers and run time.
-        const endTime = moment()
-        const milliseconds = endTime.diff(startTime)
-        await DBUtil.updateSyncLog(
-            syncLogId,
-            fileDelta.new.length,
-            fileDelta.changed.length,
-            fileDelta.deleted.length,
-            milliseconds,
-        )
-
-        // reaching the end is a success - otherwise this task would be re-run until it finishes, meaning all files were processed
-        return { success: true }
     } catch (err) {
         Logger.error('encountered an error checking for dropbox changes', err)
         return { success: false }

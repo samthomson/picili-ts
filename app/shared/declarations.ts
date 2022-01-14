@@ -255,6 +255,12 @@ export namespace Core {
 		files: ShadowDropboxAPIFile[]
 	}
 
+	export type DropboxListFolderResponse = {
+		success: boolean
+		error?: string
+		listFolderResponse: ExternalAPI.Dropbox.ListFolderResponse
+	}
+
 	export type FileParts = {
 		fileDirectory: string
 		fileName: string
