@@ -13,7 +13,6 @@ import {
 } from '@apollo/client'
 
 import App from 'src/components/structure/App'
-import * as Actions from 'src/redux/actions'
 import { appReducers } from 'src/redux/reducers'
 import { Store } from 'src/redux/store'
 import rootSaga from 'src/redux/sagas'
