@@ -11,6 +11,7 @@ export namespace API {
 	export interface DropboxConnection {
 		syncPath: string
 		syncEnabled: boolean
+		invalidPathDetected?: boolean
 	}
 
 	export type TaskQueue = {

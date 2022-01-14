@@ -11,6 +11,7 @@ const updateDropboxConnectionGQL = gql`
 				dropboxConnection {
 					syncPath
 					syncEnabled
+					invalidPathDetected
 				}
 			}
 		}
@@ -82,6 +83,14 @@ const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 					disabled={disabled}
 				/>
 			</form>
+			{dropboxConnection.invalidPathDetected && (
+				<>
+					<div>
+						[invalid dropbox path - syncing is disabled and will
+						auto resume once fixed]
+					</div>
+				</>
+			)}
 			<button
 				onClick={disconnectHandler}
 				disabled={isUpdateButtonDisabled}

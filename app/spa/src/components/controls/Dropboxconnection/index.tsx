@@ -10,6 +10,7 @@ const dropboxConnectionQuery = gql`
 		dropboxConnection {
 			syncPath
 			syncEnabled
+			invalidPathDetected
 		}
 		taskProcessor {
 			stopping
