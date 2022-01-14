@@ -722,15 +722,21 @@ export const ensureTaskProcessorIsRunning = () => {
 
 export const removeAFileFromTheSystem = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
     const file = await Models.FileModel.findByPk(fileId)
+    let thumbnailRemovalSuccess = false
     // remove tags
     await DBUtil.removeTagsForFile(fileId)
     // remove picili file
-    await DBUtil.removeFile(fileId)
-
-    // remove thumbnails
-    const thumbnailRemovalSuccess = await FileUtil.removeThumbnails(file.userId, file.uuid)
-
-    return { success: thumbnailRemovalSuccess }
+    if (file) {
+        const { userId, uuid } = file
+        // set no thumbnails, so file won't be returned in results
+        await DBUtil.setNoThumbnailsOnFile(fileId)
+        // remove thumbnails
+        thumbnailRemovalSuccess = await FileUtil.removeThumbnails(file.userId, file.uuid)
+        await DBUtil.removeFile(fileId)
+        return { success: thumbnailRemovalSuccess }
+    } else {
+        return { success: true }
+    }
 }
 
 export const bulkCreateRemovalTasks = async (dropboxFileIds: number[]): Promise<void> => {

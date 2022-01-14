@@ -433,6 +433,14 @@ export const removeFile = async (fileId: number) => {
         where: { id: fileId },
     })
 }
+export const setNoThumbnailsOnFile = async (fileId: number) => {
+    await Models.FileModel.update(
+        { isThumbnailed: false },
+        {
+            where: { id: fileId },
+        },
+    )
+}
 
 export const removeDropboxImportTask = async (userId: number): Promise<void> => {
     await Models.TaskModel.destroy({
