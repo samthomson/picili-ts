@@ -106,6 +106,14 @@ const typeDefs = gql`
         items: [SearchResult]
         # pageInfo: PaginationInfo
     }
+
+    type AdminOverview {
+        corruptFiles: [String]
+        dropboxFileCount: Int
+        fileCount: Int
+        searchableFilesCount: Int
+    }
+
     type Query {
         validateToken(token: String!): Boolean
         dropboxConnection: DropboxConnection
@@ -114,6 +122,7 @@ const typeDefs = gql`
         # todo: add sort enum param
         # todo: add pagination params
         search(filter: SearchFilter!): SearchQueryResponse
+        adminOverview: AdminOverview
     }
     type Mutation {
         login(authInput: LoginInput!): AuthResponse

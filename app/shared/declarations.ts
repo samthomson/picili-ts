@@ -39,6 +39,13 @@ export namespace API {
 		processed: TasksProcessed
 	}
 
+	export interface AdminOverview {
+        corruptFiles: string[]
+        dropboxFileCount: number
+        fileCount: number
+        searchableFilesCount: number
+	}
+
 	export interface TaskProcessor {
 		stopping: boolean
 		isImportingEnabled: boolean

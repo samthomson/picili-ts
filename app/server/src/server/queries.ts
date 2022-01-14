@@ -1,5 +1,6 @@
 import * as AuthUtil from '../util/auth'
 import * as DBUtil from '../util/db'
+import * as Models from '../db/models'
 import * as SearchUtil from '../util/search'
 import { TaskManager } from '../services/TaskManager'
 import * as Types from '@shared/declarations'
@@ -81,12 +82,33 @@ const taskProcessor = async (parents, args, context): Promise<Types.API.TaskProc
     }
 }
 
+const adminOverview = async (parents, args, context): Promise<Types.API.AdminOverview> => {
+    AuthUtil.verifyRequestIsAuthenticated(context)
+
+    const { userId } = context
+
+    const corruptFiles = await DBUtil.getCorruptFilesDropboxPaths(userId)
+    const dropboxFileCount = await Models.DropboxFileModel.count({ where: { userId } })
+    const fileCount = await Models.FileModel.count({ where: { userId } })
+    const searchableFilesCount = await Models.FileModel.count({
+        where: { userId, isCorrupt: false, isThumbnailed: true },
+    })
+
+    return {
+        corruptFiles,
+        dropboxFileCount,
+        fileCount,
+        searchableFilesCount,
+    }
+}
+
 const queries = {
     validateToken: (parent, args, ctx) => AuthUtil.requestHasValidCookieToken(ctx),
     dropboxConnection: getDropboxConnection,
     taskSummary,
     search,
     taskProcessor,
+    adminOverview,
 }
 
 export default queries

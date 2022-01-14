@@ -464,3 +464,14 @@ export const getAllDropboxFileIdsForUser = async (userId: number): Promise<numbe
 
     return dropboxFileIds
 }
+
+export const getCorruptFilesDropboxPaths = async (userId: number): Promise<string[]> => {
+    const result = await Models.FileModel.findAll({
+        where: { userId, isCorrupt: true },
+        include: [{ model: Models.DropboxFileModel }],
+    })
+    // @ts-ignore
+    const dropboxFilePaths = result.map((file) => file.dropbox_file.path)
+
+    return dropboxFilePaths
+}
