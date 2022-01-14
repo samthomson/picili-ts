@@ -1,6 +1,7 @@
 import * as Types from '@shared/declarations'
 import * as Enums from '../../../shared/enums'
 import * as DBUtil from './db'
+import * as TaskUtil from './tasks'
 import * as HelperUtil from './helper'
 
 import * as UUID from 'uuid'
@@ -95,11 +96,13 @@ export const removeAFileFromTheSystem = async (dropboxFileId: number) => {
     if (piciliFile) {
         await DBUtil.removeImportTasksForFile(piciliFile.id)
 
-        // then queue removal task for two minutes time (so that any other running tasks have completed)
+        // then queue removal task for two minutes time (so that any other running tasks have completed) - unless we know there are no tasks running
+        const currentlyProcessingFiles = TaskUtil.isTaskProcessorWorkingOnImportTasks()
+        const from = currentlyProcessingFiles ? moment().add(2, 'minute').toISOString() : undefined
         await DBUtil.createTask({
             taskType: Enums.TaskType.REMOVE_FILE,
             relatedPiciliFileId: piciliFile.id,
-            from: moment().add(2, 'minute').toISOString(),
+            from,
         })
     }
 

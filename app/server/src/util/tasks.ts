@@ -742,3 +742,15 @@ export const isTaskProcessorTooBusyToBeInterrupted = (): boolean => {
     const taskManager = TaskManager.getInstance()
     return taskManager.howManyProcessableTasksAreThere > 0
 }
+
+export const isTaskProcessorWorkingOnImportTasks = (): boolean => {
+    /**
+     * returns true if active tasks contains import tasks other than dropbox sync.
+     */
+    const taskManager = TaskManager.getInstance()
+    const tasks = taskManager.getTasksBeingProcessed()
+    const importTasks = tasks.filter((task) => task.importTask)
+    const nonSyncImportTasks = importTasks.filter((task) => task.taskType !== Enums.TaskType.DROPBOX_SYNC)
+
+    return nonSyncImportTasks.length > 0
+}
