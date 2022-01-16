@@ -65,7 +65,7 @@ services:
     environment:
       - PMA_HOST=mysql
       - PMA_ARBITRARY=1
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD_PRODUCTION}
       - UPLOAD_LIMIT=2G
     ports:
       - "8083:80"
