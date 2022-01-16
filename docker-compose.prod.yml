@@ -7,7 +7,7 @@ services:
       [
         sh,
         -c,
-        "cd /app/server && yarn run start-server-prod & cd /app/spa && yarn run
+        "cd /app/server && yarn run prod-start & cd /app/spa && yarn run
           prod-start"
       ]
     environment:
