@@ -32,17 +32,14 @@ services:
       - API_INTERNAL_PORT=4000
       - API_HOST=localhost
       - SPA_HOST=localhost
-    ports:
-      - "80:3000"
-      - "443:3000"
-      - "3501:4000"
     volumes:
       - ./app:/app
       - /logs/picili-ts-server:/app/logs
+    ports:
+      - "4000:4000"
     expose:
-      - "80"
-      - "443"
-      - "3501"
+      - "3000"
+      - "4000"
     depends_on:
       - mysql
       # only in dev do we need phpmyadmin (so we can just bash into the server and stil use mysql/phpmyadmin)
@@ -74,6 +71,15 @@ services:
       - /sessions
     depends_on:
       - mysql
+  
+  nginx:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./nginx-proxy.conf:/etc/nginx/conf.d/nginx-proxy.conf
+
 
 volumes:
   mysqldata:

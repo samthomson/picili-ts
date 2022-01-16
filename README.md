@@ -3,6 +3,7 @@
 ## 1.0 Build
 
 [todo]
+[ copy .env]
 
 ## 2.0 Run
 
@@ -53,6 +54,9 @@ Testing and targeting Digital Ocean's $5/m VPS.
 	- create a VPS as per https://github.com/samthomson/readme/tree/master/docker-machine
 	- [generate an ssh key and add to github](https://github.com/samthomson/readme/tree/master/docker-machine#optional)
 2. `bash ./initial-deployment.sh`
+
+[//todo: something about the nginx sample]
+
 
 ### 4.2 update / redeploy
 
