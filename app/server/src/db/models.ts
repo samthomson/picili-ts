@@ -1,6 +1,7 @@
 import * as Sequelize from 'sequelize'
 import Database from './connection'
 import * as Enums from '@shared/enums'
+import * as Types from '@shared/declarations'
 
 interface UserAttributes {
     id: string
@@ -68,18 +69,19 @@ export const DropboxConnectionModel = Database.define<DropboxConnectionInstance>
     },
 )
 
-interface DropboxFileAttributes {
-    id: number
-    userId: number
-    path: string
-    dropboxId: string
-    hash: string
-}
-type DropboxFileCreationAttributes = Sequelize.Optional<DropboxFileAttributes, 'id'>
+// moved to shared
+// interface DropboxFileAttributes {
+//     id: number
+//     userId: number
+//     path: string
+//     dropboxId: string
+//     hash: string
+// }
+type DropboxFileCreationAttributes = Sequelize.Optional<Types.Core.BaseModels.DropboxFileAttributes, 'id'>
 
 export interface DropboxFileInstance
-    extends Sequelize.Model<DropboxFileAttributes, DropboxFileCreationAttributes>,
-        DropboxFileAttributes {
+    extends Sequelize.Model<Types.Core.BaseModels.DropboxFileAttributes, DropboxFileCreationAttributes>,
+    Types.Core.BaseModels.DropboxFileAttributes {
     createdAt?: Date
     updatedAt?: Date
 }
@@ -140,19 +142,20 @@ export const SyncLogModel = Database.define<SyncLogInstance>(
     },
 )
 
-interface TaskAttributes {
-    id: number
-    taskType: Enums.TaskType
-    relatedPiciliFileId: number
-    from: string // date
-    after: number // other task id (optional, default null)
-    importTask: boolean // default false
-    priority: number
-    timesSeen: number
-}
-type TaskCreationAttributes = Sequelize.Optional<TaskAttributes, 'id' | 'timesSeen' | 'from' | 'after' | 'importTask'>
+// moved to shared
+// interface TaskAttributes {
+//     id: number
+//     taskType: Enums.TaskType
+//     relatedPiciliFileId: number
+//     from: string // date
+//     after: number // other task id (optional, default null)
+//     importTask: boolean // default false
+//     priority: number
+//     timesSeen: number
+// }
+type TaskCreationAttributes = Sequelize.Optional<Types.Core.BaseModels.TaskAttributes, 'id' | 'timesSeen' | 'from' | 'after' | 'importTask'>
 
-export interface TaskInstance extends Sequelize.Model<TaskAttributes, TaskCreationAttributes>, TaskAttributes {
+export interface TaskInstance extends Sequelize.Model<Types.Core.BaseModels.TaskAttributes, TaskCreationAttributes>, Types.Core.BaseModels.TaskAttributes {
     createdAt?: Date
 }
 

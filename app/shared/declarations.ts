@@ -1,4 +1,4 @@
-import * as Models from '../server/src/db/models'
+// import * as Models from '../server/src/db/models'
 import * as Enums from './enums'
 
 export namespace API {
@@ -49,7 +49,7 @@ export namespace API {
 	export interface TaskProcessor {
 		stopping: boolean
 		isImportingEnabled: boolean
-		currentTasksBeingProcessed: Models.TaskInstance[]
+		currentTasksBeingProcessed: Core.BaseModels.TaskAttributes[]
 	}
 
 	export interface SearchResultItem {
@@ -216,7 +216,7 @@ export interface ChangedDropboxFile {
 export interface DropboxFileListChanges {
 	new: ShadowDropboxAPIFile[]
 	changed: ChangedDropboxFile[]
-	deleted: Models.DropboxFileInstance[]
+	deleted: Core.BaseModels.DropboxFileAttributes[]
 }
 
 export namespace Core {
@@ -358,6 +358,27 @@ export namespace Core {
 		address: string
 		latitude: number
 		longitude: number
+	}
+
+	export namespace BaseModels {
+		export interface DropboxFileAttributes {
+			id: number
+			userId: number
+			path: string
+			dropboxId: string
+			hash: string
+		}
+		
+		export interface TaskAttributes {
+			id: number
+			taskType: Enums.TaskType
+			relatedPiciliFileId: number
+			from: string // date
+			after: number // other task id (optional, default null)
+			importTask: boolean // default false
+			priority: number
+			timesSeen: number
+		}
 	}
 }
 
