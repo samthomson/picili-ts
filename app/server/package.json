@@ -32,7 +32,7 @@
   },
   "scripts": {
     "start-server": "node --inspect=0.0.0.0:9229 -r ts-node/register src/server/server.ts",
-    "prod-start": "ts-node src/server/server.ts",
+    "prod-start": "yarn && yarn run migrate && ts-node src/server/server.ts",
     "watch-server": "tsc-watch --onSuccess \"yarn run start-server\" --onFailure \"echo Compilation failed...\" --noClear",
     "lint-summary": "eslint '*/**/*.{js,ts,tsx}'",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
