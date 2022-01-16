@@ -114,7 +114,7 @@ export const exchangeCodeForRefreshToken = async (code: string): Promise<string 
         const params = new URLSearchParams()
         params.append('code', code)
         params.append('grant_type', 'authorization_code')
-        // todo: later make this protocol agnostic for prod when https works there
+        // todo: later/ssl make this protocol agnostic for prod when https works there
         params.append('redirect_uri', `http://${SPAHost}:${SPAExternalPort}/admin/dropbox`)
         params.append('client_id', process.env.DROPBOX_APP_KEY)
         params.append('client_secret', process.env.DROPBOX_APP_SECRET)

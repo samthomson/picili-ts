@@ -9,7 +9,8 @@ import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
 
-export const URI = `${window.location.protocol}//${window.location.hostname}:3501/graphql`
+// todo: later/ssl make this protocol agnostic
+export const URI = `http://${window.location.hostname}:3501/graphql`
 
 const httpLink = createHttpLink({
 	uri: URI,
