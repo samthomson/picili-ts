@@ -55,7 +55,7 @@ services:
       - "3306:3306"
     environment:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD_PRODUCTION}
     volumes:
       - mysqldata:/var/lib/mysql
       - ./mysql/mycustom.cnf:/etc/mysql/conf.d/custom.cnf
@@ -65,7 +65,6 @@ services:
     environment:
       - PMA_HOST=mysql
       - PMA_ARBITRARY=1
-      - MYSQL_USER=root
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - UPLOAD_LIMIT=2G
     ports:
