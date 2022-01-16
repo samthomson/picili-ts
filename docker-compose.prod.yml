@@ -36,7 +36,6 @@ services:
       - "80:3000"
       - "443:3000"
       - "3501:4000"
-      - "9229:9229"
     volumes:
       - ./app:/app
       - /logs/picili-ts-server:/app/logs
