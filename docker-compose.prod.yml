@@ -42,7 +42,6 @@ services:
     expose:
       - "80"
       - "3501"
-      - "9229"
     depends_on:
       - mysql
       # only in dev do we need phpmyadmin (so we can just bash into the server and stil use mysql/phpmyadmin)
