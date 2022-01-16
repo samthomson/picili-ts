@@ -41,6 +41,7 @@ services:
       - /logs/picili-ts-server:/app/logs
     expose:
       - "80"
+      - "443"
       - "3501"
     depends_on:
       - mysql
