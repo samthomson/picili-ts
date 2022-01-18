@@ -32,6 +32,9 @@ function* search() {
 				mutation: gql`
 					query ($searchFilter: SearchFilter!) {
 						search(filter: $searchFilter) {
+							pageInfo {
+								totalItems
+							}
 							items {
 								uuid
 								userId

@@ -16,6 +16,12 @@ export const searchResults = (state: Store): Types.API.SearchResultItem[] => {
 	return state?.searchResult?.items ?? []
 }
 
+export const searchPaginationInfo = (
+	state: Store,
+): Types.API.PaginationInfo | undefined => {
+	return state?.searchResult?.pageInfo
+}
+
 export const searchQuery = (state: Store): Types.API.SearchQuery => {
 	return state.searchQuery
 }

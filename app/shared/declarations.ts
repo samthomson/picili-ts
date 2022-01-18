@@ -61,7 +61,7 @@ export namespace API {
 		longitude: number
 	}
 
-	interface PaginationInfo {
+	export interface PaginationInfo {
         totalPages: number
         totalItems: number
         page: number
