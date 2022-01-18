@@ -102,9 +102,29 @@ const typeDefs = gql`
         address: String
     }
 
+    type PaginationInfo {
+        # Total number of pages
+        totalPages: Int!
+      
+        # Total number of items
+        totalItems: Int!
+      
+        # Current page number
+        page: Int!
+      
+        # Number of items per page
+        perPage: Int!
+      
+        # When paginating forwards, are there more items?
+        hasNextPage: Boolean!
+      
+        # When paginating backwards, are there more items?
+        hasPreviousPage: Boolean!
+      }
+
     type SearchQueryResponse {
-        items: [SearchResult]
-        # pageInfo: PaginationInfo
+        items: [SearchResult]!
+        pageInfo: PaginationInfo!
     }
 
     type AdminOverview {
@@ -121,7 +141,7 @@ const typeDefs = gql`
         taskProcessor: TaskProcessor
         # todo: add sort enum param
         # todo: add pagination params
-        search(filter: SearchFilter!): SearchQueryResponse
+        search(filter: SearchFilter!, page: Int! = 1, perPage: Int! = 100): SearchQueryResponse
         adminOverview: AdminOverview
     }
     type Mutation {

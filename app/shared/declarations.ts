@@ -61,8 +61,18 @@ export namespace API {
 		longitude: number
 	}
 
+	interface PaginationInfo {
+        totalPages: number
+        totalItems: number
+        page: number
+        perPage: number
+        hasNextPage: boolean
+        hasPreviousPage: boolean
+	}
+
 	export type SearchResult = {
 		items: SearchResultItem[]
+		pageInfo: PaginationInfo
 	}
 
 	export type IndividualSearchQuery = {

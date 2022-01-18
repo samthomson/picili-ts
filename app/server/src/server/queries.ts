@@ -56,13 +56,37 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
     // lift arguments
     // search query
     const searchQuery = args.filter
+    let page = args?.page ?? 1
+    let perPage = args?.perPage ?? 100
+
     // user
     const { userId } = context
 
     const results = await SearchUtil.search(userId, searchQuery)
 
+    const totalItems = results.length
+    const totalPages = Math.ceil(totalItems / perPage)
+
+    // in case client provided too high a page
+    if (page > totalPages) {
+        page = totalPages
+    }
+    if (page < 1) {
+        page = 1
+    }
+
+    const pageInfo = {
+        totalPages,
+        totalItems,
+        page,
+        perPage,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1 && page < totalPages,
+    }
+
     return {
         items: results,
+        pageInfo
     }
 }
 
