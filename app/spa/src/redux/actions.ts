@@ -14,6 +14,7 @@ export enum ActionType {
 	SEARCH_QUERY_RESET = 'SEARCH_QUERY_RESET',
 	SEARCH_QUERY_ADD = 'SEARCH_QUERY_ADD',
 	SEARCH_QUERY_REMOVE = 'SEARCH_QUERY_REMOVE',
+	SEARCHING_SET = 'SEARCHING_SET',
 }
 
 export type Action =
@@ -60,6 +61,10 @@ export type Action =
 	  }
 	| {
 			type: ActionType.SEARCH_QUERY_RESET
+	  }
+	| {
+			type: ActionType.SEARCHING_SET
+			isSearching: boolean
 	  }
 
 export type LoginAction = {
@@ -156,5 +161,12 @@ export const searchQueryRemove = (
 export const searchQueryReset = (): Action => {
 	return {
 		type: ActionType.SEARCH_QUERY_RESET,
+	}
+}
+
+export const searchingSet = (isSearching: boolean): Action => {
+	return {
+		type: ActionType.SEARCHING_SET,
+		isSearching,
 	}
 }

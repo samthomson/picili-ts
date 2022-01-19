@@ -11,6 +11,7 @@ const initialState: Store = {
 	searchQuery: {
 		individualQueries: [],
 	},
+	isSearching: false,
 }
 
 export function appReducers(
@@ -104,6 +105,12 @@ export function appReducers(
 					...searchQuery,
 					individualQueries: [],
 				},
+			}
+		case ActionType.SEARCHING_SET:
+			const { isSearching } = action
+			return {
+				...state,
+				isSearching,
 			}
 
 		default:

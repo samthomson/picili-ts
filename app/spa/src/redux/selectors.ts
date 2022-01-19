@@ -37,3 +37,7 @@ export const searchIndividualQueries = (
 ): Types.API.IndividualSearchQuery[] => {
 	return state.searchQuery.individualQueries
 }
+
+export const searchIsSearching = (state: Store): boolean => {
+	return state.isSearching
+}
