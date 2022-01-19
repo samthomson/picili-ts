@@ -27,9 +27,14 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 		dispatch(Actions.attemptSearch())
 	}
 
+	const { type, subtype, value } = individualQuery
+
 	return (
 		<div className="individual-query">
-			{individualQuery.value}
+			{type && <>{type}</>}
+			{subtype && <>.{subtype}</>}
+			{type && <>=</>}
+			{value && <>{value}</>}
 			<button
 				onClick={() =>
 					removeQuery(
