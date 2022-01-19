@@ -133,9 +133,9 @@ const typeDefs = gql`
         dropboxConnection: DropboxConnection
         taskSummary: TaskSummary
         taskProcessor: TaskProcessor
+        adminOverview: AdminOverview
         # todo: add sort enum param
         search(filter: SearchFilter!, page: Int! = 1, perPage: Int! = 100): SearchQueryResponse
-        adminOverview: AdminOverview
     }
     type Mutation {
         login(authInput: LoginInput!): AuthResponse
