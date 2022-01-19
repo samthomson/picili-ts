@@ -56,6 +56,7 @@ const QueryInput: React.FunctionComponent = () => {
 			// clear input
 			setTextInputValue('')
 			// do search
+			dispatch(Actions.attemptSearch())
 		}
 	}
 
