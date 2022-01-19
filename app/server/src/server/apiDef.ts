@@ -103,24 +103,13 @@ const typeDefs = gql`
     }
 
     type PaginationInfo {
-        # Total number of pages
         totalPages: Int!
-      
-        # Total number of items
         totalItems: Int!
-      
-        # Current page number
         page: Int!
-      
-        # Number of items per page
         perPage: Int!
-      
-        # When paginating forwards, are there more items?
         hasNextPage: Boolean!
-      
-        # When paginating backwards, are there more items?
         hasPreviousPage: Boolean!
-      }
+    }
 
     type SearchQueryResponse {
         items: [SearchResult]!
