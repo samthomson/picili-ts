@@ -81,7 +81,7 @@ export namespace API {
 	}
 
 	export type IndividualSearchQuery = {
-		type: string
+		type?: string
 		subtype?: string
 		value: string
 	}

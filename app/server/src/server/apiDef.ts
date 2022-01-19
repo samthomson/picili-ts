@@ -82,7 +82,7 @@ const typeDefs = gql`
     }
 
     input IndividualQuery {
-        type: String!
+        type: String
         subtype: String
         value: String!
     }

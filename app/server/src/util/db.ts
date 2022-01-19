@@ -370,9 +370,11 @@ export const performSearchQuery = async (
             return []
             break
         default:
-            const query = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude FROM tags JOIN files ON tags.file_id = files.id where tags.type=:type ${
-                subtype ? `and tags.subtype=:subtype ` : ''
-            }and tags.value = :value and tags.confidence >= :confidence and files.is_thumbnailed and files.user_id = :userId;`
+            const query = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude FROM tags JOIN files ON tags.file_id = files.id where ${
+                type ? `tags.type=:type and ` : ''
+            }${
+                subtype ? `tags.subtype=:subtype and ` : ''
+            } tags.value = :value and tags.confidence >= :confidence and files.is_thumbnailed and files.user_id = :userId;`
             const results: Types.Core.DBSearchResult[] = await Database.query(query, {
                 type: Sequelize.QueryTypes.SELECT,
                 replacements: {
