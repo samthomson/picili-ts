@@ -399,6 +399,57 @@ export const performSearchQuery = async (
     }
 }
 
+export const performAutoCompleteQuery = async (
+    userId: number,
+    partialQuery: Types.API.IndividualSearchQuery,
+): Promise<Types.API.TagSuggestion[]> => {
+    const { type, subtype, value } = partialQuery
+
+    const query = `
+        SELECT
+            tags.file_id as fileId,
+            tags.type,
+            tags.subtype,
+            tags.value,
+            tags.confidence,
+            files.uuid
+        FROM
+            tags
+        JOIN files ON files.id = tags.file_id
+        WHERE  files.user_id=:userId AND (file_id, type, subtype, value, confidence) IN (
+                SELECT file_id, type, subtype, tags.value, MAX(confidence) max_confidence
+                FROM tags
+                WHERE ${
+                    type ? `tags.type=:type and ` : ''
+                }${
+                    subtype ? `tags.subtype=:subtype and ` : ''
+                }tags.value LIKE :value
+                GROUP BY tags.value )
+                
+        GROUP BY tags.value, tags.confidence
+        ORDER BY confidence DESC;
+    `
+    const results: Types.Core.DBAutoCompleteResult[] = await Database.query(query, {
+        type: Sequelize.QueryTypes.SELECT,
+        replacements: {
+            userId,
+            type,
+            subtype,
+            value: `${value}%`
+        }
+    })
+    return results.map((result) => {
+        return {
+            type: result.type,
+            subtype: result.subtype,
+            value: result.value,
+            confidence: result.confidence,
+            uuid: result.uuid,
+        }
+    })
+    
+}
+
 export const removeImportTasksForFile = async (fileId: number) => {
     await Models.TaskModel.destroy({
         where: { relatedPiciliFileId: fileId, importTask: true },

@@ -128,6 +128,18 @@ const typeDefs = gql`
         stats: SearchStats!
     }
 
+    type TagSuggestion {
+        type: String!
+        subtype: String
+        value: String!
+        confidence: Int!
+        uuid: String!
+    }
+
+    type AutoCompleteResponse {
+        tagSuggestions: [TagSuggestion]
+    }
+
     type Query {
         validateToken(token: String!): Boolean
         dropboxConnection: DropboxConnection
@@ -136,6 +148,7 @@ const typeDefs = gql`
         adminOverview: AdminOverview
         # todo: add sort enum param
         search(filter: SearchFilter!, page: Int! = 1, perPage: Int! = 100): SearchQueryResponse
+        autoComplete(query: IndividualQuery): AutoCompleteResponse
     }
     type Mutation {
         login(authInput: LoginInput!): AuthResponse

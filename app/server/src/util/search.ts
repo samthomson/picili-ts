@@ -63,3 +63,9 @@ export const search = async (
     // return those results
     return overlappingResults
 }
+
+export const autoComplete = async (userId: number, partialQuery: Types.API.IndividualSearchQuery): Promise<Types.API.TagSuggestion[]> => {
+    //
+
+    return await DBUtil.performAutoCompleteQuery(userId, partialQuery)
+}

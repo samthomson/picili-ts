@@ -133,6 +133,28 @@ const adminOverview = async (parents, args, context): Promise<Types.API.AdminOve
     }
 }
 
+const autoComplete = async (parents, args, context): Promise<Types.API.AutoCompleteResponse> => {
+    AuthUtil.verifyRequestIsAuthenticated(context)
+    const timeAtStart = moment()
+
+    // lift arguments
+    // search query
+    const {query} = args
+
+    // user
+    const { userId } = context
+
+    const tagSuggestions = await SearchUtil.autoComplete(userId, query)
+
+
+    const timeAtEnd = moment()
+    const searchTime = timeAtEnd.diff(timeAtStart)
+
+    return {
+        tagSuggestions
+    }
+}
+
 const queries = {
     validateToken: (parent, args, ctx) => AuthUtil.requestHasValidCookieToken(ctx),
     dropboxConnection: getDropboxConnection,
@@ -140,6 +162,7 @@ const queries = {
     search,
     taskProcessor,
     adminOverview,
+    autoComplete
 }
 
 export default queries

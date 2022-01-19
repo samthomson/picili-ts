@@ -89,6 +89,17 @@ export namespace API {
 	export type SearchQuery = {
 		individualQueries: IndividualSearchQuery[]
 	}
+
+	export type TagSuggestion = {
+		type: string
+		subtype?: string
+		value: string
+		uuid: string
+	}
+
+	export type AutoCompleteResponse = {
+		tagSuggestions: TagSuggestion[]
+	}
 }
 
 
@@ -367,12 +378,22 @@ export namespace Core {
 		retryInMinutes?: number
 		throttled?: boolean
 	}
+	
 	export type DBSearchResult = {
 		id: number
 		uuid: string
 		address: string
 		latitude: number
 		longitude: number
+	}
+	
+	export type DBAutoCompleteResult = {
+		fileId: number
+		type: string
+		subtype: string
+		value: string
+		confidence: number
+		uuid: string
 	}
 
 	export namespace BaseModels {
