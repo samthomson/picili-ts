@@ -10,6 +10,7 @@ const SearchInput: React.FunctionComponent = () => {
 	const individualQueries = ReactRedux.useSelector(
 		Selectors.searchIndividualQueries,
 	)
+	const isSearching = ReactRedux.useSelector(Selectors.searchIsSearching)
 
 	return (
 		<div id="search-input">
@@ -20,6 +21,7 @@ const SearchInput: React.FunctionComponent = () => {
 				/>
 			))}
 			<QueryInput />
+			{isSearching && <>[searching icon/spinner]</>}
 		</div>
 	)
 }

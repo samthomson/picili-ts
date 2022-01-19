@@ -23,6 +23,7 @@ const client = new ApolloClient({
 })
 
 function* search() {
+	yield put(Actions.searchingSet(true))
 	try {
 		const searchFilter: Types.API.SearchQuery = yield select(
 			Selectors.searchQuery,
@@ -69,6 +70,8 @@ function* search() {
 	} catch (e) {
 		console.log('error searching ', e)
 		put(Actions.attemptSearchFailed())
+	} finally {
+		yield put(Actions.searchingSet(false))
 	}
 }
 
