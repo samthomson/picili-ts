@@ -31,3 +31,9 @@ export const searchStats = (
 export const searchQuery = (state: Store): Types.API.SearchQuery => {
 	return state.searchQuery
 }
+
+export const searchIndividualQueries = (
+	state: Store,
+): Types.API.IndividualSearchQuery[] => {
+	return state.searchQuery.individualQueries
+}
