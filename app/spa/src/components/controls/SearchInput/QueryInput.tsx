@@ -5,7 +5,7 @@ import TypeAhead from './TypeAhead'
 const QueryInput: React.FunctionComponent = () => {
 	return (
 		<div id="query-input">
-			[query-input]
+			<input type="text" placeholder="add query..." />
 			<TypeAhead />
 		</div>
 	)
