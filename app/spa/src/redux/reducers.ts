@@ -60,7 +60,7 @@ export function appReducers(
 			const onlyAllowOneOfThisType = ['map', 'date']
 			const oldIndividualQueries = state.searchQuery.individualQueries
 			const filteredQueries = oldIndividualQueries.filter(
-				({ type }) => !onlyAllowOneOfThisType.includes(type),
+				({ type }) => !type || !onlyAllowOneOfThisType.includes(type),
 			)
 			const newQuery = {
 				...state.searchQuery,

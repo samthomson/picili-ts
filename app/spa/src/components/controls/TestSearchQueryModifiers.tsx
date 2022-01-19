@@ -22,7 +22,7 @@ const TestSearchQueryModifiers: React.FunctionComponent = () => {
 		setAddQueryValue('')
 	}
 	const removeQuery = (
-		type: string,
+		type: string | undefined = undefined,
 		subtype: string | undefined = undefined,
 		value: string,
 	) => {
@@ -73,7 +73,7 @@ const TestSearchQueryModifiers: React.FunctionComponent = () => {
 						<button
 							onClick={() =>
 								removeQuery(
-									query.type,
+									query?.type ?? undefined,
 									query?.subtype ?? undefined,
 									query.value,
 								)
