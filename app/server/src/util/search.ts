@@ -10,6 +10,10 @@ const individualQuerySearch = async (
 }
 
 const findOverlappingResults = (arrayOfResultArrays: Types.API.SearchResultItem[][]): Types.API.SearchResultItem[] => {
+    // check for no results
+    if (arrayOfResultArrays.length === 0) {
+        return []
+    }
     if (arrayOfResultArrays.length < 2) {
         return arrayOfResultArrays[0]
     }
