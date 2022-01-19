@@ -37,11 +37,7 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 			{value && <>{value}</>}
 			<button
 				onClick={() =>
-					removeQuery(
-						individualQuery?.type ?? undefined,
-						individualQuery?.subtype ?? undefined,
-						individualQuery.value,
-					)
+					removeQuery(type || undefined, subtype || undefined, value)
 				}
 			>
 				remove
