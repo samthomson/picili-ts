@@ -6,7 +6,11 @@ import * as Actions from 'src/redux/actions'
 
 import TypeAhead from './TypeAhead'
 
-const QueryInput: React.FunctionComponent = () => {
+interface IProps {
+	disabled: boolean
+}
+
+const QueryInput: React.FunctionComponent<IProps> = ({ disabled }) => {
 	const dispatch = ReactRedux.useDispatch()
 
 	const [textInputValue, setTextInputValue] = React.useState<string>('')
@@ -68,6 +72,7 @@ const QueryInput: React.FunctionComponent = () => {
 				value={textInputValue}
 				onChange={(e) => setTextInputValue(e.target.value)}
 				onKeyDown={onKeyDown}
+				disabled={disabled}
 			/>
 			<TypeAhead
 				currentIndividualQuery={parseTextToQuery(textInputValue)}

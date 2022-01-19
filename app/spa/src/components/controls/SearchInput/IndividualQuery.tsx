@@ -5,10 +5,12 @@ import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
 interface IProps {
 	individualQuery: Types.API.IndividualSearchQuery
+	disabled: boolean
 }
 
 const IndividualQuery: React.FunctionComponent<IProps> = ({
 	individualQuery,
+	disabled,
 }) => {
 	const dispatch = ReactRedux.useDispatch()
 
@@ -36,6 +38,7 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 			{type && <>=</>}
 			{value && <>{value}</>}
 			<button
+				disabled={disabled}
 				onClick={() =>
 					removeQuery(type || undefined, subtype || undefined, value)
 				}

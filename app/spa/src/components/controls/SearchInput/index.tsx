@@ -18,9 +18,10 @@ const SearchInput: React.FunctionComponent = () => {
 				<IndividualQuery
 					key={index}
 					individualQuery={individualQuery}
+					disabled={isSearching}
 				/>
 			))}
-			<QueryInput />
+			<QueryInput disabled={isSearching} />
 			{isSearching && <>[searching icon/spinner]</>}
 		</div>
 	)
