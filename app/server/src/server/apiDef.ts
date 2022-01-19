@@ -81,6 +81,13 @@ const typeDefs = gql`
         stopProcessingImportTasks: Boolean
     }
 
+    type AdminOverview {
+        corruptFiles: [String]
+        dropboxFileCount: Int
+        fileCount: Int
+        searchableFilesCount: Int
+    }
+
     input IndividualQuery {
         type: String
         subtype: String
@@ -119,13 +126,6 @@ const typeDefs = gql`
         items: [SearchResult]!
         pageInfo: PaginationInfo!
         stats: SearchStats!
-    }
-
-    type AdminOverview {
-        corruptFiles: [String]
-        dropboxFileCount: Int
-        fileCount: Int
-        searchableFilesCount: Int
     }
 
     type Query {
