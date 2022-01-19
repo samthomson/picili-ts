@@ -24,6 +24,7 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 				value,
 			}),
 		)
+		dispatch(Actions.attemptSearch())
 	}
 
 	return (
