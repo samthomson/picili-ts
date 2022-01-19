@@ -4,6 +4,7 @@ import * as Models from '../db/models'
 import * as SearchUtil from '../util/search'
 import { TaskManager } from '../services/TaskManager'
 import * as Types from '@shared/declarations'
+import moment from 'moment'
 
 const getDropboxConnection = async (parents, args, context): Promise<Types.API.DropboxConnection> => {
     AuthUtil.verifyRequestIsAuthenticated(context)
@@ -53,6 +54,8 @@ const taskSummary = async (parents, args, context): Promise<Types.API.TaskSummar
 
 const search = async (parents, args, context): Promise<Types.API.SearchResult> => {
     AuthUtil.verifyRequestIsAuthenticated(context)
+    const timeAtStart = moment()
+
     // lift arguments
     // search query
     const searchQuery = args.filter
@@ -84,9 +87,13 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
         hasPreviousPage: page > 1 && page < totalPages,
     }
 
+    const timeAtEnd = moment()
+    const searchTime = timeAtEnd.diff(timeAtStart)
+
     return {
         items: results,
-        pageInfo
+        pageInfo,
+        stats: { speed: searchTime }
     }
 }
 

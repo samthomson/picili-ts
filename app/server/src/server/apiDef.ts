@@ -111,9 +111,14 @@ const typeDefs = gql`
         hasPreviousPage: Boolean!
     }
 
+    type SearchStats {
+        speed: Int!
+    }
+
     type SearchQueryResponse {
         items: [SearchResult]!
         pageInfo: PaginationInfo!
+        stats: SearchStats!
     }
 
     type AdminOverview {

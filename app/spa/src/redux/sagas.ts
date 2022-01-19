@@ -48,6 +48,9 @@ function* search() {
 								address
 								latitude
 							}
+							stats {
+								speed
+							}
 						}
 					}
 				`,

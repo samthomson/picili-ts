@@ -70,9 +70,14 @@ export namespace API {
         hasPreviousPage: boolean
 	}
 
+	export interface SearchStats {
+		speed: number
+	}
+
 	export type SearchResult = {
 		items: SearchResultItem[]
 		pageInfo: PaginationInfo
+		stats: SearchStats
 	}
 
 	export type IndividualSearchQuery = {

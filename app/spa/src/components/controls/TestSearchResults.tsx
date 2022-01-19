@@ -8,9 +8,16 @@ const TestSearchResults: React.FunctionComponent = () => {
 	const paginationInfo = ReactRedux.useSelector(
 		Selectors.searchPaginationInfo,
 	)
+	const searchStats = ReactRedux.useSelector(Selectors.searchStats)
+
 	return (
 		<React.Fragment>
-			{paginationInfo && <p>{paginationInfo?.totalItems} result(s)</p>}
+			{paginationInfo && searchStats && (
+				<p>
+					found {paginationInfo.totalItems} result(s) in{' '}
+					{searchStats.speed}ms
+				</p>
+			)}
 			{searchResults.map((result, id) => {
 				return (
 					<img
