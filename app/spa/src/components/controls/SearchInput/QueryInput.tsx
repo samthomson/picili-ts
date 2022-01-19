@@ -69,7 +69,9 @@ const QueryInput: React.FunctionComponent = () => {
 				onChange={(e) => setTextInputValue(e.target.value)}
 				onKeyDown={onKeyDown}
 			/>
-			<TypeAhead currentTextInputValue={textInputValue} />
+			<TypeAhead
+				currentIndividualQuery={parseTextToQuery(textInputValue)}
+			/>
 		</div>
 	)
 }
