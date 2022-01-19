@@ -14,8 +14,10 @@ const TestSearchResults: React.FunctionComponent = () => {
 		<React.Fragment>
 			{paginationInfo && searchStats && (
 				<p>
-					found {paginationInfo.totalItems} result(s) in{' '}
-					{searchStats.speed}ms
+					found {paginationInfo.totalItems} result(s){' '}
+					{paginationInfo.totalItems > 0 && (
+						<>in {searchStats.speed}ms</>
+					)}
 				</p>
 			)}
 			{searchResults.map((result, id) => {
