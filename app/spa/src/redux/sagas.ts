@@ -33,7 +33,12 @@ function* search() {
 					query ($searchFilter: SearchFilter!) {
 						search(filter: $searchFilter) {
 							pageInfo {
+								totalPages
 								totalItems
+								page
+								perPage
+								hasNextPage
+								hasPreviousPage
 							}
 							items {
 								uuid
