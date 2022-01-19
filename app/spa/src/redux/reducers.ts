@@ -105,6 +105,8 @@ export function appReducers(
 					...searchQuery,
 					individualQueries: [],
 				},
+				searchResult: undefined,
+				isSearching: false,
 			}
 		case ActionType.SEARCHING_SET:
 			const { isSearching } = action

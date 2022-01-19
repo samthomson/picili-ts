@@ -34,7 +34,9 @@ const TestSearchQueryModifiers: React.FunctionComponent = () => {
 			}),
 		)
 	}
-	const resetQuery = () => dispatch(Actions.searchQueryReset())
+	const resetQuery = () => {
+		dispatch(Actions.searchQueryReset())
+	}
 
 	const search = () => dispatch(Actions.attemptSearch())
 
