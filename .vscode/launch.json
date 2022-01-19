@@ -9,7 +9,8 @@
 		"address": "127.0.0.1",
 		"sourceMapPathOverrides": {
 		  "/app/server/*": "${workspaceRoot}/app/server/*"
-		}
+		},
+		"remoteRoot": "${workspaceRoot}/app/server",
 	  },
 	]
   }
