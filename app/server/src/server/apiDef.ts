@@ -134,7 +134,6 @@ const typeDefs = gql`
         taskSummary: TaskSummary
         taskProcessor: TaskProcessor
         # todo: add sort enum param
-        # todo: add pagination params
         search(filter: SearchFilter!, page: Int! = 1, perPage: Int! = 100): SearchQueryResponse
         adminOverview: AdminOverview
     }
