@@ -406,6 +406,27 @@ export const performAutoCompleteQuery = async (
     const { type, subtype, value } = partialQuery
     const { SEARCH_CONFIDENCE_THRESHOLD: confidence } = process.env
 
+    /*
+    SELECT
+        tags.file_id as fileId,
+        tags.type,
+        tags.subtype,
+        tags.value,
+        tags.confidence,
+        files.uuid
+    FROM
+        tags
+    JOIN files ON files.id = tags.file_id
+    WHERE  files.user_id=3 AND (file_id, type, subtype, value, confidence) IN (
+        SELECT file_id, type, subtype, tags.value, MAX(confidence) max_confidence
+        FROM tags
+        WHERE tags.confidence >= 35 and tags.value LIKE 'chin%'
+        GROUP BY tags.type, tags.subtype, tags.value )
+
+    GROUP BY tags.value, tags.confidence
+    ORDER BY confidence DESC;
+    */
+
     const query = `
         SELECT
             tags.file_id as fileId,
@@ -425,9 +446,8 @@ export const performAutoCompleteQuery = async (
                 }${
                     subtype ? `tags.subtype=:subtype and ` : ''
                 }tags.value LIKE :value
-                GROUP BY tags.value )
+                GROUP BY tags.type, tags.subtype, tags.value )
                 
-        GROUP BY tags.value, tags.confidence
         ORDER BY confidence DESC;
     `
     const results: Types.Core.DBAutoCompleteResult[] = await Database.query(query, {
