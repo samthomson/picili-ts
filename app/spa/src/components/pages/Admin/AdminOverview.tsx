@@ -40,29 +40,31 @@ const AdminOverview: React.FunctionComponent = () => {
 						<th></th>
 					</tr>
 				</thead> */}
-				<tr>
-					<td>corrupt files</td>
-					<td>
-						{corruptFiles.map((file) => (
-							<>
-								{file}
-								<br />
-							</>
-						))}
-					</td>
-				</tr>
-				<tr>
-					<td># dropbox files</td>
-					<td>{dropboxFileCount}</td>
-				</tr>
-				<tr>
-					<td># files</td>
-					<td>{fileCount}</td>
-				</tr>
-				<tr>
-					<td># searchable files</td>
-					<td>{searchableFilesCount}</td>
-				</tr>
+				<tbody>
+					<tr>
+						<td>corrupt files</td>
+						<td>
+							{corruptFiles.map((file) => (
+								<>
+									{file}
+									<br />
+								</>
+							))}
+						</td>
+					</tr>
+					<tr>
+						<td># dropbox files</td>
+						<td>{dropboxFileCount}</td>
+					</tr>
+					<tr>
+						<td># files</td>
+						<td>{fileCount}</td>
+					</tr>
+					<tr>
+						<td># searchable files</td>
+						<td>{searchableFilesCount}</td>
+					</tr>
+				</tbody>
 			</table>
 		</AdminTemplate>
 	)
