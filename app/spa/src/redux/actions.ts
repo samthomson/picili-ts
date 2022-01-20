@@ -10,6 +10,8 @@ export enum ActionType {
 	SET_GLOBAL_LOADING_STATE = 'SET_GLOBAL_LOADING_STATE',
 	SEARCH_ATTEMPT = 'SEARCH_ATTEMPT',
 	SEARCH_SUCCEEDED = 'SEARCH_SUCCEEDED',
+	SEARCH_NEXT = 'SEARCH_NEXT',
+	SEARCH_NEXT_SUCCEEDED = 'SEARCH_NEXT_SUCCEEDED',
 	SEARCH_FAILED = 'SEARCH_FAILED',
 	SEARCH_QUERY_RESET = 'SEARCH_QUERY_RESET',
 	SEARCH_QUERY_ADD = 'SEARCH_QUERY_ADD',
@@ -45,6 +47,13 @@ export type Action =
 	  }
 	| {
 			type: ActionType.SEARCH_SUCCEEDED
+			searchResult: Types.API.SearchResult
+	  }
+	| {
+			type: ActionType.SEARCH_NEXT
+	  }
+	| {
+			type: ActionType.SEARCH_NEXT_SUCCEEDED
 			searchResult: Types.API.SearchResult
 	  }
 	| {
@@ -125,11 +134,26 @@ export const attemptSearch = (): Action => {
 	}
 }
 
+export const searchNext = (): Action => {
+	return {
+		type: ActionType.SEARCH_NEXT,
+	}
+}
+
 export const attemptSearchSucceeded = (
 	searchResult: Types.API.SearchResult,
 ): Action => {
 	return {
 		type: ActionType.SEARCH_SUCCEEDED,
+		searchResult,
+	}
+}
+
+export const nextSearchSucceeded = (
+	searchResult: Types.API.SearchResult,
+): Action => {
+	return {
+		type: ActionType.SEARCH_NEXT_SUCCEEDED,
 		searchResult,
 	}
 }

@@ -66,6 +66,7 @@ function* search() {
 				variables: {
 					searchFilter,
 					page: 1,
+					// todo: remove (default 100 is fine)
 					perPage: 10,
 				},
 			})
@@ -85,8 +86,77 @@ function* search() {
 	}
 }
 
+function* searchNext() {
+	yield put(Actions.searchingSet(true))
+	try {
+		const searchFilter: Types.API.SearchQuery = yield select(
+			Selectors.searchQuery,
+		)
+		const paginationInfo: Types.API.PaginationInfo = yield select(
+			Selectors.searchPaginationInfo,
+		)
+		const nextPage = paginationInfo.page + 1
+		const response: { data: { search: Types.API.SearchResult } } =
+			yield client.mutate({
+				mutation: gql`
+					query (
+						$searchFilter: SearchFilter!
+						$page: Int
+						$perPage: Int
+					) {
+						search(
+							filter: $searchFilter
+							page: $page
+							perPage: $perPage
+						) {
+							pageInfo {
+								totalPages
+								totalItems
+								page
+								perPage
+								hasNextPage
+								hasPreviousPage
+							}
+							items {
+								uuid
+								userId
+								mediumWidth
+								mediumHeight
+								address
+								latitude
+							}
+							stats {
+								speed
+							}
+						}
+					}
+				`,
+				variables: {
+					searchFilter,
+					page: nextPage,
+					// todo: remove (default 100 is fine)
+					perPage: 10,
+				},
+			})
+
+		const searchResult = response?.data?.search
+		if (searchResult) {
+			yield put(Actions.nextSearchSucceeded(searchResult))
+		} else {
+			console.log('search query has empty payload')
+			put(Actions.attemptSearchFailed())
+		}
+	} catch (e) {
+		console.log('error searching ', e)
+		put(Actions.attemptSearchFailed())
+	} finally {
+		yield put(Actions.searchingSet(false))
+	}
+}
+
 function* watchSearch() {
 	yield takeLatest(Actions.ActionType.SEARCH_ATTEMPT, search)
+	yield takeLatest(Actions.ActionType.SEARCH_NEXT, searchNext)
 }
 
 // eslint-disable-next-line

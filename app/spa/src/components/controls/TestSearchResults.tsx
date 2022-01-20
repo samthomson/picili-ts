@@ -1,15 +1,20 @@
 import * as React from 'react'
 import * as ReactRedux from 'react-redux'
 
+import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
 import * as HelperUtil from 'src/util/helper'
 
 const TestSearchResults: React.FunctionComponent = () => {
+	const dispatch = ReactRedux.useDispatch()
+
 	const searchResults = ReactRedux.useSelector(Selectors.searchResults)
 	const paginationInfo = ReactRedux.useSelector(
 		Selectors.searchPaginationInfo,
 	)
 	const searchStats = ReactRedux.useSelector(Selectors.searchStats)
+
+	const loadMore = () => dispatch(Actions.searchNext())
 
 	return (
 		<React.Fragment>
@@ -34,6 +39,12 @@ const TestSearchResults: React.FunctionComponent = () => {
 					/>
 				)
 			})}
+			{paginationInfo?.hasNextPage && (
+				<>
+					<br />
+					<button onClick={loadMore}>load more</button>
+				</>
+			)}
 		</React.Fragment>
 	)
 }

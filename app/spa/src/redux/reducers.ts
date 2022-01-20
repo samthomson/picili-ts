@@ -49,6 +49,16 @@ export function appReducers(
 				...state,
 				searchResult: action.searchResult,
 			}
+		case ActionType.SEARCH_NEXT_SUCCEEDED:
+			// append search results to existing
+			const { items: nextItems } = action.searchResult
+			return {
+				...state,
+				searchResult: {
+					...action.searchResult,
+					items: [...(state.searchResult?.items ?? []), ...nextItems],
+				},
+			}
 		case ActionType.SEARCH_FAILED:
 			return {
 				...state,
