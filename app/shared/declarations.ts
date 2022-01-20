@@ -98,6 +98,7 @@ export namespace API {
 	}
 
 	export type AutoCompleteResponse = {
+		userId: number
 		tagSuggestions: TagSuggestion[]
 	}
 }

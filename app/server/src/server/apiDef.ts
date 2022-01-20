@@ -137,7 +137,8 @@ const typeDefs = gql`
     }
 
     type AutoCompleteResponse {
-        tagSuggestions: [TagSuggestion]
+        tagSuggestions: [TagSuggestion]!
+        userId: Int!
     }
 
     type Query {

@@ -151,6 +151,7 @@ const autoComplete = async (parents, args, context): Promise<Types.API.AutoCompl
     const searchTime = timeAtEnd.diff(timeAtStart)
 
     return {
+        userId,
         tagSuggestions
     }
 }
