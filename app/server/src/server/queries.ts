@@ -90,8 +90,11 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
     const timeAtEnd = moment()
     const searchTime = timeAtEnd.diff(timeAtStart)
 
+    const firstItem = page * perPage - perPage
+    const items = results.splice(firstItem, perPage)
+
     return {
-        items: results,
+        items,
         pageInfo,
         stats: { speed: searchTime }
     }

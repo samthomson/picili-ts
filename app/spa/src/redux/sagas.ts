@@ -31,8 +31,16 @@ function* search() {
 		const response: { data: { search: Types.API.SearchResult } } =
 			yield client.mutate({
 				mutation: gql`
-					query ($searchFilter: SearchFilter!) {
-						search(filter: $searchFilter) {
+					query (
+						$searchFilter: SearchFilter!
+						$page: Int
+						$perPage: Int
+					) {
+						search(
+							filter: $searchFilter
+							page: $page
+							perPage: $perPage
+						) {
 							pageInfo {
 								totalPages
 								totalItems
@@ -57,6 +65,8 @@ function* search() {
 				`,
 				variables: {
 					searchFilter,
+					page: 1,
+					perPage: 10,
 				},
 			})
 
