@@ -404,6 +404,7 @@ export const performAutoCompleteQuery = async (
     partialQuery: Types.API.IndividualSearchQuery,
 ): Promise<Types.API.TagSuggestion[]> => {
     const { type, subtype, value } = partialQuery
+    const { SEARCH_CONFIDENCE_THRESHOLD: confidence } = process.env
 
     const query = `
         SELECT
@@ -419,7 +420,7 @@ export const performAutoCompleteQuery = async (
         WHERE  files.user_id=:userId AND (file_id, type, subtype, value, confidence) IN (
                 SELECT file_id, type, subtype, tags.value, MAX(confidence) max_confidence
                 FROM tags
-                WHERE ${
+                WHERE tags.confidence >= :confidence and ${
                     type ? `tags.type=:type and ` : ''
                 }${
                     subtype ? `tags.subtype=:subtype and ` : ''
@@ -435,7 +436,8 @@ export const performAutoCompleteQuery = async (
             userId,
             type,
             subtype,
-            value: `${value}%`
+            value: `${value}%`,
+            confidence
         }
     })
     return results.map((result) => {
