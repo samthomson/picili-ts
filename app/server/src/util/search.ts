@@ -6,7 +6,11 @@ const individualQuerySearch = async (
     userId: number,
     individualQuery: Types.API.IndividualSearchQuery,
 ): Promise<Types.API.SearchResultItem[]> => {
-    return await DBUtil.performSearchQuery(userId, individualQuery)
+    const dbResults = await DBUtil.performSearchQuery(userId, individualQuery)
+    // filter unique, as a file may match the queries on two tags (eg folder=china, location=china)
+    const uniqueDbResults = Array.from(new Set(dbResults.map(x => JSON.stringify(x)))).map(y => JSON.parse(y))
+    
+    return uniqueDbResults
 }
 
 const findOverlappingResults = (arrayOfResultArrays: Types.API.SearchResultItem[][]): Types.API.SearchResultItem[] => {
