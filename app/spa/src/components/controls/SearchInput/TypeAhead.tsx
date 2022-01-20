@@ -1,6 +1,21 @@
 import * as React from 'react'
+import { useQuery, gql } from '@apollo/client'
 
 import * as Types from '@shared/declarations'
+
+const autoCompleteGQL = gql`
+	query autoComplete($query: IndividualQuery!) {
+		autoComplete(query: $query) {
+			tagSuggestions {
+				type
+				subtype
+				value
+				uuid
+				confidence
+			}
+		}
+	}
+`
 
 interface IProps {
 	currentIndividualQuery: Types.API.IndividualSearchQuery
@@ -9,23 +24,35 @@ interface IProps {
 const TypeAhead: React.FunctionComponent<IProps> = ({
 	currentIndividualQuery,
 }) => {
-	// todo: effect watching for `currentTextInputValue` changing, if something call typeahead service
-	// todo: effect watching `currentTextInputValue` changing from something to nothing, cancel any request
-	// todo: likewise cancel on unmount
+	const {
+		error,
+		data,
+		loading = false,
+	} = useQuery(autoCompleteGQL, {
+		skip: !currentIndividualQuery || !currentIndividualQuery.value,
+		variables: { query: currentIndividualQuery },
+	})
 
 	if (!currentIndividualQuery.value) {
 		return <></>
 	}
+	const tagSuggestions: Types.API.TagSuggestion[] =
+		data?.autoComplete.tagSuggestions ?? []
 	return (
 		<div id="type-ahead">
-			[type-ahead ui for{' '}
-			{currentIndividualQuery?.type && (
-				<>[type: {currentIndividualQuery.type}] </>
+			{loading && <>loading...</>}
+			{/* // todo: ui/style this at some point */}
+			{error && <>!error fetching suggestions</>}
+			{tagSuggestions && (
+				<>
+					{tagSuggestions.map((suggestion, tagSuggestionIndex) => (
+						<li key={tagSuggestionIndex}>
+							{suggestion.type}.{suggestion.subtype}=
+							{suggestion.value}
+						</li>
+					))}
+				</>
 			)}
-			{currentIndividualQuery?.subtype && (
-				<>[subtype: {currentIndividualQuery.subtype}] </>
-			)}
-			[value={currentIndividualQuery.value}]
 		</div>
 	)
 }
