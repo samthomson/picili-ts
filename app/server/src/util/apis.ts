@@ -74,7 +74,12 @@ export const imagga = async (largeThumbnailPath: string): Promise<Types.Core.Ima
                     }
             }
         } catch (err) {
-            Logger.warn('unexpected exception when calling imagga API', { err })
+            if (err?.code === 'ECONNRESET') {
+                // expected error
+                Logger.info('expected error calling imagga api.', err.code)
+            } else {
+                Logger.warn('unexpected exception when calling imagga API', { err })
+            }
             if (requestAttempts < retryLimit) {
                 await HelperUtil.delay(retryDelay)
             } else {
