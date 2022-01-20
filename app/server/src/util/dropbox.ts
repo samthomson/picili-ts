@@ -345,7 +345,7 @@ export const downloadDropboxFile = async (
     userId: number,
     piciliFileId: number,
     fileExtension: string,
-): Promise<boolean> => {
+): Promise<Types.Core.DropboxDownloadFileResponse> => {
     try {
         const dropboxConnection = await DBUtil.getDropboxConnection(userId)
         const { refreshToken: token } = dropboxConnection
@@ -375,11 +375,18 @@ export const downloadDropboxFile = async (
                 })
                 break
             default:
-                Logger.error('non-200 code received when downloading dropbox file', { status: result.status })
+                Logger.error('non-200 code received when downloading dropbox file', { status: result.status, result })
+                return { success: false, retryInMinutes: 15 }
         }
-        return true
+        return { success: true }
     } catch (err) {
-        Logger.error(err)
-        return false
+        if (err?.code === 'ETIMEDOUT') {
+            // connectivity issue, try again in a few minutes
+            return { success: false, retryInMinutes: 3 }
+        }
+
+        Logger.error('Dropbox.downloadDropboxFile caught - UNEXPECTED - exception', {err})
+            
+        return { success: false, retryInMinutes: 60 * 24 }
     }
 }

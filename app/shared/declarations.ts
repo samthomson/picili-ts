@@ -294,6 +294,11 @@ export namespace Core {
 		listFolderResponse: ExternalAPI.Dropbox.ListFolderResponse
 	}
 
+	export type DropboxDownloadFileResponse = {
+		success: boolean
+		retryInMinutes?: number
+	}
+
 	export type FileParts = {
 		fileDirectory: string
 		fileName: string
