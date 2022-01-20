@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as ReactRedux from 'react-redux'
 
 import * as Selectors from 'src/redux/selectors'
+import * as HelperUtil from 'src/util/helper'
 
 const TestSearchResults: React.FunctionComponent = () => {
 	const searchResults = ReactRedux.useSelector(Selectors.searchResults)
@@ -25,7 +26,11 @@ const TestSearchResults: React.FunctionComponent = () => {
 					<img
 						title={result.uuid}
 						key={id}
-						src={`${window.location.protocol}//${window.location.hostname}:3501/thumbs/${result.userId}/${result.uuid}/s.jpg`}
+						src={HelperUtil.thumbPath(
+							result.userId,
+							result.uuid,
+							's',
+						)}
 					/>
 				)
 			})}
