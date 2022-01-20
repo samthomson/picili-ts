@@ -65,8 +65,6 @@ function* callSearchQuery(page = 1) {
 			variables: {
 				searchFilter,
 				page,
-				// todo: remove (default 100 is fine)
-				perPage: 10,
 			},
 		})
 
