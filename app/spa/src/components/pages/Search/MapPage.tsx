@@ -3,6 +3,7 @@ import * as ReactRedux from 'react-redux'
 
 import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
+import * as Selectors from 'src/redux/selectors'
 
 import SearchPageTemplate from 'src/components/pages/Search/SearchPageTemplate'
 import SearchResults from 'src/components/controls/SearchResults'
@@ -10,6 +11,8 @@ import Map from 'src/components/controls/Map'
 
 const MapPage: React.FunctionComponent = () => {
 	const dispatch = ReactRedux.useDispatch()
+
+	const searchResults = ReactRedux.useSelector(Selectors.searchResults)
 
 	const boundsChanged = (bounds: Types.API.MapBounds): void => {
 		const mapQuery = {
@@ -28,7 +31,10 @@ const MapPage: React.FunctionComponent = () => {
 					[map]<div id="map-container">[map container]</div>
 				</div> */}
 				<div id="map-container">
-					<Map results={[]} boundsChanged={boundsChanged} />
+					<Map
+						results={searchResults}
+						boundsChanged={boundsChanged}
+					/>
 				</div>
 				<div id="results-container">
 					<SearchResults />

@@ -61,6 +61,7 @@ function* callSearchQuery(page = 1) {
 							mediumHeight
 							address
 							latitude
+							longitude
 						}
 						stats {
 							speed
