@@ -367,15 +367,20 @@ export const performSearchQuery = async (
     const sortSQL = (() => {
         switch (sort) {
             case Enums.SearchSort.RELEVANCE:
-                return `ORDER BY tags.confidence DESC`
+                if(type !== 'map'){
+                    return `ORDER BY tags.confidence DESC`
+                } else {
+                    return `ORDER BY files.datetime DESC`
+                }
             case Enums.SearchSort.ELEVATION_HIGHEST:
                 return `ORDER BY files.elevation DESC`
             case Enums.SearchSort.ELEVATION_LOWEST:
                 return `ORDER BY files.elevation ASC`
-            case Enums.SearchSort.LATEST:
-                return `ORDER BY files.datetime DESC`
             case Enums.SearchSort.OLDEST:
-                return `ORDER BY files.datetime ASC`
+                return `ORDER BY files.datetime ASC`                
+            case Enums.SearchSort.LATEST:
+            default:
+                return `ORDER BY files.datetime DESC`
         }
     })() 
 
@@ -402,6 +407,7 @@ export const performSearchQuery = async (
                     address: result.address,
                     latitude: result.latitude,
                     longitude: result.longitude,
+                    confidence: 100,
                 }
             })
             break
