@@ -364,8 +364,6 @@ export const performSearchQuery = async (
     const { type, subtype, value } = individualQuery
     const { SEARCH_CONFIDENCE_THRESHOLD: confidence } = process.env
 
-    console.log(sort)
-
     const sortSQL = (() => {
         switch (sort) {
             case Enums.SearchSort.RELEVANCE:
