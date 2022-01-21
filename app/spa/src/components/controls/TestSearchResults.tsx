@@ -10,6 +10,9 @@ import SearchSortSelect from 'src/components/controls/SearchSortSelect'
 const TestSearchResults: React.FunctionComponent = () => {
 	const dispatch = ReactRedux.useDispatch()
 
+	const individualQueries = ReactRedux.useSelector(
+		Selectors.searchIndividualQueries,
+	)
 	const searchResults = ReactRedux.useSelector(Selectors.searchResults)
 	const paginationInfo = ReactRedux.useSelector(
 		Selectors.searchPaginationInfo,
@@ -20,7 +23,7 @@ const TestSearchResults: React.FunctionComponent = () => {
 
 	return (
 		<React.Fragment>
-			{paginationInfo && searchStats && (
+			{individualQueries.length > 0 && paginationInfo && searchStats && (
 				<>
 					<p>
 						found {paginationInfo.totalItems} result(s){' '}
