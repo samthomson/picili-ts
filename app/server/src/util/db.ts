@@ -382,8 +382,28 @@ export const performSearchQuery = async (
     // depending on query type, perform relevant query
     switch (type) {
         case 'map':
-            // todo: program map query
-            return []
+            const [latLower, latUpper, lngLower, lngUpper] = value.split(',')
+            const mapQuery = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime FROM files WHERE files.user_id = :userId AND files.latitude >= :latLower AND files.latitude <= :latUpper AND files.longitude >= :lngLower AND files.longitude <= :lngUpper AND  files.is_thumbnailed  ${sortSQL};`
+            const mapResults: Types.Core.DBSearchResult[] = await Database.query(mapQuery, {
+                type: Sequelize.QueryTypes.SELECT,
+                replacements: {
+                    userId,
+                    latLower,
+                    latUpper,
+                    lngLower,
+                    lngUpper,
+                }
+            })
+            return mapResults.map((result) => {
+                return {
+                    fileId: result.id,
+                    userId,
+                    uuid: result.uuid,
+                    address: result.address,
+                    latitude: result.latitude,
+                    longitude: result.longitude,
+                }
+            })
             break
         default:
             const query = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime FROM tags JOIN files ON tags.file_id = files.id where ${
