@@ -33,10 +33,15 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 
 	return (
 		<div className="individual-query">
-			{type && <>{type}</>}
-			{subtype && <>.{subtype}</>}
-			{type && <>=</>}
-			{value && <>{value}</>}
+			{type === 'map' && <>[map bounds]</>}
+			{type !== 'map' && (
+				<>
+					{type && <>{type}</>}
+					{subtype && <>.{subtype}</>}
+					{type && <>=</>}
+					{value && <>{value}</>}
+				</>
+			)}
 			<button
 				disabled={disabled}
 				onClick={() =>
