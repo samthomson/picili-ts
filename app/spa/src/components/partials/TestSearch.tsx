@@ -1,5 +1,5 @@
 import * as React from 'react'
-import TestSearchResults from 'src/components/controls/TestSearchResults'
+import SearchResults from 'src/components/controls/SearchResults'
 
 import SearchInput from 'src/components/controls/SearchInput'
 
@@ -10,7 +10,7 @@ const TestSearch: React.FunctionComponent = () => {
 			<SearchInput />
 
 			<h2>search results</h2>
-			<TestSearchResults />
+			<SearchResults />
 		</React.Fragment>
 	)
 }

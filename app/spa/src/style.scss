@@ -98,6 +98,51 @@ a {
   }
 }
 
+#map-results-container {
+  height: 100%;
+	width: 100%;
+	display: flex;
+	// overflow-y: auto; // set this to auto to re-instate results container specific scroll and not page wide
+
+	margin: 0 auto;
+	// justify-content: center;
+  background: yellow;
+
+	#map-container {
+    flex: 35%;
+    height: 100%;
+    display: flex;
+    background: blue;
+
+		// #map-container {
+		// 	height: 100%;
+		// 	width: 100%;
+		// 	// padding: 0 0 $spacing $spacing;
+    //   background: red;
+		// }
+	}
+
+	#results-container {
+    flex: 65%;
+    overflow-y: auto;
+		vertical-align: top;
+    background: green;
+
+		// padding: 0 ($spacing - $gridSpacing / 2) $spacing ($spacing - $gridSpacing / 2);
+	}
+
+	&.map-mode-enabled {
+		overflow-y: auto;
+		max-width: 100%;
+
+		#map-results-wrapper {
+			width: 100%;
+			max-width: 100%;
+		}
+
+	}
+}
+
 //
 //
 // COMPONENTS

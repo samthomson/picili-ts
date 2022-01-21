@@ -7,7 +7,7 @@ import * as HelperUtil from 'src/util/helper'
 
 import SearchSortSelect from 'src/components/controls/SearchSortSelect'
 
-const TestSearchResults: React.FunctionComponent = () => {
+const SearchResults: React.FunctionComponent = () => {
 	const dispatch = ReactRedux.useDispatch()
 
 	const individualQueries = ReactRedux.useSelector(
@@ -59,4 +59,4 @@ const TestSearchResults: React.FunctionComponent = () => {
 	)
 }
 
-export default TestSearchResults
+export default SearchResults
