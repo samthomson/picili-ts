@@ -17,6 +17,7 @@ export enum ActionType {
 	SEARCH_QUERY_ADD = 'SEARCH_QUERY_ADD',
 	SEARCH_QUERY_REMOVE = 'SEARCH_QUERY_REMOVE',
 	SEARCHING_SET = 'SEARCHING_SET',
+	SEARCH_SORT_SET = 'SEARCH_SORT_SET',
 }
 
 export type Action =
@@ -74,6 +75,10 @@ export type Action =
 	| {
 			type: ActionType.SEARCHING_SET
 			isSearching: boolean
+	  }
+	| {
+			type: ActionType.SEARCH_SORT_SET
+			sortOverload: Types.SearchSortEnum
 	  }
 
 export type LoginAction = {
@@ -192,5 +197,12 @@ export const searchingSet = (isSearching: boolean): Action => {
 	return {
 		type: ActionType.SEARCHING_SET,
 		isSearching,
+	}
+}
+
+export const sortModeSet = (sortOverload: Types.SearchSortEnum): Action => {
+	return {
+		type: ActionType.SEARCH_SORT_SET,
+		sortOverload,
 	}
 }

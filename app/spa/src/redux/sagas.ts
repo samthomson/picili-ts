@@ -27,6 +27,10 @@ function* callSearchQuery(page = 1) {
 	const searchFilter: Types.API.SearchQuery = yield select(
 		Selectors.searchQuery,
 	)
+	const sortOverload: Types.SearchSortEnum = yield select(
+		Selectors.sortOverload,
+	)
+
 	const response: { data: { search: Types.API.SearchResult } } =
 		yield client.mutate({
 			mutation: gql`
@@ -34,11 +38,13 @@ function* callSearchQuery(page = 1) {
 					$searchFilter: SearchFilter!
 					$page: Int
 					$perPage: Int
+					$sortOverload: SearchSort
 				) {
 					search(
 						filter: $searchFilter
 						page: $page
 						perPage: $perPage
+						sortOverload: $sortOverload
 					) {
 						pageInfo {
 							totalPages
@@ -59,17 +65,22 @@ function* callSearchQuery(page = 1) {
 						stats {
 							speed
 						}
+						sorting {
+							sortModesAvailable
+							sortUsed
+						}
 					}
 				}
 			`,
 			variables: {
 				searchFilter,
 				page,
+				sortOverload,
 			},
 		})
 
-	const { items, pageInfo, stats } = response.data.search
-	return { items, pageInfo, stats }
+	const { items, pageInfo, stats, sorting } = response.data.search
+	return { items, pageInfo, stats, sorting }
 }
 
 function* search() {

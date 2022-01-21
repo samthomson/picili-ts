@@ -22,6 +22,12 @@ export const searchPaginationInfo = (
 	return state?.searchResult?.pageInfo
 }
 
+export const searchSorting = (
+	state: Store,
+): Types.API.SearchResultsSorting | undefined => {
+	return state?.searchResult?.sorting
+}
+
 export const searchStats = (
 	state: Store,
 ): Types.API.SearchStats | undefined => {
@@ -30,6 +36,12 @@ export const searchStats = (
 
 export const searchQuery = (state: Store): Types.API.SearchQuery => {
 	return state.searchQuery
+}
+
+export const sortOverload = (
+	state: Store,
+): Types.SearchSortEnum | undefined => {
+	return state?.sortOverload
 }
 
 export const searchIndividualQueries = (

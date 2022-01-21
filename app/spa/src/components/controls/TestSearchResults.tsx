@@ -5,6 +5,8 @@ import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
 import * as HelperUtil from 'src/util/helper'
 
+import SearchSortSelect from 'src/components/controls/SearchSortSelect'
+
 const TestSearchResults: React.FunctionComponent = () => {
 	const dispatch = ReactRedux.useDispatch()
 
@@ -19,12 +21,17 @@ const TestSearchResults: React.FunctionComponent = () => {
 	return (
 		<React.Fragment>
 			{paginationInfo && searchStats && (
-				<p>
-					found {paginationInfo.totalItems} result(s){' '}
-					{paginationInfo.totalItems > 0 && (
-						<>in {searchStats.speed}ms</>
-					)}
-				</p>
+				<>
+					<p>
+						found {paginationInfo.totalItems} result(s){' '}
+						{paginationInfo.totalItems > 0 && (
+							<>in {searchStats.speed}ms</>
+						)}
+					</p>
+					<div>
+						<SearchSortSelect />
+					</div>
+				</>
 			)}
 			{searchResults.map((result, id) => {
 				return (

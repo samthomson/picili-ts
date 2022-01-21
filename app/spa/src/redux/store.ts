@@ -7,4 +7,5 @@ export type Store = {
 	searchResult?: Types.API.SearchResult
 	searchQuery: Types.API.SearchQuery
 	isSearching: boolean
+	sortOverload?: Types.SearchSortEnum
 }
