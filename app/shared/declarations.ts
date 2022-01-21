@@ -83,7 +83,7 @@ export namespace API {
 		items: SearchResultItem[]
 		pageInfo: PaginationInfo
 		stats: SearchStats
-		sorting: SearchResultsSorting
+		sorting?: SearchResultsSorting
 	}
 
 	export type IndividualSearchQuery = {

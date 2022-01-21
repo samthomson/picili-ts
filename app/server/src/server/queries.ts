@@ -99,10 +99,10 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
     const firstItem = page * perPage - perPage
     const items = results.splice(firstItem, perPage)
 
-    const sorting = {
+    const sorting = items.length > 0 ? {
         sortModesAvailable: availableSortModes,
         sortUsed: sortToUse,
-    }
+    } : undefined
 
     return {
         items,

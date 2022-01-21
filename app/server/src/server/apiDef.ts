@@ -131,7 +131,7 @@ const typeDefs = gql`
         items: [SearchResult]!
         pageInfo: PaginationInfo!
         stats: SearchStats!
-        sorting: SearchResultsSorting!
+        sorting: SearchResultsSorting
     }
 
     type TagSuggestion {
