@@ -107,9 +107,17 @@ export namespace API {
 		userId: number
 		tagSuggestions: TagSuggestion[]
 	}
+
+	type LatLon = {
+		lat: number
+		lng: number
+	}
+
+	export type MapBounds = {
+		_ne: LatLon
+		_sw: LatLon
+	}
 }
-
-
 export namespace ExternalAPI {
 	export namespace Dropbox {
 		export interface DropboxFile {

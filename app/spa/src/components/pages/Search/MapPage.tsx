@@ -1,16 +1,35 @@
 import * as React from 'react'
+import * as ReactRedux from 'react-redux'
+
+import * as Types from '@shared/declarations'
+import * as Actions from 'src/redux/actions'
 
 import SearchPageTemplate from 'src/components/pages/Search/SearchPageTemplate'
 import SearchResults from 'src/components/controls/SearchResults'
+import Map from 'src/components/controls/Map'
 
 const MapPage: React.FunctionComponent = () => {
+	const dispatch = ReactRedux.useDispatch()
+
+	const boundsChanged = (bounds: Types.API.MapBounds): void => {
+		const mapQuery = {
+			type: 'map',
+			value: `${bounds._sw.lat},${bounds._ne.lat},${bounds._sw.lng},${bounds._ne.lng}`,
+		}
+
+		dispatch(Actions.searchQueryAdd(mapQuery))
+		dispatch(Actions.attemptSearch())
+	}
+
 	return (
 		<SearchPageTemplate>
 			<div id="map-results-container">
 				{/* <div id="map-results">
 					[map]<div id="map-container">[map container]</div>
 				</div> */}
-				<div id="map-container">[map container]</div>
+				<div id="map-container">
+					<Map results={[]} boundsChanged={boundsChanged} />
+				</div>
 				<div id="results-container">
 					<SearchResults />
 				</div>
