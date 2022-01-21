@@ -4,6 +4,7 @@ import * as Models from '../db/models'
 import * as SearchUtil from '../util/search'
 import { TaskManager } from '../services/TaskManager'
 import * as Types from '@shared/declarations'
+import * as Enums from '../../../shared/enums'
 import moment from 'moment'
 
 const getDropboxConnection = async (parents, args, context): Promise<Types.API.DropboxConnection> => {
@@ -65,7 +66,12 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
     // user
     const { userId } = context
 
-    const results = await SearchUtil.search(userId, searchQuery)
+    const { availableSortModes, recommendedSortMode } = SearchUtil.sortsForSearchQuery(searchQuery)
+
+    const sortOverload = args?.sortOverload
+    const sortToUse = sortOverload && availableSortModes.includes(sortOverload) ? sortOverload : recommendedSortMode
+
+    const results = await SearchUtil.search(userId, searchQuery, sortToUse)
 
     const totalItems = results.length
     const totalPages = Math.ceil(totalItems / perPage)
@@ -93,10 +99,16 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
     const firstItem = page * perPage - perPage
     const items = results.splice(firstItem, perPage)
 
+    const sorting = {
+        sortModesAvailable: availableSortModes,
+        sortUsed: sortToUse,
+    }
+
     return {
         items,
         pageInfo,
-        stats: { speed: searchTime }
+        stats: { speed: searchTime },
+        sorting
     }
 }
 

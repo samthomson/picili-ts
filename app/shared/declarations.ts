@@ -74,10 +74,16 @@ export namespace API {
 		speed: number
 	}
 
+	export type SearchResultsSorting = {
+		sortModesAvailable: Enums.SearchSort[]
+		sortUsed: Enums.SearchSort
+	}
+
 	export type SearchResult = {
 		items: SearchResultItem[]
 		pageInfo: PaginationInfo
 		stats: SearchStats
+		sorting: SearchResultsSorting
 	}
 
 	export type IndividualSearchQuery = {
@@ -402,6 +408,11 @@ export namespace Core {
 		uuid: string
 	}
 
+	export type SortsForSearchQuery = {
+		availableSortModes: Enums.SearchSort[]
+		recommendedSortMode: Enums.SearchSort
+	}
+
 	export namespace BaseModels {
 		export interface DropboxFileAttributes {
 			id: number
@@ -424,6 +435,9 @@ export namespace Core {
 	}
 }
 
+// todo: refactor these into an enum namespace, loosing appended `Enum`
 export type TaskTypeEnum = Enums.TaskType
 
 export type FileTypeEnum = Enums.FileType
+
+export type SearchSortEnum = Enums.SearchSort

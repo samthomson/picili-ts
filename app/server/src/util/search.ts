@@ -1,12 +1,14 @@
 import * as Types from '@shared/declarations'
+import * as Enums from '../../../shared/enums'
 import * as Models from '../db/models'
 import * as DBUtil from '../util/db'
 
 const individualQuerySearch = async (
     userId: number,
     individualQuery: Types.API.IndividualSearchQuery,
+    sort: Enums.SearchSort
 ): Promise<Types.API.SearchResultItem[]> => {
-    const dbResults = await DBUtil.performSearchQuery(userId, individualQuery)
+    const dbResults = await DBUtil.performSearchQuery(userId, individualQuery, sort)
     // filter unique, as a file may match the queries on two tags (eg folder=china, location=china)
     const uniqueDbResults = Array.from(new Set(dbResults.map(x => JSON.stringify(x)))).map(y => JSON.parse(y))
     
@@ -53,19 +55,48 @@ const findOverlappingResults = (arrayOfResultArrays: Types.API.SearchResultItem[
     return resultsThatAreInAllResultSets
 }
 
+export const sortsForSearchQuery = (
+    searchQuery: Types.API.SearchQuery,
+): Types.Core.SortsForSearchQuery => {
+    const { individualQueries } = searchQuery
+
+    const defaultSorts = [Enums.SearchSort.LATEST, Enums.SearchSort.OLDEST]
+
+    // todo: use query type enum
+    // const enableElevation = individualQueries.filter(query => query?.type === 'elevation').length > 0
+    const enableElevation = true
+
+    const enableRelevance = individualQueries.filter(query => !query?.type || query.type === 'colour').length > 0
+
+    const availableSortModes = [
+        ...defaultSorts,
+        ...(enableElevation ? [Enums.SearchSort.ELEVATION_HIGHEST, Enums.SearchSort.ELEVATION_LOWEST] : []),
+        ...(enableRelevance ? [Enums.SearchSort.RELEVANCE] : [])
+    ]
+
+    const recommendedSortMode = availableSortModes.includes(Enums.SearchSort.RELEVANCE) ? Enums.SearchSort.RELEVANCE : Enums.SearchSort.LATEST
+
+    return {
+        availableSortModes,
+        recommendedSortMode
+    }
+}
+
 export const search = async (
     userId: number,
     searchQuery: Types.API.SearchQuery,
+    sortToUse: Enums.SearchSort
 ): Promise<Types.API.SearchResultItem[]> => {
     // foreach individual query, perform an individual query search
     const individualQueryPromises = searchQuery.individualQueries.map((individualQuery) =>
-        individualQuerySearch(userId, individualQuery),
+        individualQuerySearch(userId, individualQuery, sortToUse),
     )
     const individualQueryResults = await Promise.all(individualQueryPromises)
     // find overlapping results
     const overlappingResults = findOverlappingResults(individualQueryResults)
     // return those results
-    return overlappingResults
+    const sortedResults = overlappingResults
+    return sortedResults
 }
 
 export const autoComplete = async (userId: number, partialQuery: Types.API.IndividualSearchQuery): Promise<Types.API.TagSuggestion[]> => {

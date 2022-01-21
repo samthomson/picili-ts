@@ -359,9 +359,27 @@ export const createMultipleTags = async (tagCreationParams: Types.Core.Inputs.Cr
 export const performSearchQuery = async (
     userId: number,
     individualQuery: Types.API.IndividualSearchQuery,
+    sort: Enums.SearchSort
 ): Promise<Types.API.SearchResultItem[]> => {
     const { type, subtype, value } = individualQuery
     const { SEARCH_CONFIDENCE_THRESHOLD: confidence } = process.env
+
+    console.log(sort)
+
+    const sortSQL = (() => {
+        switch (sort) {
+            case Enums.SearchSort.RELEVANCE:
+                return `ORDER BY tags.confidence DESC`
+            case Enums.SearchSort.ELEVATION_HIGHEST:
+                return `ORDER BY files.elevation DESC`
+            case Enums.SearchSort.ELEVATION_LOWEST:
+                return `ORDER BY files.elevation ASC`
+            case Enums.SearchSort.LATEST:
+                return `ORDER BY files.datetime DESC`
+            case Enums.SearchSort.OLDEST:
+                return `ORDER BY files.datetime ASC`
+        }
+    })() 
 
     // depending on query type, perform relevant query
     switch (type) {
@@ -370,11 +388,11 @@ export const performSearchQuery = async (
             return []
             break
         default:
-            const query = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude FROM tags JOIN files ON tags.file_id = files.id where ${
+            const query = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime FROM tags JOIN files ON tags.file_id = files.id where ${
                 type ? `tags.type=:type and ` : ''
             }${
                 subtype ? `tags.subtype=:subtype and ` : ''
-            } tags.value = :value and tags.confidence >= :confidence and files.is_thumbnailed and files.user_id = :userId;`
+            } tags.value = :value and tags.confidence >= :confidence and files.is_thumbnailed and files.user_id = :userId ${sortSQL};`
             const results: Types.Core.DBSearchResult[] = await Database.query(query, {
                 type: Sequelize.QueryTypes.SELECT,
                 replacements: {
@@ -383,7 +401,7 @@ export const performSearchQuery = async (
                     subtype,
                     value,
                     confidence,
-                },
+                }
             })
             return results.map((result) => {
                 return {

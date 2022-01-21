@@ -122,10 +122,16 @@ const typeDefs = gql`
         speed: Int!
     }
 
+    type SearchResultsSorting {
+        sortModesAvailable: [SearchSort]!
+        sortUsed: SearchSort!
+    }
+
     type SearchQueryResponse {
         items: [SearchResult]!
         pageInfo: PaginationInfo!
         stats: SearchStats!
+        sorting: SearchResultsSorting!
     }
 
     type TagSuggestion {
@@ -141,6 +147,14 @@ const typeDefs = gql`
         userId: Int!
     }
 
+    enum SearchSort {
+        LATEST
+        OLDEST
+        RELEVANCE
+        ELEVATION_HIGHEST
+        ELEVATION_LOWEST
+    }
+
     type Query {
         validateToken(token: String!): Boolean
         dropboxConnection: DropboxConnection
@@ -148,7 +162,7 @@ const typeDefs = gql`
         taskProcessor: TaskProcessor
         adminOverview: AdminOverview
         # todo: add sort enum param
-        search(filter: SearchFilter!, page: Int! = 1, perPage: Int! = 100): SearchQueryResponse
+        search(filter: SearchFilter!, page: Int! = 1, perPage: Int! = 100, sortOverload: SearchSort): SearchQueryResponse
         autoComplete(query: IndividualQuery): AutoCompleteResponse
     }
     type Mutation {
