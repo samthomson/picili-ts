@@ -22,7 +22,7 @@ const Lightbox: React.FunctionComponent = () => {
 		<div
 			id="lightbox"
 			className={classNames({
-				open: !!lightboxIndex,
+				open: typeof lightboxIndex === 'number',
 			})}
 		>
 			[{lightboxIndex}]

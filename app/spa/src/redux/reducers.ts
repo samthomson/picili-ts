@@ -154,7 +154,7 @@ export function appReducers(
 		case ActionType.LIGHTBOX_NEXT:
 			const { lightboxImageIndex, searchResult } = state
 			let nextIndex = undefined
-			if (!!lightboxImageIndex && searchResult) {
+			if (typeof lightboxImageIndex === 'number' && searchResult) {
 				nextIndex =
 					(searchResult.items.length + lightboxImageIndex + 1) %
 					searchResult.items.length
@@ -168,7 +168,7 @@ export function appReducers(
 			const { lightboxImageIndex: currentIndex, searchResult: result } =
 				state
 			let previousIndex = undefined
-			if (!!currentIndex && result) {
+			if (typeof currentIndex === 'number' && result) {
 				previousIndex =
 					(result.items.length + currentIndex - 1) %
 					result?.items.length
