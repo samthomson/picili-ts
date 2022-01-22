@@ -49,8 +49,6 @@ export function appReducers(
 			return {
 				...state,
 				searchResult: action.searchResult,
-				// reset sort overload so that default is used on subsequent queries unless explicitly set again
-				sortOverload: undefined,
 			}
 		case ActionType.SEARCH_NEXT_SUCCEEDED:
 			// append search results to existing
@@ -62,8 +60,6 @@ export function appReducers(
 					// append new results to existing results
 					items: [...(state.searchResult?.items ?? []), ...nextItems],
 				},
-				// reset sort overload so that default is used on subsequent queries unless explicitly set again
-				sortOverload: undefined,
 			}
 		case ActionType.SEARCH_FAILED:
 			return {
@@ -87,6 +83,8 @@ export function appReducers(
 			return {
 				...state,
 				searchQuery: newQuery,
+				// reset sort overload so that default is used on subsequent queries unless explicitly set again
+				sortOverload: undefined,
 			}
 		case ActionType.SEARCH_QUERY_REMOVE:
 			const { removeSearchQuery } = action
@@ -113,6 +111,8 @@ export function appReducers(
 					...state.searchQuery,
 					individualQueries: queriesAfterRemoval,
 				},
+				// reset sort overload so that default is used on subsequent queries unless explicitly set again
+				sortOverload: undefined,
 			}
 		case ActionType.SEARCH_QUERY_RESET:
 			return {
@@ -123,6 +123,8 @@ export function appReducers(
 				},
 				searchResult: undefined,
 				isSearching: false,
+				// reset sort overload so that default is used on subsequent queries unless explicitly set again
+				sortOverload: undefined,
 			}
 		case ActionType.SEARCHING_SET:
 			const { isSearching } = action
