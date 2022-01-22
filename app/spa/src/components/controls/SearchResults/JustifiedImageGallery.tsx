@@ -21,12 +21,16 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 	const [rows, setRows] = React.useState<Row[]>([])
 	const [rowHeights, setRowHeights] = React.useState<number[]>([])
 	const [ref, bounds] = useMeasure()
-	const [width, setWidth] = React.useState<number>(0)
+	const [lastWidth, setLastWidth] = React.useState<number>(0)
 
 	React.useEffect(() => {
-		setWidth(bounds?.width ?? 0)
-
-		if (width > 0 && searchResults) {
+		// if we have a width (div has rendered) and results, and importantly the width is different (don't recalculate unnecessarily)
+		if (
+			(bounds?.width ?? 0) > 0 &&
+			bounds.width !== lastWidth &&
+			searchResults
+		) {
+			setLastWidth(bounds.width)
 			calculateJustifiedImageGallery()
 		}
 	}, [bounds, searchResults])
@@ -41,12 +45,12 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 		// unused?
 		// const currentRowHeight = baseRowHeight
 		const marginSize = 8
-		const scrollMargin = 10 //24 // seems to work
+		const scrollMargin = 0 //10 //24 // seems to work
 
 		let imagesInRow = 0
 		let runningWidth = 0
 
-		const availableWidth = width - scrollMargin
+		const availableWidth = (bounds?.width ?? 0) - scrollMargin
 
 		for (
 			let resultNo = 0, added = 1;
@@ -150,34 +154,35 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 	return (
 		<div ref={ref} id="justified-gallery">
 			{/* display each row */}
-			{rows.map((row, rowIndex) => {
-				return (
-					<div
-						key={rowIndex}
-						className="justified-row"
-						style={{
-							height: `${rowHeights[rowIndex]}px`,
-						}}
-					>
-						{/* and every image in each row*/}
-						{row.map((result, id) => {
-							return (
-								<img
-									title={result.uuid}
-									key={id}
-									src={HelperUtil.thumbPath(
-										result.userId,
-										result.uuid,
-										'm',
-									)}
-									width={`${result.scaledWidth}px`}
-									height={`100%`}
-								/>
-							)
-						})}
-					</div>
-				)
-			})}
+			{searchResults.length > 0 &&
+				rows.map((row, rowIndex) => {
+					return (
+						<div
+							key={rowIndex}
+							className="justified-row"
+							style={{
+								height: `${rowHeights[rowIndex]}px`,
+							}}
+						>
+							{/* and every image in each row*/}
+							{row.map((result, id) => {
+								return (
+									<img
+										title={result.uuid}
+										key={id}
+										src={HelperUtil.thumbPath(
+											result.userId,
+											result.uuid,
+											'm',
+										)}
+										width={`${result.scaledWidth}px`}
+										height={`100%`}
+									/>
+								)
+							})}
+						</div>
+					)
+				})}
 		</div>
 	)
 }
