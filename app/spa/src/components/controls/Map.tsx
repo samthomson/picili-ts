@@ -44,7 +44,7 @@ const MapControl: React.FunctionComponent<IProps> = ({
 			// pan or zoom occured - raise bounds event
 			mapBoundsChanged(newMap.getBounds())
 		})
-		newMap.on('load', (e) => {
+		newMap.on('load', () => {
 			// map loaded, raise bounds event to seed first results
 			mapBoundsChanged(newMap.getBounds())
 		})
