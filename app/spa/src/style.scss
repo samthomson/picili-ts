@@ -12,6 +12,7 @@ $greyColor: grey;
 
 $headerHeight: 58px;
 $margin: 8px;
+$lightboxMargin: ($margin * 2);
 $navWidth: 100px;
 
 //
@@ -231,6 +232,72 @@ a {
 
   &.open {
     display: block
+  }
+
+  #lightbox-file-content {
+    position: absolute;
+    left: 8px;
+    right: 80px;
+    top: 8px;
+    bottom: 8px;
+
+    &.with-info {
+      right: 300px;
+    }
+
+    img {
+      width: auto;
+      max-width: 100%;
+      height: auto;
+      max-height: 100%;
+      margin: auto;
+      display: block;
+      position: absolute;
+      left: 0;
+      right: 0;
+      opacity: 1;
+    }
+  }
+
+  #lightbox-file-info {
+    position: absolute;
+    right: 50px;
+    top: $lightboxMargin;
+    bottom: $lightboxMargin;
+    width: 0px;
+    overflow: hidden;
+    overflow-y: auto;
+    background-color: aqua;
+
+    &.with-info {
+      width: 240px;
+    }
+  }
+
+  .lightbox-button {
+    position: absolute;
+    right: $lightboxMargin;
+    cursor: pointer;
+    font-size: 36px;
+    // color: $cAvailableGrey;
+  }
+
+  #lightbox-close {
+    top: $margin;
+    margin-right: -5px;
+  }
+
+  #lightbox-info {
+    top: ($margin * 7);
+    font-size: 26px;
+  }
+  
+  #lightbox-left {
+    bottom: ($margin * 7);
+  }
+
+  #lightbox-right {
+    bottom: $margin;
   }
 }
 

@@ -1,7 +1,9 @@
 import * as React from 'react'
+import * as ReactRedux from 'react-redux'
 import useMeasure from 'react-use-measure'
 
 import * as Types from '@shared/declarations'
+import * as Actions from 'src/redux/actions'
 import * as HelperUtil from 'src/util/helper'
 
 interface IProps {
@@ -18,10 +20,15 @@ type Row = ScaledSearchResultItem[]
 const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 	searchResults,
 }) => {
+	const dispatch = ReactRedux.useDispatch()
+
 	const [rows, setRows] = React.useState<Row[]>([])
 	const [rowHeights, setRowHeights] = React.useState<number[]>([])
 	const [ref, bounds] = useMeasure()
 	const [lastWidth, setLastWidth] = React.useState<number>(0)
+
+	const openLightbox = (index: number) =>
+		dispatch(Actions.lightboxOpen(index))
 
 	React.useEffect(() => {
 		// if we have a width (div has rendered) and results, and importantly the width is different (don't recalculate unnecessarily)
@@ -165,11 +172,11 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 							}}
 						>
 							{/* and every image in each row*/}
-							{row.map((result, id) => {
+							{row.map((result, resultIndex) => {
 								return (
 									<img
 										title={result.uuid}
-										key={id}
+										key={resultIndex}
 										src={HelperUtil.thumbPath(
 											result.userId,
 											result.uuid,
@@ -177,6 +184,9 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 										)}
 										width={`${result.scaledWidth}px`}
 										height={`100%`}
+										onClick={() =>
+											openLightbox(resultIndex)
+										}
 									/>
 								)
 							})}

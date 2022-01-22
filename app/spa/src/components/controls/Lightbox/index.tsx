@@ -4,6 +4,7 @@ import classNames from 'classnames'
 
 import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
+import * as HelperUtil from 'src/util/helper'
 
 import LightboxInfo from './LightboxInfo'
 
@@ -18,6 +19,11 @@ const Lightbox: React.FunctionComponent = () => {
 	const previous = () => dispatch(Actions.lightboxPrevious())
 	const next = () => dispatch(Actions.lightboxNext())
 
+	const results = ReactRedux.useSelector(Selectors.searchResults)
+
+	const result =
+		typeof lightboxIndex === 'number' ? results[lightboxIndex] : undefined
+
 	return (
 		<div
 			id="lightbox"
@@ -25,14 +31,64 @@ const Lightbox: React.FunctionComponent = () => {
 				open: typeof lightboxIndex === 'number',
 			})}
 		>
-			[{lightboxIndex}]
-			<LightboxInfo isShowing={isInfoShowing} />
-			<button onClick={() => setIsInfoShowing(!isInfoShowing)}>
-				show/hide info
+			{result && (
+				<>
+					{/* <div> */}
+					<div
+						id="lightbox-file-content"
+						className={classNames({
+							'with-info': isInfoShowing,
+						})}
+					>
+						<img
+							src={HelperUtil.thumbPath(
+								result.userId,
+								result.uuid,
+								'xl',
+							)}
+						/>
+					</div>
+					<div
+						id="lightbox-file-info"
+						className={classNames({
+							'with-info': isInfoShowing,
+						})}
+					>
+						{lightboxIndex}
+						<LightboxInfo isShowing={isInfoShowing} />
+					</div>
+
+					<button
+						id="lightbox-info"
+						className="lightbox-button"
+						onClick={() => setIsInfoShowing(!isInfoShowing)}
+					>
+						i
+					</button>
+					<button
+						id="lightbox-left"
+						className="lightbox-button"
+						onClick={previous}
+					>
+						l
+					</button>
+					<button
+						id="lightbox-right"
+						className="lightbox-button"
+						onClick={next}
+					>
+						r
+					</button>
+					{/* </div> */}
+				</>
+			)}
+			<button
+				id="lightbox-close"
+				className="lightbox-button"
+				onClick={close}
+			>
+				x
 			</button>
-			<button onClick={close}>close</button>
-			<button onClick={previous}>left</button>
-			<button onClick={next}>right</button>
 		</div>
 	)
 }
