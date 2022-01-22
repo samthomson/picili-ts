@@ -19,6 +19,7 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 	searchResults,
 }) => {
 	const [rows, setRows] = React.useState<Row[]>([])
+	const [rowHeights, setRowHeights] = React.useState<number[]>([])
 	const [ref, bounds] = useMeasure()
 	const [width, setWidth] = React.useState<number>(0)
 
@@ -142,6 +143,7 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 			}
 		}
 
+		setRowHeights(rowHeights)
 		setRows(holdingRows)
 	}
 
@@ -151,7 +153,13 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 			{/* display each row */}
 			{rows.map((row, rowIndex) => {
 				return (
-					<div key={rowIndex} className="justified-row">
+					<div
+						key={rowIndex}
+						className="justified-row"
+						style={{
+							height: `${Math.floor(rowHeights[rowIndex])}px`,
+						}}
+					>
 						{/* and every image in each row*/}
 						{row.map((result, id) => {
 							return (
