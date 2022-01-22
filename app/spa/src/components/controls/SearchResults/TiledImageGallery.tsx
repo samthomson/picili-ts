@@ -11,7 +11,7 @@ const TiledImageGallery: React.FunctionComponent<IProps> = ({
 	searchResults,
 }) => {
 	return (
-		<>
+		<div id="tiled-gallery">
 			{searchResults.map((result, id) => {
 				return (
 					<img
@@ -25,7 +25,7 @@ const TiledImageGallery: React.FunctionComponent<IProps> = ({
 					/>
 				)
 			})}
-		</>
+		</div>
 	)
 }
 
