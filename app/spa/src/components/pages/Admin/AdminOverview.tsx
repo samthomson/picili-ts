@@ -44,11 +44,11 @@ const AdminOverview: React.FunctionComponent = () => {
 					<tr>
 						<td>corrupt files</td>
 						<td>
-							{corruptFiles.map((file) => (
-								<>
+							{corruptFiles.map((file, corruptFileIndex) => (
+								<li key={corruptFileIndex}>
 									{file}
 									<br />
-								</>
+								</li>
 							))}
 						</td>
 					</tr>
