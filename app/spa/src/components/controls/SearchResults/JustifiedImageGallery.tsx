@@ -1,4 +1,5 @@
 import * as React from 'react'
+import useMeasure from 'react-use-measure'
 
 import * as Types from '@shared/declarations'
 import * as HelperUtil from 'src/util/helper'
@@ -11,6 +12,12 @@ type Row = Types.API.SearchResultItem[]
 
 const JustifiedImageGallery = ({ searchResults }: IProps) => {
 	const [rows, setRows] = React.useState<Row[]>([])
+	const [ref, bounds] = useMeasure()
+	const [width, setWidth] = React.useState<number>(0)
+
+	React.useEffect(() => {
+		setWidth(bounds?.width ?? 0)
+	}, [bounds])
 
 	React.useEffect(() => {
 		calculateJustifiedImageGallery()
@@ -40,7 +47,8 @@ const JustifiedImageGallery = ({ searchResults }: IProps) => {
 	}
 
 	return (
-		<>
+		<div ref={ref}>
+			{width}
 			{/* display each row */}
 			{rows.map((row, rowIndex) => {
 				return (
@@ -62,7 +70,7 @@ const JustifiedImageGallery = ({ searchResults }: IProps) => {
 					</div>
 				)
 			})}
-		</>
+		</div>
 	)
 }
 
