@@ -5,9 +5,16 @@ import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
 
 import SearchSortSelect from 'src/components/controls/SearchSortSelect'
-import JustifiedImageGallery from 'src/components/controls/JustifiedImageGallery'
+import JustifiedImageGallery from './JustifiedImageGallery'
+import TiledImageGallery from './TiledImageGallery'
 
-const SearchResults: React.FunctionComponent = () => {
+interface IProps {
+	displayJustified?: boolean
+}
+
+const SearchResults: React.FunctionComponent<IProps> = ({
+	displayJustified = false,
+}) => {
 	const dispatch = ReactRedux.useDispatch()
 
 	const individualQueries = ReactRedux.useSelector(
@@ -36,7 +43,12 @@ const SearchResults: React.FunctionComponent = () => {
 					</div>
 				</>
 			)}
-			<JustifiedImageGallery searchResults={searchResults} />
+			{displayJustified && (
+				<JustifiedImageGallery searchResults={searchResults} />
+			)}
+			{!displayJustified && (
+				<TiledImageGallery searchResults={searchResults} />
+			)}
 
 			{paginationInfo?.hasNextPage && (
 				<>

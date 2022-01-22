@@ -6,7 +6,7 @@ import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
 
 import SearchPageTemplate from 'src/components/pages/Search/SearchPageTemplate'
-import SearchResults from 'src/components/controls/SearchResults'
+import SearchResults from 'src/components/controls/SearchResults/index'
 import Map from 'src/components/controls/Map'
 
 const MapPage: React.FunctionComponent = () => {
@@ -27,9 +27,6 @@ const MapPage: React.FunctionComponent = () => {
 	return (
 		<SearchPageTemplate>
 			<div id="map-results-container">
-				{/* <div id="map-results">
-					[map]<div id="map-container">[map container]</div>
-				</div> */}
 				<div id="map-container">
 					<Map
 						results={searchResults}

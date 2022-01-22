@@ -2,7 +2,6 @@ import * as React from 'react'
 
 import * as Types from '@shared/declarations'
 import * as HelperUtil from 'src/util/helper'
-import { type } from 'os'
 
 interface IProps {
 	searchResults: Types.API.SearchResultItem[]
