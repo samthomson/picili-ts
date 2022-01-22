@@ -194,6 +194,23 @@ a {
   }
 }
 
+#justified-gallery {
+	.justified-row {
+		margin-bottom: 8px;
+		white-space: nowrap;
+	}
+
+	.justified-row img {
+		width: auto;
+		max-height: 100%;
+		margin-right: 8px;
+	}
+
+	.justified-row img:last-child {
+		margin-right: 0px;
+	}
+}
+
 
 //
 //
