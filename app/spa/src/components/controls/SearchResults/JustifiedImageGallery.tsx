@@ -36,7 +36,7 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 		const rowHeights: number[] = []
 
 		const baseRowHeight = 300
-		let currentRowHeight = baseRowHeight
+		const currentRowHeight = baseRowHeight
 		const marginSize = 8
 		const scrollMargin = 0 //24 // seems to work
 
@@ -99,8 +99,8 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 
 			// when over limit, calculate scaling factor, and add to structure of rows
 			const runningMarginWidth = marginSize * (imagesInRow - 1)
-			const runningWidthIncludingMargins =
-				runningWidth + runningMarginWidth
+			// unused?
+			// const runningWidthIncludingMargins = runningWidth + runningMarginWidth
 
 			if (runningWidth > availableWidth - runningMarginWidth) {
 				const iOversizedRatio =
@@ -125,7 +125,8 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 				rowInProgress = []
 				runningWidth = 0
 				imagesInRow = 0
-				currentRowHeight = baseRowHeight
+				// unused?
+				// currentRowHeight = baseRowHeight
 
 				rowHeights.push(rowHeight)
 			} else {
