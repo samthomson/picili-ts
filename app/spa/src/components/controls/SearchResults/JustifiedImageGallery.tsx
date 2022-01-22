@@ -23,11 +23,11 @@ const JustifiedImageGallery = ({ searchResults }: IProps) => {
 
 	React.useEffect(() => {
 		setWidth(bounds?.width ?? 0)
-	}, [bounds])
 
-	React.useEffect(() => {
-		calculateJustifiedImageGallery()
-	}, [searchResults])
+		if (width > 0 && searchResults) {
+			calculateJustifiedImageGallery()
+		}
+	}, [bounds, searchResults])
 
 	const calculateJustifiedImageGallery = () => {
 		const holdingRows: Row[] = []
@@ -37,7 +37,7 @@ const JustifiedImageGallery = ({ searchResults }: IProps) => {
 		const baseRowHeight = 300
 		let currentRowHeight = baseRowHeight
 		const marginSize = 8
-		const scrollMargin = 24
+		const scrollMargin = 0 //24 // seems to work
 
 		let imagesInRow = 0
 		let runningWidth = 0
@@ -138,14 +138,6 @@ const JustifiedImageGallery = ({ searchResults }: IProps) => {
 			}
 		}
 
-		/*
-
-		if (rowInProgress.length > 0) {
-			holdingRows.push(rowInProgress)
-			rowInProgress = []
-		}
-		setRows(holdingRows)
-		*/
 		setRows(holdingRows)
 	}
 
