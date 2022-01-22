@@ -9,11 +9,16 @@ import * as HelperUtil from 'src/util/helper'
 import LightboxInfo from './LightboxInfo'
 
 const Lightbox: React.FunctionComponent = () => {
+	const [isInfoShowing, setIsInfoShowing] = React.useState<boolean>(false)
+
 	const dispatch = ReactRedux.useDispatch()
 
 	const lightboxIndex = ReactRedux.useSelector(Selectors.lightboxIndex)
 
-	const [isInfoShowing, setIsInfoShowing] = React.useState<boolean>(false)
+	const results = ReactRedux.useSelector(Selectors.searchResults)
+
+	const result =
+		typeof lightboxIndex === 'number' ? results[lightboxIndex] : undefined
 
 	const close = () => {
 		setIsInfoShowing(false)
@@ -22,11 +27,6 @@ const Lightbox: React.FunctionComponent = () => {
 
 	const previous = () => dispatch(Actions.lightboxPrevious())
 	const next = () => dispatch(Actions.lightboxNext())
-
-	const results = ReactRedux.useSelector(Selectors.searchResults)
-
-	const result =
-		typeof lightboxIndex === 'number' ? results[lightboxIndex] : undefined
 
 	return (
 		<div
