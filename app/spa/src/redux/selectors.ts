@@ -53,3 +53,7 @@ export const searchIndividualQueries = (
 export const searchIsSearching = (state: Store): boolean => {
 	return state.isSearching
 }
+
+export const lightboxIndex = (state: Store): number | undefined => {
+	return state.lightboxImageIndex
+}

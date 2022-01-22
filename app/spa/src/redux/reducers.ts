@@ -13,6 +13,7 @@ const initialState: Store = {
 	},
 	isSearching: false,
 	sortOverload: undefined,
+	lightboxImageIndex: undefined,
 }
 
 export function appReducers(
@@ -137,6 +138,45 @@ export function appReducers(
 			return {
 				...state,
 				sortOverload,
+			}
+
+		case ActionType.LIGHTBOX_OPEN:
+			const { index } = action
+			return {
+				...state,
+				lightboxImageIndex: index,
+			}
+		case ActionType.LIGHTBOX_CLOSE:
+			return {
+				...state,
+				lightboxImageIndex: undefined,
+			}
+		case ActionType.LIGHTBOX_NEXT:
+			const { lightboxImageIndex, searchResult } = state
+			let nextIndex = undefined
+			if (!!lightboxImageIndex && searchResult) {
+				nextIndex =
+					(searchResult.items.length + lightboxImageIndex + 1) %
+					searchResult.items.length
+			}
+
+			return {
+				...state,
+				lightboxImageIndex: nextIndex,
+			}
+		case ActionType.LIGHTBOX_PREVIOUS:
+			const { lightboxImageIndex: currentIndex, searchResult: result } =
+				state
+			let previousIndex = undefined
+			if (!!currentIndex && result) {
+				previousIndex =
+					(result.items.length + currentIndex - 1) %
+					result?.items.length
+			}
+
+			return {
+				...state,
+				lightboxImageIndex: previousIndex,
 			}
 
 		default:

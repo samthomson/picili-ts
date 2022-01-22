@@ -8,4 +8,5 @@ export type Store = {
 	searchQuery: Types.API.SearchQuery
 	isSearching: boolean
 	sortOverload?: Types.SearchSortEnum
+	lightboxImageIndex?: number
 }

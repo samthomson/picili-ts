@@ -18,6 +18,10 @@ export enum ActionType {
 	SEARCH_QUERY_REMOVE = 'SEARCH_QUERY_REMOVE',
 	SEARCHING_SET = 'SEARCHING_SET',
 	SEARCH_SORT_SET = 'SEARCH_SORT_SET',
+	LIGHTBOX_OPEN = 'LIGHTBOX_OPEN',
+	LIGHTBOX_CLOSE = 'LIGHTBOX_CLOSE',
+	LIGHTBOX_NEXT = 'LIGHTBOX_NEXT',
+	LIGHTBOX_PREVIOUS = 'LIGHTBOX_PREVIOUS',
 }
 
 export type Action =
@@ -79,6 +83,19 @@ export type Action =
 	| {
 			type: ActionType.SEARCH_SORT_SET
 			sortOverload: Types.SearchSortEnum
+	  }
+	| {
+			type: ActionType.LIGHTBOX_OPEN
+			index: number
+	  }
+	| {
+			type: ActionType.LIGHTBOX_CLOSE
+	  }
+	| {
+			type: ActionType.LIGHTBOX_NEXT
+	  }
+	| {
+			type: ActionType.LIGHTBOX_PREVIOUS
 	  }
 
 export type LoginAction = {
@@ -204,5 +221,30 @@ export const sortModeSet = (sortOverload: Types.SearchSortEnum): Action => {
 	return {
 		type: ActionType.SEARCH_SORT_SET,
 		sortOverload,
+	}
+}
+
+export const lightboxOpen = (index: number): Action => {
+	return {
+		type: ActionType.LIGHTBOX_OPEN,
+		index,
+	}
+}
+
+export const lightboxClose = (): Action => {
+	return {
+		type: ActionType.LIGHTBOX_CLOSE,
+	}
+}
+
+export const lightboxPrevious = (): Action => {
+	return {
+		type: ActionType.LIGHTBOX_PREVIOUS,
+	}
+}
+
+export const lightboxNext = (): Action => {
+	return {
+		type: ActionType.LIGHTBOX_NEXT,
 	}
 }
