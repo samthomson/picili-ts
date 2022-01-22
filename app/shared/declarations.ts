@@ -59,6 +59,8 @@ export namespace API {
 		address: string
 		latitude: number
 		longitude: number
+		mediumWidth: number
+		mediumHeight: number
 	}
 
 	export interface PaginationInfo {
@@ -405,6 +407,8 @@ export namespace Core {
 		address: string
 		latitude: number
 		longitude: number
+		mediumWidth: number
+		mediumHeight: number
 	}
 	
 	export type DBAutoCompleteResult = {
