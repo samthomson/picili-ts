@@ -41,7 +41,7 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 		// unused?
 		// const currentRowHeight = baseRowHeight
 		const marginSize = 8
-		const scrollMargin = 0 //24 // seems to work
+		const scrollMargin = 10 //24 // seems to work
 
 		let imagesInRow = 0
 		let runningWidth = 0
@@ -156,7 +156,7 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 						key={rowIndex}
 						className="justified-row"
 						style={{
-							height: `${Math.floor(rowHeights[rowIndex])}px`,
+							height: `${rowHeights[rowIndex]}px`,
 						}}
 					>
 						{/* and every image in each row*/}
@@ -171,7 +171,7 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 										'm',
 									)}
 									width={`${result.scaledWidth}px`}
-									height={`${result.scaledHeight}px`}
+									height={`100%`}
 								/>
 							)
 						})}
