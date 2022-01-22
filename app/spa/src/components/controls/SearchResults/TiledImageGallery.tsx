@@ -7,7 +7,9 @@ interface IProps {
 	searchResults: Types.API.SearchResultItem[]
 }
 
-const TiledImageGallery = ({ searchResults }: IProps) => {
+const TiledImageGallery: React.FunctionComponent<IProps> = ({
+	searchResults,
+}) => {
 	return (
 		<>
 			{searchResults.map((result, id) => {
