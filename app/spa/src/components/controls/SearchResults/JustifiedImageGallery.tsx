@@ -4,6 +4,7 @@ import useMeasure from 'react-use-measure'
 
 import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
+import * as Selectors from 'src/redux/selectors'
 import * as HelperUtil from 'src/util/helper'
 
 interface IProps {
@@ -13,6 +14,8 @@ interface IProps {
 interface ScaledSearchResultItem extends Types.API.SearchResultItem {
 	scaledWidth: number
 	scaledHeight: number
+	ref: React.RefObject<HTMLImageElement>
+	index: number
 }
 
 type Row = ScaledSearchResultItem[]
@@ -26,6 +29,12 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 	const [rowHeights, setRowHeights] = React.useState<number[]>([])
 	const [ref, bounds] = useMeasure()
 	const [lastWidth, setLastWidth] = React.useState<number>(0)
+
+	const lightboxIndex = ReactRedux.useSelector(Selectors.lightboxIndex)
+
+	const refs: React.RefObject<HTMLImageElement>[] = searchResults.map(() =>
+		React.createRef(),
+	)
 
 	const openLightbox = (index: number) =>
 		dispatch(Actions.lightboxOpen(index))
@@ -41,6 +50,20 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 			calculateJustifiedImageGallery()
 		}
 	}, [bounds, searchResults])
+
+	// scroll to currently opened image
+	React.useEffect(() => {
+		if (typeof lightboxIndex === 'number') {
+			// scroll to said image
+			console.log('will now scroll to', lightboxIndex)
+			if (!!refs[lightboxIndex]) {
+				refs[lightboxIndex]?.current?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'center',
+				})
+			}
+		}
+	}, [lightboxIndex])
 
 	const calculateJustifiedImageGallery = () => {
 		const holdingRows: Row[] = []
@@ -70,6 +93,8 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 				...result,
 				scaledWidth: result.mediumWidth,
 				scaledHeight: result.mediumHeight,
+				ref: React.createRef(),
+				index: resultNo,
 			})
 			imagesInRow++
 
@@ -172,11 +197,11 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 							}}
 						>
 							{/* and every image in each row*/}
-							{row.map((result, resultIndex) => {
+							{row.map((result, rowResultIndex) => {
 								return (
 									<img
 										title={result.uuid}
-										key={resultIndex}
+										key={rowResultIndex}
 										src={HelperUtil.thumbPath(
 											result.userId,
 											result.uuid,
@@ -185,8 +210,9 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 										width={`${result.scaledWidth}px`}
 										height={`100%`}
 										onClick={() =>
-											openLightbox(resultIndex)
+											openLightbox(result.index)
 										}
+										ref={refs[result.index]}
 									/>
 								)
 							})}
