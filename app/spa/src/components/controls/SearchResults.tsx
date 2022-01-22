@@ -3,9 +3,9 @@ import * as ReactRedux from 'react-redux'
 
 import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
-import * as HelperUtil from 'src/util/helper'
 
 import SearchSortSelect from 'src/components/controls/SearchSortSelect'
+import JustifiedImageGallery from 'src/components/controls/JustifiedImageGallery'
 
 const SearchResults: React.FunctionComponent = () => {
 	const dispatch = ReactRedux.useDispatch()
@@ -36,19 +36,8 @@ const SearchResults: React.FunctionComponent = () => {
 					</div>
 				</>
 			)}
-			{searchResults.map((result, id) => {
-				return (
-					<img
-						title={result.uuid}
-						key={id}
-						src={HelperUtil.thumbPath(
-							result.userId,
-							result.uuid,
-							's',
-						)}
-					/>
-				)
-			})}
+			<JustifiedImageGallery searchResults={searchResults} />
+
 			{paginationInfo?.hasNextPage && (
 				<>
 					<br />
