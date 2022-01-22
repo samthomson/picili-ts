@@ -149,7 +149,6 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 
 	return (
 		<div ref={ref} id="justified-gallery">
-			{width}
 			{/* display each row */}
 			{rows.map((row, rowIndex) => {
 				return (
