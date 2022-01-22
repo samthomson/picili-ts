@@ -10,10 +10,15 @@ import LightboxInfo from './LightboxInfo'
 
 const Lightbox: React.FunctionComponent = () => {
 	const [isInfoShowing, setIsInfoShowing] = React.useState<boolean>(false)
-
 	const dispatch = ReactRedux.useDispatch()
 
 	const lightboxIndex = ReactRedux.useSelector(Selectors.lightboxIndex)
+
+	React.useEffect(() => {
+		if (typeof lightboxIndex === 'number') {
+			// todo: preload neighbors
+		}
+	}, [lightboxIndex])
 
 	const results = ReactRedux.useSelector(Selectors.searchResults)
 
