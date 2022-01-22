@@ -35,8 +35,10 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 		let rowInProgress: Row = []
 		const rowHeights: number[] = []
 
-		const baseRowHeight = 300
-		const currentRowHeight = baseRowHeight
+		// unused?
+		// const baseRowHeight = 300
+		// unused?
+		// const currentRowHeight = baseRowHeight
 		const marginSize = 8
 		const scrollMargin = 0 //24 // seems to work
 
