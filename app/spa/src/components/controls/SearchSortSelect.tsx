@@ -20,17 +20,21 @@ const SearchSortSelect = () => {
 	}
 	const { sortModesAvailable, sortUsed } = searchSorting
 	return (
-		<ul>
-			{sortModesAvailable.map((mode, sortModeIndex) => (
-				<li key={sortModeIndex}>
-					{mode === sortUsed ? (
-						<strong>{mode}</strong>
-					) : (
-						<button onClick={() => setMode(mode)}>{mode}</button>
-					)}
-				</li>
-			))}
-		</ul>
+		<div id="sort-select">
+			<ul>
+				{sortModesAvailable.map((mode, sortModeIndex) => (
+					<li key={sortModeIndex}>
+						{mode === sortUsed ? (
+							<strong>{mode}</strong>
+						) : (
+							<button onClick={() => setMode(mode)}>
+								{mode}
+							</button>
+						)}
+					</li>
+				))}
+			</ul>
+		</div>
 	)
 }
 
