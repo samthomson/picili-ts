@@ -15,7 +15,11 @@ const Lightbox: React.FunctionComponent = () => {
 
 	const [isInfoShowing, setIsInfoShowing] = React.useState<boolean>(false)
 
-	const close = () => dispatch(Actions.lightboxClose())
+	const close = () => {
+		setIsInfoShowing(false)
+		dispatch(Actions.lightboxClose())
+	}
+
 	const previous = () => dispatch(Actions.lightboxPrevious())
 	const next = () => dispatch(Actions.lightboxNext())
 
