@@ -5,7 +5,7 @@ import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
 
-const SearchSortSelect = () => {
+const SearchSortSelect: React.FunctionComponent = () => {
 	const dispatch = ReactRedux.useDispatch()
 
 	const searchSorting = ReactRedux.useSelector(Selectors.searchSorting)
