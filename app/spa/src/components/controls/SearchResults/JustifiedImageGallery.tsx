@@ -3,7 +3,6 @@ import useMeasure from 'react-use-measure'
 
 import * as Types from '@shared/declarations'
 import * as HelperUtil from 'src/util/helper'
-import { searchResults } from 'src/redux/selectors'
 
 interface IProps {
 	searchResults: Types.API.SearchResultItem[]
@@ -16,7 +15,9 @@ interface ScaledSearchResultItem extends Types.API.SearchResultItem {
 
 type Row = ScaledSearchResultItem[]
 
-const JustifiedImageGallery = ({ searchResults }: IProps) => {
+const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
+	searchResults,
+}) => {
 	const [rows, setRows] = React.useState<Row[]>([])
 	const [ref, bounds] = useMeasure()
 	const [width, setWidth] = React.useState<number>(0)
