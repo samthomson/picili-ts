@@ -28,7 +28,7 @@ const Lightbox: React.FunctionComponent = () => {
 			const realNeighbours = neighbours.filter((index) => results[index])
 			realNeighbours.forEach((preloadIndex) => {
 				const { userId, uuid } = results[preloadIndex]
-				const image = new Image()
+				let image = new Image()
 				image.src = HelperUtil.thumbPath(userId, uuid, 'xl')
 				// cleanup
 				// @ts-expect-error it is intentionally we set it to a non htmlelement value, we do that to force clean the memory as otherwise iterating through many lightbox images could lead to high memory usage
