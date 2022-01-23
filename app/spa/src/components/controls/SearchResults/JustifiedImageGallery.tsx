@@ -29,6 +29,7 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 	const [rowHeights, setRowHeights] = React.useState<number[]>([])
 	const [ref, bounds] = useMeasure()
 	const [lastWidth, setLastWidth] = React.useState<number>(0)
+	// const [lastResultsCount, setLastResultsCount] = React.useState<number>(0)
 
 	const lightboxIndex = ReactRedux.useSelector(Selectors.lightboxIndex)
 
@@ -43,9 +44,10 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 		// if we have a width (div has rendered) and results, and importantly the width is different (don't recalculate unnecessarily)
 		if (
 			(bounds?.width ?? 0) > 0 &&
-			bounds.width !== lastWidth &&
+			// bounds.width !== lastWidth && // didn't render after a new search since width hadn't changed.
 			searchResults
 		) {
+			console.log('render results')
 			setLastWidth(bounds.width)
 			calculateJustifiedImageGallery()
 		}
