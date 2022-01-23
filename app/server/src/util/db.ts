@@ -597,3 +597,56 @@ export const getCorruptFilesDropboxPaths = async (userId: number): Promise<strin
 
     return dropboxFilePaths
 }
+
+export const getFileWithTagsAndDropboxFile = async (userId: number, fileId: number): Promise<Types.API.FileInfo | undefined> => {
+    const file = await Models.FileModel.findOne({
+        where: { id: fileId, userId }, 
+        include: [
+            { model: Models.DropboxFileModel },
+            {
+                model: Models.TagModel,
+                where: {
+                    confidence: {
+                        [Sequelize.Op.gte]: process.env.SEARCH_CONFIDENCE_THRESHOLD
+                    }
+                }
+            }
+        ]
+    })
+
+    if (!file) {
+        return undefined
+    }
+
+    // @ts-ignore
+    const { address, latitude, longitude, datetime, elevation, dropbox_file, tags } = file
+
+    const location = latitude && longitude ? { latitude, longitude } : undefined
+
+    const fileInfo: Types.API.FileInfo = {
+        address,
+		location,
+		datetime: moment(datetime).toISOString(),
+		elevation,
+		pathOnDropbox: dropbox_file?.path ?? undefined,
+		tags: tags.map(
+            (
+                {
+                    type,
+                    subtype,
+                    value,
+                    confidence
+                }
+            ) => (
+                {
+                    type,
+                    subtype,
+                    value,
+                    confidence
+                }
+            )
+        )
+    }
+
+    return fileInfo
+}

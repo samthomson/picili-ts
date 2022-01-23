@@ -330,3 +330,5 @@ export const TagModel = Database.define<TagInstance>(
         underscored: true,
     },
 )
+
+FileModel.hasMany(TagModel)

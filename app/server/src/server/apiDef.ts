@@ -172,7 +172,7 @@ const typeDefs = gql`
 		datetime: String!
 		location: LatLon
 		elevation: Float
-		pathOnDropbox: String!
+		pathOnDropbox: String
 		tags: [Tag]
     }
 

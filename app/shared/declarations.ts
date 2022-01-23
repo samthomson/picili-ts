@@ -127,7 +127,7 @@ export namespace API {
 		datetime: string
 		location?: Location
 		elevation?: number
-		pathOnDropbox: string
+		pathOnDropbox?: string
 		tags: Tag[]
 	}
 }

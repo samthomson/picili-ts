@@ -179,25 +179,11 @@ const fileInfo = async (parents, args, context): Promise<Types.API.FileInfo> => 
     // user
     const { userId } = context
 
-    // const tagSuggestions = await SearchUtil.autoComplete(userId, query)
+    const fileInfo = await DBUtil.getFileWithTagsAndDropboxFile(userId, fileId)
 
 
 
-    return {
-		address: 'address',
-		datetime: 'datetime',
-		location: { latitude: 0, longitude:0 },
-		elevation: 0,
-		pathOnDropbox: 'path',
-		tags: [
-            {
-                type: 'tag type',
-                subtype: 'tag subtype',
-                value: 'tag value',
-                confidence: 80,
-            }
-        ]
-    }
+    return fileInfo
 }
 
 const queries = {
