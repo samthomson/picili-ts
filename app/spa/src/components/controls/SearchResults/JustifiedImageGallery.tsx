@@ -47,7 +47,6 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 			// bounds.width !== lastWidth && // didn't render after a new search since width hadn't changed.
 			searchResults
 		) {
-			console.log('render results')
 			setLastWidth(bounds.width)
 			calculateJustifiedImageGallery()
 		}
@@ -57,7 +56,6 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 	React.useEffect(() => {
 		if (typeof lightboxIndex === 'number') {
 			// scroll to said image
-			console.log('will now scroll to', lightboxIndex)
 			if (!!refs[lightboxIndex]) {
 				refs[lightboxIndex]?.current?.scrollIntoView({
 					behavior: 'smooth',
