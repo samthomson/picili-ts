@@ -55,6 +55,7 @@ function* callSearchQuery(page = 1) {
 							hasPreviousPage
 						}
 						items {
+							fileId
 							uuid
 							userId
 							mediumWidth

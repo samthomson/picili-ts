@@ -80,8 +80,10 @@ const Lightbox: React.FunctionComponent = () => {
 							'with-info': isInfoShowing,
 						})}
 					>
-						{lightboxIndex}
-						<LightboxInfo isShowing={isInfoShowing} />
+						<LightboxInfo
+							isShowing={isInfoShowing}
+							fileId={result.fileId}
+						/>
 					</div>
 
 					<button
