@@ -155,6 +155,27 @@ const typeDefs = gql`
         ELEVATION_LOWEST
     }
 
+    type LatLon {
+        latitude: Float
+        longitude: Float
+    }
+
+    type Tag {
+        type: String!
+        subtype: String
+        value: String!
+        confidence: Int!
+    }
+
+    type FileInfo {
+        address: String
+		datetime: String!
+		location: LatLon
+		elevation: Float
+		pathOnDropbox: String!
+		tags: [Tag]
+    }
+
     type Query {
         validateToken(token: String!): Boolean
         dropboxConnection: DropboxConnection
@@ -164,6 +185,7 @@ const typeDefs = gql`
         # todo: add sort enum param
         search(filter: SearchFilter!, page: Int! = 1, perPage: Int! = 100, sortOverload: SearchSort): SearchQueryResponse
         autoComplete(query: IndividualQuery): AutoCompleteResponse
+        fileInfo(fileId: Int!): FileInfo
     }
     type Mutation {
         login(authInput: LoginInput!): AuthResponse

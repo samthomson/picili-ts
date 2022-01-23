@@ -119,6 +119,22 @@ export namespace API {
 		_ne: LatLon
 		_sw: LatLon
 	}
+
+	export interface Tag {
+		type: string
+		subtype: string
+		value: string
+		confidence: number
+	}
+
+	export interface FileInfo {
+		address?: string
+		datetime: string
+		location?: LatLon
+		elevation?: number
+		pathOnDropbox: string
+		tags: Tag[]
+	}
 }
 export namespace ExternalAPI {
 	export namespace Dropbox {

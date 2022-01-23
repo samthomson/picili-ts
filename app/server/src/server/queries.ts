@@ -171,6 +171,35 @@ const autoComplete = async (parents, args, context): Promise<Types.API.AutoCompl
     }
 }
 
+const fileInfo = async (parents, args, context): Promise<Types.API.FileInfo> => {
+    AuthUtil.verifyRequestIsAuthenticated(context)
+
+    const { fileId } = args
+
+    // user
+    const { userId } = context
+
+    // const tagSuggestions = await SearchUtil.autoComplete(userId, query)
+
+
+
+    return {
+		address: 'address',
+		datetime: 'datetime',
+		location: { lat: 0, lng:0 },
+		elevation: 0,
+		pathOnDropbox: 'path',
+		tags: [
+            {
+                type: 'tag type',
+                subtype: 'tag subtype',
+                value: 'tag value',
+                confidence: 80,
+            }
+        ]
+    }
+}
+
 const queries = {
     validateToken: (parent, args, ctx) => AuthUtil.requestHasValidCookieToken(ctx),
     dropboxConnection: getDropboxConnection,
@@ -178,7 +207,8 @@ const queries = {
     search,
     taskProcessor,
     adminOverview,
-    autoComplete
+    autoComplete,
+    fileInfo
 }
 
 export default queries
