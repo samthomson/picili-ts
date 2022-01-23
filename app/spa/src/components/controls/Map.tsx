@@ -8,7 +8,7 @@ mapboxgl.accessToken =
 
 interface IProps {
 	results: Types.API.SearchResultItem[]
-	boundsChanged: (bounds: Types.API.MapBounds) => void
+	boundsChanged: (bounds: Types.Core.MapBounds) => void
 }
 
 const MapControl: React.FunctionComponent<IProps> = ({

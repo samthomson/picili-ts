@@ -14,7 +14,7 @@ const MapPage: React.FunctionComponent = () => {
 
 	const searchResults = ReactRedux.useSelector(Selectors.searchResults)
 
-	const boundsChanged = (bounds: Types.API.MapBounds): void => {
+	const boundsChanged = (bounds: Types.Core.MapBounds): void => {
 		const mapQuery = {
 			type: 'map',
 			value: `${bounds._sw.lat},${bounds._ne.lat},${bounds._sw.lng},${bounds._ne.lng}`,

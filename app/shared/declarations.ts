@@ -110,16 +110,6 @@ export namespace API {
 		tagSuggestions: TagSuggestion[]
 	}
 
-	type LatLon = {
-		lat: number
-		lng: number
-	}
-
-	export type MapBounds = {
-		_ne: LatLon
-		_sw: LatLon
-	}
-
 	export interface Tag {
 		type: string
 		subtype: string
@@ -127,10 +117,15 @@ export namespace API {
 		confidence: number
 	}
 
+	type Location = {
+		latitude: number
+		longitude: number
+	}
+
 	export interface FileInfo {
 		address?: string
 		datetime: string
-		location?: LatLon
+		location?: Location
 		elevation?: number
 		pathOnDropbox: string
 		tags: Tag[]
@@ -439,6 +434,16 @@ export namespace Core {
 	export type SortsForSearchQuery = {
 		availableSortModes: Enums.SearchSort[]
 		recommendedSortMode: Enums.SearchSort
+	}
+
+	type LatLon = {
+		lat: number
+		lng: number
+	}
+
+	export type MapBounds = {
+		_ne: LatLon
+		_sw: LatLon
 	}
 
 	export namespace BaseModels {

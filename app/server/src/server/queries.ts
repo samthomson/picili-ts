@@ -186,7 +186,7 @@ const fileInfo = async (parents, args, context): Promise<Types.API.FileInfo> => 
     return {
 		address: 'address',
 		datetime: 'datetime',
-		location: { lat: 0, lng:0 },
+		location: { latitude: 0, longitude:0 },
 		elevation: 0,
 		pathOnDropbox: 'path',
 		tags: [
