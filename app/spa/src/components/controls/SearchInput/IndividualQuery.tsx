@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as ReactRedux from 'react-redux'
+import classNames from 'classnames'
 
 import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
@@ -29,10 +30,15 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 		dispatch(Actions.attemptSearch())
 	}
 
-	const { type, subtype, value } = individualQuery
+	const { type, subtype, value, isNotQuery = false } = individualQuery
 
 	return (
-		<div className="individual-query">
+		<div
+			className={classNames({
+				'individual-query': true,
+				'not-query': isNotQuery,
+			})}
+		>
 			{type === 'map' && <>[map bounds]</>}
 			{type !== 'map' && (
 				<>

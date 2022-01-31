@@ -165,6 +165,10 @@ a {
     border: 1px solid gray;
     padding: 4px;
     margin: 4px;
+
+    &.not-query {
+      text-decoration: line-through;
+    }
   }
 
   #query-input {
