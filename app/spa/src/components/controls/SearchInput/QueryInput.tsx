@@ -60,7 +60,6 @@ const QueryInput: React.FunctionComponent<IProps> = ({ disabled }) => {
 		if (event.key === 'Enter') {
 			// parse/add to query
 			const add = parseTextToQuery(textInputValue)
-			console.log(add)
 			dispatch(Actions.searchQueryAdd(add))
 			// clear input
 			setTextInputValue('')
