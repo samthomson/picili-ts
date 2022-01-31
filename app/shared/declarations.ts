@@ -92,6 +92,7 @@ export namespace API {
 		type?: string
 		subtype?: string
 		value: string
+		isNotQuery?: boolean
 	}
 
 	export type SearchQuery = {
@@ -465,6 +466,11 @@ export namespace Core {
 			priority: number
 			timesSeen: number
 		}
+	}
+
+	export type SearchQueryResultSet = {
+		query: API.IndividualSearchQuery
+		results: API.SearchResultItem[]
 	}
 }
 

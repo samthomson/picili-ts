@@ -7,12 +7,12 @@ const individualQuerySearch = async (
     userId: number,
     individualQuery: Types.API.IndividualSearchQuery,
     sort: Enums.SearchSort
-): Promise<Types.API.SearchResultItem[]> => {
+): Promise<Types.Core.SearchQueryResultSet> => {
     const dbResults = await DBUtil.performSearchQuery(userId, individualQuery, sort)
     // filter unique, as a file may match the queries on two tags (eg folder=china, location=china)
     const uniqueDbResults = Array.from(new Set(dbResults.map(x => JSON.stringify(x)))).map(y => JSON.parse(y))
     
-    return uniqueDbResults
+    return { query: individualQuery, results: uniqueDbResults}
 }
 
 const findOverlappingResults = (arrayOfResultArrays: Types.API.SearchResultItem[][]): Types.API.SearchResultItem[] => {
@@ -91,11 +91,28 @@ export const search = async (
     const individualQueryPromises = searchQuery.individualQueries.map((individualQuery) =>
         individualQuerySearch(userId, individualQuery, sortToUse),
     )
-    const individualQueryResults = await Promise.all(individualQueryPromises)
+    const individualQueryResultSets: Types.Core.SearchQueryResultSet[] = await Promise.all(individualQueryPromises)
+    
+    // divide `individualQueryResults` into normal queries and not queries.
+    const normalQueryResults: Types.Core.SearchQueryResultSet[] = individualQueryResultSets.filter(({ query }) => !(query?.isNotQuery ?? false)) 
+    const notQueryResults: Types.Core.SearchQueryResultSet[] = individualQueryResultSets.filter(({ query }) => (query?.isNotQuery ?? false)) 
+
     // find overlapping results
-    const overlappingResults = findOverlappingResults(individualQueryResults)
+    const overlappingResults = findOverlappingResults([...normalQueryResults.map(({results}) => results)])
+
+    // remove any not query results
+    const flattenedNotResultIds: number[] = [
+        ...new Set(
+            ...notQueryResults.map(
+                ({results}) => results.map(result => result.fileId)
+            )
+        )
+    ]
+    const filteredResults = overlappingResults.filter(result => !flattenedNotResultIds.includes(result.fileId))
+
+
     // return those results
-    const sortedResults = overlappingResults
+    const sortedResults = filteredResults
     return sortedResults
 }
 

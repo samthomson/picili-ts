@@ -92,6 +92,7 @@ const typeDefs = gql`
         type: String
         subtype: String
         value: String!
+        isNotQuery: Boolean
     }
 
     input SearchFilter {
