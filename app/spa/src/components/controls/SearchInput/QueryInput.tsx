@@ -44,10 +44,14 @@ const QueryInput: React.FunctionComponent<IProps> = ({ disabled }) => {
 			}
 		}
 
+		const isNotQuery = value.indexOf('!') === 0
+		value = isNotQuery ? value.substring(1) : value
+
 		return {
 			type,
 			subtype,
 			value,
+			isNotQuery: isNotQuery ? isNotQuery : undefined,
 		}
 	}
 
@@ -56,6 +60,7 @@ const QueryInput: React.FunctionComponent<IProps> = ({ disabled }) => {
 		if (event.key === 'Enter') {
 			// parse/add to query
 			const add = parseTextToQuery(textInputValue)
+			console.log(add)
 			dispatch(Actions.searchQueryAdd(add))
 			// clear input
 			setTextInputValue('')
