@@ -59,5 +59,5 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 		</div>
 	)
 }
-
-export default IndividualQuery
+const MemoizedIndividualQuery = React.memo(IndividualQuery)
+export default MemoizedIndividualQuery
