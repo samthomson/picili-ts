@@ -25,6 +25,7 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 		Selectors.searchPaginationInfo,
 	)
 	const searchStats = ReactRedux.useSelector(Selectors.searchStats)
+	const searchSorting = ReactRedux.useSelector(Selectors.searchSorting)
 
 	const loadMore = () => dispatch(Actions.searchNext())
 
@@ -39,7 +40,7 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 						)}
 					</p>
 					<div>
-						<SearchSortSelect />
+						<SearchSortSelect searchSorting={searchSorting} />
 					</div>
 				</>
 			)}

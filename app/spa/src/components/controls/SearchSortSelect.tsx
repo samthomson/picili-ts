@@ -3,12 +3,15 @@ import * as ReactRedux from 'react-redux'
 
 import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
-import * as Selectors from 'src/redux/selectors'
 
-const SearchSortSelect: React.FunctionComponent = () => {
+interface IProps {
+	searchSorting?: Types.API.SearchResultsSorting
+}
+
+const SearchSortSelect: React.FunctionComponent<IProps> = ({
+	searchSorting,
+}) => {
 	const dispatch = ReactRedux.useDispatch()
-
-	const searchSorting = ReactRedux.useSelector(Selectors.searchSorting)
 
 	const setMode = (mode: Types.SearchSortEnum) => {
 		dispatch(Actions.sortModeSet(mode))
