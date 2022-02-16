@@ -101,12 +101,12 @@ export const search = async (
     const overlappingResults = findOverlappingResults([...normalQueryResults.map(({results}) => results)])
 
     // remove any not query results
+    const notResultIds = notQueryResults.map(
+        ({results}) => (results.map(result => result.fileId))
+    )
+    const allNotResultIds = notResultIds.flat()
     const flattenedNotResultIds: number[] = [
-        ...new Set(
-            ...notQueryResults.map(
-                ({results}) => results.map(result => result.fileId)
-            )
-        )
+        ...new Set(allNotResultIds)
     ]
     const filteredResults = overlappingResults.filter(result => !flattenedNotResultIds.includes(result.fileId))
 
