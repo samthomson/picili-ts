@@ -89,16 +89,16 @@ services:
     volumes:
       - ./container-conf/nginx/nginx.conf:/etc/nginx/nginx.conf
 
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes: 
-      - ./container-conf/certbot/conf:/etc/letsencrypt
-      - ./container-conf/certbot/www:/var/www/certbot
-      - ./container-conf/certbot/log:/var/log/letsencrypt
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email ${EMAIL} -d ${DOMAIN_API} -d ${DOMAIN_SPA} --agree-tos
-    depends_on: 
-      - nginx
+  # certbot:
+  #   image: certbot/certbot
+  #   container_name: certbot
+  #   volumes: 
+  #     - ./container-conf/certbot/conf:/etc/letsencrypt
+  #     - ./container-conf/certbot/www:/var/www/certbot
+  #     - ./container-conf/certbot/log:/var/log/letsencrypt
+  #   command: certonly --webroot -w /var/www/certbot --force-renewal --email ${EMAIL} -d ${DOMAIN_API} -d ${DOMAIN_SPA} --agree-tos
+  #   depends_on: 
+  #     - nginx
 
 volumes:
   mysqldata:
