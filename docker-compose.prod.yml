@@ -97,6 +97,8 @@ services:
       - ./container-conf/certbot/www:/var/www/certbot
       - ./container-conf/certbot/log:/var/log/letsencrypt
     command: certonly --webroot -w /var/www/certbot --force-renewal --email ${EMAIL} -d ${DOMAIN_API} -d ${DOMAIN_SPA} --agree-tos
+    depends_on: 
+      - nginx
 
 volumes:
   mysqldata:
