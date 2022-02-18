@@ -22,7 +22,11 @@ import reportWebVitals from './reportWebVitals'
 import 'src/style.scss'
 
 // todo: later/ssl make this protocol agnostic
-const uri = `http://${window.location.hostname}:3501/graphql`
+const host = process.env.REACT_APP_API_HOST
+const port = process.env.REACT_APP_API_PORT
+const uri = `${window.location.protocol}//${host}:${port}/graphql`
+
+console.log(uri)
 
 const link = createHttpLink({
 	uri,

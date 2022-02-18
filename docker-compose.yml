@@ -31,6 +31,8 @@ services:
       - API_INTERNAL_PORT=4000
       - API_HOST=localhost
       - SPA_HOST=localhost
+      - REACT_APP_API_HOST=localhost
+      - REACT_APP_API_PORT=3501
     ports:
       - "3500:3000"
       - "3501:4000"
