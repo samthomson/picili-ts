@@ -9,7 +9,7 @@ services:
       [
         sh,
         -c,
-        "cd /app/spa && yarn run prod-start & cd /app/server && yarn run prod-start"
+        "cd /app/server && yarn run prod-start"
       ]
     environment:
       - DROPBOX_APP_KEY=${DROPBOX_APP_KEY}
