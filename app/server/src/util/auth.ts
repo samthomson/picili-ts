@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken'
+import Logger from '../services/logging'
 // import * as DBUtil from './db'
 // import * as Models from '../db/models'
 
@@ -31,6 +32,7 @@ export const requestHasValidCookieToken = (ctx): boolean => {
 
 export const userIdFromRequestCookie = (req): string | undefined => {
     const authCookie = req?.cookies?.['picili-token']
+    Logger.info('cookies', req?.cookies)
 
     return userIdFromJWT(authCookie)
 }
