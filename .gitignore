@@ -8,3 +8,4 @@ app/server/yarn-error.log
 nginx-proxy.conf
 container-conf/certbot/log
 container-conf/certbot/conf/csr
+serverlogs
