@@ -32,7 +32,7 @@ export const requestHasValidCookieToken = (ctx): boolean => {
 
 export const userIdFromRequestCookie = (req): string | undefined => {
     const authCookie = req?.cookies?.['picili-token']
-    Logger.info('req', req)
+    // Logger.info('req', req)
     Logger.info('req?.cookies', req?.cookies)
 
     return userIdFromJWT(authCookie)
