@@ -39,7 +39,7 @@
     "migrate": "ts-node src/db/migrate.ts",
     "direct-test": "ts-node src/tasks/direct-test.ts",
     "start-task-manager": "ts-node src/tasks/start-task-manager.ts",
-    "clean": "ts-node src/tasks/clean.ts"
+    "log-test": "ts-node src/tasks/log-test.ts"
   },
   "devDependencies": {
     "@types/app-root-path": "^1.2.4",
