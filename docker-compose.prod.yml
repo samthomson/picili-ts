@@ -5,11 +5,13 @@ services:
     #// todo: use static server for spa
     # old command
     # cd /app/server && yarn run prod-start & cd /app/spa && yarn run prod-start
+    # test server only
+    # cd /app/server && yarn run prod-start
     command:
       [
         sh,
         -c,
-        "cd /app/server && yarn run prod-start"
+        "cd /app/server && yarn run prod-start & cd /app/spa && yarn run prod-start"
       ]
     environment:
       - DROPBOX_APP_KEY=${DROPBOX_APP_KEY}
