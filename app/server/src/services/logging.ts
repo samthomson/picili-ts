@@ -16,8 +16,6 @@ const commonLoggingOptions = {
     colorize: true,
 }
 
-console.log(`will write to ${appRoot}`)
-
 const options = {
     fileAll: {
         level: process.env.LOG_LEVEL || 'info',
