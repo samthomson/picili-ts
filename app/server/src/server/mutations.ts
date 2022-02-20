@@ -13,11 +13,14 @@ const login = async (parent, args, context): Promise<Types.API.Response.Auth> =>
         const token = AuthUtil.generateJWT(user.id)
 
         context.setCookies.push({
-            name: 'picili-token',
+            name: 'picili-token-2',
             value: token,
             options: {
-                SameSite: 'Strict',
+                SameSite: 'None',
                 maxAge: 1000 * 60 * 60 * 24 * 31,
+                Secure: true,
+                httpOnly: false,
+                path: '/',
             },
         })
 
