@@ -15,9 +15,6 @@ export const saveToken = (token: string): void => {
 	const cookies = new Cookies()
 	cookies.set(cookieName, token, {
 		path: '/',
-		sameSite: 'none',
-		secure: true,
-		// domain: 'api.picili.dev',
 	})
 }
 
