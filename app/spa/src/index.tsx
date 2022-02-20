@@ -24,8 +24,6 @@ import 'src/style.scss'
 
 const uri = HelperUtil.APIURL()
 
-console.log(uri)
-
 const link = createHttpLink({
 	uri,
 	credentials: 'include',

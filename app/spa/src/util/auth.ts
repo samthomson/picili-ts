@@ -20,7 +20,6 @@ export const saveToken = (token: string): void => {
 
 export const removeToken = (): void => {
 	const cookies = new Cookies()
-	console.log('remove cookie', cookieName)
 	cookies.remove(cookieName)
 }
 
