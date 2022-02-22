@@ -86,13 +86,19 @@ services:
   #     - ./nginx-proxy.conf:/etc/nginx/conf.d/nginx-proxy.conf
 
   nginx:
-    image: nginx
+    image: nginx:1.21
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      - DOMAIN_SPA=${DOMAIN_SPA}
+      - DOMAIN_API=${DOMAIN_API}
     volumes:
-      - ./container-conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+      # - ./container-conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./container-conf/nginx/templates:/etc/nginx/templates
+    depends_on:
+      - app
 
   # certbot:
   #   image: certbot/certbot
