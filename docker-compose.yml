@@ -79,13 +79,18 @@ services:
       - mysql
 
   nginx:
-    image: nginx
+    image: nginx:1.21
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./container-conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./container-conf/nginx/templates:/etc/nginx/templates
+    environment:
+      - DOMAIN_SPA=${DOMAIN_SPA}
+      - DOMAIN_API=${DOMAIN_API}
+    depends_on:
+      - app
 
 volumes:
   mysqldata:
