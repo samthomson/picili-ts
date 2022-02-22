@@ -59,24 +59,79 @@ export namespace API {
 		address: string
 		latitude: number
 		longitude: number
+		mediumWidth: number
+		mediumHeight: number
+	}
+
+	export interface PaginationInfo {
+        totalPages: number
+        totalItems: number
+        page: number
+        perPage: number
+        hasNextPage: boolean
+        hasPreviousPage: boolean
+	}
+
+	export interface SearchStats {
+		speed: number
+	}
+
+	export type SearchResultsSorting = {
+		sortModesAvailable: Enums.SearchSort[]
+		sortUsed: Enums.SearchSort
 	}
 
 	export type SearchResult = {
 		items: SearchResultItem[]
+		pageInfo: PaginationInfo
+		stats: SearchStats
+		sorting?: SearchResultsSorting
 	}
 
 	export type IndividualSearchQuery = {
-		type: string
+		type?: string
 		subtype?: string
 		value: string
+		isNotQuery?: boolean
 	}
 
 	export type SearchQuery = {
 		individualQueries: IndividualSearchQuery[]
 	}
+
+	export type TagSuggestion = {
+		type: string
+		subtype?: string
+		value: string
+		uuid: string
+	}
+
+	export type AutoCompleteResponse = {
+		userId: number
+		tagSuggestions: TagSuggestion[]
+	}
+
+	export interface Tag {
+		type: string
+		subtype: string
+		value: string
+		confidence: number
+	}
+
+	type Location = {
+		latitude: number
+		longitude: number
+	}
+
+	export interface FileInfo {
+		address?: string
+		datetime: string
+		location?: Location
+		elevation?: number
+		pathOnDropbox?: string
+		tags: Tag[]
+	}
 }
-
-
 export namespace ExternalAPI {
 	export namespace Dropbox {
 		export interface DropboxFile {
@@ -268,6 +323,11 @@ export namespace Core {
 		listFolderResponse: ExternalAPI.Dropbox.ListFolderResponse
 	}
 
+	export type DropboxDownloadFileResponse = {
+		success: boolean
+		retryInMinutes?: number
+	}
+
 	export type FileParts = {
 		fileDirectory: string
 		fileName: string
@@ -352,12 +412,39 @@ export namespace Core {
 		retryInMinutes?: number
 		throttled?: boolean
 	}
+	
 	export type DBSearchResult = {
 		id: number
 		uuid: string
 		address: string
 		latitude: number
 		longitude: number
+		mediumWidth: number
+		mediumHeight: number
+	}
+	
+	export type DBAutoCompleteResult = {
+		fileId: number
+		type: string
+		subtype: string
+		value: string
+		confidence: number
+		uuid: string
+	}
+
+	export type SortsForSearchQuery = {
+		availableSortModes: Enums.SearchSort[]
+		recommendedSortMode: Enums.SearchSort
+	}
+
+	type LatLon = {
+		lat: number
+		lng: number
+	}
+
+	export type MapBounds = {
+		_ne: LatLon
+		_sw: LatLon
 	}
 
 	export namespace BaseModels {
@@ -380,8 +467,16 @@ export namespace Core {
 			timesSeen: number
 		}
 	}
+
+	export type SearchQueryResultSet = {
+		query: API.IndividualSearchQuery
+		results: API.SearchResultItem[]
+	}
 }
 
+// todo: refactor these into an enum namespace, loosing appended `Enum`
 export type TaskTypeEnum = Enums.TaskType
 
 export type FileTypeEnum = Enums.FileType
+
+export type SearchSortEnum = Enums.SearchSort

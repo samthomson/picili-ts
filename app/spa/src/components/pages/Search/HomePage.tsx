@@ -1,13 +1,12 @@
 import * as React from 'react'
 
 import SearchPageTemplate from 'src/components/pages/Search/SearchPageTemplate'
-import TestSearch from 'src/components/partials/TestSearch'
+import SearchResults from 'src/components/controls/SearchResults/index'
 
 const HomePage: React.FunctionComponent = () => {
 	return (
 		<SearchPageTemplate>
-			[home page]
-			<TestSearch />
+			<SearchResults displayJustified={true} />
 		</SearchPageTemplate>
 	)
 }

@@ -4,6 +4,8 @@ import * as Models from '../db/models'
 import * as SearchUtil from '../util/search'
 import { TaskManager } from '../services/TaskManager'
 import * as Types from '@shared/declarations'
+import * as Enums from '../../../shared/enums'
+import moment from 'moment'
 
 const getDropboxConnection = async (parents, args, context): Promise<Types.API.DropboxConnection> => {
     AuthUtil.verifyRequestIsAuthenticated(context)
@@ -53,16 +55,60 @@ const taskSummary = async (parents, args, context): Promise<Types.API.TaskSummar
 
 const search = async (parents, args, context): Promise<Types.API.SearchResult> => {
     AuthUtil.verifyRequestIsAuthenticated(context)
+    const timeAtStart = moment()
+
     // lift arguments
     // search query
     const searchQuery = args.filter
+    let page = args?.page ?? 1
+    let perPage = args?.perPage ?? 100
+
     // user
     const { userId } = context
 
-    const results = await SearchUtil.search(userId, searchQuery)
+    const { availableSortModes, recommendedSortMode } = SearchUtil.sortsForSearchQuery(searchQuery)
+
+    const sortOverload = args?.sortOverload
+    const sortToUse = sortOverload && availableSortModes.includes(sortOverload) ? sortOverload : recommendedSortMode
+
+    const results = await SearchUtil.search(userId, searchQuery, sortToUse)
+
+    const totalItems = results.length
+    const totalPages = Math.ceil(totalItems / perPage)
+
+    // in case client provided too high a page
+    if (page > totalPages) {
+        page = totalPages
+    }
+    if (page < 1) {
+        page = 1
+    }
+
+    const pageInfo = {
+        totalPages,
+        totalItems,
+        page,
+        perPage,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1 && page < totalPages,
+    }
+
+    const timeAtEnd = moment()
+    const searchTime = timeAtEnd.diff(timeAtStart)
+
+    const firstItem = page * perPage - perPage
+    const items = results.splice(firstItem, perPage)
+
+    const sorting = items.length > 0 ? {
+        sortModesAvailable: availableSortModes,
+        sortUsed: sortToUse,
+    } : undefined
 
     return {
-        items: results,
+        items,
+        pageInfo,
+        stats: { speed: searchTime },
+        sorting
     }
 }
 
@@ -102,6 +148,44 @@ const adminOverview = async (parents, args, context): Promise<Types.API.AdminOve
     }
 }
 
+const autoComplete = async (parents, args, context): Promise<Types.API.AutoCompleteResponse> => {
+    AuthUtil.verifyRequestIsAuthenticated(context)
+    const timeAtStart = moment()
+
+    // lift arguments
+    // search query
+    const {query} = args
+
+    // user
+    const { userId } = context
+
+    const tagSuggestions = await SearchUtil.autoComplete(userId, query)
+
+
+    const timeAtEnd = moment()
+    const searchTime = timeAtEnd.diff(timeAtStart)
+
+    return {
+        userId,
+        tagSuggestions
+    }
+}
+
+const fileInfo = async (parents, args, context): Promise<Types.API.FileInfo> => {
+    AuthUtil.verifyRequestIsAuthenticated(context)
+
+    const { fileId } = args
+
+    // user
+    const { userId } = context
+
+    const fileInfo = await DBUtil.getFileWithTagsAndDropboxFile(userId, fileId)
+
+
+
+    return fileInfo
+}
+
 const queries = {
     validateToken: (parent, args, ctx) => AuthUtil.requestHasValidCookieToken(ctx),
     dropboxConnection: getDropboxConnection,
@@ -109,6 +193,8 @@ const queries = {
     search,
     taskProcessor,
     adminOverview,
+    autoComplete,
+    fileInfo
 }
 
 export default queries

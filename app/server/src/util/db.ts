@@ -359,20 +359,67 @@ export const createMultipleTags = async (tagCreationParams: Types.Core.Inputs.Cr
 export const performSearchQuery = async (
     userId: number,
     individualQuery: Types.API.IndividualSearchQuery,
+    sort: Enums.SearchSort
 ): Promise<Types.API.SearchResultItem[]> => {
     const { type, subtype, value } = individualQuery
     const { SEARCH_CONFIDENCE_THRESHOLD: confidence } = process.env
 
+    const sortSQL = (() => {
+        switch (sort) {
+            case Enums.SearchSort.RELEVANCE:
+                if(type !== 'map'){
+                    return `ORDER BY tags.confidence DESC`
+                } else {
+                    return `ORDER BY files.datetime DESC`
+                }
+            case Enums.SearchSort.ELEVATION_HIGHEST:
+                return `ORDER BY files.elevation DESC`
+            case Enums.SearchSort.ELEVATION_LOWEST:
+                return `ORDER BY files.elevation ASC`
+            case Enums.SearchSort.OLDEST:
+                return `ORDER BY files.datetime ASC`                
+            case Enums.SearchSort.LATEST:
+            default:
+                return `ORDER BY files.datetime DESC`
+        }
+    })() 
+
     // depending on query type, perform relevant query
     switch (type) {
         case 'map':
-            // todo: program map query
-            return []
+            const [latLower, latUpper, lngLower, lngUpper] = value.split(',')
+            const mapQuery = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight FROM files WHERE files.user_id = :userId AND files.latitude >= :latLower AND files.latitude <= :latUpper AND files.longitude >= :lngLower AND files.longitude <= :lngUpper AND  files.is_thumbnailed  ${sortSQL};`
+            const mapResults: Types.Core.DBSearchResult[] = await Database.query(mapQuery, {
+                type: Sequelize.QueryTypes.SELECT,
+                replacements: {
+                    userId,
+                    latLower,
+                    latUpper,
+                    lngLower,
+                    lngUpper,
+                }
+            })
+            return mapResults.map((result) => {
+                return {
+                    fileId: result.id,
+                    userId,
+                    uuid: result.uuid,
+                    address: result.address,
+                    latitude: result.latitude,
+                    longitude: result.longitude,
+                    // todo: remove this?
+                    confidence: 100,
+                    mediumWidth: result.mediumWidth,
+                    mediumHeight: result.mediumHeight
+                }
+            })
             break
         default:
-            const query = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude FROM tags JOIN files ON tags.file_id = files.id where tags.type=:type ${
-                subtype ? `and tags.subtype=:subtype ` : ''
-            }and tags.value = :value and tags.confidence >= :confidence and files.is_thumbnailed and files.user_id = :userId;`
+            const query = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight FROM tags JOIN files ON tags.file_id = files.id where ${
+                type ? `tags.type=:type and ` : ''
+            }${
+                subtype ? `tags.subtype=:subtype and ` : ''
+            } tags.value = :value and tags.confidence >= :confidence and files.is_thumbnailed and files.user_id = :userId ${sortSQL};`
             const results: Types.Core.DBSearchResult[] = await Database.query(query, {
                 type: Sequelize.QueryTypes.SELECT,
                 replacements: {
@@ -381,7 +428,7 @@ export const performSearchQuery = async (
                     subtype,
                     value,
                     confidence,
-                },
+                }
             })
             return results.map((result) => {
                 return {
@@ -391,10 +438,85 @@ export const performSearchQuery = async (
                     address: result.address,
                     latitude: result.latitude,
                     longitude: result.longitude,
+                    mediumWidth: result.mediumWidth,
+                    mediumHeight: result.mediumHeight
                 }
             })
             break
     }
+}
+
+export const performAutoCompleteQuery = async (
+    userId: number,
+    partialQuery: Types.API.IndividualSearchQuery,
+): Promise<Types.API.TagSuggestion[]> => {
+    const { type, subtype, value } = partialQuery
+    const { SEARCH_CONFIDENCE_THRESHOLD: confidence } = process.env
+
+    /*
+    SELECT
+        tags.file_id as fileId,
+        tags.type,
+        tags.subtype,
+        tags.value,
+        tags.confidence,
+        files.uuid
+    FROM
+        tags
+    JOIN files ON files.id = tags.file_id
+    WHERE  files.user_id=3 AND (file_id, type, subtype, value, confidence) IN (
+        SELECT file_id, type, subtype, tags.value, MAX(confidence) max_confidence
+        FROM tags
+        WHERE tags.confidence >= 35 and tags.value LIKE 'chin%'
+        GROUP BY tags.type, tags.subtype, tags.value )
+
+    GROUP BY tags.value, tags.confidence
+    ORDER BY confidence DESC;
+    */
+
+    const query = `
+        SELECT
+            tags.file_id as fileId,
+            tags.type,
+            tags.subtype,
+            tags.value,
+            tags.confidence,
+            files.uuid
+        FROM
+            tags
+        JOIN files ON files.id = tags.file_id
+        WHERE  files.user_id=:userId AND (file_id, type, subtype, value, confidence) IN (
+                SELECT file_id, type, subtype, tags.value, MAX(confidence) max_confidence
+                FROM tags
+                WHERE tags.confidence >= :confidence and ${
+                    type ? `tags.type=:type and ` : ''
+                }${
+                    subtype ? `tags.subtype=:subtype and ` : ''
+                }tags.value LIKE :value
+                GROUP BY tags.type, tags.subtype, tags.value )
+                
+        ORDER BY confidence DESC;
+    `
+    const results: Types.Core.DBAutoCompleteResult[] = await Database.query(query, {
+        type: Sequelize.QueryTypes.SELECT,
+        replacements: {
+            userId,
+            type,
+            subtype,
+            value: `${value}%`,
+            confidence
+        }
+    })
+    return results.map((result) => {
+        return {
+            type: result.type,
+            subtype: result.subtype,
+            value: result.value,
+            confidence: result.confidence,
+            uuid: result.uuid,
+        }
+    })
+    
 }
 
 export const removeImportTasksForFile = async (fileId: number) => {
@@ -474,4 +596,57 @@ export const getCorruptFilesDropboxPaths = async (userId: number): Promise<strin
     const dropboxFilePaths = result.map((file) => file.dropbox_file.path)
 
     return dropboxFilePaths
+}
+
+export const getFileWithTagsAndDropboxFile = async (userId: number, fileId: number): Promise<Types.API.FileInfo | undefined> => {
+    const file = await Models.FileModel.findOne({
+        where: { id: fileId, userId }, 
+        include: [
+            { model: Models.DropboxFileModel },
+            {
+                model: Models.TagModel,
+                where: {
+                    confidence: {
+                        [Sequelize.Op.gte]: process.env.SEARCH_CONFIDENCE_THRESHOLD
+                    }
+                }
+            }
+        ]
+    })
+
+    if (!file) {
+        return undefined
+    }
+
+    // @ts-ignore
+    const { address, latitude, longitude, datetime, elevation, dropbox_file, tags } = file
+
+    const location = latitude && longitude ? { latitude, longitude } : undefined
+
+    const fileInfo: Types.API.FileInfo = {
+        address,
+		location,
+		datetime: moment(datetime).toISOString(),
+		elevation,
+		pathOnDropbox: dropbox_file?.path ?? undefined,
+		tags: tags.map(
+            (
+                {
+                    type,
+                    subtype,
+                    value,
+                    confidence
+                }
+            ) => (
+                {
+                    type,
+                    subtype,
+                    value,
+                    confidence
+                }
+            )
+        )
+    }
+
+    return fileInfo
 }

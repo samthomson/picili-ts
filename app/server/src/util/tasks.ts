@@ -28,6 +28,10 @@ export const processTask = async (taskId: number, thread: number) => {
                 break
             case Enums.TaskType.DROPBOX_FILE_IMPORT:
                 taskOutcome = await fileImport(task.relatedPiciliFileId)
+                if (!taskOutcome.success && taskOutcome.retryInMinutes) {
+                    // requeue the task
+                    await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
+                }
                 break
             case Enums.TaskType.PROCESS_IMAGE_FILE:
                 taskOutcome = await processImage(task.relatedPiciliFileId, task.id)
@@ -154,42 +158,45 @@ export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcess
         const dropboxFile = file.dropbox_file
         const { dropboxId, userId, path } = dropboxFile
 
-        // create file dir tags
-        const fileType = HelperUtil.fileTypeFromExtension(fileExtension)
-        const { fileDirectory } = HelperUtil.splitPathIntoParts(path)
-        const directories = HelperUtil.individualDirectoriesFromParentDir(fileDirectory)
-        const newDirectoryTags = directories.map((dir) => ({
-            fileId,
-            type: 'folder',
-            subtype: '',
-            value: dir,
-            confidence: 100,
-        }))
-        newDirectoryTags.push({
-            fileId,
-            type: 'filename',
-            subtype: '',
-            value: fileName,
-            confidence: 100,
-        })
-        newDirectoryTags.push({
-            fileId,
-            type: 'filetype',
-            subtype: '',
-            value: fileType,
-            confidence: 100,
-        })
-        newDirectoryTags.push({
-            fileId,
-            type: 'fileextension',
-            subtype: '',
-            value: fileExtension,
-            confidence: 100,
-        })
-        await DBUtil.createMultipleTags(newDirectoryTags)
+        const downloadOutcome = await DropboxUtil.downloadDropboxFile(dropboxId, userId, fileId, fileExtension)
 
-        const success = await DropboxUtil.downloadDropboxFile(dropboxId, userId, fileId, fileExtension)
-        return { success }
+        if (downloadOutcome.success) {
+            // create file dir tags
+            const fileType = HelperUtil.fileTypeFromExtension(fileExtension)
+            const { fileDirectory } = HelperUtil.splitPathIntoParts(path)
+            const directories = HelperUtil.individualDirectoriesFromParentDir(fileDirectory)
+            const newDirectoryTags = directories.map((dir) => ({
+                fileId,
+                type: 'folder',
+                subtype: '',
+                value: dir,
+                confidence: 100,
+            }))
+            newDirectoryTags.push({
+                fileId,
+                type: 'filename',
+                subtype: '',
+                value: fileName,
+                confidence: 100,
+            })
+            newDirectoryTags.push({
+                fileId,
+                type: 'filetype',
+                subtype: '',
+                value: fileType,
+                confidence: 100,
+            })
+            newDirectoryTags.push({
+                fileId,
+                type: 'fileextension',
+                subtype: '',
+                value: fileExtension,
+                confidence: 100,
+            })
+            await DBUtil.createMultipleTags(newDirectoryTags)
+        }
+
+        return downloadOutcome
     } catch (err) {
         Logger.error('error importing file', err)
         return { success: false }

@@ -81,10 +81,18 @@ const typeDefs = gql`
         stopProcessingImportTasks: Boolean
     }
 
+    type AdminOverview {
+        corruptFiles: [String]
+        dropboxFileCount: Int
+        fileCount: Int
+        searchableFilesCount: Int
+    }
+
     input IndividualQuery {
-        type: String!
+        type: String
         subtype: String
         value: String!
+        isNotQuery: Boolean
     }
 
     input SearchFilter {
@@ -102,16 +110,71 @@ const typeDefs = gql`
         address: String
     }
 
-    type SearchQueryResponse {
-        items: [SearchResult]
-        # pageInfo: PaginationInfo
+    type PaginationInfo {
+        totalPages: Int!
+        totalItems: Int!
+        page: Int!
+        perPage: Int!
+        hasNextPage: Boolean!
+        hasPreviousPage: Boolean!
     }
 
-    type AdminOverview {
-        corruptFiles: [String]
-        dropboxFileCount: Int
-        fileCount: Int
-        searchableFilesCount: Int
+    type SearchStats {
+        speed: Int!
+    }
+
+    type SearchResultsSorting {
+        sortModesAvailable: [SearchSort]!
+        sortUsed: SearchSort!
+    }
+
+    type SearchQueryResponse {
+        items: [SearchResult]!
+        pageInfo: PaginationInfo!
+        stats: SearchStats!
+        sorting: SearchResultsSorting
+    }
+
+    type TagSuggestion {
+        type: String!
+        subtype: String
+        value: String!
+        confidence: Int!
+        uuid: String!
+    }
+
+    type AutoCompleteResponse {
+        tagSuggestions: [TagSuggestion]!
+        userId: Int!
+    }
+
+    enum SearchSort {
+        LATEST
+        OLDEST
+        RELEVANCE
+        ELEVATION_HIGHEST
+        ELEVATION_LOWEST
+    }
+
+    type LatLon {
+        latitude: Float
+        longitude: Float
+    }
+
+    type Tag {
+        type: String!
+        subtype: String
+        value: String!
+        confidence: Int!
+    }
+
+    type FileInfo {
+        address: String
+		datetime: String!
+		location: LatLon
+		elevation: Float
+		pathOnDropbox: String
+		tags: [Tag]
     }
 
     type Query {
@@ -119,10 +182,11 @@ const typeDefs = gql`
         dropboxConnection: DropboxConnection
         taskSummary: TaskSummary
         taskProcessor: TaskProcessor
-        # todo: add sort enum param
-        # todo: add pagination params
-        search(filter: SearchFilter!): SearchQueryResponse
         adminOverview: AdminOverview
+        # todo: add sort enum param
+        search(filter: SearchFilter!, page: Int! = 1, perPage: Int! = 100, sortOverload: SearchSort): SearchQueryResponse
+        autoComplete(query: IndividualQuery): AutoCompleteResponse
+        fileInfo(fileId: Int!): FileInfo
     }
     type Mutation {
         login(authInput: LoginInput!): AuthResponse

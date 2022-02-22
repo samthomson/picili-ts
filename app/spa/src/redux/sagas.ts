@@ -24,33 +24,74 @@ const client = new ApolloClient({
 	cache: new InMemoryCache(),
 })
 
-function* search() {
-	try {
-		const searchFilter: Types.API.SearchQuery = yield select(
-			Selectors.searchQuery,
-		)
-		const response: { data: { search: Types.API.SearchResult } } =
-			yield client.mutate({
-				mutation: gql`
-					query ($searchFilter: SearchFilter!) {
-						search(filter: $searchFilter) {
-							items {
-								uuid
-								userId
-								mediumWidth
-								mediumHeight
-								address
-								latitude
-							}
+// const callSearchQuery = async (): Promise<Types.API.SearchResult> => {
+function* callSearchQuery(page = 1) {
+	const searchFilter: Types.API.SearchQuery = yield select(
+		Selectors.searchQuery,
+	)
+	const sortOverload: Types.SearchSortEnum = yield select(
+		Selectors.sortOverload,
+	)
+
+	const response: { data: { search: Types.API.SearchResult } } =
+		yield client.mutate({
+			mutation: gql`
+				query (
+					$searchFilter: SearchFilter!
+					$page: Int
+					$perPage: Int
+					$sortOverload: SearchSort
+				) {
+					search(
+						filter: $searchFilter
+						page: $page
+						perPage: $perPage
+						sortOverload: $sortOverload
+					) {
+						pageInfo {
+							totalPages
+							totalItems
+							page
+							perPage
+							hasNextPage
+							hasPreviousPage
+						}
+						items {
+							fileId
+							uuid
+							userId
+							mediumWidth
+							mediumHeight
+							address
+							latitude
+							longitude
+						}
+						stats {
+							speed
+						}
+						sorting {
+							sortModesAvailable
+							sortUsed
 						}
 					}
-				`,
-				variables: {
-					searchFilter,
-				},
-			})
+				}
+			`,
+			variables: {
+				searchFilter,
+				page,
+				sortOverload,
+			},
+		})
 
-		const searchResult = response?.data?.search
+	const { items, pageInfo, stats, sorting } = response.data.search
+	return { items, pageInfo, stats, sorting }
+}
+
+function* search() {
+	yield put(Actions.searchingSet(true))
+	try {
+		// const searchResult = response?.data?.search
+		const searchResult: Types.API.SearchResult = yield callSearchQuery()
 		if (searchResult) {
 			yield put(Actions.attemptSearchSucceeded(searchResult))
 		} else {
@@ -60,6 +101,32 @@ function* search() {
 	} catch (e) {
 		console.log('error searching ', e)
 		put(Actions.attemptSearchFailed())
+	} finally {
+		yield put(Actions.searchingSet(false))
+	}
+}
+
+function* searchNext() {
+	yield put(Actions.searchingSet(true))
+	try {
+		const paginationInfo: Types.API.PaginationInfo = yield select(
+			Selectors.searchPaginationInfo,
+		)
+		const nextPage = paginationInfo.page + 1
+		const searchResult: Types.API.SearchResult = yield callSearchQuery(
+			nextPage,
+		)
+		if (searchResult) {
+			yield put(Actions.nextSearchSucceeded(searchResult))
+		} else {
+			console.log('search query has empty payload')
+			put(Actions.attemptSearchFailed())
+		}
+	} catch (e) {
+		console.log('error searching ', e)
+		put(Actions.attemptSearchFailed())
+	} finally {
+		yield put(Actions.searchingSet(false))
 	}
 }
 
@@ -67,7 +134,11 @@ function* watchSearch() {
 	yield takeLatest(Actions.ActionType.SEARCH_ATTEMPT, search)
 }
 
+function* watchSearchNext() {
+	yield takeLatest(Actions.ActionType.SEARCH_NEXT, searchNext)
+}
+
 // eslint-disable-next-line
 export default function* rootSaga() {
-	yield all([watchSearch()])
+	yield all([watchSearch(), watchSearchNext()])
 }

@@ -6,4 +6,7 @@ export type Store = {
 	somethingIsLoading: boolean
 	searchResult?: Types.API.SearchResult
 	searchQuery: Types.API.SearchQuery
+	isSearching: boolean
+	sortOverload?: Types.SearchSortEnum
+	lightboxImageIndex?: number
 }

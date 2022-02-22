@@ -10,10 +10,18 @@ export enum ActionType {
 	SET_GLOBAL_LOADING_STATE = 'SET_GLOBAL_LOADING_STATE',
 	SEARCH_ATTEMPT = 'SEARCH_ATTEMPT',
 	SEARCH_SUCCEEDED = 'SEARCH_SUCCEEDED',
+	SEARCH_NEXT = 'SEARCH_NEXT',
+	SEARCH_NEXT_SUCCEEDED = 'SEARCH_NEXT_SUCCEEDED',
 	SEARCH_FAILED = 'SEARCH_FAILED',
 	SEARCH_QUERY_RESET = 'SEARCH_QUERY_RESET',
 	SEARCH_QUERY_ADD = 'SEARCH_QUERY_ADD',
 	SEARCH_QUERY_REMOVE = 'SEARCH_QUERY_REMOVE',
+	SEARCHING_SET = 'SEARCHING_SET',
+	SEARCH_SORT_SET = 'SEARCH_SORT_SET',
+	LIGHTBOX_OPEN = 'LIGHTBOX_OPEN',
+	LIGHTBOX_CLOSE = 'LIGHTBOX_CLOSE',
+	LIGHTBOX_NEXT = 'LIGHTBOX_NEXT',
+	LIGHTBOX_PREVIOUS = 'LIGHTBOX_PREVIOUS',
 }
 
 export type Action =
@@ -47,6 +55,13 @@ export type Action =
 			searchResult: Types.API.SearchResult
 	  }
 	| {
+			type: ActionType.SEARCH_NEXT
+	  }
+	| {
+			type: ActionType.SEARCH_NEXT_SUCCEEDED
+			searchResult: Types.API.SearchResult
+	  }
+	| {
 			type: ActionType.SEARCH_FAILED
 			searchResult?: Types.API.SearchResult
 	  }
@@ -60,6 +75,27 @@ export type Action =
 	  }
 	| {
 			type: ActionType.SEARCH_QUERY_RESET
+	  }
+	| {
+			type: ActionType.SEARCHING_SET
+			isSearching: boolean
+	  }
+	| {
+			type: ActionType.SEARCH_SORT_SET
+			sortOverload: Types.SearchSortEnum
+	  }
+	| {
+			type: ActionType.LIGHTBOX_OPEN
+			index: number
+	  }
+	| {
+			type: ActionType.LIGHTBOX_CLOSE
+	  }
+	| {
+			type: ActionType.LIGHTBOX_NEXT
+	  }
+	| {
+			type: ActionType.LIGHTBOX_PREVIOUS
 	  }
 
 export type LoginAction = {
@@ -120,11 +156,26 @@ export const attemptSearch = (): Action => {
 	}
 }
 
+export const searchNext = (): Action => {
+	return {
+		type: ActionType.SEARCH_NEXT,
+	}
+}
+
 export const attemptSearchSucceeded = (
 	searchResult: Types.API.SearchResult,
 ): Action => {
 	return {
 		type: ActionType.SEARCH_SUCCEEDED,
+		searchResult,
+	}
+}
+
+export const nextSearchSucceeded = (
+	searchResult: Types.API.SearchResult,
+): Action => {
+	return {
+		type: ActionType.SEARCH_NEXT_SUCCEEDED,
 		searchResult,
 	}
 }
@@ -156,5 +207,44 @@ export const searchQueryRemove = (
 export const searchQueryReset = (): Action => {
 	return {
 		type: ActionType.SEARCH_QUERY_RESET,
+	}
+}
+
+export const searchingSet = (isSearching: boolean): Action => {
+	return {
+		type: ActionType.SEARCHING_SET,
+		isSearching,
+	}
+}
+
+export const sortModeSet = (sortOverload: Types.SearchSortEnum): Action => {
+	return {
+		type: ActionType.SEARCH_SORT_SET,
+		sortOverload,
+	}
+}
+
+export const lightboxOpen = (index: number): Action => {
+	return {
+		type: ActionType.LIGHTBOX_OPEN,
+		index,
+	}
+}
+
+export const lightboxClose = (): Action => {
+	return {
+		type: ActionType.LIGHTBOX_CLOSE,
+	}
+}
+
+export const lightboxPrevious = (): Action => {
+	return {
+		type: ActionType.LIGHTBOX_PREVIOUS,
+	}
+}
+
+export const lightboxNext = (): Action => {
+	return {
+		type: ActionType.LIGHTBOX_NEXT,
 	}
 }

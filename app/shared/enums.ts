@@ -18,3 +18,11 @@ export enum FileType {
     IMAGE = 'IMAGE',
     VIDEO = 'VIDEO'
 }
+
+export enum SearchSort {
+    LATEST = 'LATEST',
+    OLDEST = 'OLDEST',
+    RELEVANCE = 'RELEVANCE',
+    ELEVATION_HIGHEST = 'ELEVATION_HIGHEST',
+    ELEVATION_LOWEST = 'ELEVATION_LOWEST',
+}

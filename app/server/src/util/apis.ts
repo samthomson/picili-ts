@@ -74,7 +74,12 @@ export const imagga = async (largeThumbnailPath: string): Promise<Types.Core.Ima
                     }
             }
         } catch (err) {
-            Logger.warn('unexpected exception when calling imagga API', { err })
+            if (err?.code === 'ECONNRESET' || err?.code === 'ETIMEDOUT') {
+                // expected error
+                Logger.info('expected error calling imagga api.', err.code)
+            } else {
+                Logger.warn('unexpected exception when calling imagga API', { err })
+            }
             if (requestAttempts < retryLimit) {
                 await HelperUtil.delay(retryDelay)
             } else {
@@ -138,7 +143,16 @@ export const locationIQ = async (latitude: number, longitude: number): Promise<T
                     break
             }
         } catch (err) {
-            Logger.warn('unexpected exception when calling location iq API', { err })
+
+            if (err?.code === 'ECONNRESET' || err?.code === 'ETIMEDOUT') {
+                // expected error
+                Logger.info('expected exception when calling location iq API.', err.code)
+            } else {
+                Logger.warn('unexpected exception when calling location iq API', { err })
+            }
+
+
+            
             if (requestAttempts < retryLimit) {
                 await HelperUtil.delay(retryDelay)
             } else {

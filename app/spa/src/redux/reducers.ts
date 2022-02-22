@@ -11,6 +11,9 @@ const initialState: Store = {
 	searchQuery: {
 		individualQueries: [],
 	},
+	isSearching: false,
+	sortOverload: undefined,
+	lightboxImageIndex: undefined,
 }
 
 export function appReducers(
@@ -48,6 +51,17 @@ export function appReducers(
 				...state,
 				searchResult: action.searchResult,
 			}
+		case ActionType.SEARCH_NEXT_SUCCEEDED:
+			// append search results to existing
+			const { items: nextItems } = action.searchResult
+			return {
+				...state,
+				searchResult: {
+					...action.searchResult,
+					// append new results to existing results
+					items: [...(state.searchResult?.items ?? []), ...nextItems],
+				},
+			}
 		case ActionType.SEARCH_FAILED:
 			return {
 				...state,
@@ -60,7 +74,7 @@ export function appReducers(
 			const onlyAllowOneOfThisType = ['map', 'date']
 			const oldIndividualQueries = state.searchQuery.individualQueries
 			const filteredQueries = oldIndividualQueries.filter(
-				({ type }) => !onlyAllowOneOfThisType.includes(type),
+				({ type }) => !type || !onlyAllowOneOfThisType.includes(type),
 			)
 			const newQuery = {
 				...state.searchQuery,
@@ -70,6 +84,8 @@ export function appReducers(
 			return {
 				...state,
 				searchQuery: newQuery,
+				// reset sort overload so that default is used on subsequent queries unless explicitly set again
+				sortOverload: undefined,
 			}
 		case ActionType.SEARCH_QUERY_REMOVE:
 			const { removeSearchQuery } = action
@@ -96,6 +112,8 @@ export function appReducers(
 					...state.searchQuery,
 					individualQueries: queriesAfterRemoval,
 				},
+				// reset sort overload so that default is used on subsequent queries unless explicitly set again
+				sortOverload: undefined,
 			}
 		case ActionType.SEARCH_QUERY_RESET:
 			return {
@@ -104,6 +122,61 @@ export function appReducers(
 					...searchQuery,
 					individualQueries: [],
 				},
+				searchResult: undefined,
+				isSearching: false,
+				// reset sort overload so that default is used on subsequent queries unless explicitly set again
+				sortOverload: undefined,
+			}
+		case ActionType.SEARCHING_SET:
+			const { isSearching } = action
+			return {
+				...state,
+				isSearching,
+			}
+		case ActionType.SEARCH_SORT_SET:
+			const { sortOverload } = action
+			return {
+				...state,
+				sortOverload,
+			}
+
+		case ActionType.LIGHTBOX_OPEN:
+			const { index } = action
+			return {
+				...state,
+				lightboxImageIndex: index,
+			}
+		case ActionType.LIGHTBOX_CLOSE:
+			return {
+				...state,
+				lightboxImageIndex: undefined,
+			}
+		case ActionType.LIGHTBOX_NEXT:
+			const { lightboxImageIndex, searchResult } = state
+			let nextIndex = undefined
+			if (typeof lightboxImageIndex === 'number' && searchResult) {
+				nextIndex =
+					(searchResult.items.length + lightboxImageIndex + 1) %
+					searchResult.items.length
+			}
+
+			return {
+				...state,
+				lightboxImageIndex: nextIndex,
+			}
+		case ActionType.LIGHTBOX_PREVIOUS:
+			const { lightboxImageIndex: currentIndex, searchResult: result } =
+				state
+			let previousIndex = undefined
+			if (typeof currentIndex === 'number' && result) {
+				previousIndex =
+					(result.items.length + currentIndex - 1) %
+					result?.items.length
+			}
+
+			return {
+				...state,
+				lightboxImageIndex: previousIndex,
 			}
 
 		default:
