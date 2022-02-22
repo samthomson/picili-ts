@@ -1,6 +1,6 @@
 import Cookies from 'universal-cookie'
 
-const cookieName = 'picili-spa'
+const cookieName = 'picili-token'
 
 export const getToken = (): string | undefined => {
 	const cookies = new Cookies()
@@ -13,9 +13,7 @@ export const saveToken = (token: string): void => {
 
 	// set cookie
 	const cookies = new Cookies()
-	cookies.set(cookieName, token, {
-		path: '/',
-	})
+	cookies.set(cookieName, token, { path: '/' })
 }
 
 export const removeToken = (): void => {
