@@ -29,8 +29,10 @@ services:
       - SPA_EXTERNAL_PORT=3500
       - API_EXTERNAL_PORT=3501
       - API_INTERNAL_PORT=4000
-      - API_HOST=localhost
+      - API_HOST=${DOMAIN_API}
       - SPA_HOST=localhost
+      - REACT_APP_API_HOST=${DOMAIN_API}
+      - REACT_APP_API_PORT=80
     ports:
       - "3500:3000"
       - "3501:4000"
@@ -73,6 +75,20 @@ services:
       - /sessions
     depends_on:
       - mysql
+
+  nginx:
+    image: nginx:1.21
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./container-conf/nginx/templates:/etc/nginx/templates
+    environment:
+      - DOMAIN_SPA=${DOMAIN_SPA}
+      - DOMAIN_API=${DOMAIN_API}
+    depends_on:
+      - app
 
 volumes:
   mysqldata:

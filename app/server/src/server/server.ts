@@ -45,6 +45,7 @@ const startApolloServer = async (typeDefs, resolvers) => {
     const server = new ApolloServer({
         typeDefs: APITypeDefs,
         resolvers,
+        introspection: true,
         plugins: [ApolloServerPluginDrainHttpServer({ httpServer }), ApolloServerPluginLandingPageGraphQLPlayground()],
         context: (ctx) => {
             const userId = AuthUtil.userIdFromRequestCookie(ctx.req)

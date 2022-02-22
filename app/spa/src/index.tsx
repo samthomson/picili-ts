@@ -16,13 +16,13 @@ import App from 'src/components/structure/App'
 import { appReducers } from 'src/redux/reducers'
 import { Store } from 'src/redux/store'
 import rootSaga from 'src/redux/sagas'
+import * as HelperUtil from './util/helper'
 
 import reportWebVitals from './reportWebVitals'
 
 import 'src/style.scss'
 
-// todo: later/ssl make this protocol agnostic
-const uri = `http://${window.location.hostname}:3501/graphql`
+const uri = HelperUtil.APIURL()
 
 const link = createHttpLink({
 	uri,

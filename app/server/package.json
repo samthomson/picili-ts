@@ -38,8 +38,7 @@
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
     "migrate": "ts-node src/db/migrate.ts",
     "direct-test": "ts-node src/tasks/direct-test.ts",
-    "start-task-manager": "ts-node src/tasks/start-task-manager.ts",
-    "clean": "ts-node src/tasks/clean.ts"
+    "start-task-manager": "ts-node src/tasks/start-task-manager.ts"
   },
   "devDependencies": {
     "@types/app-root-path": "^1.2.4",

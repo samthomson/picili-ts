@@ -2,13 +2,11 @@ version: "2"
 services:
   app:
     build: ./
-    #// todo: use static server for spa
     command:
       [
         sh,
         -c,
-        "cd /app/server && yarn run prod-start & cd /app/spa && yarn run
-          prod-start"
+        "cd /app/server && yarn run prod-start & cd /app/spa && yarn run prod-start"
       ]
     environment:
       - DROPBOX_APP_KEY=${DROPBOX_APP_KEY}
@@ -30,11 +28,13 @@ services:
       - SPA_EXTERNAL_PORT=80
       - API_EXTERNAL_PORT=3501
       - API_INTERNAL_PORT=4000
-      - API_HOST=localhost
+      - API_HOST=${DOMAIN_API}
       - SPA_HOST=localhost
+      - REACT_APP_API_HOST=${DOMAIN_API}
+      - REACT_APP_API_PORT=443
     volumes:
       - ./app:/app
-      - /logs/picili-ts-server:/app/logs
+      - /logs/picili-ts-server:/app/server/logs
     ports:
       - "4000:4000"
     expose:
@@ -71,15 +71,20 @@ services:
       - /sessions
     depends_on:
       - mysql
-  
+
   nginx:
-    image: jwilder/nginx-proxy
+    image: nginx:1.21
+    restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN_SPA=${DOMAIN_SPA}
+      - DOMAIN_API=${DOMAIN_API}
     volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./nginx-proxy.conf:/etc/nginx/conf.d/nginx-proxy.conf
-
+      - ./container-conf/nginx/templates:/etc/nginx/templates
+    depends_on:
+      - app
 
 volumes:
   mysqldata:
