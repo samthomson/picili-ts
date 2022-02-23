@@ -100,6 +100,7 @@ export const generateThumbnails = async (
 
     let base64MediumThumbBuffer = undefined
     try {
+        // todo: rotate image here as I do with thumbnails below
         base64MediumThumbBuffer = await sharp(inPath)
             .jpeg({
                 quality: 55,
