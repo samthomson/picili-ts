@@ -8,14 +8,14 @@ export namespace API {
 			error?: string
 		}
 	}
+
 	export type DropboxConnectionEditableAttributes = Pick<Core.BaseModels.DropboxConnection, "syncPath" | "syncEnabled" | "invalidPathDetected">
-	
-	
 
 	export type TaskQueue = {
 		type: string
 		count: number
 	}
+
 	type TasksProcessable = {
 		total: number
 		processable: number
@@ -27,6 +27,7 @@ export namespace API {
 		date: string // date
 		count: number
 	}
+	
 	type TasksProcessed = {
 		recent: TasksProcessedSummary[]
 	}
