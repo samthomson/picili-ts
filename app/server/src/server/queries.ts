@@ -7,7 +7,7 @@ import * as Types from '@shared/declarations'
 import * as Enums from '../../../shared/enums'
 import moment from 'moment'
 
-const getDropboxConnection = async (parents, args, context): Promise<Types.API.DropboxConnection> => {
+const getDropboxConnection = async (parents, args, context): Promise<Types.API.DropboxConnectionEditableAttributes> => {
     AuthUtil.verifyRequestIsAuthenticated(context)
     const { userId } = context
     if (!userId) {
@@ -61,7 +61,7 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
     // search query
     const searchQuery = args.filter
     let page = args?.page ?? 1
-    let perPage = args?.perPage ?? 100
+    const perPage = args?.perPage ?? 100
 
     // user
     const { userId } = context
@@ -99,16 +99,19 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
     const firstItem = page * perPage - perPage
     const items = results.splice(firstItem, perPage)
 
-    const sorting = items.length > 0 ? {
-        sortModesAvailable: availableSortModes,
-        sortUsed: sortToUse,
-    } : undefined
+    const sorting =
+        items.length > 0
+            ? {
+                  sortModesAvailable: availableSortModes,
+                  sortUsed: sortToUse,
+              }
+            : undefined
 
     return {
         items,
         pageInfo,
         stats: { speed: searchTime },
-        sorting
+        sorting,
     }
 }
 
@@ -154,20 +157,19 @@ const autoComplete = async (parents, args, context): Promise<Types.API.AutoCompl
 
     // lift arguments
     // search query
-    const {query} = args
+    const { query } = args
 
     // user
     const { userId } = context
 
     const tagSuggestions = await SearchUtil.autoComplete(userId, query)
 
-
     const timeAtEnd = moment()
     const searchTime = timeAtEnd.diff(timeAtStart)
 
     return {
         userId,
-        tagSuggestions
+        tagSuggestions,
     }
 }
 
@@ -181,8 +183,6 @@ const fileInfo = async (parents, args, context): Promise<Types.API.FileInfo> => 
 
     const fileInfo = await DBUtil.getFileWithTagsAndDropboxFile(userId, fileId)
 
-
-
     return fileInfo
 }
 
@@ -194,7 +194,7 @@ const queries = {
     taskProcessor,
     adminOverview,
     autoComplete,
-    fileInfo
+    fileInfo,
 }
 
 export default queries

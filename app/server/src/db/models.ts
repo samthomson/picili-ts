@@ -32,19 +32,11 @@ export const UserModel = Database.define<UserInstance>(
     },
 )
 
-interface DropboxConnectionAttributes {
-    id: string
-    userId: number
-    refreshToken: string
-    syncPath?: string
-    syncEnabled?: boolean
-    invalidPathDetected?: boolean
-}
-type DropboxConnectionCreationAttributes = Sequelize.Optional<DropboxConnectionAttributes, 'id'>
+type DropboxConnectionCreationAttributes = Sequelize.Optional<Types.Core.BaseModels.DropboxConnection, 'id'>
 
 export interface DropboxConnectionInstance
-    extends Sequelize.Model<DropboxConnectionAttributes, DropboxConnectionCreationAttributes>,
-        DropboxConnectionAttributes {
+    extends Sequelize.Model<Types.Core.BaseModels.DropboxConnection, DropboxConnectionCreationAttributes>,
+        Types.Core.BaseModels.DropboxConnection {
     createdAt?: Date
     updatedAt?: Date
 }
@@ -81,7 +73,7 @@ type DropboxFileCreationAttributes = Sequelize.Optional<Types.Core.BaseModels.Dr
 
 export interface DropboxFileInstance
     extends Sequelize.Model<Types.Core.BaseModels.DropboxFileAttributes, DropboxFileCreationAttributes>,
-    Types.Core.BaseModels.DropboxFileAttributes {
+        Types.Core.BaseModels.DropboxFileAttributes {
     createdAt?: Date
     updatedAt?: Date
 }
@@ -153,9 +145,14 @@ export const SyncLogModel = Database.define<SyncLogInstance>(
 //     priority: number
 //     timesSeen: number
 // }
-type TaskCreationAttributes = Sequelize.Optional<Types.Core.BaseModels.TaskAttributes, 'id' | 'timesSeen' | 'from' | 'after' | 'importTask'>
+type TaskCreationAttributes = Sequelize.Optional<
+    Types.Core.BaseModels.TaskAttributes,
+    'id' | 'timesSeen' | 'from' | 'after' | 'importTask'
+>
 
-export interface TaskInstance extends Sequelize.Model<Types.Core.BaseModels.TaskAttributes, TaskCreationAttributes>, Types.Core.BaseModels.TaskAttributes {
+export interface TaskInstance
+    extends Sequelize.Model<Types.Core.BaseModels.TaskAttributes, TaskCreationAttributes>,
+        Types.Core.BaseModels.TaskAttributes {
     createdAt?: Date
 }
 

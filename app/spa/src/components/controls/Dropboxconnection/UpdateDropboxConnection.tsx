@@ -19,7 +19,7 @@ const updateDropboxConnectionGQL = gql`
 `
 
 interface IProps {
-	dropboxConnection: Types.API.DropboxConnection
+	dropboxConnection: Types.API.DropboxConnectionEditableAttributes
 	disabled: boolean
 }
 
@@ -28,7 +28,7 @@ const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 	disabled,
 }) => {
 	const [lastSavedConnection, setLastSavedConnection] =
-		React.useState<Types.API.DropboxConnection>(
+		React.useState<Types.API.DropboxConnectionEditableAttributes>(
 			dropboxConnection ?? undefined,
 		)
 	const [syncPath, setSyncPath] = React.useState<string>(

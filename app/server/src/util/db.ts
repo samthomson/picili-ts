@@ -70,7 +70,7 @@ export const createDropboxConnection = async (
 
 export const updateDropboxConnection = async (
     userId: number,
-    updateObject: Types.API.DropboxConnection,
+    updateObject: Types.API.DropboxConnectionEditableAttributes,
 ): Promise<Models.DropboxConnectionInstance | null> => {
     await Models.DropboxConnectionModel.update(updateObject, {
         where: { userId },
@@ -359,7 +359,7 @@ export const createMultipleTags = async (tagCreationParams: Types.Core.Inputs.Cr
 export const performSearchQuery = async (
     userId: number,
     individualQuery: Types.API.IndividualSearchQuery,
-    sort: Enums.SearchSort
+    sort: Enums.SearchSort,
 ): Promise<Types.API.SearchResultItem[]> => {
     const { type, subtype, value } = individualQuery
     const { SEARCH_CONFIDENCE_THRESHOLD: confidence } = process.env
@@ -367,7 +367,7 @@ export const performSearchQuery = async (
     const sortSQL = (() => {
         switch (sort) {
             case Enums.SearchSort.RELEVANCE:
-                if(type !== 'map'){
+                if (type !== 'map') {
                     return `ORDER BY tags.confidence DESC`
                 } else {
                     return `ORDER BY files.datetime DESC`
@@ -377,12 +377,12 @@ export const performSearchQuery = async (
             case Enums.SearchSort.ELEVATION_LOWEST:
                 return `ORDER BY files.elevation ASC`
             case Enums.SearchSort.OLDEST:
-                return `ORDER BY files.datetime ASC`                
+                return `ORDER BY files.datetime ASC`
             case Enums.SearchSort.LATEST:
             default:
                 return `ORDER BY files.datetime DESC`
         }
-    })() 
+    })()
 
     // depending on query type, perform relevant query
     switch (type) {
@@ -397,7 +397,7 @@ export const performSearchQuery = async (
                     latUpper,
                     lngLower,
                     lngUpper,
-                }
+                },
             })
             return mapResults.map((result) => {
                 return {
@@ -410,7 +410,7 @@ export const performSearchQuery = async (
                     // todo: remove this?
                     confidence: 100,
                     mediumWidth: result.mediumWidth,
-                    mediumHeight: result.mediumHeight
+                    mediumHeight: result.mediumHeight,
                 }
             })
             break
@@ -428,7 +428,7 @@ export const performSearchQuery = async (
                     subtype,
                     value,
                     confidence,
-                }
+                },
             })
             return results.map((result) => {
                 return {
@@ -439,7 +439,7 @@ export const performSearchQuery = async (
                     latitude: result.latitude,
                     longitude: result.longitude,
                     mediumWidth: result.mediumWidth,
-                    mediumHeight: result.mediumHeight
+                    mediumHeight: result.mediumHeight,
                 }
             })
             break
@@ -488,11 +488,9 @@ export const performAutoCompleteQuery = async (
         WHERE  files.user_id=:userId AND (file_id, type, subtype, value, confidence) IN (
                 SELECT file_id, type, subtype, tags.value, MAX(confidence) max_confidence
                 FROM tags
-                WHERE tags.confidence >= :confidence and ${
-                    type ? `tags.type=:type and ` : ''
-                }${
-                    subtype ? `tags.subtype=:subtype and ` : ''
-                }tags.value LIKE :value
+                WHERE tags.confidence >= :confidence and ${type ? `tags.type=:type and ` : ''}${
+        subtype ? `tags.subtype=:subtype and ` : ''
+    }tags.value LIKE :value
                 GROUP BY tags.type, tags.subtype, tags.value )
                 
         ORDER BY confidence DESC;
@@ -504,8 +502,8 @@ export const performAutoCompleteQuery = async (
             type,
             subtype,
             value: `${value}%`,
-            confidence
-        }
+            confidence,
+        },
     })
     return results.map((result) => {
         return {
@@ -516,7 +514,6 @@ export const performAutoCompleteQuery = async (
             uuid: result.uuid,
         }
     })
-    
 }
 
 export const removeImportTasksForFile = async (fileId: number) => {
@@ -598,20 +595,23 @@ export const getCorruptFilesDropboxPaths = async (userId: number): Promise<strin
     return dropboxFilePaths
 }
 
-export const getFileWithTagsAndDropboxFile = async (userId: number, fileId: number): Promise<Types.API.FileInfo | undefined> => {
+export const getFileWithTagsAndDropboxFile = async (
+    userId: number,
+    fileId: number,
+): Promise<Types.API.FileInfo | undefined> => {
     const file = await Models.FileModel.findOne({
-        where: { id: fileId, userId }, 
+        where: { id: fileId, userId },
         include: [
             { model: Models.DropboxFileModel },
             {
                 model: Models.TagModel,
                 where: {
                     confidence: {
-                        [Sequelize.Op.gte]: process.env.SEARCH_CONFIDENCE_THRESHOLD
-                    }
-                }
-            }
-        ]
+                        [Sequelize.Op.gte]: process.env.SEARCH_CONFIDENCE_THRESHOLD,
+                    },
+                },
+            },
+        ],
     })
 
     if (!file) {
@@ -625,27 +625,16 @@ export const getFileWithTagsAndDropboxFile = async (userId: number, fileId: numb
 
     const fileInfo: Types.API.FileInfo = {
         address,
-		location,
-		datetime: moment(datetime).toISOString(),
-		elevation,
-		pathOnDropbox: dropbox_file?.path ?? undefined,
-		tags: tags.map(
-            (
-                {
-                    type,
-                    subtype,
-                    value,
-                    confidence
-                }
-            ) => (
-                {
-                    type,
-                    subtype,
-                    value,
-                    confidence
-                }
-            )
-        )
+        location,
+        datetime: moment(datetime).toISOString(),
+        elevation,
+        pathOnDropbox: dropbox_file?.path ?? undefined,
+        tags: tags.map(({ type, subtype, value, confidence }) => ({
+            type,
+            subtype,
+            value,
+            confidence,
+        })),
     }
 
     return fileInfo

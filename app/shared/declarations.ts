@@ -8,11 +8,9 @@ export namespace API {
 			error?: string
 		}
 	}
-	export interface DropboxConnection {
-		syncPath?: string
-		syncEnabled?: boolean
-		invalidPathDetected?: boolean
-	}
+	export type DropboxConnectionEditableAttributes = Pick<Core.BaseModels.DropboxConnection, "syncPath" | "syncEnabled" | "invalidPathDetected">
+	
+	
 
 	export type TaskQueue = {
 		type: string
@@ -448,6 +446,15 @@ export namespace Core {
 	}
 
 	export namespace BaseModels {
+		export interface DropboxConnection {
+			id: string
+			userId: number
+			refreshToken: string
+			syncPath?: string
+			syncEnabled?: boolean
+			invalidPathDetected?: boolean
+		}
+
 		export interface DropboxFileAttributes {
 			id: number
 			userId: number
