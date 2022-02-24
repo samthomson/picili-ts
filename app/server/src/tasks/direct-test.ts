@@ -57,7 +57,7 @@ const imaggaTest = async () => {
 }
 
 const geo = async () => {
-    await TasksUtil.addressLookup(1)
+    await TasksUtil.addressLookup(2004)
 }
 
 const throttleTest = async () => {
@@ -131,11 +131,11 @@ const testParsingFileParts = async () => {
 
 // file()
 // imaggaTest()
-// geo()
+geo()
 // geoThrottleTest()
 // dupTagTest()
 // elevationLookup()
 // mixedFileList()
 // testDropboxSync()
 // testParsingFileParts()
-taskTest()
+// taskTest()
