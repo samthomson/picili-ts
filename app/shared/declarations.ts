@@ -27,7 +27,7 @@ export namespace API {
 		date: string // date
 		count: number
 	}
-	
+
 	type TasksProcessed = {
 		recent: TasksProcessedSummary[]
 	}
@@ -291,15 +291,10 @@ export namespace Core {
 			success: boolean
 		}
 
-		export interface CreateFileInput {
-			userId: number
-			dropboxFileId: number
-			fileDirectory: string
-			fileName: string
-			fileExtension: string
-			fileType: Enums.FileType
-			uuid: string
-		}
+		export type CreateFileInput = Pick<Core.BaseModels.FileAttributes, "userId" | "dropboxFileId" | "fileDirectory" | "fileName" | "fileExtension" | "fileType" | "uuid">
+		
+		export type DropboxConnectionEditableAttributes = Pick<Core.BaseModels.DropboxConnection, "syncPath" | "syncEnabled" | "invalidPathDetected">
+
 
 		export interface CreateTagInput {
 			fileId: number
@@ -462,6 +457,26 @@ export namespace Core {
 			path: string
 			dropboxId: string
 			hash: string
+		}
+
+		export interface FileAttributes {
+			id: number
+			userId: number
+			dropboxFileId: number
+			uuid: string
+			isThumbnailed: boolean
+			isCorrupt: boolean
+			latitude?: number
+			longitude?: number
+			elevation?: number
+			address?: string
+			fileDirectory: string
+			fileName: string
+			fileExtension: string
+			fileType: Enums.FileType
+			datetime?: string
+			mediumHeight?: number
+			mediumWidth?: number
 		}
 		
 		export interface TaskAttributes {

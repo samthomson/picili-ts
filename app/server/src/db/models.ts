@@ -240,28 +240,14 @@ export const TaskProcessingLogModel = Database.define<TaskProcessingLogInstance>
     },
 )
 
-interface FileAttributes {
-    id: number
-    userId: number
-    dropboxFileId: number
-    uuid: string
-    isThumbnailed: boolean
-    isCorrupt: boolean
-    latitude?: number
-    longitude?: number
-    elevation?: number
-    address?: string
-    fileDirectory: string
-    fileName: string
-    fileExtension: string
-    fileType: Enums.FileType
-    datetime?: string
-    mediumHeight?: number
-    mediumWidth?: number
-}
-type FileCreationAttributes = Sequelize.Optional<FileAttributes, 'id' | 'isThumbnailed' | 'isCorrupt'>
+type FileCreationAttributes = Sequelize.Optional<
+    Types.Core.BaseModels.FileAttributes,
+    'id' | 'isThumbnailed' | 'isCorrupt'
+>
 
-export interface FileInstance extends Sequelize.Model<FileAttributes, FileCreationAttributes>, FileAttributes {}
+export interface FileInstance
+    extends Sequelize.Model<Types.Core.BaseModels.FileAttributes, FileCreationAttributes>,
+        Types.Core.BaseModels.FileAttributes {}
 
 export const FileModel = Database.define<FileInstance>(
     'file',
