@@ -170,14 +170,15 @@ export namespace ExternalAPI {
 	}
 	export namespace LocationIQ {
 		export type ReverseGeocodeResponse = {
-			address: {
-				// country: string,
-				// country_code: string,
-				// road: string,
-				// state: string,
-				// village: string
-				[key: string]: string
-			},
+			address: Record<string, string>,
+			// address example props:
+			/*
+			country: string,
+			country_code: string,
+			road: string,
+			state: string,
+			village: string
+			*/
 			display_name: string
 		}
 	}
