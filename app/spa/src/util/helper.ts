@@ -10,7 +10,8 @@ export const baseAPIURL = () => {
 	const host = process.env.REACT_APP_API_HOST
 	const port = process.env.REACT_APP_API_PORT
 	const protocol = port === '443' ? 'https' : 'http'
-	const uri = `${protocol}://${host}:${port}`
+	const portFormatted = port === '443' ? '' : `:${port}`
+	const uri = `${protocol}://${host}${portFormatted}`
 	return uri
 }
 
