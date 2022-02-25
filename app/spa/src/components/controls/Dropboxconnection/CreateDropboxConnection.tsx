@@ -1,6 +1,7 @@
 import React from 'react'
 import { useLocation, useHistory } from 'react-router-dom'
 import { useMutation, gql } from '@apollo/client'
+import * as HelperUtil from 'src/util/helper'
 
 const createDropboxConnectionGQL = gql`
 	mutation createDropboxConnection(
@@ -58,9 +59,8 @@ const CreateDropboxConnection: React.FunctionComponent<IProps> = ({
 		httpError?.message || data?.dropbox.connect.error
 
 	const dropboxOAuth = () => {
-		window.location.replace(
-			`${window.location.protocol}//${window.location.hostname}:3501/oauth/dropbox`,
-		)
+		const baseURL = HelperUtil.baseAPIURL()
+		window.location.replace(`${baseURL}/oauth/dropbox`)
 	}
 
 	return (
