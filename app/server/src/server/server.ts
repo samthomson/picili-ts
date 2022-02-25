@@ -50,8 +50,7 @@ const startApolloServer = async (typeDefs, resolvers) => {
         context: (ctx) => {
             const userId = AuthUtil.userIdFromRequestCookie(ctx.req)
             return {
-                setCookies: [],
-                setHeaders: [],
+                ...ctx, // needed to set cookies
                 userId,
             }
         },
