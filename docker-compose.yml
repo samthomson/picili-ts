@@ -93,6 +93,19 @@ services:
     depends_on:
       - app
 
+  e2e:
+    image: cypress
+    build: ./e2e
+    container_name: cypress-picili
+    depends_on:
+      - app
+    environment:
+      - CYPRESS_baseUrl=http://app:3000
+    command: npx cypress run
+    volumes:
+      - ./e2e/cypress:/app/cypress
+      - ./e2e/cypress.json:/app/cypress.json
+
 volumes:
   mysqldata:
     driver: "local"

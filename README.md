@@ -16,6 +16,11 @@ SPA: `http://localhost:3500`
 API: `http://localhost:3501/graphql`
 phpmyadmin: `http://localhost:8083`
 
+### testing
+
+Run end to end test: `docker-compose up --abort-on-container-exit --exit-code-from e2e`.
+This will output to `/e2e/cypress/*` directories.
+
 ## 3.0 How it works
 
 A `TaskManager` is always running in the background, working through **tasks**. These can be anything from syncing with dropbox, to performing subject detection on a newly imported file.

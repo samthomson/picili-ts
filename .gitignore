@@ -6,3 +6,6 @@ app/server/processing
 app/server/thumbs
 app/server/yarn-error.log
 serverlogs
+
+e2e/cypress/results
+e2e/cypress/videos
