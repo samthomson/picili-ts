@@ -5,6 +5,12 @@
 [todo]
 [ copy .env]
 
+### create dropbox app
+
+Create an app on dropbox, and whitelist the following URL:
+`http://localhost/admin/dropbox`
+and the same for whatever production URL if you'll deploy it (but with https).
+
 ## 2.0 Run
 
 `docker-compose up app` 
