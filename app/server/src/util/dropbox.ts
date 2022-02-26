@@ -95,8 +95,14 @@ export const getConnectionURL = async () => {
     })
 
     const SPAExternalPort = process.env.SPA_EXTERNAL_PORT
+
+	const protocol = SPAExternalPort === '443' ? 'https' : 'http'
+    
     const SPAHost = process.env.SPA_HOST
-    const redirectURL = `http://${SPAHost}:${SPAExternalPort}/admin/dropbox`
+	const SPAPortFormatted = SPAExternalPort === '443' ? '' : `:${SPAExternalPort}`
+
+
+    const redirectURL = `${protocol}://${SPAHost}${SPAPortFormatted}/admin/dropbox`
 
     // @ts-ignore
     const authUrl = await dbx.auth.getAuthenticationUrl(redirectURL, null, 'code', 'offline', null, 'none', false)
