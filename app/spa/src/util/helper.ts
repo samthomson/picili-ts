@@ -6,10 +6,15 @@ export const thumbPath = (
 	return `${window.location.protocol}//${window.location.hostname}:3501/thumbs/${userId}/${uuid}/${size}.jpg`
 }
 
-export const APIURL = (): string => {
+export const baseAPIURL = () => {
 	const host = process.env.REACT_APP_API_HOST
 	const port = process.env.REACT_APP_API_PORT
 	const protocol = port === '443' ? 'https' : 'http'
-	const uri = `${protocol}://${host}:${port}/graphql`
+	const portFormatted = port === '443' ? '' : `:${port}`
+	const uri = `${protocol}://${host}${portFormatted}`
 	return uri
+}
+
+export const APIURL = (): string => {
+	return `${baseAPIURL()}/graphql`
 }
