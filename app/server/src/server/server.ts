@@ -75,8 +75,10 @@ const startApolloServer = async (typeDefs, resolvers) => {
         Logger.info(`🚀 Server ready at http://${APIHost}:${port}${server.graphqlPath}`)
     })
 
-    // taskManager.start()
-
+    if (process.env.NODE_ENV === 'production') {
+        taskManager.start()
+    }
+    
     process.on('SIGTERM', async () => {
         Logger.info('SIGTERM received, shutting down...')
         // close server to the world
