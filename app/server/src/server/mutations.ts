@@ -102,8 +102,6 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
     // swap the dropbox code for a long life 'refresh token'
     const refreshToken = await DropboxUtil.exchangeCodeForRefreshToken(token)
 
-    const connection = await DBUtil.createDropboxConnection(userId, refreshToken)
-
     if (!refreshToken) {
         Logger.warn('wasn\'t able to swap auth code for an access token')
         return {
@@ -112,6 +110,8 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
         }
     }
 
+    const connection = await DBUtil.createDropboxConnection(userId, refreshToken)
+    
     // ensure task processor is running
     TasksUtil.ensureTaskProcessorIsRunning()
 
