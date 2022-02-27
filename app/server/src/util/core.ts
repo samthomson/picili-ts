@@ -115,3 +115,4 @@ export const raiseEventInvalidDropboxPathDetected = async (userId: number): Prom
     await DBUtil.updateDropboxConnection(userId, { syncEnabled: false, invalidPathDetected: true })
     // todo: send email notification to user
 }
+// todo: make method like above for invalid token?
