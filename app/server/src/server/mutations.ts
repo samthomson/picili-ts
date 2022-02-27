@@ -131,6 +131,8 @@ const dropboxUpdate = async (parent, args, context): Promise<any> => {
     AuthUtil.verifyRequestIsAuthenticated(args)
 
     // don't allow a change to the dropbox connection if the task manager is working on a task
+    // gets number of processable tasks.
+    // todo: block submitting form and display why on the dropbox connection form in the first place
     if (TasksUtil.isTaskProcessorTooBusyToBeInterrupted()) {
         return {
             success: false,
