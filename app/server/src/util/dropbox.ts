@@ -217,7 +217,7 @@ const dropboxListFolder = async (
             return {
                 success: false,
                 listFolderResponse: null,
-                error: err?.code ?? 'UNKNOWN_ERROR',
+                error: (err?.code || err?.message ) ?? 'UNKNOWN_ERROR',
             }
         }
 
