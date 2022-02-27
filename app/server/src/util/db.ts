@@ -577,9 +577,9 @@ export const getAllPiciliFileIdsForUser = async (userId: number): Promise<number
     const result = await Models.FileModel.findAll({
         where: { userId },
     })
-    const dropboxFileIds = result.map((file) => file.id)
+    const piciliFileIds = result.map((file) => file.id)
 
-    return dropboxFileIds
+    return piciliFileIds
 }
 
 export const getCorruptFilesDropboxPaths = async (userId: number): Promise<string[]> => {
