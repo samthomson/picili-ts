@@ -173,6 +173,7 @@ const dropboxDisconnect = async (parent, args, context): Promise<any> => {
     // don't allow a change to the dropbox connection if the task manager is working on a task
     if (TasksUtil.isTaskProcessorTooBusyToBeInterrupted()) {
         return {
+            error: 'task processor too busy to be interrupted',
             success: false,
         }
     }
