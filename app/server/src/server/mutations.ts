@@ -111,7 +111,7 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
     }
 
     const connection = await DBUtil.createDropboxConnection(userId, refreshToken)
-    
+
     // ensure task processor is running
     TasksUtil.ensureTaskProcessorIsRunning()
 
@@ -119,10 +119,10 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
         success: !!connection,
         connection: connection
             ? {
-                  syncPath: connection.syncPath,
-                  syncEnabled: connection.syncEnabled,
-                  invalidPathDetected: connection.invalidPathDetected,
-              }
+                syncPath: connection.syncPath,
+                syncEnabled: connection.syncEnabled,
+                invalidPathDetected: connection.invalidPathDetected,
+            }
             : undefined,
     }
 }
@@ -134,6 +134,7 @@ const dropboxUpdate = async (parent, args, context): Promise<any> => {
     if (TasksUtil.isTaskProcessorTooBusyToBeInterrupted()) {
         return {
             success: false,
+            error: 'task processor too busy to interrupt'
         }
     }
 
