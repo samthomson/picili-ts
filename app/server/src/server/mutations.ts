@@ -190,8 +190,8 @@ const dropboxDisconnect = async (parent, args, context): Promise<any> => {
     await DBUtil.updateNonImportTasksToHaveNoDependencies()
 
     // get all files for user with their dropbox file, and queue remove file task
-    const dropboxFileIds = await DBUtil.getAllDropboxFileIdsForUser(userId)
-    await TasksUtil.bulkCreateRemovalTasks(dropboxFileIds)
+    const piciliFileIds = await DBUtil.getAllPiciliFileIdsForUser(userId)
+    await TasksUtil.bulkCreateRemovalTasks(piciliFileIds)
     // then remove the dropbox files themselves
     await DBUtil.removeUsersDropboxFiles(userId)
 

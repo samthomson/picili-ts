@@ -573,13 +573,11 @@ export const removeUsersDropboxFiles = async (userId: number): Promise<void> => 
     })
 }
 
-export const getAllDropboxFileIdsForUser = async (userId: number): Promise<number[]> => {
+export const getAllPiciliFileIdsForUser = async (userId: number): Promise<number[]> => {
     const result = await Models.FileModel.findAll({
         where: { userId },
-        include: [{ model: Models.DropboxFileModel }],
     })
-    // @ts-ignore
-    const dropboxFileIds = result.map((file) => file.dropbox_file.id)
+    const dropboxFileIds = result.map((file) => file.id)
 
     return dropboxFileIds
 }

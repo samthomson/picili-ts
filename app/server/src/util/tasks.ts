@@ -746,11 +746,11 @@ export const removeAFileFromTheSystem = async (fileId: number): Promise<Types.Co
     }
 }
 
-export const bulkCreateRemovalTasks = async (dropboxFileIds: number[]): Promise<void> => {
-    const removalTasks = dropboxFileIds.map((dropboxFileId) => {
+export const bulkCreateRemovalTasks = async (piciliFileIds: number[]): Promise<void> => {
+    const removalTasks = piciliFileIds.map((piciliFileId) => {
         return {
             taskType: Enums.TaskType.REMOVE_FILE,
-            relatedPiciliFileId: dropboxFileId,
+            relatedPiciliFileId: piciliFileId,
             importTask: false,
             priority: taskTypeToPriority(Enums.TaskType.REMOVE_FILE),
         }
