@@ -202,14 +202,24 @@ const dropboxListFolder = async (
             },
         }
         const result = await fetch(url, options)
-        const data = await result.json()
+        let data = undefined
+        try {
+            data = await result.json()
+        } catch (err) {
+            Logger.error('encountered an error parsing json from dropbox api: list folder', { err, params: { path, cursor }, status: result?.status, result })
+            return {
+                success: false,
+                listFolderResponse: null,
+                error: err?.code ?? 'UNKNOWN_ERROR',
+            }
+        }
 
         return { success: true, listFolderResponse: data }
     } catch (err) {
         if (err.code === 'EAI_AGAIN') {
             Logger.info('unable to reach dropbox API - no connectivity?')
         } else {
-            Logger.error('encountered an error calling dropbox api to list folder', { err })
+            Logger.error('encountered an error calling dropbox api to list folder', { err, params: { path, cursor } })
         }
         return {
             success: false,
