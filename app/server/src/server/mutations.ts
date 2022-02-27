@@ -105,6 +105,7 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
     const connection = await DBUtil.createDropboxConnection(userId, refreshToken)
 
     if (!refreshToken) {
+        Logger.warn('wasn\'t able to swap auth code for an access token')
         return {
             success: false,
             error: 'failed to exchange code for a refresh token, please try connecting again.',
