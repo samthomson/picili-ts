@@ -3,7 +3,7 @@ export const thumbPath = (
 	uuid: string,
 	size: string,
 ): string => {
-	return `${window.location.protocol}//${window.location.hostname}:3501/thumbs/${userId}/${uuid}/${size}.jpg`
+	return `${baseAPIURL()}/thumbs/${userId}/${uuid}/${size}.jpg`
 }
 
 export const baseAPIURL = () => {
