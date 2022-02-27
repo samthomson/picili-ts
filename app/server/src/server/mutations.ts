@@ -5,6 +5,7 @@ import * as TasksUtil from '../util/tasks'
 import * as Types from '@shared/declarations'
 import * as Enums from '../../../shared/enums'
 import { TaskManager } from '../services/TaskManager'
+import Logger from '../services/logging'
 
 const login = async (parent, args, context): Promise<Types.API.Response.Auth> => {
     const user = await DBUtil.getUser(args.authInput.email, args.authInput.password)
@@ -82,6 +83,7 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
         }
     }
     if (!token) {
+        Logger.warn('dropbox oauth didn\'t come back with a token')
         return {
             success: false,
             error: 'missing dropbox oauth token',
