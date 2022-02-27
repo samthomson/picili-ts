@@ -755,7 +755,9 @@ export const bulkCreateRemovalTasks = async (piciliFileIds: number[]): Promise<v
             priority: taskTypeToPriority(Enums.TaskType.REMOVE_FILE),
         }
     })
-    await Models.TaskModel.bulkCreate(removalTasks)
+    await Models.TaskModel.bulkCreate(removalTasks, {
+        ignoreDuplicates: true
+    })
 }
 
 export const isTaskProcessorTooBusyToBeInterrupted = (): boolean => {
