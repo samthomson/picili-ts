@@ -56,9 +56,13 @@ export class TaskManager {
         this.tasksBeingProcessed = this.tasksBeingProcessed.filter(({ id }) => task.id !== id)
     }
 
+    private async updateHowManyProcessableTasksThereAre() {
+        this.howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere(this.isStopping)
+    }
+
     public async start(): Promise<void> {
         this.isImportingEnabled = true
-        this.howManyProcessableTasksAreThere = await DBUtil.howManyProcessableTasksAreThere(this.isStopping)
+        this.updateHowManyProcessableTasksThereAre()
 
         // todo: experiment with raising this, and later adjusting based on available resources
         const parallelization = 5
@@ -89,6 +93,7 @@ export class TaskManager {
                 // else, delay ten seconds
                 await HelperUtil.delay(10000)
             }
+            this.updateHowManyProcessableTasksThereAre()
         }
     }
 }
