@@ -16,6 +16,13 @@ export const listAllDropboxfiles = async (userId: number): Promise<Types.Core.Dr
     // get dropbox connection details for user
     const dropboxConnection = await DBUtil.getDropboxConnection(userId)
     const { refreshToken: token, syncPath, invalidPathDetected } = dropboxConnection
+
+    if (!token) {
+        Logger.warn('no dropbox token stored for connection.')
+        return { success: false, error: 'NO_TOKEN', files: [] }
+    }
+
+
     const access = await exchangeRefreshTokenForAccessToken(token)
 
     // query dropbox and get all files for that directory (recursively)
@@ -312,6 +319,10 @@ export const checkForDropboxChanges = async (userId: number): Promise<Types.Core
         if (error === 'EAI_AGAIN') {
             // connectivity issue, try again in five mins
             return { success: false, retryInMinutes: 5 }
+        }
+
+        if (error === 'NO_TOKEN') {
+            return { success: false, retryInMinutes: 15 }
         }
 
         // allow error being INVALID_PATH as then we will remove all files
