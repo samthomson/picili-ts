@@ -101,15 +101,7 @@ export const getConnectionURL = async () => {
         clientSecret: process.env.DROPBOX_APP_SECRET,
     })
 
-    const SPAExternalPort = process.env.SPA_EXTERNAL_PORT
-
-	const protocol = SPAExternalPort === '443' ? 'https' : 'http'
-    
-    const SPAHost = process.env.SPA_HOST
-	const SPAPortFormatted = SPAExternalPort === '443' ? '' : `:${SPAExternalPort}`
-
-
-    const redirectURL = `${protocol}://${SPAHost}${SPAPortFormatted}/admin/dropbox`
+    const redirectURL = HelperUtil.spaURL()
 
     // @ts-ignore
     const authUrl = await dbx.auth.getAuthenticationUrl(redirectURL, null, 'code', 'offline', null, 'none', false)
@@ -128,7 +120,7 @@ export const exchangeCodeForRefreshToken = async (code: string): Promise<string 
         params.append('code', code)
         params.append('grant_type', 'authorization_code')
         // todo: later/ssl make this protocol agnostic for prod when https works there
-        params.append('redirect_uri', `http://${SPAHost}:${SPAExternalPort}/admin/dropbox`)
+        params.append('redirect_uri', HelperUtil.spaURL())
         params.append('client_id', process.env.DROPBOX_APP_KEY)
         params.append('client_secret', process.env.DROPBOX_APP_SECRET)
 
