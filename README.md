@@ -55,6 +55,12 @@ Once a connection with dropbox is made via OAuth, and a directory (within your d
 
 [**] These APIs are called conditionally based on the results of subject detection. For example if *plant*, *flower*, or *tree* is detected as a subject tag, then a task will be created to have the plant detection API called for that picture.
 
+
+### authentication
+
+upon logging in a jwt is generated and stored as a cookie on the request. This is checked on a cold start via the API to determine an initial auth status. The contained JWT is then added on all requests and the API's middleware looks for it to determine an auth status for API queries/mutations.
+
+
 ## 4.0 Deployment
 
 Testing and targeting Digital Ocean's $5/m VPS.

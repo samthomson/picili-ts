@@ -14,7 +14,10 @@ const login = async (parent, args, context): Promise<Types.API.Response.Auth> =>
         const token = AuthUtil.generateJWT(user.id)
 
         context.res.cookie('picili-token', token, {
-            httpOnly: true,
+            // perhaps this should be true for server but not client - as I previously added it to fix a serverside issue?
+            // httpOnly: true,
+            // must be false so that JS can read the cookies in the client, to perform an initial auth status check on a cold start.
+            httpOnly: false,
             maxAge: 1000 * 60 * 60 * 24 * 31,
         })
 
