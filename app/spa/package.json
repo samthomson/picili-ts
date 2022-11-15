@@ -35,13 +35,13 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build-for-prod": "NODE_ENV=development yarn && react-scripts --max_old_space_size=512 build",
+    "build-for-prod": "NODE_ENV=development yarn && react-scripts --max_old_space_size=512 node_modules/.bin/react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
     "lint-summary": "eslint 'src/**/*.{js,ts,tsx}'",
     "serve": "serve -s build -l 3000",
-    "prod-start": "yarn run build-for-prod && yarn run serve"
+    "prod-start-spa": "yarn run build-for-prod && yarn run serve"
   },
   "eslintConfig": {
     "extends": [
