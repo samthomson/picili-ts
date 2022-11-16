@@ -57,11 +57,12 @@ const startApolloServer = async (typeDefs, resolvers) => {
         formatError: (err) => {
             // log internal - issues with my code - errors
             if (err.extensions.code === 'INTERNAL_SERVER_ERROR') {
-                Logger.error(err)
+                Logger.error('GraphQL INTERNAL_SERVER_ERROR', err)
             }
             // return underlying error - to client - either way
             return err
         },
+        logger: Logger,
     })
 
     await server.start()
