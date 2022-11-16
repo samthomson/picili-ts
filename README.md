@@ -75,6 +75,9 @@ Testing and targeting Digital Ocean's $5/m VPS. 1GB ram, and 1GB swap enabled.
 The above will simply clone the repo to the server and copy the local `.env` file there.
 You must next run the remote-redeploy script to [re]start the containers.
 
+#### nginx
+
+In produciton the SPA is served statically, and the API run dynamically. Both are run from the same container, with a separate nginx container acting as a gateway. You must set the required environment variables with domain names (without protocol or trailing slash) for nginx to listen out for - and segregate traffic based on.
 
 ### 4.2 update / redeploy
 
