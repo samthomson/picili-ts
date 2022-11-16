@@ -35,7 +35,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build-for-prod": "NODE_ENV=development yarn && react-scripts --max_old_space_size=512 node_modules/.bin/react-scripts build",
+    "build-for-prod": "NODE_ENV=development yarn && npm rebuild node-sass && node_modules/.bin/react-scripts --max_old_space_size=512 build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
