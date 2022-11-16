@@ -63,7 +63,7 @@ upon logging in a jwt is generated and stored as a cookie on the request. This i
 
 ## 4.0 Deployment
 
-Testing and targeting Digital Ocean's $5/m VPS.
+Testing and targeting Digital Ocean's $5/m VPS. 1GB ram, and 1GB swap enabled.
 
 ### 4.1 initial deploy
 
@@ -72,7 +72,8 @@ Testing and targeting Digital Ocean's $5/m VPS.
 	- [generate an ssh key and add to github](https://github.com/samthomson/readme/tree/master/docker-machine#optional)
 2. `bash ./initial-deployment.sh`
 
-[//todo: something about the nginx sample]
+The above will simply clone the repo to the server and copy the local `.env` file there.
+You must next run the remote-redeploy script to [re]start the containers.
 
 
 ### 4.2 update / redeploy
