@@ -55,20 +55,11 @@ const startApolloServer = async (typeDefs, resolvers) => {
             }
         },
         // set so that we always can get the error's stacktrace
+        // https://www.apollographql.com/docs/apollo-server/v2/data/errors/#omitting-or-including-stacktrace
         debug: true,
         formatError: (err) => {
-            console.log('AN ERROR HAS BEEN CAUGHT IN THE GQL FORMATTER')
             Logger.error('GraphQL Error', err)
             return new Error('GraphQL Error - check the logs to see what went wrong.');
-
-
-
-            // // log internal - issues with my code - errors
-            // if (err.extensions.code === 'INTERNAL_SERVER_ERROR') {
-            //     Logger.error('GraphQL INTERNAL_SERVER_ERROR', err)
-            // }
-            // // return underlying error - to client - either way
-            // return err
         },
         logger: Logger,
     })
