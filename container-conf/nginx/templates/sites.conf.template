@@ -2,7 +2,7 @@ server {
     listen 80;
     listen 443;
 
-    server_name ${DOMAIN_SPA};
+    server_name ${DOMAIN_SPA_PROD};
 
     location / {
         proxy_pass http://app:3000/;
@@ -13,7 +13,7 @@ server {
     listen 80;
     listen 443;
 
-    server_name ${DOMAIN_API};
+    server_name ${DOMAIN_API_PROD};
 
     location / {
         proxy_pass http://app:4000/;
