@@ -28,9 +28,9 @@ services:
       - SPA_EXTERNAL_PORT=443
       - API_EXTERNAL_PORT=3501
       - API_INTERNAL_PORT=4000
-      - API_HOST=${DOMAIN_API}
-      - SPA_HOST=${DOMAIN_SPA}
-      - REACT_APP_API_HOST=${DOMAIN_API}
+      - API_HOST=${DOMAIN_API_PROD}
+      - SPA_HOST=${DOMAIN_SPA_PROD}
+      - REACT_APP_API_HOST=${DOMAIN_API_PROD}
       - REACT_APP_API_PORT=443
     volumes:
       - ./app:/app
@@ -80,8 +80,8 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      - DOMAIN_SPA=${DOMAIN_SPA}
-      - DOMAIN_API=${DOMAIN_API}
+      - DOMAIN_SPA=${DOMAIN_SPA_PROD}
+      - DOMAIN_API=${DOMAIN_API_PROD}
     volumes:
       - ./container-conf/nginx/templates:/etc/nginx/templates
     depends_on:
