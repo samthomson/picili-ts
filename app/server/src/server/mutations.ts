@@ -58,13 +58,9 @@ const register = async (parent, args, context): Promise<Types.API.Response.Auth>
 
     const token = AuthUtil.generateJWT(user.id)
 
-    context.setCookies.push({
-        name: 'picili-token',
-        value: token,
-        options: {
-            SameSite: 'Strict',
-            maxAge: 1000 * 60 * 60 * 24 * 31,
-        },
+    context.response?.cookie('picili-token', token, {
+        SameSite: 'Strict',
+        maxAge: 1000 * 60 * 60 * 24 * 31,
     })
 
     // return token or error
