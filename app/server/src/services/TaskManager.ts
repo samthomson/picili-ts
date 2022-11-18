@@ -13,7 +13,7 @@ export class TaskManager {
 
     public howManyProcessableTasksAreThere = 0
     private _isStopping = false
-    private isImportingEnabled = false
+    private _isImportingEnabled = false
     private isShuttingDown = false
     private hasNowShutDown = false
     private tasksBeingProcessed: Models.TaskInstance[] = []
@@ -32,8 +32,8 @@ export class TaskManager {
         this._isStopping = stopping;
     }
 
-    public getImportingEnabled() {
-        return this.isImportingEnabled
+    get isImportingEnabled() {
+        return this._isImportingEnabled
     }
 
     public getTasksBeingProcessed(): Models.TaskInstance[] {
@@ -61,7 +61,7 @@ export class TaskManager {
     }
 
     public async start(): Promise<void> {
-        this.isImportingEnabled = true
+        this._isImportingEnabled = true
         this.updateHowManyProcessableTasksThereAre()
 
         // todo: experiment with raising this, and later adjusting based on available resources
