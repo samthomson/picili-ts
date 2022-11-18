@@ -28,7 +28,8 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 	const [rows, setRows] = React.useState<Row[]>([])
 	const [rowHeights, setRowHeights] = React.useState<number[]>([])
 	const [ref, bounds] = useMeasure()
-	const [lastWidth, setLastWidth] = React.useState<number>(0)
+	// commenting out unused 'lastWidth' 18.11.2022
+	// const [lastWidth, setLastWidth] = React.useState<number>(0)
 	// const [lastResultsCount, setLastResultsCount] = React.useState<number>(0)
 
 	const lightboxIndex = ReactRedux.useSelector(Selectors.lightboxIndex)
@@ -47,7 +48,8 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 			// bounds.width !== lastWidth && // didn't render after a new search since width hadn't changed.
 			searchResults
 		) {
-			setLastWidth(bounds.width)
+			// commenting out unused 'lastWidth' 18.11.2022
+			// setLastWidth(bounds.width)
 			calculateJustifiedImageGallery()
 		}
 	}, [bounds, searchResults])
