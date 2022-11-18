@@ -724,7 +724,7 @@ export const plantLookup = async (fileId: number): Promise<Types.Core.TaskProces
 
 export const ensureTaskProcessorIsRunning = () => {
     const taskManager = TaskManager.getInstance()
-    taskManager.setStopping(false)
+    taskManager.isStopping = false
 }
 
 export const removeAFileFromTheSystem = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {

@@ -12,7 +12,7 @@ export class TaskManager {
     public static _instance: TaskManager = new TaskManager()
 
     public howManyProcessableTasksAreThere = 0
-    private isStopping = false
+    private _isStopping = false
     private isImportingEnabled = false
     private isShuttingDown = false
     private hasNowShutDown = false
@@ -25,11 +25,11 @@ export class TaskManager {
         TaskManager._instance = this
     }
 
-    public getStopping() {
-        return this.isStopping
+    get isStopping(): boolean {
+        return this._isStopping
     }
-    public setStopping(stopping: boolean) {
-        this.isStopping = stopping
+    set isStopping(stopping: boolean) {
+        this._isStopping = stopping;
     }
 
     public getImportingEnabled() {
@@ -81,7 +81,7 @@ export class TaskManager {
         // Logger.info(`thread:${threadNo + 1} started`)
         while (!this.isShuttingDown) {
             // get next task
-            const nextTask = await DBUtil.getAndReserveNextTaskId(this.isStopping)
+            const nextTask = await DBUtil.getAndReserveNextTaskId(this._isStopping)
             // if task, process task
             if (nextTask) {
                 Logger.info(`[thread:${threadNo + 1}] will now start next task: ${nextTask.id}:${nextTask.taskType}...`)

@@ -212,7 +212,7 @@ const dropboxDisconnect = async (parent, args, context): Promise<any> => {
 
 const stopProcessingImportTasks = (): boolean => {
     const taskManager = TaskManager.getInstance()
-    taskManager.setStopping(true)
+    taskManager.isStopping = true
 
     return true
 }
