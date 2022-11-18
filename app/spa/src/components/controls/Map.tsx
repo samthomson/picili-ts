@@ -3,6 +3,7 @@ import mapboxgl, { Map, Marker, LngLatBounds } from 'mapbox-gl'
 
 import * as Types from '@shared/declarations'
 
+// todo: is it okay for this to be hard coded?
 mapboxgl.accessToken =
 	'pk.eyJ1IjoiZzRmZDVnNGY1ZDRnNmQiLCJhIjoiY2t5b3E1N2FjMDJuYjJ1bzFmN2s0OGR6ZyJ9.MTbWLnLDn8G_5GIXUononA'
 
