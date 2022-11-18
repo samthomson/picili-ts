@@ -16,7 +16,7 @@ export class TaskManager {
     private _isImportingEnabled = false
     private isShuttingDown = false
     private hasNowShutDown = false
-    private tasksBeingProcessed: Models.TaskInstance[] = []
+    private _tasksBeingProcessed: Models.TaskInstance[] = []
 
     constructor() {
         if (TaskManager._instance) {
@@ -36,8 +36,8 @@ export class TaskManager {
         return this._isImportingEnabled
     }
 
-    public getTasksBeingProcessed(): Models.TaskInstance[] {
-        return this.tasksBeingProcessed
+    get tasksBeingProcessed() {
+        return this._tasksBeingProcessed
     }
 
     public async safelyShutDown(): Promise<boolean> {
@@ -53,7 +53,7 @@ export class TaskManager {
         this.tasksBeingProcessed.push(task)
     }
     public removeTaskBeingProcessed(task: Models.TaskInstance) {
-        this.tasksBeingProcessed = this.tasksBeingProcessed.filter(({ id }) => task.id !== id)
+        this._tasksBeingProcessed = this.tasksBeingProcessed.filter(({ id }) => task.id !== id)
     }
 
     private async updateHowManyProcessableTasksThereAre() {

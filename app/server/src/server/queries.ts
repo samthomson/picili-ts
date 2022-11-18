@@ -122,7 +122,7 @@ const taskProcessor = async (parents, args, context): Promise<Types.API.TaskProc
 
     const stopping = taskManager.isStopping
     const isImportingEnabled = taskManager.isImportingEnabled
-    const currentTasksBeingProcessed = taskManager.getTasksBeingProcessed()
+    const currentTasksBeingProcessed = taskManager.tasksBeingProcessed
 
     return {
         stopping,
