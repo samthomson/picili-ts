@@ -6,7 +6,7 @@ export const thumbPath = (
 	return `${baseAPIURL()}/thumbs/${userId}/${uuid}/${size}.jpg`
 }
 
-export const baseAPIURL = () => {
+export const baseAPIURL = (): string => {
 	const host = process.env.REACT_APP_API_HOST
 	const port = process.env.REACT_APP_API_PORT
 	const protocol = port === '443' ? 'https' : 'http'
