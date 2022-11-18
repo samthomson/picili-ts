@@ -12,7 +12,7 @@ const commonLoggingOptions = {
     handleRejections: true, // doesn't work
     format: winston.format.combine(winston.format.timestamp(), winston.format.splat(), myFormat),
     maxsize: 5242880, // 5MB
-    maxFiles: 5,
+    maxFiles: 21,
     colorize: true,
 }
 
@@ -34,7 +34,7 @@ const options = {
         handleRejections: true,
         format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
         maxsize: 5242880, // 5MB
-        maxFiles: 5,
+        // maxFiles: 5,
     },
 }
 
