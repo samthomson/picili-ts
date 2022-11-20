@@ -238,6 +238,20 @@ a {
     display: block
   }
 
+  #video-control-space {
+    background-color: palevioletred;
+    position: absolute;
+    display: none;
+    left: 8px;
+    right: 56px;
+    bottom: 8px;
+    height: 48px;
+
+    &.display {
+      display: block
+    }
+  }
+
   #lightbox-file-content {
     position: absolute;
     left: 8px;
@@ -247,6 +261,10 @@ a {
 
     &.with-info {
       right: 300px;
+    }
+
+    &.with-video-controls {
+      bottom: 56px;
     }
 
     img {

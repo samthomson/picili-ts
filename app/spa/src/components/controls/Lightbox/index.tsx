@@ -92,6 +92,8 @@ const Lightbox: React.FunctionComponent = () => {
 						id="lightbox-file-content"
 						className={classNames({
 							'with-info': isInfoShowing,
+							'with-video-controls':
+								result.fileType === Enums.FileType.VIDEO,
 						})}
 					>
 						{result.fileType === Enums.FileType.IMAGE && (
@@ -113,6 +115,25 @@ const Lightbox: React.FunctionComponent = () => {
 							)}
 					</div>
 					<div
+						id="video-control-space"
+						className={classNames({
+							open: result.fileType === Enums.FileType.VIDEO,
+						})}
+					>
+						<button
+							id="lightbox-play"
+							onClick={() => {
+								// attempt to play video
+								setIsCurrentlyPlayingVideo(
+									!isCurrentlyPlayingVideo,
+								)
+							}}
+						>
+							{isCurrentlyPlayingVideo ? 'pause' : 'play'}
+						</button>{' '}
+						[fullscreen]
+					</div>
+					<div
 						id="lightbox-file-info"
 						className={classNames({
 							'with-info': isInfoShowing,
@@ -131,17 +152,7 @@ const Lightbox: React.FunctionComponent = () => {
 					>
 						i
 					</button>
-					<button
-						id="lightbox-play"
-						className="lightbox-button"
-						style={{ top: 100 }}
-						onClick={() => {
-							// attempt to play video
-							setIsCurrentlyPlayingVideo(!isCurrentlyPlayingVideo)
-						}}
-					>
-						{isCurrentlyPlayingVideo ? 'pa' : 'pl'}
-					</button>
+
 					<button
 						id="lightbox-left"
 						className="lightbox-button"
