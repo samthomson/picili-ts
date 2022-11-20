@@ -16,7 +16,7 @@ const Lightbox: React.FunctionComponent = () => {
 
 	React.useEffect(() => {
 		if (typeof lightboxIndex === 'number') {
-			// todo: preload neighbors
+			// preload neighbors
 			const neighbours = [
 				lightboxIndex - 2,
 				lightboxIndex - 1,
