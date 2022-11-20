@@ -8,6 +8,8 @@ import * as HelperUtil from 'src/util/helper'
 
 import LightboxInfo from './LightboxInfo'
 
+import * as Enums from '../../../../../shared/enums'
+
 const Lightbox: React.FunctionComponent = () => {
 	const [isInfoShowing, setIsInfoShowing] = React.useState<boolean>(false)
 	const dispatch = ReactRedux.useDispatch()
@@ -66,13 +68,18 @@ const Lightbox: React.FunctionComponent = () => {
 							'with-info': isInfoShowing,
 						})}
 					>
-						<img
-							src={HelperUtil.thumbPath(
-								result.userId,
-								result.uuid,
-								'xl',
-							)}
-						/>
+						{result.fileType === Enums.FileType.IMAGE && (
+							<img
+								src={HelperUtil.thumbPath(
+									result.userId,
+									result.uuid,
+									'xl',
+								)}
+							/>
+						)}
+						{result.fileType === Enums.FileType.VIDEO && (
+							<p>show a video/</p>
+						)}
 					</div>
 					<div
 						id="lightbox-file-info"
