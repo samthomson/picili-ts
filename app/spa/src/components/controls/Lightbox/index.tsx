@@ -7,6 +7,7 @@ import * as Selectors from 'src/redux/selectors'
 import * as HelperUtil from 'src/util/helper'
 
 import LightboxInfo from './LightboxInfo'
+import VideoJS from './VideoJS'
 
 import * as Enums from '../../../../../shared/enums'
 
@@ -52,6 +53,29 @@ const Lightbox: React.FunctionComponent = () => {
 	const previous = () => dispatch(Actions.lightboxPrevious())
 	const next = () => dispatch(Actions.lightboxNext())
 
+	const options = result && {
+		controls: true,
+		poster: HelperUtil.thumbPath(result.userId, result.uuid, 'xl'),
+		sources: [
+			{
+				src: HelperUtil.thumbPath(
+					result.userId,
+					result.uuid,
+					'mp4',
+					'mp4',
+				),
+			},
+			{
+				src: HelperUtil.thumbPath(
+					result.userId,
+					result.uuid,
+					'webm',
+					'webm',
+				),
+			},
+		],
+	}
+
 	return (
 		<div
 			id="lightbox"
@@ -77,9 +101,10 @@ const Lightbox: React.FunctionComponent = () => {
 								)}
 							/>
 						)}
-						{result.fileType === Enums.FileType.VIDEO && (
-							<p>show a video/</p>
-						)}
+						{result.fileType === Enums.FileType.VIDEO &&
+							options && (
+								<VideoJS options={options} key={result.uuid} />
+							)}
 					</div>
 					<div
 						id="lightbox-file-info"
