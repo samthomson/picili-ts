@@ -57,7 +57,7 @@ const Lightbox: React.FunctionComponent = () => {
 
 	const options = result && {
 		controls: false,
-		poster: HelperUtil.thumbPath(result.userId, result.uuid, 'xl'),
+		// poster: HelperUtil.thumbPath(result.userId, result.uuid, 'xl'),
 		sources: [
 			{
 				src: HelperUtil.thumbPath(
