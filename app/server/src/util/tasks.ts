@@ -90,7 +90,7 @@ export const processTask = async (taskId: number, thread: number) => {
                 break
 
             case Enums.TaskType.PROCESS_VIDEO_FILE:
-                Logger.info('video processor not implemented yet', { taskType, id: task.id })
+                taskOutcome = await processVideo(task.relatedPiciliFileId, task.id)
                 break
 
             default:
@@ -230,6 +230,34 @@ export const taskTypeToPriority = (taskType: Enums.TaskType): number => {
         case Enums.TaskType.SUBJECT_DETECTION:
             return 4
     }
+}
+
+export const processVideo = async (
+    fileId: number,
+    videoProcessingTaskId: number,
+): Promise<Types.Core.TaskProcessorResult> => {
+    // look up file
+    const file = await Models.FileModel.findByPk(fileId)
+    const { userId, uuid, fileExtension } = file
+
+    const videoProcessingResult = await FileUtil.generateVideoFiles(
+        userId,
+        fileId,
+        uuid,
+        fileExtension,
+        videoProcessingTaskId,
+    )
+    const { success } = videoProcessingResult
+
+    console.log('video processing result', videoProcessingResult)
+
+    // todo: extract metadata and tag accordingly
+
+    // subject detection task will get queued during the image (of the stillframe) thumbnailing
+
+    // likewise and create a task dependent on the above to remove the processing file(s)
+
+    return { success }
 }
 
 export const processImage = async (
@@ -756,7 +784,7 @@ export const bulkCreateRemovalTasks = async (piciliFileIds: number[]): Promise<v
         }
     })
     await Models.TaskModel.bulkCreate(removalTasks, {
-        ignoreDuplicates: true
+        ignoreDuplicates: true,
     })
 }
 

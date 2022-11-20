@@ -47,13 +47,20 @@ export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.
             })
             return imageProcessingTaskId
         } else {
+            // for videos, we create the video but then after also thumbnails (from the still frame generated during video processing)
             const videoProcessingTaskId = await DBUtil.createTask({
                 taskType: Enums.TaskType.PROCESS_VIDEO_FILE,
                 relatedPiciliFileId: newFileId,
                 after: downloadTaskId,
                 importTask: true,
             })
-            return videoProcessingTaskId
+            const imageProcessingTaskId = await DBUtil.createTask({
+                taskType: Enums.TaskType.PROCESS_IMAGE_FILE,
+                relatedPiciliFileId: newFileId,
+                after: videoProcessingTaskId,
+                importTask: true,
+            })
+            return imageProcessingTaskId
         }
     })()
 

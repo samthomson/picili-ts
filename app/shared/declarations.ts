@@ -336,6 +336,11 @@ export namespace Core {
 		mediumHeight?: number
 		exifData?: ExifData
 	}
+	export type VideoCreationResponse = {
+		success: boolean
+		isCorrupt?: boolean
+		metaData?: VideoMetaData
+	}
 	export type ExifData = {
 		cameraMake?: string
 		cameraModel?: string
@@ -351,6 +356,12 @@ export namespace Core {
 		longitude?: number
 		altitude?: number
 	}
+
+	// todo: fill in
+	export type VideoMetaData = {
+		// todo: length?
+	}
+
 	export type ImaggaTaggingResult = {
 		success: boolean
 		throttled?: boolean

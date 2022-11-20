@@ -2,9 +2,13 @@ import sharp from 'sharp'
 import FSExtra from 'fs-extra'
 import fs from 'fs'
 import Logger from '../services/logging'
+import * as HelperUtil from '../util/helper'
+import * as DBUtil from '../util/db'
 import * as Types from '@shared/declarations'
+import * as Enums from '../../../shared/enums'
 import exifReader from 'exif-reader'
 import dms2dec from 'dms2dec'
+import fluent from 'fluent-ffmpeg'
 
 export const getProcessingPath = (piciliFileId: number, extension: string) => {
     return `processing/${piciliFileId}.${extension}`
@@ -95,7 +99,17 @@ export const generateThumbnails = async (
     // medium		m
     //// large		l
     // extra large	xl
-    const inPath = getProcessingPath(piciliFileId, extension)
+
+    // specifically get image processing file (for the case of videos) - since we generate thumbnails for videos from the still frame (already extracted) not from the video
+    const requestExtension = ((): string => {
+        if (HelperUtil.fileTypeFromExtension(extension) === Enums.FileType.VIDEO) {
+            return 'jpg'
+        } else {
+            return extension
+        }
+    })()
+
+    const inPath = getProcessingPath(piciliFileId, requestExtension)
     const outPathDirectory = `thumbs/${userId}/${uuid}`
 
     let base64MediumThumbBuffer = undefined
@@ -163,18 +177,28 @@ export const generateThumbnails = async (
 }
 
 export const removeProcessingFile = (piciliFileId: number, extension: string): boolean => {
-    const processingPath = getProcessingPath(piciliFileId, extension)
-    // `unlinkSync` will throw an error if the file didn't exist
-    if (FSExtra.pathExistsSync(processingPath)) {
-        fs.unlinkSync(processingPath)
+    // there may be multiple processing files (video and image) - and both should be removed
+    const processingPaths = [getProcessingPath(piciliFileId, extension)]
+
+    // if video, also add jpg - stillframe - processing path
+    if (HelperUtil.fileTypeFromExtension(extension) === Enums.FileType.VIDEO) {
+        processingPaths.push(getProcessingPath(piciliFileId, 'jpg'))
     }
 
-    // check and return if we were successful
-    if (!FSExtra.pathExistsSync(processingPath)) {
-        return true
-    } else {
-        return false
-    }
+    const removalStatuses = processingPaths.map((processingPath) => {
+        // `unlinkSync` will throw an error if the file didn't exist
+        if (FSExtra.pathExistsSync(processingPath)) {
+            fs.unlinkSync(processingPath)
+        }
+
+        // check and return if we were successful
+        if (!FSExtra.pathExistsSync(processingPath)) {
+            return true
+        } else {
+            return false
+        }
+    })
+    return removalStatuses.every((val) => val)
 }
 
 export const removeThumbnails = (userId: number, uuid: string): boolean => {
@@ -192,4 +216,159 @@ export const removeThumbnails = (userId: number, uuid: string): boolean => {
     } else {
         return false
     }
+}
+
+export const generateVideoFiles = async (
+    userId: number,
+    piciliFileId: number,
+    uuid: string,
+    extension: string,
+    videoProcessingTaskId: number,
+): Promise<Types.Core.VideoCreationResponse> => {
+    const processingPath = getProcessingPath(piciliFileId, extension)
+    const outPathDirectory = `thumbs/${userId}/${uuid}`
+
+    // ensure uuid dir exists
+    await FSExtra.ensureDir(outPathDirectory)
+
+    try {
+        switch (HelperUtil.splitPathIntoParts(processingPath).fileExtension) {
+            // todo: can I just combine these different video types?
+            // todo: add for other supported types (webm/avi)
+            case 'mov':
+            case 'mp4':
+                const success = await generateAllRequiredVideoAssets(
+                    processingPath,
+                    outPathDirectory,
+                    'processing',
+                    piciliFileId,
+                    videoProcessingTaskId,
+                )
+                return { success }
+                break
+            default:
+                Logger.error('video file encoder not programmed.', { userId, piciliFileId, uuid, extension })
+                return { success: false }
+        }
+    } catch (err) {
+        Logger.error('encountered an error processing a video', { processingPath, err })
+        return { success: false }
+    }
+}
+
+const generateAllRequiredVideoAssets = async (
+    processingPath: string,
+    outPathDirectory: string,
+    // todo: this parameter is redundant since what is passed in is hard coded
+    processingPathDirectory: string,
+    piciliFileId: number,
+    taskId: number,
+) => {
+    // webm, avi, mp4, jpg/gif
+    console.log('will try to process ', processingPath)
+    try {
+        // todo: still needed?
+        // const aviOutPath = `${outPathDirectory}/avi.avi`
+        const mp4OutPath = `${outPathDirectory}/mp4.mp4`
+        const webmOutPath = `${outPathDirectory}/webm.webm`
+
+        // await fluent(processingPath).output(aviOutPath).run()
+
+        await new Promise<void>((resolve, reject) => {
+            const mp4Timeout = setInterval(async () => {
+                // re-block task
+                await DBUtil.reReserveTask(taskId)
+            }, 15000)
+            fluent(processingPath)
+                .output(mp4OutPath)
+                .on('end', function () {
+                    clearTimeout(mp4Timeout)
+                    return resolve()
+                })
+                .on('err', (err) => {
+                    clearTimeout(mp4Timeout)
+                    return reject(err)
+                })
+                .on('progress', (progress) => {
+                    // todo: remove later
+                    console.log('Processing MP4: ' + progress.percent + '% done')
+                })
+                .run()
+        })
+        console.log('now the mp4 has been generated')
+        await new Promise<void>((resolve, reject) => {
+            const webmTimeout = setInterval(async () => {
+                // re-block
+                await DBUtil.reReserveTask(taskId)
+            }, 15000)
+            fluent(processingPath)
+                .output(webmOutPath)
+                .on('end', function () {
+                    console.log('processing webm finished..')
+                    clearTimeout(webmTimeout)
+                    return resolve()
+                })
+                .on('err', (err) => {
+                    clearTimeout(webmTimeout)
+                    return reject(err)
+                })
+                .on('progress', (progress) => {
+                    // todo: remove these console.logs later
+                    console.log('Processing WEBM: ' + progress.percent + '% done')
+                })
+                .run()
+        })
+        console.log('now the webm has been generated')
+
+        // todo: might be better to run this first, even as a separate task, so that then subsequent image processing can proceed in parallel to the video processing.
+        const stillFrameGenerateSuccessfully = await generateStillframeFromVideo(
+            processingPath,
+            processingPathDirectory,
+            `${piciliFileId}.jpg`,
+        )
+        console.log('was the still frame generated successfully?', stillFrameGenerateSuccessfully)
+
+        console.log('now we will return a success status from `generateAllRequiredVideoAssets`')
+        return stillFrameGenerateSuccessfully
+    } catch (err) {
+        Logger.error('encountered an error generating all required video assets.', {
+            processingPath,
+            outPathDirectory,
+            processingPathDirectory,
+            piciliFileId,
+            err,
+        })
+        return false
+    }
+}
+
+export const generateStillframeFromVideo = async (
+    processingPath: string,
+    outPathDirectory: string,
+    outPathFileName: string,
+): Promise<boolean> => {
+    console.log('will generate a thumbanil from', processingPath)
+    const processingFileExists = FSExtra.pathExistsSync(processingPath)
+    if (!processingFileExists) {
+        throw Error(`processing file didn't exist so can't generate a still frame`)
+    }
+    // take a still frame from half way through the video
+    await new Promise<void>((resolve, reject) => {
+        fluent(processingPath)
+            .screenshots({
+                timestamps: ['50%'],
+                filename: outPathFileName,
+                folder: outPathDirectory,
+            })
+            .on('end', () => {
+                console.log(`think we've now generated the thumbnail, and can return`)
+                resolve()
+            })
+            .on('error', (err) => {
+                console.log(`encountered an error when generating the thumbnail`, err)
+                reject()
+            })
+    })
+    // validate file was created
+    return FSExtra.pathExistsSync(`${outPathDirectory}/${outPathFileName}`)
 }

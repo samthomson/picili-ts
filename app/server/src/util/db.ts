@@ -265,6 +265,15 @@ export const getAndReserveNextTaskId = async (isStopping: boolean): Promise<Mode
     }
 }
 
+export const reReserveTask = async (id: number): Promise<void> => {
+    await Models.TaskModel.update(
+        {
+            from: moment().add(2, 'minute').toISOString(),
+        },
+        { where: { id } },
+    )
+}
+
 export const howManyTasksAreThere = async (): Promise<number> => {
     return await Models.TaskModel.count()
 }

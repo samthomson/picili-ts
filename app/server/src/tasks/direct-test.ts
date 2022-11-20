@@ -129,9 +129,21 @@ const testParsingFileParts = async () => {
     }
 }
 
+const video = async () => {
+    console.log('test video')
+
+    // const path = await FileUtil.getProcessingPath(348, 'mp4')
+
+    // await FileUtil.generateVideoFiles(3, 350, '73c44922-9e45-4907-a94e-bfb9968f37a4', 'mp4')
+
+    // await FileUtil.generateStillframeFromVideo(path, 'processing', '348.jpg')
+    const path = await FileUtil.getProcessingPath(2, 'mp4')
+    await FileUtil.generateStillframeFromVideo(path, 'processing', '2.jpg')
+}
+
 // file()
 // imaggaTest()
-geo()
+// geo()
 // geoThrottleTest()
 // dupTagTest()
 // elevationLookup()
@@ -139,3 +151,4 @@ geo()
 // testDropboxSync()
 // testParsingFileParts()
 // taskTest()
+video()
