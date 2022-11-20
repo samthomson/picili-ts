@@ -62,26 +62,41 @@ export const VideoJS = (props: {
 export default VideoJS
 */
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import videojs, { VideoJsPlayer, VideoJsPlayerOptions } from 'video.js'
 import 'video.js/dist/video-js.css'
 
 const VideoPlayer: React.FunctionComponent<{
 	key: string
 	options: VideoJsPlayerOptions
-}> = ({ key, options }) => {
+	isPlaying: boolean
+}> = ({ key, options, isPlaying }) => {
 	const container = useRef(null)
 	const player = useRef<VideoJsPlayer>()
+	const [isCurrentlyPlaying, setIsCurrentlyPlaying] = useState<boolean>(false)
 
 	useEffect(() => {
 		player.current = videojs(
 			container?.current ?? '[missing video or error loading?]',
 			options,
 		)
+
 		return () => {
 			player.current?.dispose()
 		}
 	}, [key])
+
+	useEffect(() => {
+		if (isPlaying !== isCurrentlyPlaying) {
+			setIsCurrentlyPlaying(isPlaying)
+
+			if (player.current?.paused()) {
+				player.current?.play()
+			} else {
+				player.current?.pause()
+			}
+		}
+	}, [isCurrentlyPlaying, isPlaying])
 
 	return (
 		<div data-vjs-player key={key}>

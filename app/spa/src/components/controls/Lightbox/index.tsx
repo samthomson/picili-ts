@@ -13,6 +13,8 @@ import * as Enums from '../../../../../shared/enums'
 
 const Lightbox: React.FunctionComponent = () => {
 	const [isInfoShowing, setIsInfoShowing] = React.useState<boolean>(false)
+	const [isCurrentlyPlayingVideo, setIsCurrentlyPlayingVideo] =
+		React.useState<boolean>(false)
 	const dispatch = ReactRedux.useDispatch()
 
 	const lightboxIndex = ReactRedux.useSelector(Selectors.lightboxIndex)
@@ -54,7 +56,7 @@ const Lightbox: React.FunctionComponent = () => {
 	const next = () => dispatch(Actions.lightboxNext())
 
 	const options = result && {
-		controls: true,
+		controls: false,
 		poster: HelperUtil.thumbPath(result.userId, result.uuid, 'xl'),
 		sources: [
 			{
@@ -103,7 +105,11 @@ const Lightbox: React.FunctionComponent = () => {
 						)}
 						{result.fileType === Enums.FileType.VIDEO &&
 							options && (
-								<VideoJS options={options} key={result.uuid} />
+								<VideoJS
+									options={options}
+									key={result.uuid}
+									isPlaying={isCurrentlyPlayingVideo}
+								/>
 							)}
 					</div>
 					<div
@@ -124,6 +130,17 @@ const Lightbox: React.FunctionComponent = () => {
 						onClick={() => setIsInfoShowing(!isInfoShowing)}
 					>
 						i
+					</button>
+					<button
+						id="lightbox-play"
+						className="lightbox-button"
+						style={{ top: 100 }}
+						onClick={() => {
+							// attempt to play video
+							setIsCurrentlyPlayingVideo(!isCurrentlyPlayingVideo)
+						}}
+					>
+						{isCurrentlyPlayingVideo ? 'pa' : 'pl'}
 					</button>
 					<button
 						id="lightbox-left"
