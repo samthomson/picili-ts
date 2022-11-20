@@ -100,7 +100,12 @@ const VideoPlayer: React.FunctionComponent<{
 
 	return (
 		<div data-vjs-player key={key}>
-			<video ref={container} />
+			<video
+				ref={container}
+				style={{
+					maxWidth: '100%',
+				}}
+			/>
 		</div>
 	)
 }
