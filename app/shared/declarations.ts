@@ -60,6 +60,7 @@ export namespace API {
 		longitude: number
 		mediumWidth: number
 		mediumHeight: number
+		fileType: Enums.FileType
 	}
 
 	export interface PaginationInfo {
@@ -427,6 +428,7 @@ export namespace Core {
 		longitude: number
 		mediumWidth: number
 		mediumHeight: number
+		fileType: Enums.FileType
 	}
 	
 	export type DBAutoCompleteResult = {
