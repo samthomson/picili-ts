@@ -391,9 +391,9 @@ export const getVideoMetaData = async (processingPath: string): Promise<Types.Co
     }>((resolve, reject) => {
         fluent.ffprobe(processingPath, (err, metadata) => {
             if (err) {
+                Logger.error('error reading video metadata', { processingPath, err, metadata })
                 reject(err)
             }
-            Logger.error('error reading video metadata', { processingPath, err, metadata })
             resolve(metadata)
         })
     })
