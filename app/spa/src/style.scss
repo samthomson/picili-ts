@@ -242,10 +242,10 @@ a {
     background-color: palevioletred;
     position: absolute;
     display: none;
-    left: 8px;
-    right: 56px;
-    bottom: 8px;
-    height: 48px;
+    left: $lightboxMargin;
+    right: 40 + (2*$lightboxMargin);
+    bottom: $lightboxMargin;
+    height: 40 + $lightboxMargin;
 
     &.open {
       display: block
@@ -258,17 +258,17 @@ a {
 
   #lightbox-file-content {
     position: absolute;
-    left: 8px;
+    left: $lightboxMargin;
     right: 80px;
-    top: 8px;
-    bottom: 8px;
+    top: $lightboxMargin;
+    bottom: $lightboxMargin;
 
     &.with-info {
       right: 300px;
     }
 
     &.with-video-controls {
-      bottom: 56px;
+      bottom: 40 + (2*$lightboxMargin);
     }
 
     img {
