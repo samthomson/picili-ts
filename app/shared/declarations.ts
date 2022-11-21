@@ -358,9 +358,22 @@ export namespace Core {
 		altitude?: number
 	}
 
-	// todo: fill in
+	export type ParsedLocation = {
+		latitude: number
+		longitude: number
+		altitude: number
+	}
+
 	export type VideoMetaData = {
-		// todo: length?
+		length: number // seconds
+		width: number
+		height: number
+        datetime?: string
+        aspectRatio: Enums.AspectRatio
+        size: number
+        make?: string
+        model?: string
+        location?: ParsedLocation
 	}
 
 	export type ImaggaTaggingResult = {

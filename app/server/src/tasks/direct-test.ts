@@ -9,6 +9,10 @@ import * as Models from '../db/models'
 import Logger from '../services/logging'
 import * as Enums from '../../../shared/enums'
 
+import fs from 'fs'
+import path from 'path'
+import FSExtra from 'fs-extra'
+
 const file = async () => {
     await TasksUtil.fileImport(661)
     // await TasksUtil.processImage(619, 255)
@@ -129,6 +133,19 @@ const testParsingFileParts = async () => {
     }
 }
 
+const walk = (dir, files = []) => {
+    const dirFiles = fs.readdirSync(dir)
+    for (const f of dirFiles) {
+        const stat = fs.lstatSync(dir + path.sep + f)
+        if (stat.isDirectory()) {
+            walk(dir + path.sep + f, files)
+        } else {
+            files.push(dir + path.sep + f)
+        }
+    }
+    return files
+}
+
 const video = async () => {
     console.log('test video')
 
@@ -137,8 +154,22 @@ const video = async () => {
     // await FileUtil.generateVideoFiles(3, 350, '73c44922-9e45-4907-a94e-bfb9968f37a4', 'mp4')
 
     // await FileUtil.generateStillframeFromVideo(path, 'processing', '348.jpg')
-    const path = await FileUtil.getProcessingPath(2, 'mp4')
-    await FileUtil.generateStillframeFromVideo(path, 'processing', '2.jpg')
+
+    // await FileUtil.generateStillframeFromVideo(path, 'processing', '2.jpg')
+
+    // const path = await FileUtil.getProcessingPath(4, 'mp4')
+    // await FileUtil.getVideoMetaData(path)
+
+    const allFiles = walk('/app/server/processing/test')
+    // console.log('all files', allFiles)
+
+    for (let i = 0; i < allFiles.length; i++) {
+        const path = allFiles[i]
+        console.log('\nfile', path)
+        const data = await FileUtil.getVideoMetaData(path)
+        await FSExtra.ensureDir('video-metadata')
+        fs.writeFileSync(`video-metadata/${i}-${path.replaceAll('/', '_')}.json`, JSON.stringify(data))
+    }
 }
 
 // file()

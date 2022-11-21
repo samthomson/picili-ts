@@ -9,6 +9,7 @@ import * as Enums from '../../../shared/enums'
 import exifReader from 'exif-reader'
 import dms2dec from 'dms2dec'
 import fluent from 'fluent-ffmpeg'
+import * as ISO6709 from './iso6709-to-dms'
 
 export const getProcessingPath = (piciliFileId: number, extension: string) => {
     return `processing/${piciliFileId}.${extension}`
@@ -230,6 +231,7 @@ export const generateVideoFiles = async (
 
     // ensure uuid dir exists
     await FSExtra.ensureDir(outPathDirectory)
+    const videoMetaData = await getVideoMetaData(processingPath)
 
     try {
         switch (HelperUtil.splitPathIntoParts(processingPath).fileExtension) {
@@ -244,7 +246,7 @@ export const generateVideoFiles = async (
                     piciliFileId,
                     videoProcessingTaskId,
                 )
-                return { success }
+                return { success, metaData: videoMetaData }
                 break
             default:
                 Logger.error('video file encoder not programmed.', { userId, piciliFileId, uuid, extension })
@@ -371,4 +373,66 @@ export const generateStillframeFromVideo = async (
     })
     // validate file was created
     return FSExtra.pathExistsSync(`${outPathDirectory}/${outPathFileName}`)
+}
+
+export const getVideoMetaData = async (processingPath: string): Promise<Types.Core.VideoMetaData> => {
+    const metaData = await new Promise<{
+        streams: {
+            width: number
+            height: number
+        }[]
+        format: {
+            duration: number
+            tags: Record<string, string>
+            size: number
+            width: number
+            height: number
+        }
+    }>((resolve, reject) => {
+        fluent.ffprobe(processingPath, (err, metadata) => {
+            if (err) {
+                reject(err)
+            }
+            Logger.error('error reading video metadata', { processingPath, err, metadata })
+            resolve(metadata)
+        })
+    })
+
+    const aspectRatio = (() => {
+        if (metaData.streams?.[0]?.width && metaData.streams?.[0]?.height) {
+            const { width, height } = metaData.streams[0]
+
+            return width < height ? Enums.AspectRatio.PORTRAIT : Enums.AspectRatio.LANDSCAPE
+        }
+        return undefined
+    })()
+
+    const data: Types.Core.VideoMetaData = {
+        length: metaData?.format?.duration,
+        datetime: metaData?.format?.tags?.creation_time,
+        aspectRatio,
+        size: metaData?.format?.size,
+        width: metaData?.format?.width,
+        height: metaData?.format?.height,
+        make: metaData?.format?.tags?.['com.apple.quicktime.make'],
+        model: metaData?.format?.tags?.['com.apple.quicktime.model'],
+        location: metaData?.format?.tags?.['com.apple.quicktime.location.ISO6709']
+            ? parseAppleLocation(metaData.format.tags['com.apple.quicktime.location.ISO6709'])
+            : undefined,
+    }
+
+    return data
+}
+
+const parseAppleLocation = (locationString: string): Types.Core.ParsedLocation | undefined => {
+    // eg. '+27.8612+086.8616+6832.754/'
+    const result = ISO6709.iso2dec(locationString)
+
+    return result
+        ? {
+              latitude: result.latitude,
+              longitude: result.longitude,
+              altitude: +result.altitude,
+          }
+        : undefined
 }
