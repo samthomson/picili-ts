@@ -247,8 +247,12 @@ a {
     bottom: 8px;
     height: 48px;
 
-    &.display {
+    &.open {
       display: block
+    }
+
+    &.with-info {
+      right: 300px;
     }
   }
 

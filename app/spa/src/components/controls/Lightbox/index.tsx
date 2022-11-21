@@ -118,6 +118,7 @@ const Lightbox: React.FunctionComponent = () => {
 						id="video-control-space"
 						className={classNames({
 							open: result.fileType === Enums.FileType.VIDEO,
+							'with-info': isInfoShowing,
 						})}
 					>
 						<button
