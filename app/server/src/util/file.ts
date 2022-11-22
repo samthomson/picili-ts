@@ -10,6 +10,7 @@ import exifReader from 'exif-reader'
 import dms2dec from 'dms2dec'
 import fluent from 'fluent-ffmpeg'
 import * as ISO6709 from './iso6709-to-dms'
+import moment from 'moment'
 
 export const getProcessingPath = (piciliFileId: number, extension: string) => {
     return `processing/${piciliFileId}.${extension}`
@@ -407,9 +408,18 @@ export const getVideoMetaData = async (processingPath: string): Promise<Types.Co
         return undefined
     })()
 
+    const dateParsed = metaData?.format?.tags?.['com.apple.quicktime.creationdate']
+        ? moment(metaData.format.tags['com.apple.quicktime.creationdate']).utcOffset(
+              metaData?.format?.tags?.['com.apple.quicktime.creationdate'],
+          )
+        : metaData?.format?.tags?.creation_time
+        ? moment(metaData.format.tags.creation_time)
+        : undefined
+    const dateFormatted = dateParsed?.format('YYYY-MM-DD HH:mm:ss')
+
     const data: Types.Core.VideoMetaData = {
         length: metaData?.format?.duration,
-        datetime: metaData?.format?.tags?.creation_time,
+        datetime: dateFormatted,
         aspectRatio,
         size: metaData?.format?.size,
         width: metaData?.format?.width,

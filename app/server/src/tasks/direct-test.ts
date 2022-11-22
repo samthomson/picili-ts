@@ -160,16 +160,19 @@ const video = async () => {
     // const path = await FileUtil.getProcessingPath(4, 'mp4')
     // await FileUtil.getVideoMetaData(path)
 
-    const allFiles = walk('/app/server/processing/test')
-    // console.log('all files', allFiles)
+    // const allFiles = walk('/app/server/processing/test')
+    // // console.log('all files', allFiles)
 
-    for (let i = 0; i < allFiles.length; i++) {
-        const path = allFiles[i]
-        console.log('\nfile', path)
-        const data = await FileUtil.getVideoMetaData(path)
-        await FSExtra.ensureDir('video-metadata')
-        fs.writeFileSync(`video-metadata/${i}-${path.replaceAll('/', '_')}.json`, JSON.stringify(data))
-    }
+    // for (let i = 0; i < allFiles.length; i++) {
+    //     const path = allFiles[i]
+    //     console.log('\nfile', path)
+    //     const data = await FileUtil.getVideoMetaData(path)
+    //     await FSExtra.ensureDir('video-metadata')
+    //     fs.writeFileSync(`video-metadata/${i}-${path.replaceAll('/', '_')}.json`, JSON.stringify(data))
+    // }
+
+    const data = await FileUtil.getVideoMetaData('processing/ama-dablam.mov')
+    console.log(data)
 }
 
 // file()
