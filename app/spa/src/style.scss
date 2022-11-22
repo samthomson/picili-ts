@@ -245,7 +245,7 @@ a {
     left: $lightboxMargin;
     right: 40 + (2*$lightboxMargin);
     bottom: $lightboxMargin;
-    height: 40 + $lightboxMargin;
+    height: 40px;
 
     &.open {
       display: block
@@ -262,6 +262,8 @@ a {
     right: 80px;
     top: $lightboxMargin;
     bottom: $lightboxMargin;
+
+    background-color: orange;
 
     &.with-info {
       right: 300px;
@@ -282,6 +284,15 @@ a {
       left: 0;
       right: 0;
       opacity: 1;
+    }
+
+    /*
+    need this next block to ensure and enforce that videos will be scaled to 
+    max 100% height / verticality. along with the style object on the video 
+    element in the `VideoJS` component.
+    */
+    [data-vjs-player="true"] {
+      position: static !important;
     }
   }
 

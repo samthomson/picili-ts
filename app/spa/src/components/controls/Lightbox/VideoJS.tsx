@@ -103,10 +103,13 @@ const VideoPlayer: React.FunctionComponent<{
 			<video
 				ref={container}
 				style={{
-					// prevent horizontal overflow
 					maxWidth: '100%',
-					// horizontally center videos narrower than the available space
+					height: 'auto',
+					maxHeight: '100%',
 					margin: '0 auto',
+					position: 'absolute',
+					left: 0,
+					right: 0,
 				}}
 			/>
 		</div>
