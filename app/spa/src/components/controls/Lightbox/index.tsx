@@ -20,6 +20,7 @@ const Lightbox: React.FunctionComponent = () => {
 	const lightboxIndex = ReactRedux.useSelector(Selectors.lightboxIndex)
 
 	React.useEffect(() => {
+		setIsCurrentlyPlayingVideo(false)
 		if (typeof lightboxIndex === 'number') {
 			// preload neighbors
 			const neighbours = [
