@@ -176,7 +176,7 @@ const typeDefs = gql`
 
     type FileInfo {
         address: String
-        datetime: String!
+        datetime: String
         location: LatLon
         elevation: Float
         pathOnDropbox: String
