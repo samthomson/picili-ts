@@ -48,7 +48,6 @@ export function iso2dec(string) {
                 lonRef: match.groups.lonRef == '+' ? 'E' : 'W',
             }
             const altitude = match.groups.altitude
-            console.log('altitude 1', altitude)
             const [latitude, longitude] = dms2dec(pos.latitude, pos.latRef, pos.longitude, pos.lonRef)
             return { latitude: latitude, longitude: longitude, altitude: altitude }
         }
@@ -61,7 +60,6 @@ export function iso2dec(string) {
                 lonRef: match.groups.lonRef == '+' ? 'E' : 'W',
             }
             const altitude = match.groups.altitude
-            console.log('altitude 2', altitude)
             const [latitude, longitude] = dms2dec(pos.latitude, pos.latRef, pos.longitude, pos.lonRef)
             return { latitude: latitude, longitude: longitude, altitude: altitude }
         }
@@ -73,7 +71,6 @@ export function iso2dec(string) {
                 longitude: [parseFloat(match.groups.lonD), 0, 0],
                 lonRef: match.groups.lonRef == '+' ? 'E' : 'W',
             }
-            console.log('in 3')
             const altitude = match.groups.altitude
             const [latitude, longitude] = dms2dec(pos.latitude, pos.latRef, pos.longitude, pos.lonRef)
             return { latitude: latitude, longitude: longitude, altitude: altitude }
@@ -86,7 +83,6 @@ export function iso2dec(string) {
                 longitude: [parseInt(match.groups.lonD), parseInt(match.groups.lonM), parseFloat(match.groups.lonS)],
                 lonRef: match.groups.lonRef == '+' ? 'E' : 'W',
             }
-            console.log('in 4')
             const [latitude, longitude] = dms2dec(pos.latitude, pos.latRef, pos.longitude, pos.lonRef)
             return { latitude: latitude, longitude: longitude }
         }
@@ -98,7 +94,6 @@ export function iso2dec(string) {
                 longitude: [parseInt(match.groups.lonD), parseFloat(match.groups.lonM), 0],
                 lonRef: match.groups.lonRef == '+' ? 'E' : 'W',
             }
-            console.log('in 5')
             const [latitude, longitude] = dms2dec(pos.latitude, pos.latRef, pos.longitude, pos.lonRef)
             return { latitude: latitude, longitude: longitude }
         }
@@ -110,7 +105,6 @@ export function iso2dec(string) {
                 longitude: [parseFloat(match.groups.lonD), 0, 0],
                 lonRef: match.groups.lonRef == '+' ? 'E' : 'W',
             }
-            console.log('in 6')
             const [latitude, longitude] = dms2dec(pos.latitude, pos.latRef, pos.longitude, pos.lonRef)
             return { latitude: latitude, longitude: longitude }
         }
