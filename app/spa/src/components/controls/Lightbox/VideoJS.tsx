@@ -62,7 +62,7 @@ export const VideoJS = (props: {
 export default VideoJS
 */
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import videojs, { VideoJsPlayer, VideoJsPlayerOptions } from 'video.js'
 import 'video.js/dist/video-js.css'
 
