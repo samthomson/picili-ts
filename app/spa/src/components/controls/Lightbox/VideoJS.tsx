@@ -70,10 +70,10 @@ const VideoPlayer: React.FunctionComponent<{
 	key: string
 	options: VideoJsPlayerOptions
 	isPlaying: boolean
-}> = ({ key, options, isPlaying }) => {
+	setVideoPlayingState: (isPlaying: boolean) => void
+}> = ({ key, options, isPlaying, setVideoPlayingState }) => {
 	const container = useRef(null)
 	const player = useRef<VideoJsPlayer>()
-	const [isCurrentlyPlaying, setIsCurrentlyPlaying] = useState<boolean>(false)
 
 	useEffect(() => {
 		player.current = videojs(
@@ -81,22 +81,20 @@ const VideoPlayer: React.FunctionComponent<{
 			options,
 		)
 
+		player.current.on('ended', () => setVideoPlayingState(false))
+
 		return () => {
 			player.current?.dispose()
 		}
 	}, [key])
 
 	useEffect(() => {
-		if (isPlaying !== isCurrentlyPlaying) {
-			setIsCurrentlyPlaying(isPlaying)
-
-			if (player.current?.paused()) {
-				player.current?.play()
-			} else {
-				player.current?.pause()
-			}
+		if (isPlaying) {
+			player.current?.play()
+		} else {
+			player.current?.pause()
 		}
-	}, [isCurrentlyPlaying, isPlaying])
+	}, [isPlaying])
 
 	return (
 		<div data-vjs-player key={key}>

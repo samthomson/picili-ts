@@ -112,6 +112,9 @@ const Lightbox: React.FunctionComponent = () => {
 									options={options}
 									key={result.uuid}
 									isPlaying={isCurrentlyPlayingVideo}
+									setVideoPlayingState={
+										setIsCurrentlyPlayingVideo
+									}
 								/>
 							)}
 					</div>
