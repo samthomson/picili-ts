@@ -7,7 +7,7 @@
     "apollo-server-core": "^3.4.0",
     "apollo-server-express": "^3.4.0",
     "app-root-path": "^3.0.0",
-    "bcrypt": "^5.0.1",
+    "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "dms2dec": "^1.1.0",
