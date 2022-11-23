@@ -2,14 +2,19 @@
 
 ## 1.0 Build
 
-[todo]
-[ copy .env]
-
-### create dropbox app
+### 1.1 create dropbox app
 
 Create an app on dropbox, and whitelist the following URL:
 `http://localhost/admin/dropbox`
 and the same for whatever production URL if you'll deploy it (but with https).
+
+### 1.2 configure and build localy
+
+0. Make a copy of the environmental variables required by running `cp .env.sample .env` and then fill them all in. 
+1. First run `docker-compose build app` to build the base containers for the application.
+2. Then run `docker-compose run app sh -c "cd spa && yarn --silent && cd ../server && yarn --silent && yarn run migrate"` to install the dependencies of the project's parts (server & spa) in the respective places.
+
+todo: probably need to run db migrations?
 
 ## 2.0 Run
 
