@@ -286,6 +286,7 @@ export const generateAllRequiredVideoAssets = async (
             }, 15000)
             fluent(processingPath)
                 .output(mp4OutPath)
+                .size('?x1080')
                 .on('end', function () {
                     clearTimeout(mp4Timeout)
                     return resolve()
@@ -308,6 +309,7 @@ export const generateAllRequiredVideoAssets = async (
             }, 15000)
             fluent(processingPath)
                 .output(webmOutPath)
+                .size('?x1080')
                 .on('end', function () {
                     console.log('processing webm finished..')
                     clearTimeout(webmTimeout)
