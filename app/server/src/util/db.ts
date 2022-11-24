@@ -497,7 +497,7 @@ export const performAutoCompleteQuery = async (
         FROM
             tags
         JOIN files ON files.id = tags.file_id
-        WHERE  files.user_id=:userId AND (file_id, type, subtype, value, confidence) IN (
+        WHERE  files.user_id=:userId AND files.is_thumbnailed=TRUE AND (file_id, type, subtype, value, confidence) IN (
                 SELECT file_id, type, subtype, tags.value, MAX(confidence) max_confidence
                 FROM tags
                 WHERE tags.confidence >= :confidence and ${type ? `tags.type=:type and ` : ''}${
