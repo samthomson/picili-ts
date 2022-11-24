@@ -259,7 +259,7 @@ export const generateVideoFiles = async (
     }
 }
 
-const generateAllRequiredVideoAssets = async (
+export const generateAllRequiredVideoAssets = async (
     processingPath: string,
     outPathDirectory: string,
     // todo: this parameter is redundant since what is passed in is hard coded

@@ -171,8 +171,12 @@ const video = async () => {
     //     fs.writeFileSync(`video-metadata/${i}-${path.replaceAll('/', '_')}.json`, JSON.stringify(data))
     // }
 
-    const data = await FileUtil.getVideoMetaData('processing/ama-dablam.mov')
-    console.log(data)
+    // const data = await FileUtil.getVideoMetaData('processing/ama-dablam.mov')
+    // console.log(data)
+
+    // await FileUtil.generateStillframeFromVideo('processing/mov-short.mov', 'out', 'mov-short.jpg')
+    const videoGeneratingResult = await FileUtil.generateAllRequiredVideoAssets('processing/mov-short.mov', 'thumbs', 'processing', 8008, 8008)
+    console.log('videoGeneratingResult', videoGeneratingResult)
 }
 
 // file()
