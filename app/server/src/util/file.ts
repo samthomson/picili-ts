@@ -240,6 +240,8 @@ export const generateVideoFiles = async (
             // todo: add for other supported types (webm/avi)
             case 'mov':
             case 'mp4':
+            case 'mts':
+            case 'avi':
                 const success = await generateAllRequiredVideoAssets(
                     processingPath,
                     outPathDirectory,

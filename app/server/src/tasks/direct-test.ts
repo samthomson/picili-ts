@@ -175,7 +175,7 @@ const video = async () => {
     // console.log(data)
 
     // await FileUtil.generateStillframeFromVideo('processing/mov-short.mov', 'out', 'mov-short.jpg')
-    const videoGeneratingResult = await FileUtil.generateAllRequiredVideoAssets('processing/mov-short.mov', 'thumbs', 'processing', 8008, 8008)
+    const videoGeneratingResult = await FileUtil.generateAllRequiredVideoAssets('processing/avi-short.avi', 'thumbs', 'processing', 8008, 8008)
     console.log('videoGeneratingResult', videoGeneratingResult)
 }
 
