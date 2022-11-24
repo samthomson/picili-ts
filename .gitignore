@@ -9,3 +9,6 @@ serverlogs
 
 e2e/cypress/results
 e2e/cypress/videos
+
+
+.DS_Store
