@@ -1,6 +1,9 @@
 # picili-ts
 
 Picili synchronizes with a chosen directory on dropbox, it then indexes image/video metadata and detected subjects making all your pictures and videos searchable and easy to explore.
+
+Video formats supported: Mp4, Mov, Avi, Mts.
+
 ## 1.0 Build
 
 ### 1.1 create dropbox app
