@@ -67,6 +67,7 @@ const Lightbox: React.FunctionComponent = () => {
 					'mp4',
 					'mp4',
 				),
+				type: 'video/mp4',
 			},
 			{
 				src: HelperUtil.thumbPath(
@@ -75,6 +76,7 @@ const Lightbox: React.FunctionComponent = () => {
 					'webm',
 					'webm',
 				),
+				type: 'video/webm',
 			},
 		],
 	}
