@@ -234,6 +234,7 @@ export const generateVideoFiles = async (
     await FSExtra.ensureDir(outPathDirectory)
     const videoMetaData = await getVideoMetaData(processingPath)
 
+    // todo: whole switch is pointless?
     try {
         switch (HelperUtil.splitPathIntoParts(processingPath).fileExtension) {
             // todo: can I just combine these different video types?
@@ -248,7 +249,8 @@ export const generateVideoFiles = async (
                     'processing',
                     piciliFileId,
                     videoProcessingTaskId,
-                )
+                    videoMetaData.bitrate
+               )
                 return { success, metaData: videoMetaData }
                 break
             default:
@@ -268,6 +270,8 @@ export const generateAllRequiredVideoAssets = async (
     processingPathDirectory: string,
     piciliFileId: number,
     taskId: number,
+    bitrate: number,
+    mp4Only: boolean = false
 ) => {
     // webm, avi, mp4, jpg/gif
     console.log('will try to process ', processingPath)
@@ -277,8 +281,39 @@ export const generateAllRequiredVideoAssets = async (
         const mp4OutPath = `${outPathDirectory}/mp4.mp4`
         const webmOutPath = `${outPathDirectory}/webm.webm`
 
-        // await fluent(processingPath).output(aviOutPath).run()
+        const { inputRateBand, minRate, maxRate, bufSize} = (() => {
+            switch (true) {
+                case (bitrate/1000) < 1000:
+                    console.log('\n\nLOW BITRATE\n\n', bitrate)
+                    return {
+                        inputRateBand: 'LOW',
+                        minRate: '800k',
+                        maxRate: '800k',
+                        bufSize: '367k',
+                    }
 
+                case (bitrate/1000) >= 1000 && (bitrate/1000) < 6500:
+                    
+                    console.log('\n\nMEDIUM BITRATE\n\n', bitrate)
+                    return {
+                        inputRateBand: 'MEDIUM',
+                        minRate: '1500k',
+                        maxRate: '1500k',
+                        bufSize: '551k',
+                    }
+                case (bitrate/1000) >= 6500:
+                    console.log('\n\nHIGH BITRATE\n\n', bitrate)
+                    return {
+                        inputRateBand: 'HIGH',
+                        minRate: '2000k',
+                        maxRate: '2000k',
+                        bufSize: '734k',
+                    }
+            }
+        })()
+
+        // todo: I could also lower the audio bitrate to save some file space, but these would likely be really marginal gains
+        // todo: these two video conversion tasks could be consolodated with an array/loop
         await new Promise<void>((resolve, reject) => {
             const mp4Timeout = setInterval(async () => {
                 // re-block task
@@ -286,7 +321,16 @@ export const generateAllRequiredVideoAssets = async (
             }, 15000)
             fluent(processingPath)
                 .output(mp4OutPath)
-                .size('?x1080')
+                // if we have these params use them, otherwise skip
+                .outputOptions( !!minRate ? [
+                    `-b ${minRate}`,
+                    `-minrate ${minRate}`,
+                    `-maxrate ${maxRate}`,
+                    `-bufsize ${bufSize}`
+                ] : [])
+                .withOutputFPS(25)
+                // limit dimensions, or keep original if low bitrate
+                .size(inputRateBand !== 'LOW' ? '?x1080' : '100%')
                 .on('end', function () {
                     clearTimeout(mp4Timeout)
                     return resolve()
@@ -302,30 +346,39 @@ export const generateAllRequiredVideoAssets = async (
                 .run()
         })
         console.log('now the mp4 has been generated')
-        await new Promise<void>((resolve, reject) => {
-            const webmTimeout = setInterval(async () => {
-                // re-block
-                await DBUtil.reReserveTask(taskId)
-            }, 15000)
-            fluent(processingPath)
-                .output(webmOutPath)
-                .size('?x1080')
-                .on('end', function () {
-                    console.log('processing webm finished..')
-                    clearTimeout(webmTimeout)
-                    return resolve()
-                })
-                .on('err', (err) => {
-                    clearTimeout(webmTimeout)
-                    return reject(err)
-                })
-                .on('progress', (progress) => {
-                    // todo: remove these console.logs later
-                    console.log('Processing WEBM: ' + progress.percent + '% done')
-                })
-                .run()
-        })
-        console.log('now the webm has been generated')
+        if (!mp4Only) {
+            await new Promise<void>((resolve, reject) => {
+                const webmTimeout = setInterval(async () => {
+                    // re-block
+                    await DBUtil.reReserveTask(taskId)
+                }, 15000)
+                fluent(processingPath)
+                    .output(webmOutPath)
+                    .outputOptions( !!minRate ? [
+                        `-b ${minRate}`,
+                        `-minrate ${minRate}`,
+                        `-maxrate ${maxRate}`,
+                        `-bufsize ${bufSize}`
+                    ] : [])
+                    .withOutputFPS(25)
+                    .size(inputRateBand !== 'LOW' ? '?x1080' : '100%')
+                    .on('end', function () {
+                        console.log('processing webm finished..')
+                        clearTimeout(webmTimeout)
+                        return resolve()
+                    })
+                    .on('err', (err) => {
+                        clearTimeout(webmTimeout)
+                        return reject(err)
+                    })
+                    .on('progress', (progress) => {
+                        // todo: remove these console.logs later
+                        console.log('Processing WEBM: ' + progress.percent + '% done')
+                    })
+                    .run()
+            })
+            console.log('now the webm has been generated')
+        }
 
         // todo: might be better to run this first, even as a separate task, so that then subsequent image processing can proceed in parallel to the video processing.
         const stillFrameGenerateSuccessfully = await generateStillframeFromVideo(
@@ -392,6 +445,7 @@ export const getVideoMetaData = async (processingPath: string): Promise<Types.Co
             size: number
             width: number
             height: number
+            bit_rate: number
         }
     }>((resolve, reject) => {
         fluent.ffprobe(processingPath, (err, metadata) => {
@@ -433,6 +487,7 @@ export const getVideoMetaData = async (processingPath: string): Promise<Types.Co
         location: metaData?.format?.tags?.['com.apple.quicktime.location.ISO6709']
             ? parseAppleLocation(metaData.format.tags['com.apple.quicktime.location.ISO6709'])
             : undefined,
+        bitrate: metaData?.format?.bit_rate,
     }
 
     return data

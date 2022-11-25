@@ -374,6 +374,7 @@ export namespace Core {
         make?: string
         model?: string
         location?: ParsedLocation
+		bitrate: number
 	}
 
 	export type ImaggaTaggingResult = {
