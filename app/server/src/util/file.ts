@@ -249,8 +249,8 @@ export const generateVideoFiles = async (
                     'processing',
                     piciliFileId,
                     videoProcessingTaskId,
-                    videoMetaData.bitrate
-               )
+                    videoMetaData.bitrate,
+                )
                 return { success, metaData: videoMetaData }
                 break
             default:
@@ -271,7 +271,7 @@ export const generateAllRequiredVideoAssets = async (
     piciliFileId: number,
     taskId: number,
     bitrate: number,
-    mp4Only: boolean = false
+    mp4Only = false,
 ) => {
     // webm, avi, mp4, jpg/gif
     console.log('will try to process ', processingPath)
@@ -281,9 +281,9 @@ export const generateAllRequiredVideoAssets = async (
         const mp4OutPath = `${outPathDirectory}/mp4.mp4`
         const webmOutPath = `${outPathDirectory}/webm.webm`
 
-        const { inputRateBand, minRate, maxRate, bufSize} = (() => {
+        const { inputRateBand, minRate, maxRate, bufSize } = (() => {
             switch (true) {
-                case (bitrate/1000) < 1000:
+                case bitrate / 1000 < 1000:
                     console.log('\n\nLOW BITRATE\n\n', bitrate)
                     return {
                         inputRateBand: 'LOW',
@@ -292,8 +292,7 @@ export const generateAllRequiredVideoAssets = async (
                         bufSize: '367k',
                     }
 
-                case (bitrate/1000) >= 1000 && (bitrate/1000) < 6500:
-                    
+                case bitrate / 1000 >= 1000 && bitrate / 1000 < 6500:
                     console.log('\n\nMEDIUM BITRATE\n\n', bitrate)
                     return {
                         inputRateBand: 'MEDIUM',
@@ -301,7 +300,7 @@ export const generateAllRequiredVideoAssets = async (
                         maxRate: '1500k',
                         bufSize: '551k',
                     }
-                case (bitrate/1000) >= 6500:
+                case bitrate / 1000 >= 6500:
                     console.log('\n\nHIGH BITRATE\n\n', bitrate)
                     return {
                         inputRateBand: 'HIGH',
@@ -322,12 +321,17 @@ export const generateAllRequiredVideoAssets = async (
             fluent(processingPath)
                 .output(mp4OutPath)
                 // if we have these params use them, otherwise skip
-                .outputOptions( !!minRate ? [
-                    `-b ${minRate}`,
-                    `-minrate ${minRate}`,
-                    `-maxrate ${maxRate}`,
-                    `-bufsize ${bufSize}`
-                ] : [])
+                .outputOptions(
+                    !!minRate
+                        ? [
+                              `-b ${minRate}`,
+                              `-minrate ${minRate}`,
+                              `-maxrate ${maxRate}`,
+                              `-bufsize ${bufSize}`,
+                              '-threads 1',
+                          ]
+                        : [],
+                )
                 .withOutputFPS(25)
                 // limit dimensions, or keep original if low bitrate
                 .size(inputRateBand !== 'LOW' ? '?x1080' : '100%')
@@ -341,7 +345,7 @@ export const generateAllRequiredVideoAssets = async (
                 })
                 .on('progress', (progress) => {
                     // todo: remove later
-                    console.log('Processing MP4: ' + progress.percent + '% done')
+                    // console.log('Processing MP4: ' + progress.percent + '% done')
                 })
                 .run()
         })
@@ -354,12 +358,17 @@ export const generateAllRequiredVideoAssets = async (
                 }, 15000)
                 fluent(processingPath)
                     .output(webmOutPath)
-                    .outputOptions( !!minRate ? [
-                        `-b ${minRate}`,
-                        `-minrate ${minRate}`,
-                        `-maxrate ${maxRate}`,
-                        `-bufsize ${bufSize}`
-                    ] : [])
+                    .outputOptions(
+                        !!minRate
+                            ? [
+                                  `-b ${minRate}`,
+                                  `-minrate ${minRate}`,
+                                  `-maxrate ${maxRate}`,
+                                  `-bufsize ${bufSize}`,
+                                  `-threads 1`,
+                              ]
+                            : [],
+                    )
                     .withOutputFPS(25)
                     .size(inputRateBand !== 'LOW' ? '?x1080' : '100%')
                     .on('end', function () {
@@ -373,7 +382,7 @@ export const generateAllRequiredVideoAssets = async (
                     })
                     .on('progress', (progress) => {
                         // todo: remove these console.logs later
-                        console.log('Processing WEBM: ' + progress.percent + '% done')
+                        // console.log('Processing WEBM: ' + progress.percent + '% done')
                     })
                     .run()
             })
