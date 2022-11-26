@@ -217,21 +217,27 @@ export const postponeAllTasksOfType = async (
     )
 }
 
-const taskSelectionWhere = (isStopping: boolean) => {
+const taskSelectionWhere = (isStopping: boolean, isVideoCapable: boolean) => {
     const baseWhere = {
         from: {
             [Sequelize.Op.lte]: moment().toISOString(),
         },
         after: null,
+        // if !isVideoCapable then don't allow video tasks (PROCESS_VIDEO_FILE) - otherwise nevermind
+        ...(!isVideoCapable && { taskType: { [Sequelize.Op.not]: 'PROCESS_VIDEO_FILE' } }),
     }
+
     return isStopping ? { ...baseWhere, importTask: false } : { ...baseWhere }
 }
 
-export const getAndReserveNextTaskId = async (isStopping: boolean): Promise<Models.TaskInstance | null> => {
+export const getAndReserveNextTaskId = async (
+    isStopping: boolean,
+    isVideoCapable: boolean,
+): Promise<Models.TaskInstance | null> => {
     try {
         const result = await Database.transaction(async (getAndReserveTaskTransaction) => {
             const nextTask = await Models.TaskModel.findOne({
-                where: taskSelectionWhere(isStopping),
+                where: taskSelectionWhere(isStopping, isVideoCapable),
                 order: [
                     ['priority', 'DESC'],
                     ['created_at', 'ASC'],
@@ -279,7 +285,7 @@ export const howManyTasksAreThere = async (): Promise<number> => {
 }
 export const howManyProcessableTasksAreThere = async (isStopping: boolean): Promise<number> => {
     return await Models.TaskModel.count({
-        where: taskSelectionWhere(isStopping),
+        where: taskSelectionWhere(isStopping, true),
     })
 }
 export const howManyTasksToProcessAreThere = async (): Promise<number> => {
@@ -331,7 +337,7 @@ export const removeTask = async (taskId: number): Promise<void> => {
 
 export const getOldestTaskDate = async (): Promise<string | null> => {
     const oldestTask = await Models.TaskModel.findOne({
-        where: taskSelectionWhere(false),
+        where: taskSelectionWhere(false, true),
         order: [['created_at', 'ASC']],
     })
 
