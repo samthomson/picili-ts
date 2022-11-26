@@ -216,9 +216,12 @@ const video = async () => {
 
     const videos_to_use = high_quality
 
-    for (let i = 0; i < videos_to_use.length; i++) {
+    let failureOccured = false
+    for (let i = 0; i < videos_to_use.length && !failureOccured; i++) {
         const metadata = await FileUtil.getVideoMetaData(videos_to_use[i])
         // console.log(`\n\n${videos_to_use[i]}\nmetadata`, metadata, `\n${metadata.bitrate/1000}`)
+
+        console.log('\n\ngot metadata, will proceed\n\n')
 
         const videoGeneratingResult = await FileUtil.generateAllRequiredVideoAssets(
             videos_to_use[i],
@@ -229,6 +232,11 @@ const video = async () => {
             metadata.bitrate,
             true,
         )
+        // stop if we hit any errors
+        if (!videoGeneratingResult) {
+            failureOccured = true
+            console.error('\n\nHIT AN ERROR')
+        }
         console.log(`\n\n${videos_to_use[i]}\n`, metadata, videoGeneratingResult)
     }
 }
