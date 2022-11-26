@@ -401,7 +401,6 @@ export const generateAllRequiredVideoAssets = async (
                     .withOutputFPS(25)
                     .size(inputRateBand !== 'LOW' ? '?x1080' : '100%')
                     .on('end', function () {
-                        console.log('processing webm finished..')
                         clearTimeout(webmTimeout)
                         return resolve({ success: true })
                     })
@@ -453,9 +452,8 @@ export const generateAllRequiredVideoAssets = async (
                 processingPathDirectory,
                 `${piciliFileId}.jpg`,
             )
-            console.log('was the still frame generated successfully?', stillFrameGenerateSuccessfully)
+            // todo: check for a file on disk?
 
-            console.log('now we will return a success status from `generateAllRequiredVideoAssets`')
             return stillFrameGenerateSuccessfully
         } else {
             return false
@@ -477,7 +475,6 @@ export const generateStillframeFromVideo = async (
     outPathDirectory: string,
     outPathFileName: string,
 ): Promise<boolean> => {
-    console.log('will generate a thumbanil from', processingPath)
     const processingFileExists = FSExtra.pathExistsSync(processingPath)
     if (!processingFileExists) {
         throw Error(`processing file didn't exist so can't generate a still frame`)
@@ -491,7 +488,6 @@ export const generateStillframeFromVideo = async (
                 folder: outPathDirectory,
             })
             .on('end', () => {
-                console.log(`think we've now generated the thumbnail, and can return`)
                 resolve()
             })
             .on('error', (err) => {
