@@ -274,7 +274,7 @@ export const generateAllRequiredVideoAssets = async (
     mp4Only = false,
 ) => {
     // webm, avi, mp4, jpg/gif
-    console.log('will try to process ', processingPath)
+    // console.log('will try to process ', processingPath)
     try {
         // todo: still needed?
         // const aviOutPath = `${outPathDirectory}/avi.avi`
@@ -284,7 +284,7 @@ export const generateAllRequiredVideoAssets = async (
         const { inputRateBand, minRate, maxRate, bufSize } = (() => {
             switch (true) {
                 case bitrate / 1000 < 1000:
-                    console.log('\n\nLOW BITRATE\n\n', bitrate)
+                    // console.log('\n\nLOW BITRATE\n\n', bitrate)
                     return {
                         inputRateBand: 'LOW',
                         minRate: '800k',
@@ -293,7 +293,7 @@ export const generateAllRequiredVideoAssets = async (
                     }
 
                 case bitrate / 1000 >= 1000 && bitrate / 1000 < 6500:
-                    console.log('\n\nMEDIUM BITRATE\n\n', bitrate)
+                    // console.log('\n\nMEDIUM BITRATE\n\n', bitrate)
                     return {
                         inputRateBand: 'MEDIUM',
                         minRate: '1500k',
@@ -301,7 +301,7 @@ export const generateAllRequiredVideoAssets = async (
                         bufSize: '551k',
                     }
                 case bitrate / 1000 >= 6500:
-                    console.log('\n\nHIGH BITRATE\n\n', bitrate)
+                    // console.log('\n\nHIGH BITRATE\n\n', bitrate)
                     return {
                         inputRateBand: 'HIGH',
                         minRate: '2000k',
@@ -313,7 +313,8 @@ export const generateAllRequiredVideoAssets = async (
 
         // todo: I could also lower the audio bitrate to save some file space, but these would likely be really marginal gains
         // todo: these two video conversion tasks could be consolodated with an array/loop
-        await new Promise<void>((resolve, reject) => {
+        const processingResults = []
+        const mp4ProcessingResult = await new Promise<Types.Core.FFMPEGProcessingResult>((resolve, reject) => {
             const mp4Timeout = setInterval(async () => {
                 // re-block task
                 await DBUtil.reReserveTask(taskId)
@@ -337,11 +338,39 @@ export const generateAllRequiredVideoAssets = async (
                 .size(inputRateBand !== 'LOW' ? '?x1080' : '100%')
                 .on('end', function () {
                     clearTimeout(mp4Timeout)
-                    return resolve()
+                    return resolve({ success: true })
                 })
-                .on('err', (err) => {
+                .on('error', (err, stdout, stderr) => {
                     clearTimeout(mp4Timeout)
-                    return reject(err)
+
+                    if (err.message === 'ffmpeg was killed with signal SIGKILL') {
+                        Logger.warn(
+                            `[task ${taskId}] failed: ffmpeg was shut down after receiving SIGKILL. likely due to memory issues.`,
+                        )
+
+                        // todo: create some kind of system event model then store ffmpeg failing due to memory issues
+                        // todo: and notification - see below
+
+                        return resolve({
+                            success: false,
+                            errorMessage:
+                                'SIGKILL: ffmpeg was killed with a SIGKILL signal. likely due to using too much memory.',
+                        })
+                    }
+
+                    Logger.error('ffmpeg error', {
+                        err,
+                        errM: err?.message,
+                        processingPath,
+                        mp4OutPath,
+                        stdout,
+                        stderr,
+                    })
+
+                    return resolve({
+                        success: false,
+                        errorMessage: err?.message ?? 'unexpected ffmpeg error and exception structure.',
+                    })
                 })
                 .on('progress', (progress) => {
                     // todo: remove later
@@ -349,9 +378,9 @@ export const generateAllRequiredVideoAssets = async (
                 })
                 .run()
         })
-        console.log('now the mp4 has been generated')
+        processingResults.push(mp4ProcessingResult)
         if (!mp4Only) {
-            await new Promise<void>((resolve, reject) => {
+            const webmProcessingResult = await new Promise<Types.Core.FFMPEGProcessingResult>((resolve, reject) => {
                 const webmTimeout = setInterval(async () => {
                     // re-block
                     await DBUtil.reReserveTask(taskId)
@@ -374,11 +403,37 @@ export const generateAllRequiredVideoAssets = async (
                     .on('end', function () {
                         console.log('processing webm finished..')
                         clearTimeout(webmTimeout)
-                        return resolve()
+                        return resolve({ success: true })
                     })
-                    .on('err', (err) => {
+                    .on('error', (err, stdout, stderr) => {
                         clearTimeout(webmTimeout)
-                        return reject(err)
+
+                        if (err.message === 'ffmpeg was killed with signal SIGKILL') {
+                            Logger.warn(
+                                `[task ${taskId}] failed: ffmpeg was shut down after receiving SIGKILL. likely due to memory issues.`,
+                            )
+
+                            // todo: create some kind of system event model then store ffmpeg failing due to memory issues
+                            // todo: also notify the user (notification planned?)
+                            return resolve({
+                                success: false,
+                                errorMessage:
+                                    'SIGKILL: ffmpeg was killed with a SIGKILL signal. likely due to using too much memory.',
+                            })
+                        }
+                        // non-sigkill error, log it
+                        Logger.error('ffmpeg error', {
+                            err,
+                            errM: err?.message,
+                            processingPath,
+                            webmOutPath,
+                            stdout,
+                            stderr,
+                        })
+                        return resolve({
+                            success: false,
+                            errorMessage: err?.message ?? 'unexpected ffmpeg error and exception structure.',
+                        })
                     })
                     .on('progress', (progress) => {
                         // todo: remove these console.logs later
@@ -386,19 +441,25 @@ export const generateAllRequiredVideoAssets = async (
                     })
                     .run()
             })
-            console.log('now the webm has been generated')
+
+            processingResults.push(webmProcessingResult)
         }
 
-        // todo: might be better to run this first, even as a separate task, so that then subsequent image processing can proceed in parallel to the video processing.
-        const stillFrameGenerateSuccessfully = await generateStillframeFromVideo(
-            processingPath,
-            processingPathDirectory,
-            `${piciliFileId}.jpg`,
-        )
-        console.log('was the still frame generated successfully?', stillFrameGenerateSuccessfully)
+        // if all videos we made were successfully
+        if (processingResults.map(({ success }) => success).every((val) => val)) {
+            // todo: might be better to run this first, even as a separate task, so that then subsequent image processing can proceed in parallel to the video processing.
+            const stillFrameGenerateSuccessfully = await generateStillframeFromVideo(
+                processingPath,
+                processingPathDirectory,
+                `${piciliFileId}.jpg`,
+            )
+            console.log('was the still frame generated successfully?', stillFrameGenerateSuccessfully)
 
-        console.log('now we will return a success status from `generateAllRequiredVideoAssets`')
-        return stillFrameGenerateSuccessfully
+            console.log('now we will return a success status from `generateAllRequiredVideoAssets`')
+            return stillFrameGenerateSuccessfully
+        } else {
+            return false
+        }
     } catch (err) {
         Logger.error('encountered an error generating all required video assets.', {
             processingPath,
@@ -434,7 +495,7 @@ export const generateStillframeFromVideo = async (
                 resolve()
             })
             .on('error', (err) => {
-                console.log(`encountered an error when generating the thumbnail`, err)
+                Logger.error(`encountered an error when generating the thumbnail`, err)
                 reject()
             })
     })

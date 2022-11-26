@@ -523,6 +523,11 @@ export namespace Core {
 		query: API.IndividualSearchQuery
 		results: API.SearchResultItem[]
 	}
+
+	export type FFMPEGProcessingResult = {
+		success: boolean
+		errorMessage?: string
+	}
 }
 
 // todo: refactor these into an enum namespace, loosing appended `Enum`
