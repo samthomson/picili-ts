@@ -171,8 +171,6 @@ const video = async () => {
     //     fs.writeFileSync(`video-metadata/${i}-${path.replaceAll('/', '_')}.json`, JSON.stringify(data))
     // }
 
-    
-
     // await FileUtil.generateStillframeFromVideo('processing/mov-short.mov', 'out', 'mov-short.jpg')
     const sixteen_mb = 'processing/mp4-test/16mb-sony-arii.MP4'
     const jen_48_mb = 'processing/mp4-test/48mb-jen-water-video.mp4'
@@ -190,42 +188,47 @@ const video = async () => {
     const morocco_dinner_96mb = 'processing/originals/gopro/96mb_morocco_dinner.mp4'
     const morocco_cycling_128mb = 'processing/originals/gopro/128mb_morocco_cycling.mp4'
 
+    const small = [insta_hongkong_9mb, insta_bangkok_9mb, whatsapp_3mb]
 
-    const go_pro = [
-        morocco_dinner_96mb, morocco_cycling_128mb
-    ]
+    const go_pro = [morocco_dinner_96mb, morocco_cycling_128mb]
 
-    const insta = [
-        insta_hongkong_9mb,
-        insta_bangkok_9mb
-    ]
+    const insta = [insta_hongkong_9mb, insta_bangkok_9mb]
 
     const high_quality = [
-        assafora_12mb, jen_48_mb, ama_dablam_67mb, climbing_9mb, bbq_13mb, cats_16mb, beach_17mb, cave_17mb, ...go_pro
+        assafora_12mb,
+        jen_48_mb,
+        ama_dablam_67mb,
+        climbing_9mb,
+        bbq_13mb,
+        cats_16mb,
+        beach_17mb,
+        cave_17mb,
+        ...go_pro,
     ]
 
-    const all = [
-        sixteen_mb,
-        ...insta,
-        sony_old_12mb,
-        whatsapp_3mb,
-        ...high_quality
-    ]
+    const all = [...small, sixteen_mb, ...insta, sony_old_12mb, ...high_quality]
 
-    
     // const testIndex = 6
     // const testFile = all[testIndex]
     // const metadata = await FileUtil.getVideoMetaData(testFile)
     // const videoGeneratingResult = await FileUtil.generateAllRequiredVideoAssets(testFile, 'thumbs', 'processing', testIndex, testIndex, metadata.bitrate)
     // console.log('videoGeneratingResult', videoGeneratingResult)
 
-    const videos_to_use = insta
+    const videos_to_use = high_quality
 
-    for (let i = 0; i< videos_to_use.length; i++){
+    for (let i = 0; i < videos_to_use.length; i++) {
         const metadata = await FileUtil.getVideoMetaData(videos_to_use[i])
         // console.log(`\n\n${videos_to_use[i]}\nmetadata`, metadata, `\n${metadata.bitrate/1000}`)
-        
-        const videoGeneratingResult = await FileUtil.generateAllRequiredVideoAssets(videos_to_use[i], 'thumbs', 'processing', i, i, metadata.bitrate, true)
+
+        const videoGeneratingResult = await FileUtil.generateAllRequiredVideoAssets(
+            videos_to_use[i],
+            'thumbs',
+            'processing',
+            i,
+            i,
+            metadata.bitrate,
+            true,
+        )
         console.log(`\n\n${videos_to_use[i]}\n`, metadata, videoGeneratingResult)
     }
 }
