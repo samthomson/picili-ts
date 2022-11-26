@@ -29,7 +29,7 @@ export class TaskManager {
         return this._isStopping
     }
     set isStopping(stopping: boolean) {
-        this._isStopping = stopping;
+        this._isStopping = stopping
     }
 
     get isImportingEnabled() {
