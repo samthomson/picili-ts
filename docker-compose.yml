@@ -47,6 +47,7 @@ services:
       - mysql
       # only in dev do we need phpmyadmin (so we can just bash into the server and stil use mysql/phpmyadmin)
       - phpmyadmin
+    # mem_limit: 1536m
 
   mysql:
     platform: linux/x86_64
