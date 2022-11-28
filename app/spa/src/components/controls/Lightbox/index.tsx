@@ -58,6 +58,7 @@ const Lightbox: React.FunctionComponent = () => {
 
 	const options = result && {
 		controls: false,
+		// for now just loading the video works fine (as the first frame is displayed), if later loading times are problematic then I could reinstate this 'poster' image - which is preloaded from neighbors and ultimately quick to load otherwise.
 		// poster: HelperUtil.thumbPath(result.userId, result.uuid, 'xl'),
 		sources: [
 			{
