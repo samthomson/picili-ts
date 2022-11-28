@@ -191,11 +191,7 @@ export const removeProcessingFile = (piciliFileId: number, extension: string): b
         }
 
         // check and return if we were successful
-        if (!FSExtra.pathExistsSync(processingPath)) {
-            return true
-        } else {
-            return false
-        }
+        return !FSExtra.pathExistsSync(processingPath)
     })
     return removalStatuses.every((val) => val)
 }
