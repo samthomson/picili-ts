@@ -6,13 +6,13 @@ import * as DBUtil from '../util/db'
 const individualQuerySearch = async (
     userId: number,
     individualQuery: Types.API.IndividualSearchQuery,
-    sort: Enums.SearchSort
+    sort: Enums.SearchSort,
 ): Promise<Types.Core.SearchQueryResultSet> => {
     const dbResults = await DBUtil.performSearchQuery(userId, individualQuery, sort)
     // filter unique, as a file may match the queries on two tags (eg folder=china, location=china)
-    const uniqueDbResults = Array.from(new Set(dbResults.map(x => JSON.stringify(x)))).map(y => JSON.parse(y))
-    
-    return { query: individualQuery, results: uniqueDbResults}
+    const uniqueDbResults = Array.from(new Set(dbResults.map((x) => JSON.stringify(x)))).map((y) => JSON.parse(y))
+
+    return { query: individualQuery, results: uniqueDbResults }
 }
 
 const findOverlappingResults = (arrayOfResultArrays: Types.API.SearchResultItem[][]): Types.API.SearchResultItem[] => {
@@ -55,9 +55,7 @@ const findOverlappingResults = (arrayOfResultArrays: Types.API.SearchResultItem[
     return resultsThatAreInAllResultSets
 }
 
-export const sortsForSearchQuery = (
-    searchQuery: Types.API.SearchQuery,
-): Types.Core.SortsForSearchQuery => {
+export const sortsForSearchQuery = (searchQuery: Types.API.SearchQuery): Types.Core.SortsForSearchQuery => {
     const { individualQueries } = searchQuery
 
     const defaultSorts = [Enums.SearchSort.LATEST, Enums.SearchSort.OLDEST]
@@ -66,57 +64,61 @@ export const sortsForSearchQuery = (
     // const enableElevation = individualQueries.filter(query => query?.type === 'elevation').length > 0
     const enableElevation = true
 
-    const enableRelevance = individualQueries.filter(query => !query?.type || query.type === 'colour').length > 0
+    const enableRelevance = individualQueries.filter((query) => !query?.type || query.type === 'colour').length > 0
 
     const availableSortModes = [
         ...defaultSorts,
         ...(enableElevation ? [Enums.SearchSort.ELEVATION_HIGHEST, Enums.SearchSort.ELEVATION_LOWEST] : []),
-        ...(enableRelevance ? [Enums.SearchSort.RELEVANCE] : [])
+        ...(enableRelevance ? [Enums.SearchSort.RELEVANCE] : []),
     ]
 
-    const recommendedSortMode = availableSortModes.includes(Enums.SearchSort.RELEVANCE) ? Enums.SearchSort.RELEVANCE : Enums.SearchSort.LATEST
+    const recommendedSortMode = availableSortModes.includes(Enums.SearchSort.RELEVANCE)
+        ? Enums.SearchSort.RELEVANCE
+        : Enums.SearchSort.LATEST
 
     return {
         availableSortModes,
-        recommendedSortMode
+        recommendedSortMode,
     }
 }
 
 export const search = async (
     userId: number,
     searchQuery: Types.API.SearchQuery,
-    sortToUse: Enums.SearchSort
+    sortToUse: Enums.SearchSort,
 ): Promise<Types.API.SearchResultItem[]> => {
     // foreach individual query, perform an individual query search
     const individualQueryPromises = searchQuery.individualQueries.map((individualQuery) =>
         individualQuerySearch(userId, individualQuery, sortToUse),
     )
     const individualQueryResultSets: Types.Core.SearchQueryResultSet[] = await Promise.all(individualQueryPromises)
-    
+
     // divide `individualQueryResults` into normal queries and not queries.
-    const normalQueryResults: Types.Core.SearchQueryResultSet[] = individualQueryResultSets.filter(({ query }) => !(query?.isNotQuery ?? false)) 
-    const notQueryResults: Types.Core.SearchQueryResultSet[] = individualQueryResultSets.filter(({ query }) => (query?.isNotQuery ?? false)) 
+    const normalQueryResults: Types.Core.SearchQueryResultSet[] = individualQueryResultSets.filter(
+        ({ query }) => !(query?.isNotQuery ?? false),
+    )
+    const notQueryResults: Types.Core.SearchQueryResultSet[] = individualQueryResultSets.filter(
+        ({ query }) => query?.isNotQuery ?? false,
+    )
 
     // find overlapping results
-    const overlappingResults = findOverlappingResults([...normalQueryResults.map(({results}) => results)])
+    const overlappingResults = findOverlappingResults([...normalQueryResults.map(({ results }) => results)])
 
     // remove any not query results
-    const notResultIds = notQueryResults.map(
-        ({results}) => (results.map(result => result.fileId))
-    )
+    const notResultIds = notQueryResults.map(({ results }) => results.map((result) => result.fileId))
     const allNotResultIds = notResultIds.flat()
-    const flattenedNotResultIds: number[] = [
-        ...new Set(allNotResultIds)
-    ]
-    const filteredResults = overlappingResults.filter(result => !flattenedNotResultIds.includes(result.fileId))
-
+    const flattenedNotResultIds: number[] = [...new Set(allNotResultIds)]
+    const filteredResults = overlappingResults.filter((result) => !flattenedNotResultIds.includes(result.fileId))
 
     // return those results
     const sortedResults = filteredResults
     return sortedResults
 }
 
-export const autoComplete = async (userId: number, partialQuery: Types.API.IndividualSearchQuery): Promise<Types.API.TagSuggestion[]> => {
+export const autoComplete = async (
+    userId: number,
+    partialQuery: Types.API.IndividualSearchQuery,
+): Promise<Types.API.TagSuggestion[]> => {
     //
 
     return await DBUtil.performAutoCompleteQuery(userId, partialQuery)

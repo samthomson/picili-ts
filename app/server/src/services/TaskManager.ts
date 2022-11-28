@@ -29,7 +29,7 @@ export class TaskManager {
         return this._isStopping
     }
     set isStopping(stopping: boolean) {
-        this._isStopping = stopping;
+        this._isStopping = stopping
     }
 
     get isImportingEnabled() {
@@ -66,9 +66,11 @@ export class TaskManager {
 
         // todo: experiment with raising this, and later adjusting based on available resources
         const parallelization = 5
+        // ffmpeg uses loads of ram, already it is limited to one thread (of CPU) but here we limit to only one ffmpeg/video task at a time. need about 1gb for one thread to run ffmpeg.
+        const videoCapableThreads = 1
 
         Logger.info(`creating ${parallelization} workers..`)
-        const workers = [...Array(parallelization).keys()].map((i) => this.work(i))
+        const workers = [...Array(parallelization).keys()].map((i) => this.work(i, i < videoCapableThreads))
         await Promise.all(workers)
 
         if (this.isShuttingDown) {
@@ -77,11 +79,11 @@ export class TaskManager {
         }
     }
 
-    private async work(threadNo: number): Promise<void> {
+    private async work(threadNo: number, isVideoCapable = false): Promise<void> {
         // Logger.info(`thread:${threadNo + 1} started`)
         while (!this.isShuttingDown) {
             // get next task
-            const nextTask = await DBUtil.getAndReserveNextTaskId(this._isStopping)
+            const nextTask = await DBUtil.getAndReserveNextTaskId(this._isStopping, isVideoCapable)
             // if task, process task
             if (nextTask) {
                 Logger.info(`[thread:${threadNo + 1}] will now start next task: ${nextTask.id}:${nextTask.taskType}...`)

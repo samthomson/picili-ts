@@ -26,3 +26,8 @@ export enum SearchSort {
     ELEVATION_HIGHEST = 'ELEVATION_HIGHEST',
     ELEVATION_LOWEST = 'ELEVATION_LOWEST',
 }
+
+export enum AspectRatio {
+    PORTRAIT = 'PORTRAIT',
+    LANDSCAPE = 'LANDSCAPE',
+}

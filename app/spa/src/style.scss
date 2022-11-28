@@ -238,15 +238,39 @@ a {
     display: block
   }
 
-  #lightbox-file-content {
+  #video-control-space {
+    background-color: palevioletred;
     position: absolute;
-    left: 8px;
-    right: 80px;
-    top: 8px;
-    bottom: 8px;
+    display: none;
+    left: $lightboxMargin;
+    right: 40 + (2*$lightboxMargin);
+    bottom: $lightboxMargin;
+    height: 40px;
+
+    &.open {
+      display: block
+    }
 
     &.with-info {
       right: 300px;
+    }
+  }
+
+  #lightbox-file-content {
+    position: absolute;
+    left: $lightboxMargin;
+    right: 80px;
+    top: $lightboxMargin;
+    bottom: $lightboxMargin;
+
+    background-color: orange;
+
+    &.with-info {
+      right: 300px;
+    }
+
+    &.with-video-controls {
+      bottom: 40 + (2*$lightboxMargin);
     }
 
     img {
@@ -260,6 +284,15 @@ a {
       left: 0;
       right: 0;
       opacity: 1;
+    }
+
+    /*
+    need this next block to ensure and enforce that videos will be scaled to 
+    max 100% height / verticality. along with the style object on the video 
+    element in the `VideoJS` component.
+    */
+    [data-vjs-player="true"] {
+      position: static !important;
     }
   }
 

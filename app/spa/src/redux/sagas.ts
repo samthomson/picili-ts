@@ -65,6 +65,7 @@ function* callSearchQuery(page = 1) {
 							address
 							latitude
 							longitude
+							fileType
 						}
 						stats {
 							speed

@@ -90,7 +90,7 @@ export const processTask = async (taskId: number, thread: number) => {
                 break
 
             case Enums.TaskType.PROCESS_VIDEO_FILE:
-                Logger.info('video processor not implemented yet', { taskType, id: task.id })
+                taskOutcome = await processVideo(task.relatedPiciliFileId, task.id)
                 break
 
             default:
@@ -230,6 +230,159 @@ export const taskTypeToPriority = (taskType: Enums.TaskType): number => {
         case Enums.TaskType.SUBJECT_DETECTION:
             return 4
     }
+}
+
+export const processVideo = async (
+    fileId: number,
+    videoProcessingTaskId: number,
+): Promise<Types.Core.TaskProcessorResult> => {
+    // look up file
+    const file = await Models.FileModel.findByPk(fileId)
+    const { userId, uuid, fileExtension } = file
+
+    const videoProcessingResult = await FileUtil.generateVideoFiles(
+        userId,
+        fileId,
+        uuid,
+        fileExtension,
+        videoProcessingTaskId,
+    )
+    const { success, metaData } = videoProcessingResult
+
+    // extract metadata and tag accordingly
+    if (success && metaData) {
+        const newMetaDataTags: Types.Core.Inputs.CreateTagInput[] = []
+
+        // create tags for all relevant metadata things
+        // length
+        if (metaData?.length) {
+            newMetaDataTags.push({
+                fileId,
+                type: 'metadata',
+                subtype: 'length',
+                value: metaData.length.toString(),
+                confidence: 100,
+            })
+        }
+        // width
+        if (metaData?.width) {
+            newMetaDataTags.push({
+                fileId,
+                type: 'metadata',
+                subtype: 'width',
+                value: metaData.width.toString(),
+                confidence: 100,
+            })
+        }
+        // height
+        if (metaData?.height) {
+            newMetaDataTags.push({
+                fileId,
+                type: 'metadata',
+                subtype: 'height',
+                value: metaData.height.toString(),
+                confidence: 100,
+            })
+        }
+        // aspect ratio
+        if (metaData?.aspectRatio) {
+            newMetaDataTags.push({
+                fileId,
+                type: 'metadata',
+                subtype: 'aspectratio',
+                value: metaData.aspectRatio.toString(),
+                confidence: 100,
+            })
+        }
+        // size
+        if (metaData?.size) {
+            newMetaDataTags.push({
+                fileId,
+                type: 'metadata',
+                subtype: 'size',
+                value: metaData.size.toString(),
+                confidence: 100,
+            })
+        }
+        // make
+        if (metaData?.make) {
+            newMetaDataTags.push({
+                fileId,
+                type: 'metadata',
+                subtype: 'make',
+                value: metaData.make,
+                confidence: 100,
+            })
+        }
+        // model
+        if (metaData?.model) {
+            newMetaDataTags.push({
+                fileId,
+                type: 'metadata',
+                subtype: 'model',
+                value: metaData.model,
+                confidence: 100,
+            })
+        }
+
+        if (newMetaDataTags.length > 0) {
+            await DBUtil.createMultipleTags(newMetaDataTags)
+        }
+
+        // set on file - datetime, latitude, longitude, elevation
+        let updatedAgain = false
+        let hasLatitude = false
+        let hasLongitude = false
+        if (metaData?.location?.latitude && metaData?.location.latitude >= -90 && metaData?.location?.latitude <= 90) {
+            file.latitude = metaData.location.latitude
+            updatedAgain = true
+            hasLatitude = true
+        }
+        if (
+            metaData?.location?.longitude &&
+            metaData?.location.longitude >= -180 &&
+            metaData?.location?.longitude <= 180
+        ) {
+            file.longitude = metaData.location.longitude
+            updatedAgain = true
+            hasLongitude = true
+        }
+        if (metaData?.location?.altitude) {
+            file.elevation = metaData.location.altitude
+            updatedAgain = true
+        }
+        if (metaData?.datetime) {
+            file.datetime = metaData.datetime
+            updatedAgain = true
+        }
+        if (updatedAgain) {
+            await file.save()
+        }
+
+        // conditional queueing
+        // if lat & lon - queue for reverse geocoding
+        if (hasLatitude && hasLongitude) {
+            await DBUtil.createTask({
+                taskType: Enums.TaskType.ADDRESS_LOOKUP,
+                relatedPiciliFileId: fileId,
+                importTask: true,
+            })
+            // if also missing elevation, queue for elevation lookup
+            if (!file.elevation) {
+                await DBUtil.createTask({
+                    taskType: Enums.TaskType.ELEVATION_LOOKUP,
+                    relatedPiciliFileId: fileId,
+                    importTask: true,
+                })
+            }
+        }
+    }
+
+    // subject detection task will get queued during the image (of the stillframe) thumbnailing
+
+    // likewise and create a task dependent on the above to remove the processing file(s)
+
+    return { success }
 }
 
 export const processImage = async (
@@ -756,7 +909,7 @@ export const bulkCreateRemovalTasks = async (piciliFileIds: number[]): Promise<v
         }
     })
     await Models.TaskModel.bulkCreate(removalTasks, {
-        ignoreDuplicates: true
+        ignoreDuplicates: true,
     })
 }
 

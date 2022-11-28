@@ -217,21 +217,27 @@ export const postponeAllTasksOfType = async (
     )
 }
 
-const taskSelectionWhere = (isStopping: boolean) => {
+const taskSelectionWhere = (isStopping: boolean, isVideoCapable: boolean) => {
     const baseWhere = {
         from: {
             [Sequelize.Op.lte]: moment().toISOString(),
         },
         after: null,
+        // if !isVideoCapable then don't allow video tasks (PROCESS_VIDEO_FILE) - otherwise nevermind
+        ...(!isVideoCapable && { taskType: { [Sequelize.Op.not]: 'PROCESS_VIDEO_FILE' } }),
     }
+
     return isStopping ? { ...baseWhere, importTask: false } : { ...baseWhere }
 }
 
-export const getAndReserveNextTaskId = async (isStopping: boolean): Promise<Models.TaskInstance | null> => {
+export const getAndReserveNextTaskId = async (
+    isStopping: boolean,
+    isVideoCapable: boolean,
+): Promise<Models.TaskInstance | null> => {
     try {
         const result = await Database.transaction(async (getAndReserveTaskTransaction) => {
             const nextTask = await Models.TaskModel.findOne({
-                where: taskSelectionWhere(isStopping),
+                where: taskSelectionWhere(isStopping, isVideoCapable),
                 order: [
                     ['priority', 'DESC'],
                     ['created_at', 'ASC'],
@@ -265,12 +271,21 @@ export const getAndReserveNextTaskId = async (isStopping: boolean): Promise<Mode
     }
 }
 
+export const reReserveTask = async (id: number): Promise<void> => {
+    await Models.TaskModel.update(
+        {
+            from: moment().add(2, 'minute').toISOString(),
+        },
+        { where: { id } },
+    )
+}
+
 export const howManyTasksAreThere = async (): Promise<number> => {
     return await Models.TaskModel.count()
 }
 export const howManyProcessableTasksAreThere = async (isStopping: boolean): Promise<number> => {
     return await Models.TaskModel.count({
-        where: taskSelectionWhere(isStopping),
+        where: taskSelectionWhere(isStopping, true),
     })
 }
 export const howManyTasksToProcessAreThere = async (): Promise<number> => {
@@ -322,7 +337,7 @@ export const removeTask = async (taskId: number): Promise<void> => {
 
 export const getOldestTaskDate = async (): Promise<string | null> => {
     const oldestTask = await Models.TaskModel.findOne({
-        where: taskSelectionWhere(false),
+        where: taskSelectionWhere(false, true),
         order: [['created_at', 'ASC']],
     })
 
@@ -388,7 +403,7 @@ export const performSearchQuery = async (
     switch (type) {
         case 'map':
             const [latLower, latUpper, lngLower, lngUpper] = value.split(',')
-            const mapQuery = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight FROM files WHERE files.user_id = :userId AND files.latitude >= :latLower AND files.latitude <= :latUpper AND files.longitude >= :lngLower AND files.longitude <= :lngUpper AND  files.is_thumbnailed  ${sortSQL};`
+            const mapQuery = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight, files.file_type as fileType FROM files WHERE files.user_id = :userId AND files.latitude >= :latLower AND files.latitude <= :latUpper AND files.longitude >= :lngLower AND files.longitude <= :lngUpper AND  files.is_thumbnailed  ${sortSQL};`
             const mapResults: Types.Core.DBSearchResult[] = await Database.query(mapQuery, {
                 type: Sequelize.QueryTypes.SELECT,
                 replacements: {
@@ -400,6 +415,7 @@ export const performSearchQuery = async (
                 },
             })
             return mapResults.map((result) => {
+                // todo: deconstruct these
                 return {
                     fileId: result.id,
                     userId,
@@ -411,11 +427,12 @@ export const performSearchQuery = async (
                     confidence: 100,
                     mediumWidth: result.mediumWidth,
                     mediumHeight: result.mediumHeight,
+                    fileType: result.fileType,
                 }
             })
             break
         default:
-            const query = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight FROM tags JOIN files ON tags.file_id = files.id where ${
+            const query = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight, files.file_type as fileType FROM tags JOIN files ON tags.file_id = files.id where ${
                 type ? `tags.type=:type and ` : ''
             }${
                 subtype ? `tags.subtype=:subtype and ` : ''
@@ -440,6 +457,7 @@ export const performSearchQuery = async (
                     longitude: result.longitude,
                     mediumWidth: result.mediumWidth,
                     mediumHeight: result.mediumHeight,
+                    fileType: result.fileType,
                 }
             })
             break
@@ -485,7 +503,7 @@ export const performAutoCompleteQuery = async (
         FROM
             tags
         JOIN files ON files.id = tags.file_id
-        WHERE  files.user_id=:userId AND (file_id, type, subtype, value, confidence) IN (
+        WHERE  files.user_id=:userId AND files.is_thumbnailed=TRUE AND (file_id, type, subtype, value, confidence) IN (
                 SELECT file_id, type, subtype, tags.value, MAX(confidence) max_confidence
                 FROM tags
                 WHERE tags.confidence >= :confidence and ${type ? `tags.type=:type and ` : ''}${

@@ -7,16 +7,22 @@ import * as Selectors from 'src/redux/selectors'
 import * as HelperUtil from 'src/util/helper'
 
 import LightboxInfo from './LightboxInfo'
+import VideoJS from './VideoJS'
+
+import * as Enums from '../../../../../shared/enums'
 
 const Lightbox: React.FunctionComponent = () => {
 	const [isInfoShowing, setIsInfoShowing] = React.useState<boolean>(false)
+	const [isCurrentlyPlayingVideo, setIsCurrentlyPlayingVideo] =
+		React.useState<boolean>(false)
 	const dispatch = ReactRedux.useDispatch()
 
 	const lightboxIndex = ReactRedux.useSelector(Selectors.lightboxIndex)
 
 	React.useEffect(() => {
+		setIsCurrentlyPlayingVideo(false)
 		if (typeof lightboxIndex === 'number') {
-			// todo: preload neighbors
+			// preload neighbors
 			const neighbours = [
 				lightboxIndex - 2,
 				lightboxIndex - 1,
@@ -50,6 +56,32 @@ const Lightbox: React.FunctionComponent = () => {
 	const previous = () => dispatch(Actions.lightboxPrevious())
 	const next = () => dispatch(Actions.lightboxNext())
 
+	const options = result && {
+		controls: false,
+		// for now just loading the video works fine (as the first frame is displayed), if later loading times are problematic then I could reinstate this 'poster' image - which is preloaded from neighbors and ultimately quick to load otherwise.
+		// poster: HelperUtil.thumbPath(result.userId, result.uuid, 'xl'),
+		sources: [
+			{
+				src: HelperUtil.thumbPath(
+					result.userId,
+					result.uuid,
+					'mp4',
+					'mp4',
+				),
+				type: 'video/mp4',
+			},
+			{
+				src: HelperUtil.thumbPath(
+					result.userId,
+					result.uuid,
+					'webm',
+					'webm',
+				),
+				type: 'video/webm',
+			},
+		],
+	}
+
 	return (
 		<div
 			id="lightbox"
@@ -64,15 +96,50 @@ const Lightbox: React.FunctionComponent = () => {
 						id="lightbox-file-content"
 						className={classNames({
 							'with-info': isInfoShowing,
+							'with-video-controls':
+								result.fileType === Enums.FileType.VIDEO,
 						})}
 					>
-						<img
-							src={HelperUtil.thumbPath(
-								result.userId,
-								result.uuid,
-								'xl',
+						{result.fileType === Enums.FileType.IMAGE && (
+							<img
+								src={HelperUtil.thumbPath(
+									result.userId,
+									result.uuid,
+									'xl',
+								)}
+							/>
+						)}
+						{result.fileType === Enums.FileType.VIDEO &&
+							options && (
+								<VideoJS
+									options={options}
+									key={result.uuid}
+									isPlaying={isCurrentlyPlayingVideo}
+									setVideoPlayingState={
+										setIsCurrentlyPlayingVideo
+									}
+								/>
 							)}
-						/>
+					</div>
+					<div
+						id="video-control-space"
+						className={classNames({
+							open: result.fileType === Enums.FileType.VIDEO,
+							'with-info': isInfoShowing,
+						})}
+					>
+						<button
+							id="lightbox-play"
+							onClick={() => {
+								// attempt to play video
+								setIsCurrentlyPlayingVideo(
+									!isCurrentlyPlayingVideo,
+								)
+							}}
+						>
+							{isCurrentlyPlayingVideo ? 'pause' : 'play'}
+						</button>{' '}
+						[fullscreen]
 					</div>
 					<div
 						id="lightbox-file-info"
@@ -93,6 +160,7 @@ const Lightbox: React.FunctionComponent = () => {
 					>
 						i
 					</button>
+
 					<button
 						id="lightbox-left"
 						className="lightbox-button"

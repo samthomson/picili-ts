@@ -108,6 +108,7 @@ const typeDefs = gql`
         latitude: Float
         longitude: Float
         address: String
+        fileType: FileType
     }
 
     type PaginationInfo {
@@ -156,6 +157,11 @@ const typeDefs = gql`
         ELEVATION_LOWEST
     }
 
+    enum FileType {
+        IMAGE
+        VIDEO
+    }
+
     type LatLon {
         latitude: Float
         longitude: Float
@@ -170,11 +176,11 @@ const typeDefs = gql`
 
     type FileInfo {
         address: String
-		datetime: String!
-		location: LatLon
-		elevation: Float
-		pathOnDropbox: String
-		tags: [Tag]
+        datetime: String
+        location: LatLon
+        elevation: Float
+        pathOnDropbox: String
+        tags: [Tag]
     }
 
     type Query {
@@ -184,7 +190,12 @@ const typeDefs = gql`
         taskProcessor: TaskProcessor
         adminOverview: AdminOverview
         # todo: add sort enum param
-        search(filter: SearchFilter!, page: Int! = 1, perPage: Int! = 100, sortOverload: SearchSort): SearchQueryResponse
+        search(
+            filter: SearchFilter!
+            page: Int! = 1
+            perPage: Int! = 100
+            sortOverload: SearchSort
+        ): SearchQueryResponse
         autoComplete(query: IndividualQuery): AutoCompleteResponse
         fileInfo(fileId: Int!): FileInfo
     }

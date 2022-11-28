@@ -2,8 +2,9 @@ export const thumbPath = (
 	userId: number,
 	uuid: string,
 	size: string,
+	extension = 'jpg',
 ): string => {
-	return `${baseAPIURL()}/thumbs/${userId}/${uuid}/${size}.jpg`
+	return `${baseAPIURL()}/thumbs/${userId}/${uuid}/${size}.${extension}`
 }
 
 export const baseAPIURL = (): string => {

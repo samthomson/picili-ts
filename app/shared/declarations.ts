@@ -60,6 +60,7 @@ export namespace API {
 		longitude: number
 		mediumWidth: number
 		mediumHeight: number
+		fileType: Enums.FileType
 	}
 
 	export interface PaginationInfo {
@@ -336,6 +337,12 @@ export namespace Core {
 		mediumHeight?: number
 		exifData?: ExifData
 	}
+	export type VideoCreationResponse = {
+		success: 
+		// todo: doesn't appear to be used anywhere. might be redundant unless I later detect video corruption? at present I just fail on ffmpeg mem leaks?
+		isCorrupt?: boolean
+		metaData?: VideoMetaData
+	}
 	export type ExifData = {
 		cameraMake?: string
 		cameraModel?: string
@@ -351,6 +358,26 @@ export namespace Core {
 		longitude?: number
 		altitude?: number
 	}
+
+	export type ParsedLocation = {
+		latitude: number
+		longitude: number
+		altitude: number
+	}
+
+	export type VideoMetaData = {
+		length: number // seconds
+		width: number
+		height: number
+		datetime?: string
+		aspectRatio: Enums.AspectRatio
+		size: number
+		make?: string
+		model?: string
+		location?: ParsedLocation
+		bitrate: number
+	}
+
 	export type ImaggaTaggingResult = {
 		success: boolean
 		throttled?: boolean
@@ -416,6 +443,7 @@ export namespace Core {
 		longitude: number
 		mediumWidth: number
 		mediumHeight: number
+		fileType: Enums.FileType
 	}
 	
 	export type DBAutoCompleteResult = {
@@ -495,6 +523,18 @@ export namespace Core {
 	export type SearchQueryResultSet = {
 		query: API.IndividualSearchQuery
 		results: API.SearchResultItem[]
+	}
+
+	export type FFMPEGProcessingResult = {
+		success: boolean
+		errorMessage?: string
+	}
+
+	export type BitrateOptions = {
+		inputRateBand: 'LOW' | 'MEDIUM' | 'HIGH'
+		minRate: string
+		maxRate: string
+		bufSize: string
 	}
 }
 
