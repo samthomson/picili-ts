@@ -176,12 +176,13 @@ export const generateThumbnails = async (
 
 export const removeProcessingFile = (piciliFileId: number, extension: string): boolean => {
     // there may be multiple processing files (video and image) - and both should be removed
-    const processingPaths = [getProcessingPath(piciliFileId, extension)]
-
-    // if video, also add jpg - stillframe - processing path
-    if (HelperUtil.fileTypeFromExtension(extension) === Enums.FileType.VIDEO) {
-        processingPaths.push(getProcessingPath(piciliFileId, 'jpg'))
-    }
+    const processingPaths = [
+        getProcessingPath(piciliFileId, extension),
+        // if video, also add jpg - stillframe - processing path
+        ...(HelperUtil.fileTypeFromExtension(extension) === Enums.FileType.VIDEO
+            ? [getProcessingPath(piciliFileId, 'jpg')]
+            : []),
+    ]
 
     const removalStatuses = processingPaths.map((processingPath) => {
         // `unlinkSync` will throw an error if the file didn't exist
