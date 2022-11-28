@@ -253,7 +253,6 @@ export const generateAllRequiredVideoAssets = async (
     mp4Only = false,
 ) => {
     // webm, mp4, jpg
-    // console.log('will try to process ', processingPath)
     const processingPathDirectory = 'processing'
 
     const videoEncodingPromise = async (
@@ -326,7 +325,6 @@ export const generateAllRequiredVideoAssets = async (
         const bitrateOptions = ((): Types.Core.BitrateOptions => {
             switch (true) {
                 case bitrate / 1000 < 1000:
-                    // console.log('\n\nLOW BITRATE\n\n', bitrate)
                     return {
                         inputRateBand: 'LOW',
                         minRate: '800k',
@@ -335,7 +333,6 @@ export const generateAllRequiredVideoAssets = async (
                     }
 
                 case bitrate / 1000 >= 1000 && bitrate / 1000 < 6500:
-                    // console.log('\n\nMEDIUM BITRATE\n\n', bitrate)
                     return {
                         inputRateBand: 'MEDIUM',
                         minRate: '1500k',
@@ -343,7 +340,6 @@ export const generateAllRequiredVideoAssets = async (
                         bufSize: '551k',
                     }
                 case bitrate / 1000 >= 6500:
-                    // console.log('\n\nHIGH BITRATE\n\n', bitrate)
                     return {
                         inputRateBand: 'HIGH',
                         minRate: '2000k',
