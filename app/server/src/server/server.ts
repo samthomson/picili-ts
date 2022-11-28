@@ -59,7 +59,7 @@ const startApolloServer = async (typeDefs, resolvers) => {
         debug: true,
         formatError: (err) => {
             Logger.error('GraphQL Error', err)
-            return new Error('GraphQL Error - check the logs to see what went wrong.');
+            return new Error('GraphQL Error - check the logs to see what went wrong.')
         },
         logger: Logger,
     })
@@ -78,7 +78,7 @@ const startApolloServer = async (typeDefs, resolvers) => {
     if (process.env.NODE_ENV === 'production') {
         taskManager.start()
     }
-    
+
     process.on('SIGTERM', async () => {
         Logger.info('SIGTERM received, shutting down...')
         // close server to the world
