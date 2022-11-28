@@ -338,7 +338,7 @@ export namespace Core {
 		exifData?: ExifData
 	}
 	export type VideoCreationResponse = {
-		success: 
+		success: boolean
 		// todo: doesn't appear to be used anywhere. might be redundant unless I later detect video corruption? at present I just fail on ffmpeg mem leaks?
 		isCorrupt?: boolean
 		metaData?: VideoMetaData
