@@ -31,6 +31,8 @@ SPA: `http://localhost:3500`
 API: `http://localhost:3501/graphql`
 phpmyadmin: `http://localhost:8083`
 
+Note: make sure `"request.credentials": "include"` is set in graphiql's settings so that once authed in the SPA the cookies will be used for requests in the graphiql playground.
+
 ### testing
 
 Run end to end test: `docker-compose up --abort-on-container-exit --exit-code-from e2e`.
