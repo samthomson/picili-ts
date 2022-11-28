@@ -104,11 +104,7 @@ export const generateThumbnails = async (
 
     // specifically get image processing file (for the case of videos) - since we generate thumbnails for videos from the still frame (already extracted) not from the video
     const requestExtension = ((): string => {
-        if (HelperUtil.fileTypeFromExtension(extension) === Enums.FileType.VIDEO) {
-            return 'jpg'
-        } else {
-            return extension
-        }
+        return HelperUtil.fileTypeFromExtension(extension) === Enums.FileType.VIDEO ? 'jpg' : extension
     })()
 
     const inPath = getProcessingPath(piciliFileId, requestExtension)
