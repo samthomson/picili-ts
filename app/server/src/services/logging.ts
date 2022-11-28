@@ -7,10 +7,11 @@ const myFormat = winston.format.printf(({ timestamp, level, message, ...other })
 })
 
 // define the custom settings for each transport (file, console)
+const { splat, timestamp, errors } = winston.format
 const commonLoggingOptions = {
     handleExceptions: true,
     handleRejections: true, // doesn't work
-    format: winston.format.combine(winston.format.timestamp(), winston.format.splat(), myFormat),
+    format: winston.format.combine(timestamp(), splat(), myFormat, errors({ stack: true })),
     maxsize: 5242880, // 5MB
     maxFiles: 21,
     colorize: true,

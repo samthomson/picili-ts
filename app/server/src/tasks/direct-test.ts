@@ -240,6 +240,16 @@ const video = async () => {
     }
 }
 
+const error = () => {
+    try {
+        throw new Error('does this get displayed')
+    } catch (err) {
+        console.log('err', err)
+        Logger.error('error logged?', err)
+        Logger.error('associated error info', { another: 'object' })
+    }
+}
+
 // file()
 // imaggaTest()
 // geo()
@@ -250,4 +260,5 @@ const video = async () => {
 // testDropboxSync()
 // testParsingFileParts()
 // taskTest()
-video()
+// video()
+error()

@@ -117,7 +117,8 @@ export const processTask = async (taskId: number, thread: number) => {
             await DBUtil.postponeAllTasksOfType(taskType, throttleByMinutes)
         }
     } catch (err) {
-        Logger.error('error processing task: ', { err, taskId, taskOutcome })
+        Logger.error('error processing task: ', err)
+        Logger.error('associated error data: ', { taskId, taskOutcome })
     }
     // end timing
     const endTime = moment()
@@ -552,10 +553,17 @@ export const processImage = async (
 
 export const removeProcessingImage = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
     const file = await Models.FileModel.findByPk(fileId)
-    const { fileExtension } = file
 
-    const success = FileUtil.removeProcessingFile(fileId, fileExtension)
-    return { success }
+    if (file) {
+        Logger.warn(`couldn't find the file model in order to check it's extension and then remove it`, { fileId })
+
+        const { fileExtension } = file
+
+        const success = FileUtil.removeProcessingFile(fileId, fileExtension)
+        return { success }
+    } else {
+        return { success: false }
+    }
 }
 
 export const subjectDetection = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
