@@ -1,7 +1,9 @@
 import * as React from 'react'
+import * as ReactRedux from 'react-redux'
 import { useQuery, gql } from '@apollo/client'
 
 import * as Types from '@shared/declarations'
+import * as Actions from 'src/redux/actions'
 
 const fileInfoQuery = gql`
 	query fileInfo($fileId: Int!) {
@@ -33,6 +35,8 @@ const LightboxInfo: React.FunctionComponent<IProps> = ({
 	isShowing,
 	fileId,
 }) => {
+	const dispatch = ReactRedux.useDispatch()
+
 	const {
 		error,
 		data,
@@ -54,6 +58,12 @@ const LightboxInfo: React.FunctionComponent<IProps> = ({
 
 	const { fileInfo }: { fileInfo: Types.API.FileInfo } = data
 
+	const searchFromTag = (tagValue: string) => {
+		dispatch(Actions.searchQueryAdd({ value: tagValue }))
+		dispatch(Actions.attemptSearch())
+		// close the lightbox
+		dispatch(Actions.lightboxClose())
+	}
 	return (
 		<>
 			<p>{fileInfo?.address && <>address: {fileInfo.address} </>}</p>
@@ -83,7 +93,13 @@ const LightboxInfo: React.FunctionComponent<IProps> = ({
 									{tag.type}
 									{tag?.subtype ? `: ${tag.subtype}` : ''}
 								</td>
-								<td>{tag.value}</td>
+								<td>
+									{/* todo: later ensure this has a cursor:
+									pointer */}
+									<a onClick={() => searchFromTag(tag.value)}>
+										{tag.value}
+									</a>
+								</td>
 								<td>{tag.confidence}%</td>
 							</tr>
 						))}
