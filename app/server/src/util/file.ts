@@ -234,26 +234,20 @@ export const generateVideoFiles = async (
     await FSExtra.ensureDir(outPathDirectory)
     const videoMetaData = await getVideoMetaData(processingPath)
 
-    // todo: whole switch is pointless?
     try {
-        switch (HelperUtil.splitPathIntoParts(processingPath).fileExtension) {
-            case 'mov':
-            case 'mp4':
-            case 'mts':
-            case 'avi':
-                const success = await generateAllRequiredVideoAssets(
-                    processingPath,
-                    outPathDirectory,
-                    'processing',
-                    piciliFileId,
-                    videoProcessingTaskId,
-                    videoMetaData.bitrate,
-                )
-                return { success, metaData: videoMetaData }
-                break
-            default:
-                Logger.error('video file encoder not programmed.', { userId, piciliFileId, uuid, extension })
-                return { success: false }
+        if (['mov', 'mp4', 'mts', 'avi'].includes(HelperUtil.splitPathIntoParts(processingPath).fileExtension)) {
+            const success = await generateAllRequiredVideoAssets(
+                processingPath,
+                outPathDirectory,
+                'processing',
+                piciliFileId,
+                videoProcessingTaskId,
+                videoMetaData.bitrate,
+            )
+            return { success, metaData: videoMetaData }
+        } else {
+            Logger.error('video file encoder not programmed.', { userId, piciliFileId, uuid, extension })
+            return { success: false }
         }
     } catch (err) {
         Logger.error('encountered an error processing a video', { processingPath, err })
