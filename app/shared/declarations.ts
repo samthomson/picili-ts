@@ -369,12 +369,12 @@ export namespace Core {
 		length: number // seconds
 		width: number
 		height: number
-        datetime?: string
-        aspectRatio: Enums.AspectRatio
-        size: number
-        make?: string
-        model?: string
-        location?: ParsedLocation
+		datetime?: string
+		aspectRatio: Enums.AspectRatio
+		size: number
+		make?: string
+		model?: string
+		location?: ParsedLocation
 		bitrate: number
 	}
 
