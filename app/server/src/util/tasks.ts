@@ -249,7 +249,7 @@ export const processVideo = async (
     )
     const { success, metaData } = videoProcessingResult
 
-    // todo: extract metadata and tag accordingly
+    // extract metadata and tag accordingly
     if (success && metaData) {
         const newMetaDataTags: Types.Core.Inputs.CreateTagInput[] = []
 
