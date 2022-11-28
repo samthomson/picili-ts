@@ -91,6 +91,12 @@ In produciton the SPA is served statically, and the API run dynamically. Both ar
 
 `bash ./remote-redeploy.sh`
 
+#### env vars
+
+If you change the `.env` values for production environmental variables you'll need to re-upload the `.env` file to your server. (replace `$DOCKER_MACHINE_NAME` with your host machine name)
+
+`docker-machine scp .env $DOCKER_MACHINE_NAME:/picili-ts/.env`
+
 ### 4.3 download log files
 
 The prod docker-compose maps the log directory from the container to the host. So can be downloaded via scp (run command from root):
