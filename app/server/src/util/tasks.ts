@@ -555,13 +555,11 @@ export const removeProcessingImage = async (fileId: number): Promise<Types.Core.
     const file = await Models.FileModel.findByPk(fileId)
 
     if (file) {
-        Logger.warn(`couldn't find the file model in order to check it's extension and then remove it`, { fileId })
-
         const { fileExtension } = file
-
         const success = FileUtil.removeProcessingFile(fileId, fileExtension)
         return { success }
     } else {
+        Logger.warn(`couldn't find the file model in order to check it's extension and then remove it`, { fileId })
         return { success: false }
     }
 }
