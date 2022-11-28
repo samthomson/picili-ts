@@ -115,6 +115,8 @@ export const generateThumbnails = async (
         // todo: rotate image here as I do with thumbnails below
         base64MediumThumbBuffer = await sharp(inPath)
             .jpeg({
+                // this was 55 which seemed decent, but now on mac those pics look a bit off. changed to 65.
+                // noticed it was just with pics from alberto's camera and still they - alone - looked off at 65 too. back to 55.
                 quality: 55,
             })
             .blur(25)
