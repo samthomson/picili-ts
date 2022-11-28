@@ -206,15 +206,12 @@ export const removeThumbnails = (userId: number, uuid: string): boolean => {
     if (FSExtra.pathExistsSync(directory)) {
         fs.rmSync(directory, { recursive: true, force: true })
     } else {
+        // user had no thumbnails
         return true
     }
 
     // check and return if we were successful
-    if (!FSExtra.pathExistsSync(directory)) {
-        return true
-    } else {
-        return false
-    }
+    return !FSExtra.pathExistsSync(directory)
 }
 
 export const generateVideoFiles = async (
