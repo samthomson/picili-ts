@@ -226,7 +226,6 @@ const video = async () => {
         const videoGeneratingResult = await FileUtil.generateAllRequiredVideoAssets(
             videos_to_use[i],
             'thumbs',
-            'processing',
             i,
             i,
             metadata.bitrate,

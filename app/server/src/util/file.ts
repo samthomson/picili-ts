@@ -239,7 +239,6 @@ export const generateVideoFiles = async (
             const success = await generateAllRequiredVideoAssets(
                 processingPath,
                 outPathDirectory,
-                'processing',
                 piciliFileId,
                 videoProcessingTaskId,
                 videoMetaData.bitrate,
@@ -258,15 +257,14 @@ export const generateVideoFiles = async (
 export const generateAllRequiredVideoAssets = async (
     processingPath: string,
     outPathDirectory: string,
-    // todo: this parameter is redundant since what is passed in is hard coded
-    processingPathDirectory: string,
     piciliFileId: number,
     taskId: number,
     bitrate: number,
     mp4Only = false,
 ) => {
-    // webm, avi, mp4, jpg/gif
+    // webm, mp4, jpg
     // console.log('will try to process ', processingPath)
+    const processingPathDirectory = 'processing'
 
     const videoEncodingPromise = async (
         taskId: number,
@@ -330,10 +328,6 @@ export const generateAllRequiredVideoAssets = async (
                         errorMessage: err?.message ?? 'unexpected ffmpeg error and exception structure.',
                     })
                 })
-                .on('progress', (progress) => {
-                    // todo: remove later
-                    // console.log(`Processing '${inputPath}' to '${outputPath}':${progress.percent}% done.`)
-                })
                 .run()
         })
     }
@@ -376,7 +370,7 @@ export const generateAllRequiredVideoAssets = async (
 
         // process all the video formats we want (unless just in test mode doing mp4s only)
         for (let i = 0; i < outPaths.length || (mp4Only && i < 1); i++) {
-            const videoEncodingResult = await videoEncodingPromise(1, bitrateOptions, processingPath, outPaths[i])
+            const videoEncodingResult = await videoEncodingPromise(taskId, bitrateOptions, processingPath, outPaths[i])
             processingResults.push(videoEncodingResult)
         }
 
@@ -388,7 +382,6 @@ export const generateAllRequiredVideoAssets = async (
                 processingPathDirectory,
                 `${piciliFileId}.jpg`,
             )
-            // todo: check for a file on disk?
 
             return stillFrameGenerateSuccessfully
         } else {
