@@ -528,6 +528,13 @@ export namespace Core {
 		success: boolean
 		errorMessage?: string
 	}
+
+	export type BitrateOptions = {
+		inputRateBand: 'LOW' | 'MEDIUM' | 'HIGH'
+		minRate: string
+		maxRate: string
+		bufSize: string
+	}
 }
 
 // todo: refactor these into an enum namespace, loosing appended `Enum`

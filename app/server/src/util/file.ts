@@ -237,8 +237,6 @@ export const generateVideoFiles = async (
     // todo: whole switch is pointless?
     try {
         switch (HelperUtil.splitPathIntoParts(processingPath).fileExtension) {
-            // todo: can I just combine these different video types?
-            // todo: add for other supported types (webm/avi)
             case 'mov':
             case 'mp4':
             case 'mts':
@@ -275,13 +273,79 @@ export const generateAllRequiredVideoAssets = async (
 ) => {
     // webm, avi, mp4, jpg/gif
     // console.log('will try to process ', processingPath)
-    try {
-        // todo: still needed?
-        // const aviOutPath = `${outPathDirectory}/avi.avi`
-        const mp4OutPath = `${outPathDirectory}/mp4.mp4`
-        const webmOutPath = `${outPathDirectory}/webm.webm`
 
-        const { inputRateBand, minRate, maxRate, bufSize } = (() => {
+    const videoEncodingPromise = async (
+        taskId: number,
+        bitrateOptions: Types.Core.BitrateOptions,
+        inputPath: string,
+        outputPath: string,
+    ) => {
+        return new Promise<Types.Core.FFMPEGProcessingResult>((resolve, reject) => {
+            const { inputRateBand, minRate, maxRate, bufSize } = bitrateOptions
+
+            const videoEncodingTimeout = setInterval(async () => {
+                // re-block task
+                await DBUtil.reReserveTask(taskId)
+            }, 15000)
+            fluent(inputPath)
+                .output(outputPath)
+                // if we have these params use them, otherwise skip
+                .outputOptions([
+                    `-b ${minRate}`,
+                    `-minrate ${minRate}`,
+                    `-maxrate ${maxRate}`,
+                    `-bufsize ${bufSize}`,
+                    '-threads 1',
+                ])
+                .withOutputFPS(25)
+                // limit dimensions, or keep original if low bitrate
+                .size(inputRateBand !== 'LOW' ? '?x1080' : '100%')
+                .on('end', () => {
+                    clearTimeout(videoEncodingTimeout)
+                    return resolve({ success: FSExtra.pathExistsSync(outputPath) })
+                })
+                .on('error', (err, stdout, stderr) => {
+                    clearTimeout(videoEncodingTimeout)
+
+                    if (err.message === 'ffmpeg was killed with signal SIGKILL') {
+                        Logger.warn(
+                            `[task ${taskId}] failed: ffmpeg was shut down after receiving SIGKILL. likely due to memory issues.`,
+                        )
+
+                        // todo: create some kind of system event model then store ffmpeg failing due to memory issues
+                        // todo: and notification - see below
+
+                        return resolve({
+                            success: false,
+                            errorMessage:
+                                'SIGKILL: ffmpeg was killed with a SIGKILL signal. likely due to using too much memory.',
+                        })
+                    }
+
+                    Logger.error('ffmpeg error', {
+                        err,
+                        errM: err?.message,
+                        processingPath,
+                        outputPath,
+                        stdout,
+                        stderr,
+                    })
+
+                    return resolve({
+                        success: false,
+                        errorMessage: err?.message ?? 'unexpected ffmpeg error and exception structure.',
+                    })
+                })
+                .on('progress', (progress) => {
+                    // todo: remove later
+                    // console.log(`Processing '${inputPath}' to '${outputPath}':${progress.percent}% done.`)
+                })
+                .run()
+        })
+    }
+
+    try {
+        const bitrateOptions = ((): Types.Core.BitrateOptions => {
             switch (true) {
                 case bitrate / 1000 < 1000:
                     // console.log('\n\nLOW BITRATE\n\n', bitrate)
@@ -312,136 +376,14 @@ export const generateAllRequiredVideoAssets = async (
         })()
 
         // todo: I could also lower the audio bitrate to save some file space, but these would likely be really marginal gains
-        // todo: these two video conversion tasks could be consolodated with an array/loop
+
+        const outPaths = [`${outPathDirectory}/mp4.mp4`, ...(!mp4Only ? [`${outPathDirectory}/webm.webm`] : [])]
         const processingResults = []
-        const mp4ProcessingResult = await new Promise<Types.Core.FFMPEGProcessingResult>((resolve, reject) => {
-            const mp4Timeout = setInterval(async () => {
-                // re-block task
-                await DBUtil.reReserveTask(taskId)
-            }, 15000)
-            fluent(processingPath)
-                .output(mp4OutPath)
-                // if we have these params use them, otherwise skip
-                .outputOptions(
-                    !!minRate
-                        ? [
-                              `-b ${minRate}`,
-                              `-minrate ${minRate}`,
-                              `-maxrate ${maxRate}`,
-                              `-bufsize ${bufSize}`,
-                              '-threads 1',
-                          ]
-                        : [],
-                )
-                .withOutputFPS(25)
-                // limit dimensions, or keep original if low bitrate
-                .size(inputRateBand !== 'LOW' ? '?x1080' : '100%')
-                .on('end', function () {
-                    clearTimeout(mp4Timeout)
-                    return resolve({ success: true })
-                })
-                .on('error', (err, stdout, stderr) => {
-                    clearTimeout(mp4Timeout)
 
-                    if (err.message === 'ffmpeg was killed with signal SIGKILL') {
-                        Logger.warn(
-                            `[task ${taskId}] failed: ffmpeg was shut down after receiving SIGKILL. likely due to memory issues.`,
-                        )
-
-                        // todo: create some kind of system event model then store ffmpeg failing due to memory issues
-                        // todo: and notification - see below
-
-                        return resolve({
-                            success: false,
-                            errorMessage:
-                                'SIGKILL: ffmpeg was killed with a SIGKILL signal. likely due to using too much memory.',
-                        })
-                    }
-
-                    Logger.error('ffmpeg error', {
-                        err,
-                        errM: err?.message,
-                        processingPath,
-                        mp4OutPath,
-                        stdout,
-                        stderr,
-                    })
-
-                    return resolve({
-                        success: false,
-                        errorMessage: err?.message ?? 'unexpected ffmpeg error and exception structure.',
-                    })
-                })
-                .on('progress', (progress) => {
-                    // todo: remove later
-                    // console.log('Processing MP4: ' + progress.percent + '% done')
-                })
-                .run()
-        })
-        processingResults.push(mp4ProcessingResult)
-        if (!mp4Only) {
-            const webmProcessingResult = await new Promise<Types.Core.FFMPEGProcessingResult>((resolve, reject) => {
-                const webmTimeout = setInterval(async () => {
-                    // re-block
-                    await DBUtil.reReserveTask(taskId)
-                }, 15000)
-                fluent(processingPath)
-                    .output(webmOutPath)
-                    .outputOptions(
-                        !!minRate
-                            ? [
-                                  `-b ${minRate}`,
-                                  `-minrate ${minRate}`,
-                                  `-maxrate ${maxRate}`,
-                                  `-bufsize ${bufSize}`,
-                                  `-threads 1`,
-                              ]
-                            : [],
-                    )
-                    .withOutputFPS(25)
-                    .size(inputRateBand !== 'LOW' ? '?x1080' : '100%')
-                    .on('end', function () {
-                        clearTimeout(webmTimeout)
-                        return resolve({ success: true })
-                    })
-                    .on('error', (err, stdout, stderr) => {
-                        clearTimeout(webmTimeout)
-
-                        if (err.message === 'ffmpeg was killed with signal SIGKILL') {
-                            Logger.warn(
-                                `[task ${taskId}] failed: ffmpeg was shut down after receiving SIGKILL. likely due to memory issues.`,
-                            )
-
-                            // todo: create some kind of system event model then store ffmpeg failing due to memory issues
-                            // todo: also notify the user (notification planned?)
-                            return resolve({
-                                success: false,
-                                errorMessage:
-                                    'SIGKILL: ffmpeg was killed with a SIGKILL signal. likely due to using too much memory.',
-                            })
-                        }
-                        // non-sigkill error, log it
-                        Logger.error('ffmpeg error', {
-                            err,
-                            errM: err?.message,
-                            processingPath,
-                            webmOutPath,
-                            stdout,
-                            stderr,
-                        })
-                        return resolve({
-                            success: false,
-                            errorMessage: err?.message ?? 'unexpected ffmpeg error and exception structure.',
-                        })
-                    })
-                    .on('progress', (progress) => {
-                        // todo: remove these console.logs later
-                        // console.log('Processing WEBM: ' + progress.percent + '% done')
-                    })
-                    .run()
-            })
-
-            processingResults.push(webmProcessingResult)
+        // process all the video formats we want (unless just in test mode doing mp4s only)
+        for (let i = 0; i < outPaths.length || (mp4Only && i < 1); i++) {
+            const videoEncodingResult = await videoEncodingPromise(1, bitrateOptions, processingPath, outPaths[i])
+            processingResults.push(videoEncodingResult)
         }
 
         // if all videos we made were successfully
@@ -459,11 +401,13 @@ export const generateAllRequiredVideoAssets = async (
             return false
         }
     } catch (err) {
+        console.log(err)
         Logger.error('encountered an error generating all required video assets.', {
             processingPath,
             outPathDirectory,
             processingPathDirectory,
             piciliFileId,
+            // todo: this is not logged (is just logged if console.logged above)
             err,
         })
         return false

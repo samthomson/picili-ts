@@ -214,7 +214,7 @@ const video = async () => {
     // const videoGeneratingResult = await FileUtil.generateAllRequiredVideoAssets(testFile, 'thumbs', 'processing', testIndex, testIndex, metadata.bitrate)
     // console.log('videoGeneratingResult', videoGeneratingResult)
 
-    const videos_to_use = high_quality
+    const videos_to_use = insta
 
     let failureOccured = false
     for (let i = 0; i < videos_to_use.length && !failureOccured; i++) {
@@ -230,7 +230,7 @@ const video = async () => {
             i,
             i,
             metadata.bitrate,
-            true,
+            false,
         )
         // stop if we hit any errors
         if (!videoGeneratingResult) {
