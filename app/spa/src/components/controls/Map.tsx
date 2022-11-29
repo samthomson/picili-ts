@@ -1,6 +1,7 @@
 import * as React from 'react'
 import mapboxgl, { Map, Marker, LngLatBounds } from 'mapbox-gl'
 
+import * as HelperUtil from 'src/util/helper'
 import * as Types from '@shared/declarations'
 
 // todo: is it okay for this to be hard coded?
@@ -75,19 +76,28 @@ const MapControl: React.FunctionComponent<IProps> = ({
 
 			searchResultClusters.forEach((cluster) => {
 				if (map && cluster?.latitude && cluster?.longitude) {
-					// todo: make a custom marker (use fileCount in alt/title text)
-					const {
-						latitude,
-						longitude,
-						fileId,
-						uuid,
-						fileCount,
+					const { latitude, longitude, uuid, fileCount, userId } =
+						cluster
+
+					const el = document.createElement('div')
+					el.className = 'marker'
+					el.title =
+						fileCount > 1 ? `${fileCount} results here` : uuid
+					el.style.backgroundImage = `url(${HelperUtil.thumbPath(
 						userId,
-					} = cluster
-					const marker = new mapboxgl.Marker()
+						uuid,
+						'i',
+					)})`
+					el.style.width = `32px`
+					el.style.height = `32px`
+					el.style.backgroundSize = '100%'
+
+					// doesn't make sense to open the lightbox as map results are from aggregations and the lightbox is designed to work with results.
+
+					// Add markers to the map.
+					new mapboxgl.Marker(el)
 						.setLngLat([longitude, latitude])
 						.addTo(map)
-					newMarkersBeingAdded.push(marker)
 				}
 			})
 
