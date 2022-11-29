@@ -49,6 +49,7 @@ export type Action =
 	  }
 	| {
 			type: ActionType.SEARCH_ATTEMPT
+			withGeoAggregations: boolean
 	  }
 	| {
 			type: ActionType.SEARCH_SUCCEEDED
@@ -103,6 +104,11 @@ export type LoginAction = {
 	email: string
 }
 
+export type AttemptSearchAction = {
+	type: ActionType.SEARCH_ATTEMPT
+	withGeoAggregations: boolean
+}
+
 export const attemptLogin = (email: string): LoginAction => {
 	return {
 		type: ActionType.LOGIN_ATTEMPT,
@@ -150,9 +156,10 @@ export const setGlobalLoadingState = (somethingIsLoading: boolean): Action => {
 	}
 }
 
-export const attemptSearch = (): Action => {
+export const attemptSearch = (withGeoAggregations = false): Action => {
 	return {
 		type: ActionType.SEARCH_ATTEMPT,
+		withGeoAggregations,
 	}
 }
 

@@ -25,7 +25,7 @@ const client = new ApolloClient({
 })
 
 // const callSearchQuery = async (): Promise<Types.API.SearchResult> => {
-function* callSearchQuery(page = 1) {
+function* callSearchQuery(page = 1, withGeoAggregations = false) {
 	const searchFilter: Types.API.SearchQuery = yield select(
 		Selectors.searchQuery,
 	)
@@ -41,12 +41,14 @@ function* callSearchQuery(page = 1) {
 					$page: Int
 					$perPage: Int
 					$sortOverload: SearchSort
+					$withGeoAggregations: Boolean! = false
 				) {
 					search(
 						filter: $searchFilter
 						page: $page
 						perPage: $perPage
 						sortOverload: $sortOverload
+						withGeoAggregations: $withGeoAggregations
 					) {
 						pageInfo {
 							totalPages
@@ -74,6 +76,16 @@ function* callSearchQuery(page = 1) {
 							sortModesAvailable
 							sortUsed
 						}
+						geoAggregations @include(if: $withGeoAggregations) {
+							clusters {
+								latitude
+								longitude
+								fileCount
+								# fileId
+								# uuid
+								# userId
+							}
+						}
 					}
 				}
 			`,
@@ -81,18 +93,26 @@ function* callSearchQuery(page = 1) {
 				searchFilter,
 				page,
 				sortOverload,
+				withGeoAggregations,
 			},
 		})
 
-	const { items, pageInfo, stats, sorting } = response.data.search
-	return { items, pageInfo, stats, sorting }
+	const { items, pageInfo, stats, sorting, geoAggregations } =
+		response.data.search
+	return { items, pageInfo, stats, sorting, geoAggregations }
 }
 
-function* search() {
+function* search(action: Actions.AttemptSearchAction) {
 	yield put(Actions.searchingSet(true))
 	try {
 		// const searchResult = response?.data?.search
-		const searchResult: Types.API.SearchResult = yield callSearchQuery()
+
+		const { withGeoAggregations } = action
+
+		const searchResult: Types.API.SearchResult = yield callSearchQuery(
+			1,
+			withGeoAggregations,
+		)
 		if (searchResult) {
 			yield put(Actions.attemptSearchSucceeded(searchResult))
 		} else {

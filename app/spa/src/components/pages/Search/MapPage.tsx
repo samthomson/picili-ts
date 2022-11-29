@@ -21,7 +21,7 @@ const MapPage: React.FunctionComponent = () => {
 		}
 
 		dispatch(Actions.searchQueryAdd(mapQuery))
-		dispatch(Actions.attemptSearch())
+		dispatch(Actions.attemptSearch(true))
 	}
 
 	return (

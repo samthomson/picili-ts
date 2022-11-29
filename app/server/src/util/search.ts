@@ -123,3 +123,9 @@ export const autoComplete = async (
 
     return await DBUtil.performAutoCompleteQuery(userId, partialQuery)
 }
+
+export const geoAggregateResults = (results: Types.API.SearchResultItem[]): Types.API.GeoAggregations => {
+    return {
+        clusters: [],
+    }
+}

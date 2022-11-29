@@ -107,11 +107,15 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
               }
             : undefined
 
+    // geo clustering - only if they were on the map page
+    const geoAggregations = args?.withGeoAggregations ? SearchUtil.geoAggregateResults(results) : undefined
+
     return {
         items,
         pageInfo,
         stats: { speed: searchTime },
         sorting,
+        geoAggregations,
     }
 }
 
