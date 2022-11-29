@@ -20,9 +20,8 @@ const MapControl: React.FunctionComponent<IProps> = ({
 	const [map, setMap] = React.useState<Map | undefined>(undefined)
 	const [markers, setMarkers] = React.useState<Marker[]>([])
 
-	const mapBoundsChanged = (bounds: LngLatBounds, zoom: number) => {
+	const mapBoundsChanged = (bounds: LngLatBounds, zoom: number) =>
 		boundsChanged(JSON.parse(JSON.stringify(bounds)), zoom)
-	}
 
 	// initialize map when component mounts
 	React.useEffect(() => {
