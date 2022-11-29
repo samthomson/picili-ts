@@ -109,4 +109,8 @@ The prod docker-compose maps the log directory from the container to the host. S
 
 Docker and docker-compose are used for containerization. The application is comprised of a backend (Node Typescript / GraphQL) and a frontend (React TypeScript / redux / sagas). MySQL is used as the database.
 
-The project leans on various APIS and libraries. Such as videos.js.
+The project leans on various APIS and libraries. Such as
+- docker/[compose]/[machine]
+- videos.js.
+- mapbox
+- supercluster (also somewhat by mapbox)
