@@ -82,12 +82,12 @@ export namespace API {
 	}
 
 	export type GeoCluster = {
-        latitude: number
-        longitude: number
-        fileCount: number
-        fileId: number
-        uuid: string
-        userId: number
+		latitude: number
+		longitude: number
+		fileCount: number
+		fileId: number
+		uuid: string
+		userId: number
 	}
 
 	export type GeoAggregations = {
