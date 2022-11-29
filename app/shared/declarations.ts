@@ -99,7 +99,7 @@ export namespace API {
 		pageInfo: PaginationInfo
 		stats: SearchStats
 		sorting?: SearchResultsSorting
-		geoAggregations: GeoAggregations
+		geoAggregations?: GeoAggregations
 	}
 
 	export type IndividualSearchQuery = {

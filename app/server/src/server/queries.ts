@@ -97,7 +97,7 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
     const searchTime = timeAtEnd.diff(timeAtStart)
 
     const firstItem = page * perPage - perPage
-    const items = results.splice(firstItem, perPage)
+    const items = results.slice(firstItem, perPage)
 
     const sorting =
         items.length > 0
@@ -108,7 +108,12 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
             : undefined
 
     // geo clustering - only if they were on the map page
-    const geoAggregations = args?.withGeoAggregations ? SearchUtil.geoAggregateResults(results) : undefined
+    const geoAggregations = args?.withGeoAggregations
+        ? SearchUtil.geoAggregateResults(
+              results,
+              ...SearchUtil.extractMapParamsFromSearchQueries(searchQuery.individualQueries),
+          )
+        : undefined
 
     return {
         items,
