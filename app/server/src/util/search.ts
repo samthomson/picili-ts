@@ -2,6 +2,7 @@ import * as Types from '@shared/declarations'
 import * as Enums from '../../../shared/enums'
 import * as Models from '../db/models'
 import * as DBUtil from '../util/db'
+import Supercluster from 'supercluster'
 
 const individualQuerySearch = async (
     userId: number,
@@ -122,4 +123,78 @@ export const autoComplete = async (
     //
 
     return await DBUtil.performAutoCompleteQuery(userId, partialQuery)
+}
+
+export const geoAggregateResults = (
+    results: Types.API.SearchResultItem[],
+    mapBounds: number[], // [-180, -85, 180, 85]
+    zoom: number, // 2
+): Types.API.GeoAggregations => {
+    const supercluster = new Supercluster()
+
+    // first filter to results with lat/lon and parse to required format
+    const points = results
+        .filter(({ latitude, longitude }) => latitude !== undefined && longitude !== undefined)
+        .map((result) => ({
+            type: 'Feature',
+            properties: { cluster: false, fileId: result.fileId, uuid: result.uuid },
+            geometry: {
+                type: 'Point',
+                coordinates: [result.longitude, result.latitude],
+            },
+        }))
+    supercluster.load(points)
+
+    // get clustered points relative to the map bounds and zoom
+    const geoClusters = supercluster.getClusters(mapBounds, zoom)
+
+    // parse out what we want from supercluster's data structure
+    const clusters = geoClusters.map((cluster) => {
+        const [longitude, latitude] = cluster.geometry.coordinates
+
+        // for each cluster we'll return, get the data either from the first result in the cluster or from the cluster itself when there is only one result in that aggregation.
+        const { fileId, uuid, fileCount } = (() => {
+            if (cluster.properties.cluster) {
+                // lots of results per aggregation, take the first
+                const { fileId, uuid } = supercluster.getLeaves(cluster.id, 1)[0].properties
+                const { point_count: fileCount } = cluster.properties
+                return { fileId, uuid, fileCount }
+            } else {
+                const { fileId, uuid } = cluster.properties
+                return { fileId, uuid, fileCount: 1 }
+            }
+        })()
+
+        const userId = results[0].userId
+        return {
+            latitude,
+            longitude,
+            fileCount,
+            fileId,
+            uuid,
+            userId,
+        }
+    })
+    return {
+        clusters,
+    }
+}
+
+export const extractMapParamsFromSearchQueries = (
+    individualQueries: Types.API.IndividualSearchQuery[],
+): [number[], number] | undefined => {
+    // get just the map query
+    const geoQuery = individualQueries.find((query) => query.type === 'map')
+
+    if (!geoQuery) {
+        return undefined
+    }
+
+    // convert our search map bounds to what the supercluster library wants.
+    const [swLat, neLat, swLng, neLng, zoom] = geoQuery.value.split(',')
+
+    // eg [[-180, -85, 180, 85], 2]
+    // [-longitude, -latitude, +longitude, +latitude] ???
+
+    return [[+swLng, +swLat, +neLng, +neLat], +zoom]
 }

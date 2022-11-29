@@ -129,11 +129,25 @@ const typeDefs = gql`
         sortUsed: SearchSort!
     }
 
+    type GeoCluster {
+        latitude: Float!
+        longitude: Float!
+        fileCount: Int!
+        fileId: Int
+        uuid: String
+        userId: Int
+    }
+
+    type GeoAggregations {
+        clusters: [GeoCluster]!
+    }
+
     type SearchQueryResponse {
         items: [SearchResult]!
         pageInfo: PaginationInfo!
         stats: SearchStats!
         sorting: SearchResultsSorting
+        geoAggregations: GeoAggregations
     }
 
     type TagSuggestion {
@@ -195,6 +209,7 @@ const typeDefs = gql`
             page: Int! = 1
             perPage: Int! = 100
             sortOverload: SearchSort
+            withGeoAggregations: Boolean = false
         ): SearchQueryResponse
         autoComplete(query: IndividualQuery): AutoCompleteResponse
         fileInfo(fileId: Int!): FileInfo

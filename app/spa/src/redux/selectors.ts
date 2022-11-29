@@ -16,6 +16,12 @@ export const searchResults = (state: Store): Types.API.SearchResultItem[] => {
 	return state?.searchResult?.items ?? []
 }
 
+export const searchResultGeoAggregations = (
+	state: Store,
+): Types.API.GeoAggregations | undefined => {
+	return state?.searchResult?.geoAggregations ?? undefined
+}
+
 export const searchPaginationInfo = (
 	state: Store,
 ): Types.API.PaginationInfo | undefined => {

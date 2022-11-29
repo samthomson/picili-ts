@@ -81,11 +81,25 @@ export namespace API {
 		sortUsed: Enums.SearchSort
 	}
 
+	export type GeoCluster = {
+		latitude: number
+		longitude: number
+		fileCount: number
+		fileId: number
+		uuid: string
+		userId: number
+	}
+
+	export type GeoAggregations = {
+		clusters: GeoCluster[]
+	}
+
 	export type SearchResult = {
 		items: SearchResultItem[]
 		pageInfo: PaginationInfo
 		stats: SearchStats
 		sorting?: SearchResultsSorting
+		geoAggregations?: GeoAggregations
 	}
 
 	export type IndividualSearchQuery = {
