@@ -105,8 +105,6 @@ function* callSearchQuery(page = 1, withGeoAggregations = false) {
 function* search(action: Actions.AttemptSearchAction) {
 	yield put(Actions.searchingSet(true))
 	try {
-		// const searchResult = response?.data?.search
-
 		const { withGeoAggregations } = action
 
 		const searchResult: Types.API.SearchResult = yield callSearchQuery(
