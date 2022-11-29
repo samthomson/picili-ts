@@ -12,12 +12,17 @@ import Map from 'src/components/controls/Map'
 const MapPage: React.FunctionComponent = () => {
 	const dispatch = ReactRedux.useDispatch()
 
-	const searchResults = ReactRedux.useSelector(Selectors.searchResults)
+	const searchResultGeoAggregations = ReactRedux.useSelector(
+		Selectors.searchResultGeoAggregations,
+	)
 
-	const boundsChanged = (bounds: Types.Core.MapBounds): void => {
+	const boundsChanged = (
+		bounds: Types.Core.MapBounds,
+		zoom: number,
+	): void => {
 		const mapQuery = {
 			type: 'map',
-			value: `${bounds._sw.lat},${bounds._ne.lat},${bounds._sw.lng},${bounds._ne.lng}`,
+			value: `${bounds._sw.lat},${bounds._ne.lat},${bounds._sw.lng},${bounds._ne.lng},${zoom}`,
 		}
 
 		dispatch(Actions.searchQueryAdd(mapQuery))
@@ -29,7 +34,9 @@ const MapPage: React.FunctionComponent = () => {
 			<div id="map-results-container">
 				<div id="map-container">
 					<Map
-						results={searchResults}
+						searchResultClusters={
+							searchResultGeoAggregations?.clusters ?? []
+						}
 						boundsChanged={boundsChanged}
 					/>
 				</div>

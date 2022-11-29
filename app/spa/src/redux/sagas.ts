@@ -81,9 +81,9 @@ function* callSearchQuery(page = 1, withGeoAggregations = false) {
 								latitude
 								longitude
 								fileCount
-								# fileId
-								# uuid
-								# userId
+								fileId
+								uuid
+								userId
 							}
 						}
 					}
