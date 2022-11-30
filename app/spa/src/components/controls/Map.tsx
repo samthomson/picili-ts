@@ -95,9 +95,10 @@ const MapControl: React.FunctionComponent<IProps> = ({
 					// doesn't make sense to open the lightbox as map results are from aggregations and the lightbox is designed to work with results.
 
 					// Add markers to the map.
-					new mapboxgl.Marker(el)
-						.setLngLat([longitude, latitude])
-						.addTo(map)
+					const newMarker = new mapboxgl.Marker(el)
+
+					newMarker.setLngLat([longitude, latitude]).addTo(map)
+					newMarkersBeingAdded.push(newMarker)
 				}
 			})
 

@@ -146,7 +146,7 @@ export const geoAggregateResults = (
     supercluster.load(points)
 
     // get clustered points relative to the map bounds and zoom
-    const geoClusters = supercluster.getClusters(mapBounds, zoom)
+    const geoClusters = supercluster.getClusters(mapBounds, Math.floor(zoom))
 
     // parse out what we want from supercluster's data structure
     const clusters = geoClusters.map((cluster) => {
