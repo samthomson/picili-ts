@@ -8,9 +8,9 @@
 		"port": 9229,
 		"address": "127.0.0.1",
 		"sourceMapPathOverrides": {
-		  "/app/server/*": "${workspaceRoot}/app/server/*"
+		  "/app/server/*": "${workspaceFolder}/app/server/*"
 		},
-		"remoteRoot": "${workspaceRoot}/app/server",
+		"remoteRoot": "${workspaceFolder}/app/server",
 	  },
 	]
   }
