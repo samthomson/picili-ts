@@ -36,7 +36,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "build-for-prod": "NODE_ENV=development yarn && npm rebuild node-sass && node_modules/.bin/react-app-rewired --max_old_space_size=512 build",
+    "build-for-prod": "NODE_ENV=development yarn && npm rebuild node-sass && node_modules/.bin/react-app-rewired --max_old_space_size=1024 build",
     "_start": "react-scripts start",
     "_build": "react-scripts build",
     "_test": "react-scripts test",
