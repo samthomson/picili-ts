@@ -156,6 +156,7 @@ export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcess
         const isThereSpaceToImportAFile = await FileUtil.isThereSpaceToImportAFile()
 
         if (!isThereSpaceToImportAFile) {
+            Logger.warn('not enough space in procesing dir to import files from dropbox.')
             // wait a bit and let the processing dir clear ut a little before importing more files
             return {
                 success: false,
