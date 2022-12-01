@@ -152,6 +152,19 @@ export const finishATask = async (task: Models.TaskInstance): Promise<void> => {
 
 export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
     try {
+        // check the processing dir isn't full up
+        const isThereSpaceToImportAFile = await FileUtil.isThereSpaceToImportAFile()
+
+        if (!isThereSpaceToImportAFile) {
+            // wait a bit and let the processing dir clear ut a little before importing more files
+            return {
+                success: false,
+                retryInMinutes: 15,
+                // we aren't really being throttled, but this will cause all similar tasks to be postponed too - which is desirable to save this check being run for all of them.
+                throttled: true,
+            }
+        }
+        // still here? then we must not have a full processing dir and so it's safe to download a file locally.
         // get local picili file with dropbox file
         const file = await Models.FileModel.findByPk(fileId, { include: Models.DropboxFileModel })
         const { fileExtension, fileName } = file

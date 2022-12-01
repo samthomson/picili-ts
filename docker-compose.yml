@@ -33,6 +33,7 @@ services:
       - SPA_HOST=localhost
       - REACT_APP_API_HOST=${DOMAIN_API}
       - REACT_APP_API_PORT=3501
+      - PROCESSING_DIR_SIZE_LIMIT_GB=${PROCESSING_DIR_SIZE_LIMIT_GB}
     ports:
       - "3500:3000"
       - "3501:4000"

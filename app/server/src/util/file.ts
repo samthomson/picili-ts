@@ -1,6 +1,7 @@
 import sharp from 'sharp'
 import FSExtra from 'fs-extra'
 import fs from 'fs'
+import PathLib from 'path'
 import Logger from '../services/logging'
 import * as HelperUtil from '../util/helper'
 import * as DBUtil from '../util/db'
@@ -489,4 +490,35 @@ const parseAppleLocation = (locationString: string): Types.Core.ParsedLocation |
               altitude: +result.altitude,
           }
         : undefined
+}
+
+const dirSize = async (dir, divideBy = 1): Promise<number> => {
+    /*
+    borrowed from https://stackoverflow.com/a/69418940/686490
+    */
+    const files = fs.readdirSync(dir, { withFileTypes: true })
+
+    const paths = files.map(async (file) => {
+        const path = PathLib.join(dir, file.name)
+
+        if (file.isDirectory()) return await dirSize(path)
+
+        if (file.isFile()) {
+            const { size } = fs.statSync(path)
+            return size
+        }
+
+        return 0
+    })
+
+    return (await Promise.all(paths)).flat(Infinity).reduce((i, size) => i + size, 0) / divideBy
+}
+
+export const isThereSpaceToImportAFile = async (): Promise<boolean> => {
+    // how big is the processing dir on disk (ins gb)?
+    const processingDirSize = await dirSize('processing', 1024 * 1024 * 1024)
+    // what is our processing dir size limit (also in gb)
+    const { PROCESSING_DIR_SIZE_LIMIT_GB: processingDirSizeLimit } = process.env
+    // how do they compare? (eg size <= limit)
+    return processingDirSize <= +processingDirSizeLimit
 }

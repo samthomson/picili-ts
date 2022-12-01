@@ -250,6 +250,11 @@ const error = () => {
     }
 }
 
+const testProcessingSize = async () => {
+    const isThereSpace = await FileUtil.isThereSpaceToImportAFile()
+    console.log('isThereSpace', isThereSpace)
+}
+
 // file()
 // imaggaTest()
 // geo()
@@ -261,4 +266,5 @@ const error = () => {
 // testParsingFileParts()
 // taskTest()
 // video()
-error()
+// error()
+testProcessingSize()
