@@ -255,6 +255,10 @@ const testProcessingSize = async () => {
     console.log('isThereSpace', isThereSpace)
 }
 
+const createSystemEvent = async () => {
+    await DBUtil.createSystemEvent({ userId: 8008, message: 'test event' })
+}
+
 // file()
 // imaggaTest()
 // geo()
@@ -267,4 +271,5 @@ const testProcessingSize = async () => {
 // taskTest()
 // video()
 // error()
-testProcessingSize()
+// testProcessingSize()
+createSystemEvent()

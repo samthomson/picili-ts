@@ -315,3 +315,27 @@ export const TagModel = Database.define<TagInstance>(
 )
 
 FileModel.hasMany(TagModel)
+
+type SystemEventCreationAttributes = Sequelize.Optional<Types.Core.BaseModels.SystemEventAttributes, 'id'>
+export interface SystemEventInstance
+    extends Sequelize.Model<Types.Core.BaseModels.SystemEventAttributes, SystemEventCreationAttributes> {
+    createdAt?: Date
+}
+
+export const SystemEventModel = Database.define<SystemEventInstance>(
+    'system_events',
+    {
+        id: {
+            type: Sequelize.INTEGER.UNSIGNED,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        message: Sequelize.STRING,
+        userId: Sequelize.INTEGER.UNSIGNED,
+    },
+    {
+        timestamps: true,
+        updatedAt: false,
+        underscored: true,
+    },
+)

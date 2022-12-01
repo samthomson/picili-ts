@@ -319,6 +319,10 @@ export namespace Core {
 			value: string
 			confidence: number
 		}
+		export interface CreateSystemEventInput {
+			userId: number
+			message: string
+		}
 	}
 
 	export type DropboxListFilesResponse = {
@@ -531,6 +535,12 @@ export namespace Core {
 			importTask: boolean // default false
 			priority: number
 			timesSeen: number
+		}
+
+		export interface SystemEventAttributes {
+			id: number
+			userId: number
+			message: string
 		}
 	}
 

@@ -655,3 +655,9 @@ export const getFileWithTagsAndDropboxFile = async (
 
     return fileInfo
 }
+
+export const createSystemEvent = async (
+    systemEventCreationParams: Types.Core.Inputs.CreateSystemEventInput,
+): Promise<void> => {
+    await Models.SystemEventModel.create(systemEventCreationParams)
+}
