@@ -2,7 +2,7 @@
 
 Picili synchronizes with a chosen directory on dropbox, it then indexes image/video metadata and detected subjects making all your pictures and videos searchable and easy to explore.
 
-Video formats supported: Mp4, Mov, Avi, Mts.
+Video formats supported: Mp4, Mov, Avi, Mts. (Note: tested on a low spec VPS, video processing works - but takes ages. eg 36m for a 50s vid. If you want to use picili with many videos, a higher spce VPS may be better.)
 
 ## 1.0 Build
 
