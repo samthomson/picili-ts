@@ -235,6 +235,7 @@ export const generateVideoFiles = async (
                 piciliFileId,
                 videoProcessingTaskId,
                 videoMetaData.bitrate,
+                userId,
             )
             return { success, metaData: videoMetaData }
         } else {
@@ -253,6 +254,7 @@ export const generateAllRequiredVideoAssets = async (
     piciliFileId: number,
     taskId: number,
     bitrate: number,
+    userId: number,
     mp4Only = false,
 ) => {
     // webm, mp4, jpg
@@ -288,7 +290,7 @@ export const generateAllRequiredVideoAssets = async (
                     clearTimeout(videoEncodingTimeout)
                     return resolve({ success: FSExtra.pathExistsSync(outputPath) })
                 })
-                .on('error', (err, stdout, stderr) => {
+                .on('error', async (err, stdout, stderr) => {
                     clearTimeout(videoEncodingTimeout)
 
                     if (err.message === 'ffmpeg was killed with signal SIGKILL') {
@@ -296,8 +298,10 @@ export const generateAllRequiredVideoAssets = async (
                             `[task ${taskId}] failed: ffmpeg was shut down after receiving SIGKILL. likely due to memory issues.`,
                         )
 
-                        // todo: create some kind of system event model then store ffmpeg failing due to memory issues
-                        // todo: and notification - see below
+                        await DBUtil.createSystemEvent({
+                            userId,
+                            message: `ffmpeg didn't have enough memory so was shut down. video tasks have been temporarily postponed. if this persists then the memory limit of picili should be raised - this may require increasing the memory of the server/vps itself.`,
+                        })
 
                         return resolve({
                             success: false,

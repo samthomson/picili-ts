@@ -229,6 +229,7 @@ const video = async () => {
             i,
             i,
             metadata.bitrate,
+            8008,
             false,
         )
         // stop if we hit any errors
