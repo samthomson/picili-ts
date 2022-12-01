@@ -155,9 +155,18 @@ export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcess
         // check the processing dir isn't full up
         const isThereSpaceToImportAFile = await FileUtil.isThereSpaceToImportAFile()
 
+        // get this file first, so that we can lift off the `userId` if we
+        // get local picili file with dropbox file
+        const file = await Models.FileModel.findByPk(fileId, { include: Models.DropboxFileModel })
+        const { fileExtension, fileName, userId } = file
+
         if (!isThereSpaceToImportAFile) {
             Logger.warn('not enough space in procesing dir to import files from dropbox.')
-            // todo: create a system event once that model is implemented
+            // create a system event
+            await DBUtil.createSystemEvent({
+                userId,
+                message: `the processing directory is bigger on disk than is allowed by the current PROCESSING_DIR_SIZE_LIMIT_GB env var, so no new files will be imported. this will resolve itself once the current - waiting, already imported - files are processed. `,
+            })
             // wait a bit and let the processing dir clear ut a little before importing more files
             return {
                 success: false,
@@ -167,12 +176,9 @@ export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcess
             }
         }
         // still here? then we must not have a full processing dir and so it's safe to download a file locally.
-        // get local picili file with dropbox file
-        const file = await Models.FileModel.findByPk(fileId, { include: Models.DropboxFileModel })
-        const { fileExtension, fileName } = file
         // @ts-ignore
         const dropboxFile = file.dropbox_file
-        const { dropboxId, userId, path } = dropboxFile
+        const { dropboxId, path } = dropboxFile
 
         const downloadOutcome = await DropboxUtil.downloadDropboxFile(dropboxId, userId, fileId, fileExtension)
 
