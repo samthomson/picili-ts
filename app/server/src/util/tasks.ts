@@ -157,6 +157,7 @@ export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcess
 
         if (!isThereSpaceToImportAFile) {
             Logger.warn('not enough space in procesing dir to import files from dropbox.')
+            // todo: create a system event once that model is implemented
             // wait a bit and let the processing dir clear ut a little before importing more files
             return {
                 success: false,
