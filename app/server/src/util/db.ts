@@ -666,6 +666,7 @@ export const getLatestSystemEvents = async (userId: number): Promise<Types.API.S
     const result = await Models.SystemEventModel.findAll({
         where: { userId },
         limit: 100,
+        order: [['created_at', 'DESC']],
     })
 
     const parsedEvents = result.map(({ id, message, createdAt: datetime }) => ({
