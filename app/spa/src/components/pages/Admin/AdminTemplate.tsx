@@ -36,6 +36,15 @@ const AdminTemplate: React.FunctionComponent<Props> = ({ children }: Props) => {
 								tasks
 							</NavLink>
 						</li>
+						<li>
+							<NavLink
+								exact={true}
+								className="item"
+								to="/admin/systemevents"
+							>
+								events
+							</NavLink>
+						</li>
 
 						{/*
 							<NavLink

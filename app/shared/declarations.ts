@@ -146,7 +146,7 @@ export namespace API {
 		tags: Tag[]
 	}
 
-	export type SystemEvent = Omit<Core.BaseModels.SystemEventAttributes, 'userId'>
+	export interface SystemEvent extends Omit<Core.BaseModels.SystemEventAttributes, 'userId'> { datetime: string }
 
 	export type SystemEventsResponse = {
 		items: SystemEvent[]
@@ -547,6 +547,7 @@ export namespace Core {
 			id: number
 			userId: number
 			message: string
+			datetime?: string
 		}
 	}
 
