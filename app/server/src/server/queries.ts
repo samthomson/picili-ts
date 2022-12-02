@@ -4,8 +4,6 @@ import * as Models from '../db/models'
 import * as SearchUtil from '../util/search'
 import { TaskManager } from '../services/TaskManager'
 import * as Types from '@shared/declarations'
-// todo: remove unused
-import * as Enums from '../../../shared/enums'
 import moment from 'moment'
 
 const getDropboxConnection = async (parents, args, context): Promise<Types.API.DropboxConnectionEditableAttributes> => {
