@@ -197,10 +197,21 @@ const typeDefs = gql`
         tags: [Tag]
     }
 
+    type SystemEvent {
+        id: Int!
+        message: String!
+        datetime: String!
+    }
+
+    type SystemEventsResponse {
+        items: [SystemEvent]!
+    }
+
     type Query {
         validateToken(token: String!): Boolean
         dropboxConnection: DropboxConnection
         taskSummary: TaskSummary
+        systemEvents: SystemEventsResponse
         taskProcessor: TaskProcessor
         adminOverview: AdminOverview
         # todo: add sort enum param

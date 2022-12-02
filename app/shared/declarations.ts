@@ -145,6 +145,12 @@ export namespace API {
 		pathOnDropbox?: string
 		tags: Tag[]
 	}
+
+	export type SystemEvent = Omit<Core.BaseModels.SystemEventAttributes, 'userId'>
+
+	export type SystemEventsResponse = {
+		items: SystemEvent[]
+	}
 }
 export namespace ExternalAPI {
 	export namespace Dropbox {

@@ -4,6 +4,7 @@ import * as Models from '../db/models'
 import * as SearchUtil from '../util/search'
 import { TaskManager } from '../services/TaskManager'
 import * as Types from '@shared/declarations'
+// todo: remove unused
 import * as Enums from '../../../shared/enums'
 import moment from 'moment'
 
@@ -195,6 +196,18 @@ const fileInfo = async (parents, args, context): Promise<Types.API.FileInfo> => 
     return fileInfo
 }
 
+const systemEvents = async (parents, args, context): Promise<Types.API.SystemEventsResponse> => {
+    AuthUtil.verifyRequestIsAuthenticated(context)
+
+    const { userId } = context
+
+    const items = await DBUtil.getLatestSystemEvents(userId)
+
+    return {
+        items,
+    }
+}
+
 const queries = {
     validateToken: (parent, args, ctx) => AuthUtil.requestHasValidCookieToken(ctx),
     dropboxConnection: getDropboxConnection,
@@ -204,6 +217,7 @@ const queries = {
     adminOverview,
     autoComplete,
     fileInfo,
+    systemEvents,
 }
 
 export default queries

@@ -661,3 +661,18 @@ export const createSystemEvent = async (
 ): Promise<void> => {
     await Models.SystemEventModel.create(systemEventCreationParams)
 }
+
+export const getLatestSystemEvents = async (userId: number): Promise<Types.API.SystemEvent[]> => {
+    const result = await Models.SystemEventModel.findAll({
+        where: { userId },
+        limit: 100,
+    })
+
+    const parsedEvents = result.map(({ id, message, createdAt: datetime }) => ({
+        id,
+        message,
+        datetime,
+    }))
+
+    return parsedEvents
+}
