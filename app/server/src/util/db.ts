@@ -671,7 +671,7 @@ export const getLatestSystemEvents = async (userId: number): Promise<Types.API.S
     const parsedEvents = result.map(({ id, message, createdAt: datetime }) => ({
         id,
         message,
-        datetime,
+        datetime: moment(datetime).toISOString(),
     }))
 
     return parsedEvents
