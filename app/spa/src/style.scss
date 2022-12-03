@@ -66,14 +66,7 @@ a {
   right: $margin;
   bottom: $margin;
 
-  #side-menu {
-    float: left;
-    width: $navWidth;
-    padding-right: $margin;
-  }
-
   #results-space {
-    margin-left: $navWidth + (2 * $margin) + 1;
     position: absolute;
     right: 0px;
     left: 0px;
