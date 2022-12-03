@@ -11,6 +11,8 @@ import VideoJS from './VideoJS'
 
 import * as Enums from '../../../../../shared/enums'
 
+import useIsMobile from 'src/util/hooks/use-is-mobile.hook'
+
 const Lightbox: React.FunctionComponent = () => {
 	const [isInfoShowing, setIsInfoShowing] = React.useState<boolean>(false)
 	const [isCurrentlyPlayingVideo, setIsCurrentlyPlayingVideo] =
@@ -82,6 +84,8 @@ const Lightbox: React.FunctionComponent = () => {
 		],
 	}
 
+	const isMobile = useIsMobile()
+
 	return (
 		<div
 			id="lightbox"
@@ -95,62 +99,83 @@ const Lightbox: React.FunctionComponent = () => {
 					<div
 						id="lightbox-file-content"
 						className={classNames({
-							'with-info': isInfoShowing,
+							'with-info': isInfoShowing && !isMobile,
 							'with-video-controls':
 								result.fileType === Enums.FileType.VIDEO,
 						})}
 					>
 						{result.fileType === Enums.FileType.IMAGE && (
-							<img
-								src={HelperUtil.thumbPath(
-									result.userId,
-									result.uuid,
-									'xl',
-								)}
-							/>
+							<div id="lightbox-image">
+								<img
+									src={HelperUtil.thumbPath(
+										result.userId,
+										result.uuid,
+										'xl',
+									)}
+								/>
+							</div>
 						)}
-						{result.fileType === Enums.FileType.VIDEO &&
-							options && (
-								<VideoJS
-									options={options}
-									key={result.uuid}
-									isPlaying={isCurrentlyPlayingVideo}
-									setVideoPlayingState={
-										setIsCurrentlyPlayingVideo
-									}
+						{result.fileType === Enums.FileType.VIDEO && options && (
+							<div style={{ height: '100%' }}>
+								<div id="lightbox-video">
+									<div id="video-wrapper">
+										<VideoJS
+											options={options}
+											key={result.uuid}
+											isPlaying={isCurrentlyPlayingVideo}
+											setVideoPlayingState={
+												setIsCurrentlyPlayingVideo
+											}
+										/>
+									</div>
+									<div
+										id="video-control-space"
+										className={classNames({
+											open:
+												result.fileType ===
+												Enums.FileType.VIDEO,
+										})}
+									>
+										<button
+											id="lightbox-play"
+											onClick={() => {
+												// attempt to play video
+												setIsCurrentlyPlayingVideo(
+													!isCurrentlyPlayingVideo,
+												)
+											}}
+										>
+											{isCurrentlyPlayingVideo
+												? 'pause'
+												: 'play'}
+										</button>{' '}
+										[fullscreen]
+									</div>
+								</div>
+							</div>
+						)}
+						<div id="info-underneath">
+							{isMobile && (
+								<LightboxInfo
+									isShowing={isInfoShowing}
+									fileId={result.fileId}
 								/>
 							)}
+						</div>
 					</div>
-					<div
-						id="video-control-space"
-						className={classNames({
-							open: result.fileType === Enums.FileType.VIDEO,
-							'with-info': isInfoShowing,
-						})}
-					>
-						<button
-							id="lightbox-play"
-							onClick={() => {
-								// attempt to play video
-								setIsCurrentlyPlayingVideo(
-									!isCurrentlyPlayingVideo,
-								)
-							}}
-						>
-							{isCurrentlyPlayingVideo ? 'pause' : 'play'}
-						</button>{' '}
-						[fullscreen]
-					</div>
+
 					<div
 						id="lightbox-file-info"
 						className={classNames({
-							'with-info': isInfoShowing,
+							'with-info': isInfoShowing && !isMobile,
 						})}
 					>
-						<LightboxInfo
-							isShowing={isInfoShowing}
-							fileId={result.fileId}
-						/>
+						{!isMobile && (
+							<LightboxInfo
+								isShowing={isInfoShowing}
+								fileId={result.fileId}
+							/>
+						)}
 					</div>
 
 					<button

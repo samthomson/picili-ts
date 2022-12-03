@@ -259,21 +259,24 @@ a {
     display: block
   }
 
+  #video-wrapper {
+    background-color: mediumpurple;
+    // leave space for the video controls
+    height: calc(100% - 40px - $lightboxMargin);
+    position: relative;
+  }
+
   #video-control-space {
     background-color: palevioletred;
     position: absolute;
     display: none;
-    left: $lightboxMargin;
-    right: 40 + (2*$lightboxMargin);
-    bottom: $lightboxMargin;
+    left: 0;
+    right: 0;
+    bottom: 0;
     height: 40px;
 
     &.open {
       display: block
-    }
-
-    &.with-info {
-      right: 300px;
     }
   }
 
@@ -285,13 +288,10 @@ a {
     bottom: $lightboxMargin;
 
     background-color: orange;
+    overflow-y: auto;
 
     &.with-info {
       right: 300px;
-    }
-
-    &.with-video-controls {
-      bottom: 40 + (2*$lightboxMargin);
     }
 
     img {
@@ -299,12 +299,20 @@ a {
       max-width: 100%;
       height: auto;
       max-height: 100%;
+      max-height: calc(100vh - ($lightboxMargin * 2));
       margin: auto;
       display: block;
-      position: absolute;
       left: 0;
       right: 0;
       opacity: 1;
+    }
+
+    #lightbox-video {
+      height: 100%;
+    }
+    
+    #info-underneath {
+      background-color: lightseagreen;
     }
 
     /*
