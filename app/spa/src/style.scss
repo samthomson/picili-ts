@@ -89,6 +89,16 @@ a {
     flex: 1;
     background-color: orange;
   }
+
+  #admin-dropdown-menu.is-mobile {
+    h2 {
+      text-decoration: underline;
+
+      &::after {
+        content: ' v';
+      }
+    }
+  }
 }
 
 #map-results-container {
