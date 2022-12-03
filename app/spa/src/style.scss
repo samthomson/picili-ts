@@ -13,7 +13,7 @@ $greyColor: grey;
 $headerHeight: 58px;
 $margin: 8px;
 $lightboxMargin: ($margin * 2);
-$navWidth: 100px;
+$navWidth: 160px;
 
 //
 //
@@ -76,19 +76,18 @@ a {
 }
 
 #admin-page {
+  display: flex;
+  background-color: beige;
   #admin-side-menu {
-    float: left;
-    width: $navWidth;
     padding-right: $margin;
+
+    flex: 0 0 auto;
+    background-color: green;
   }
 
   #admin-tab-content {
-    margin-left: $navWidth + (2 * $margin) + 1;
-    position: absolute;
-    right: 0px;
-    left: 0px;
-    bottom: 0px;
-    top: 0px;
+    flex: 1;
+    background-color: orange;
   }
 }
 
