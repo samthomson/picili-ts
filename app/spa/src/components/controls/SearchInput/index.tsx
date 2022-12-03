@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as ReactRedux from 'react-redux'
+import { NavLink } from 'react-router-dom'
 
 import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
@@ -36,8 +37,23 @@ const SearchInput: React.FunctionComponent = () => {
 				)}
 			</div>
 			<div id="search-mode-toggle">
-				<div className="search-mode-toggle">[grid]</div>
-				<div className="search-mode-toggle">[map]</div>
+				<NavLink
+					exact={true}
+					className="search-mode-toggle-option"
+					to="/"
+					activeClassName="activeLink"
+				>
+					[grid]
+				</NavLink>
+
+				<NavLink
+					exact={true}
+					className="search-mode-toggle-option"
+					to="/map"
+					activeClassName="activeLink"
+				>
+					[map]
+				</NavLink>
 			</div>
 		</div>
 	)

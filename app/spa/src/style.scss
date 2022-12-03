@@ -197,12 +197,16 @@ a {
     background-color: red;
     flex: 0 0 auto;
 
-    .search-mode-toggle {
+    .search-mode-toggle-option {
       display: inline-block;
       height: 100%;
       background-color: teal;
       margin-left: $margin;
       // todo: make content vertically centered, test with text and icon.
+
+      &.activeLink {
+        background-color: maroon;
+      }
     }
   }
 }
