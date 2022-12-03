@@ -18,21 +18,27 @@ const SearchInput: React.FunctionComponent = () => {
 	const resetQuery = () => dispatch(Actions.searchQueryReset())
 
 	return (
-		<div id="search-input">
-			{individualQueries.map((individualQuery, index) => (
-				<IndividualQuery
-					key={index}
-					individualQuery={individualQuery}
-					disabled={isSearching}
-				/>
-			))}
-			<QueryInput disabled={isSearching} />
-			{isSearching && <>[searching icon/spinner]</>}
-			{individualQueries.length > 0 && (
-				<button id="reset-query-button" onClick={resetQuery}>
-					[clear]
-				</button>
-			)}
+		<div id="search-bar">
+			<div id="search-input">
+				{individualQueries.map((individualQuery, index) => (
+					<IndividualQuery
+						key={index}
+						individualQuery={individualQuery}
+						disabled={isSearching}
+					/>
+				))}
+				<QueryInput disabled={isSearching} />
+				{isSearching && <>[searching icon/spinner]</>}
+				{individualQueries.length > 0 && (
+					<button id="reset-query-button" onClick={resetQuery}>
+						[clear]
+					</button>
+				)}
+			</div>
+			<div id="search-mode-toggle">
+				<div className="search-mode-toggle">[grid]</div>
+				<div className="search-mode-toggle">[map]</div>
+			</div>
 		</div>
 	)
 }

@@ -157,29 +157,53 @@ a {
   }
 }
 
-#search-input {
+#search-bar {
   border: 1px solid silver;
+  background-color: yellow;
+  display: flex;
 
-  .individual-query {
-    display: inline-block;
-    border: 1px solid gray;
-    padding: 4px;
-    margin: 4px;
+  #search-input {
+    background-color: orange;
+    flex: 1;
 
-    &.not-query {
-      text-decoration: line-through;
+    // todo: on mobile, no right padding (search mode toggle)
+    .individual-query {
+      display: inline-block;
+      border: 1px solid gray;
+      padding: 4px;
+      margin: 4px;
+
+      &.not-query {
+        text-decoration: line-through;
+      }
+    }
+
+    #query-input {
+      display: inline-block;
+      border: 1px solid $primaryColor;
+      padding: 4px;
+      margin: 4px;
+      position: absolute;
+      background: #fff;
+    }
+
+    #reset-query-button {
+      float: right;
     }
   }
 
-  #query-input {
-    display: inline-block;
-    border: 1px solid $primaryColor;
-    padding: 4px;
-    margin: 4px;
-  }
+  // todo: on mobile, hide this
+  #search-mode-toggle {
+    background-color: red;
+    flex: 0 0 auto;
 
-  #reset-query-button {
-    float: right;
+    .search-mode-toggle {
+      display: inline-block;
+      height: 100%;
+      background-color: teal;
+      margin-left: $margin;
+      // todo: make content vertically centered, test with text and icon.
+    }
   }
 }
 
