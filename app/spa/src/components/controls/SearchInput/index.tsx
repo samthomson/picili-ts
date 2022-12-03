@@ -8,6 +8,8 @@ import * as Selectors from 'src/redux/selectors'
 import IndividualQuery from './IndividualQuery'
 import QueryInput from './QueryInput'
 
+import useIsMobile from 'src/util/hooks/use-is-mobile.hook'
+
 const SearchInput: React.FunctionComponent = () => {
 	const dispatch = ReactRedux.useDispatch()
 
@@ -17,6 +19,7 @@ const SearchInput: React.FunctionComponent = () => {
 	const isSearching = ReactRedux.useSelector(Selectors.searchIsSearching)
 
 	const resetQuery = () => dispatch(Actions.searchQueryReset())
+	const isMobile = useIsMobile()
 
 	return (
 		<div id="search-bar">
@@ -36,25 +39,27 @@ const SearchInput: React.FunctionComponent = () => {
 					</button>
 				)}
 			</div>
-			<div id="search-mode-toggle">
-				<NavLink
-					exact={true}
-					className="search-mode-toggle-option"
-					to="/"
-					activeClassName="activeLink"
-				>
-					[grid]
-				</NavLink>
+			{!isMobile && (
+				<div id="search-mode-toggle">
+					<NavLink
+						exact={true}
+						className="search-mode-toggle-option"
+						to="/"
+						activeClassName="activeLink"
+					>
+						[grid]
+					</NavLink>
 
-				<NavLink
-					exact={true}
-					className="search-mode-toggle-option"
-					to="/map"
-					activeClassName="activeLink"
-				>
-					[map]
-				</NavLink>
-			</div>
+					<NavLink
+						exact={true}
+						className="search-mode-toggle-option"
+						to="/map"
+						activeClassName="activeLink"
+					>
+						[map]
+					</NavLink>
+				</div>
+			)}
 		</div>
 	)
 }

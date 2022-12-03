@@ -9,12 +9,16 @@ import SearchPageTemplate from 'src/components/pages/Search/SearchPageTemplate'
 import SearchResults from 'src/components/controls/SearchResults/index'
 import Map from 'src/components/controls/Map'
 
+import useIsMobile from 'src/util/hooks/use-is-mobile.hook'
+import { Redirect } from 'react-router-dom'
+
 const MapPage: React.FunctionComponent = () => {
 	const dispatch = ReactRedux.useDispatch()
 
 	const searchResultGeoAggregations = ReactRedux.useSelector(
 		Selectors.searchResultGeoAggregations,
 	)
+	const isMobile = useIsMobile()
 
 	const boundsChanged = (
 		bounds: Types.Core.MapBounds,
@@ -27,6 +31,10 @@ const MapPage: React.FunctionComponent = () => {
 
 		dispatch(Actions.searchQueryAdd(mapQuery))
 		dispatch(Actions.attemptSearch(true))
+	}
+
+	if (isMobile) {
+		return <Redirect to="/" />
 	}
 
 	return (
