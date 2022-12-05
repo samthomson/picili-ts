@@ -51,10 +51,10 @@ export const spaURL = (): string => {
     // generate to give to dropbox for redirects
     const SPAExternalPort = process.env.SPA_EXTERNAL_PORT
 
-	const protocol = SPAExternalPort === '443' ? 'https' : 'http'
-    
+    const protocol = SPAExternalPort === '443' ? 'https' : 'http'
+
     const SPAHost = process.env.SPA_HOST
-	const SPAPortFormatted = SPAExternalPort === '443' ? '' : `:${SPAExternalPort}`
+    const SPAPortFormatted = SPAExternalPort === '443' ? '' : `:${SPAExternalPort}`
 
     const redirectURL = `${protocol}://${SPAHost}${SPAPortFormatted}/admin/dropbox`
 
