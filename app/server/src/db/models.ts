@@ -264,7 +264,7 @@ export const FileModel = Database.define<FileInstance>(
         isCorrupt: Sequelize.BOOLEAN,
         latitude: Sequelize.DECIMAL(8, 6),
         longitude: Sequelize.DECIMAL(9, 6),
-        elevation: Sequelize.DECIMAL(8, 4),
+        elevation: Sequelize.DECIMAL(9, 4),
         address: Sequelize.STRING,
         fileDirectory: Sequelize.STRING,
         fileName: Sequelize.STRING,
