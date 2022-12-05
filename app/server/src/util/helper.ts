@@ -36,7 +36,7 @@ export const fileTypeFromExtension = (extension: string): Types.FileTypeEnum => 
         case 'mts':
             return Enums.FileType.VIDEO
         default:
-            Logger.error('unsupported extension', { extension })
+            Logger.info('unsupported extension', { extension })
             return null
     }
 }
