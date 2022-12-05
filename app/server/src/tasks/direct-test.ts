@@ -1,3 +1,4 @@
+import sharp from 'sharp'
 import * as Types from '@shared/declarations'
 import * as TasksUtil from '../util/tasks'
 import * as FileUtil from '../util/file'
@@ -260,6 +261,12 @@ const createSystemEvent = async () => {
     await DBUtil.createSystemEvent({ userId: 8008, message: 'test event' })
 }
 
+const checkExifData = async () => {
+    const sharpInstance = sharp('processing/exif-test.jpg')
+    const exifData = await FileUtil.readExif(sharpInstance)
+    console.log(exifData)
+}
+
 // file()
 // imaggaTest()
 // geo()
@@ -274,3 +281,4 @@ const createSystemEvent = async () => {
 // error()
 // testProcessingSize()
 createSystemEvent()
+checkExifData()
