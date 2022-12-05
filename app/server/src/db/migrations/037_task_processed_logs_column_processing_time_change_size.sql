@@ -1,0 +1,1 @@
+ALTER TABLE `task_processed_logs` CHANGE `processing_time` `processing_time` INT(10) UNSIGNED NOT NULL;
