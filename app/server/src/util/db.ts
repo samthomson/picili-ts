@@ -493,26 +493,8 @@ export const performAutoCompleteQuery = async (
     */
 
     const query = `
-        SELECT
-            tags.file_id as fileId,
-            tags.type,
-            tags.subtype,
-            tags.value,
-            tags.confidence,
-            files.uuid
-        FROM
-            tags
-        JOIN files ON files.id = tags.file_id
-        WHERE  files.user_id=:userId AND files.is_thumbnailed=TRUE AND (file_id, type, subtype, value, confidence) IN (
-                SELECT file_id, type, subtype, tags.value, MAX(confidence) max_confidence
-                FROM tags
-                WHERE tags.confidence >= :confidence and ${type ? `tags.type=:type and ` : ''}${
-        subtype ? `tags.subtype=:subtype and ` : ''
-    }tags.value LIKE :value
-                GROUP BY tags.type, tags.subtype, tags.value )
-                
-        ORDER BY confidence DESC;
-    `
+    SELECT sub.type, sub.subtype, sub.value, sub.conf, sub.uuid FROM (select tags.file_id as fileId, tags.type, tags.subtype, tags.value, tags.confidence as conf, files.uuid, files.datetime FROM tags JOIN files ON files.id = tags.file_id WHERE tags.value LIKE :value AND tags.confidence >= :confidence AND files.is_thumbnailed=TRUE AND files.user_id=:userId GROUP BY tags.type, tags.subtype, tags.value) as sub ORDER BY sub.conf DESC, sub.datetime DESC, sub.value ASC LIMIT 50;`
+
     const results: Types.Core.DBAutoCompleteResult[] = await Database.query(query, {
         type: Sequelize.QueryTypes.SELECT,
         replacements: {
@@ -523,15 +505,13 @@ export const performAutoCompleteQuery = async (
             confidence,
         },
     })
-    return results.map((result) => {
-        return {
-            type: result.type,
-            subtype: result.subtype,
-            value: result.value,
-            confidence: result.confidence,
-            uuid: result.uuid,
-        }
-    })
+
+    return results.map((result) => ({
+        type: result.type,
+        subtype: result.subtype,
+        value: result.value,
+        uuid: result.uuid,
+    }))
 }
 
 export const removeImportTasksForFile = async (fileId: number) => {
