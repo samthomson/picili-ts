@@ -1,6 +1,5 @@
 import * as Types from '@shared/declarations'
 import * as Enums from '../../../shared/enums'
-import * as Models from '../db/models'
 import * as DBUtil from '../util/db'
 import Supercluster from 'supercluster'
 
