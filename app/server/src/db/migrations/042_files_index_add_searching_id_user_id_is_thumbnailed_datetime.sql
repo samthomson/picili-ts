@@ -1,0 +1,1 @@
+ALTER TABLE `picili`.`files` ADD INDEX `searching_id_user_id_is_thumbnailed_datetime` (`id`, `user_id`, `is_thumbnailed`, `datetime`);
