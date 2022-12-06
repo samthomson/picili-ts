@@ -13,7 +13,6 @@ const autoCompleteGQL = gql`
 				subtype
 				value
 				uuid
-				confidence
 			}
 		}
 	}
@@ -26,6 +25,7 @@ interface IProps {
 const TypeAhead: React.FunctionComponent<IProps> = ({
 	currentIndividualQuery,
 }) => {
+	// todo: debounce
 	const {
 		error,
 		data,

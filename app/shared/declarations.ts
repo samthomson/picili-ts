@@ -471,11 +471,9 @@ export namespace Core {
 	}
 	
 	export type DBAutoCompleteResult = {
-		fileId: number
 		type: string
 		subtype: string
 		value: string
-		confidence: number
 		uuid: string
 	}
 

@@ -154,7 +154,6 @@ const typeDefs = gql`
         type: String!
         subtype: String
         value: String!
-        confidence: Int!
         uuid: String!
     }
 
