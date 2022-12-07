@@ -114,3 +114,16 @@ The project leans on various APIS and libraries. Such as
 - videos.js.
 - mapbox
 - supercluster (also somewhat by mapbox)
+
+### 4.5 requirements / VPS sizing
+
+Picili is designed and engineered to run on a minimal VPS. In some places tradeoffs in performance have been made accordingly, to stay functional on a low spec VPS (eg using only mysql and no elastic search, and limited video processing).
+It has been tested on the smallest (that is available via docker-machine) digital ocean VPS: **$6/m 1gb ram and 25gb hdd**.
+
+This size of VPS will work with a small collection of files (eg. ten to fifteen thousand images.)
+
+The bigger the size of your collection then the bigger the VPS you will need (since picili stores the generated thumbnails locally).
+
+Picili has been architected to be as portable as possible, and for this reason doesn't make use of attachable volume storage or similar - which may be cheaper in terms of storage than upgrading the VPS but comes at the cost of vendor lockin.
+
+So if picili runs out of space then to continue syncing you will need to upgrade the underlying VPS to one with more storage.
