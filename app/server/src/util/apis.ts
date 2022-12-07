@@ -369,6 +369,8 @@ export const ocrNumberplate = async (largeThumbnailPath: string): Promise<Types.
                         requeueDelayMinutes: 15,
                     }
 
+                // docs say 429 is their throttled status code, but actually they return 403 (unauthorized) confusingly
+                case 403:
                 case 429:
                     // throttled
                     return {
