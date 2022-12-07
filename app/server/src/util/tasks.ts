@@ -152,20 +152,20 @@ export const finishATask = async (task: Models.TaskInstance): Promise<void> => {
 
 export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
     try {
-        // check the processing dir isn't full up
-        const isThereSpaceToImportAFile = await FileUtil.isThereSpaceToImportAFile()
-
         // get this file first, so that we can lift off the `userId` if we
         // get local picili file with dropbox file
         const file = await Models.FileModel.findByPk(fileId, { include: Models.DropboxFileModel })
-        const { fileExtension, fileName, userId } = file
+        const { fileExtension, fileName, userId, fileType } = file
+
+        // check the processing dir isn't full up
+        const isThereSpaceToImportAFile = await FileUtil.isThereSpaceToImportAFile(fileType)
 
         if (!isThereSpaceToImportAFile) {
             Logger.warn('not enough space in procesing dir to import files from dropbox.')
             // create a system event
             await DBUtil.createSystemEvent({
                 userId,
-                message: `the processing directory is bigger on disk than is allowed by the current PROCESSING_DIR_SIZE_LIMIT_GB env var, so no new files will be imported. this will resolve itself once the current - waiting, already imported - files are processed. `,
+                message: `the processing directory (for files of type ${fileType}) is bigger on disk than is allowed by the current relevant env var, so no new files will be imported. this will resolve itself once the current - waiting, already imported - files are processed.`,
             })
             // wait a bit and let the processing dir clear ut a little before importing more files
             return {

@@ -496,33 +496,65 @@ const parseAppleLocation = (locationString: string): Types.Core.ParsedLocation |
         : undefined
 }
 
-const dirSize = async (dir, divideBy = 1): Promise<number> => {
+export const dirSize = async (dir, divideBy = 1): Promise<Record<Types.FileTypeEnum, number>> => {
     /*
-    borrowed from https://stackoverflow.com/a/69418940/686490
+    borrowed from / inspired by https://stackoverflow.com/a/69418940/686490
     */
     const files = fs.readdirSync(dir, { withFileTypes: true })
 
-    const paths = files.map(async (file) => {
-        const path = PathLib.join(dir, file.name)
+    const size = async (path: string, fileType: Types.FileTypeEnum): Promise<number> => {
+        const paths = files
+            // filter to whatever filetype
+            .filter(
+                (file) =>
+                    file.isDirectory() ||
+                    HelperUtil.fileTypeFromExtension(
+                        HelperUtil.splitPathIntoParts(PathLib.join(dir, file.name)).fileExtension,
+                    ) === fileType,
+            )
+            .map(async (file) => {
+                const path = PathLib.join(dir, file.name)
 
-        if (file.isDirectory()) return await dirSize(path)
+                if (file.isDirectory()) return await size(path, fileType)
 
-        if (file.isFile()) {
-            const { size } = fs.statSync(path)
-            return size
-        }
+                if (file.isFile()) {
+                    const { size } = fs.statSync(path)
+                    return size
+                }
 
-        return 0
-    })
+                return 0
+            })
+        return (await Promise.all(paths)).flat(Infinity).reduce((i, fileSize) => i + fileSize, 0) / divideBy
+    }
 
-    return (await Promise.all(paths)).flat(Infinity).reduce((i, size) => i + size, 0) / divideBy
+    const images = await size(dir, Enums.FileType.IMAGE)
+    const videos = await size(dir, Enums.FileType.VIDEO)
+
+    return {
+        [Enums.FileType.IMAGE]: images,
+        [Enums.FileType.VIDEO]: videos,
+    }
 }
 
-export const isThereSpaceToImportAFile = async (): Promise<boolean> => {
+export const isThereSpaceToImportAFile = async (fileType: Types.FileTypeEnum): Promise<boolean> => {
     // how big is the processing dir on disk (ins gb)?
     const processingDirSize = await dirSize('processing', 1024 * 1024 * 1024)
     // what is our processing dir size limit (also in gb)
-    const { PROCESSING_DIR_SIZE_LIMIT_GB: processingDirSizeLimit } = process.env
+
+    const {
+        PROCESSING_DIR_IMAGE_SIZE_LIMIT_GB: processingDirImageSizeLimit,
+        PROCESSING_DIR_VIDEO_SIZE_LIMIT_GB: processingDirVideoSizeLimit,
+    } = process.env
     // how do they compare? (eg size <= limit)
-    return processingDirSize <= +processingDirSizeLimit
+
+    if (fileType === Enums.FileType.IMAGE) {
+        return processingDirSize[Enums.FileType.IMAGE] <= +processingDirImageSizeLimit
+    }
+    if (fileType === Enums.FileType.VIDEO) {
+        return processingDirSize[Enums.FileType.VIDEO] <= +processingDirVideoSizeLimit
+    }
+
+    // shouldn't ever get here
+    Logger.warn('how did I get here?')
+    return false
 }

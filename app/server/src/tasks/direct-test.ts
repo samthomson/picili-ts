@@ -253,8 +253,10 @@ const error = () => {
 }
 
 const testProcessingSize = async () => {
-    const isThereSpace = await FileUtil.isThereSpaceToImportAFile()
-    console.log('isThereSpace', isThereSpace)
+    // const isThereSpace = await FileUtil.isThereSpaceToImportAFile()
+    // console.log('isThereSpace', isThereSpace)
+    const dirSize = await FileUtil.dirSize('processing', 1024 * 1024 * 1024)
+    console.log('dirSize', dirSize)
 }
 
 const createSystemEvent = async () => {
@@ -279,6 +281,6 @@ const checkExifData = async () => {
 // taskTest()
 // video()
 // error()
-// testProcessingSize()
-createSystemEvent()
-checkExifData()
+testProcessingSize()
+// createSystemEvent()
+// checkExifData()
