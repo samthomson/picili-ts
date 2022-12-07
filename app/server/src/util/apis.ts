@@ -143,7 +143,6 @@ export const locationIQ = async (latitude: number, longitude: number): Promise<T
                     break
             }
         } catch (err) {
-
             if (err?.code === 'ECONNRESET' || err?.code === 'ETIMEDOUT') {
                 // expected error
                 Logger.info('expected exception when calling location iq API.', err.code)
@@ -151,8 +150,6 @@ export const locationIQ = async (latitude: number, longitude: number): Promise<T
                 Logger.warn('unexpected exception when calling location iq API', { err })
             }
 
-
-            
             if (requestAttempts < retryLimit) {
                 await HelperUtil.delay(retryDelay)
             } else {
