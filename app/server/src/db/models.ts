@@ -166,7 +166,8 @@ export const TaskModel = Database.define<TaskInstance>(
         },
         taskType: Sequelize.ENUM(
             'DROPBOX_SYNC',
-            'DROPBOX_FILE_IMPORT',
+            'DROPBOX_FILE_IMPORT_IMAGE',
+            'DROPBOX_FILE_IMPORT_VIDEO',
             'PROCESS_IMAGE_FILE',
             'PROCESS_VIDEO_FILE',
             'REMOVE_PROCESSING_FILE',
@@ -217,7 +218,8 @@ export const TaskProcessingLogModel = Database.define<TaskProcessingLogInstance>
         },
         taskType: Sequelize.ENUM(
             'DROPBOX_SYNC',
-            'DROPBOX_FILE_IMPORT',
+            'DROPBOX_FILE_IMPORT_IMAGE',
+            'DROPBOX_FILE_IMPORT_VIDEO',
             'PROCESS_IMAGE_FILE',
             'PROCESS_VIDEO_FILE',
             'REMOVE_PROCESSING_FILE',

@@ -26,7 +26,8 @@ export const processTask = async (taskId: number, thread: number) => {
             case Enums.TaskType.DROPBOX_SYNC:
                 taskOutcome = await DropboxUtil.checkForDropboxChanges(task.relatedPiciliFileId)
                 break
-            case Enums.TaskType.DROPBOX_FILE_IMPORT:
+            case Enums.TaskType.DROPBOX_FILE_IMPORT_IMAGE:
+            case Enums.TaskType.DROPBOX_FILE_IMPORT_VIDEO:
                 taskOutcome = await fileImport(task.relatedPiciliFileId)
                 if (!taskOutcome.success && taskOutcome.retryInMinutes) {
                     // requeue the task
@@ -231,7 +232,8 @@ export const taskTypeToPriority = (taskType: Enums.TaskType): number => {
             return 9
         case Enums.TaskType.DROPBOX_SYNC:
             return 8
-        case Enums.TaskType.DROPBOX_FILE_IMPORT:
+        case Enums.TaskType.DROPBOX_FILE_IMPORT_IMAGE:
+        case Enums.TaskType.DROPBOX_FILE_IMPORT_VIDEO:
             return 1
         case Enums.TaskType.PROCESS_IMAGE_FILE:
             return 7

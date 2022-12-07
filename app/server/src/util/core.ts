@@ -32,7 +32,10 @@ export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.
 
     // create import tasks
     const downloadTaskId = await DBUtil.createTask({
-        taskType: Enums.TaskType.DROPBOX_FILE_IMPORT,
+        taskType:
+            fileType === Enums.FileType.IMAGE
+                ? Enums.TaskType.DROPBOX_FILE_IMPORT_IMAGE
+                : Enums.TaskType.DROPBOX_FILE_IMPORT_VIDEO,
         relatedPiciliFileId: newFileId,
         importTask: true,
     })
@@ -85,7 +88,10 @@ export const updateAFileInTheSystem = async (changedDropboxFile: Types.ChangedDr
         from: moment().add(2, 'minute').toISOString(),
     })
     await DBUtil.createTask({
-        taskType: Enums.TaskType.DROPBOX_FILE_IMPORT,
+        taskType:
+            piciliFile.fileType === Enums.FileType.IMAGE
+                ? Enums.TaskType.DROPBOX_FILE_IMPORT_IMAGE
+                : Enums.TaskType.DROPBOX_FILE_IMPORT_VIDEO,
         relatedPiciliFileId: piciliFile.id,
         after: removalTaskId,
         importTask: true,
