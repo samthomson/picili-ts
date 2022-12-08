@@ -31,6 +31,7 @@ const taskSummaryQuery = gql`
 					importTask
 					timesSeen
 				}
+				isVideoCapable
 			}
 		}
 	}
@@ -105,24 +106,36 @@ const TasksOverview: React.FunctionComponent = () => {
 					<thead>
 						<tr>
 							<td>id</td>
+							<td>isVideoCapable</td>
 							<td>type</td>
 							<td>import?</td>
 							<td># attempted</td>
 						</tr>
 					</thead>
 					<tbody>
-						{workers.map(({ currentTaskBeingProcessed }, i) => (
-							<tr key={i}>
-								<td>{currentTaskBeingProcessed.id}</td>
-								<td>{currentTaskBeingProcessed.taskType}</td>
-								<td>
-									{String(
-										currentTaskBeingProcessed.importTask,
-									)}
-								</td>
-								<td>{currentTaskBeingProcessed.timesSeen}</td>
-							</tr>
-						))}
+						{workers.map(
+							(
+								{ isVideoCapable, currentTaskBeingProcessed },
+								i,
+							) => (
+								<tr key={i}>
+									<td>{currentTaskBeingProcessed.id}</td>
+									<td>{isVideoCapable.toString()}</td>
+
+									<td>
+										{currentTaskBeingProcessed.taskType}
+									</td>
+									<td>
+										{String(
+											currentTaskBeingProcessed.importTask,
+										)}
+									</td>
+									<td>
+										{currentTaskBeingProcessed.timesSeen}
+									</td>
+								</tr>
+							),
+						)}
 					</tbody>
 				</table>
 			)}

@@ -8,7 +8,7 @@ const taskProcessorSummaryQuery = gql`
 		taskProcessor {
 			stopping
 			isImportingEnabled
-			currentTasksBeingProcessed {
+			workers {
 				id
 			}
 		}

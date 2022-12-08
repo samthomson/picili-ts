@@ -47,6 +47,7 @@ export namespace API {
 
 	type TaskWorker = {
 		currentTaskBeingProcessed: Core.BaseModels.TaskAttributes
+		isVideoCapable: boolean
 	}
 
 	export interface TaskProcessor {

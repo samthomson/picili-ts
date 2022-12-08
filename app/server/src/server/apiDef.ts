@@ -55,6 +55,7 @@ const typeDefs = gql`
     type Worker {
         id: Int
         currentTaskBeingProcessed: Task
+        isVideoCapable: Boolean
     }
 
     type TaskProcessor {
