@@ -86,6 +86,7 @@ export function appReducers(
 				searchQuery: newQuery,
 				// reset sort overload so that default is used on subsequent queries unless explicitly set again
 				// don't do this - it's annoying. I set elevation as search mode and then it gets removed on each map pan. leaving this comment in case I later realise there was a good reason to reset it and want to know what I'll unsettle.
+				// perhaps I could check if the user is adding or overriding (map/date) a query and reset conditionally.
 				// sortOverload: undefined,
 			}
 		case ActionType.SEARCH_QUERY_REMOVE:
