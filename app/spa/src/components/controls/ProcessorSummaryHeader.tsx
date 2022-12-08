@@ -14,17 +14,18 @@ const taskProcessorSummaryQuery = gql`
 		}
 	}
 `
-
+const refreshPeriod = 60000
 const ProcessorSummaryHeader: React.FunctionComponent = () => {
 	const refetchData = () => {
 		refetch()
-		setTimeout(refetchData, 15000)
+		setTimeout(refetchData, refreshPeriod)
 	}
 
+	// do we really need this at all? made sense at one point but not sure anymore.
 	React.useEffect(() => {
 		setTimeout(() => {
 			refetchData()
-		}, 15000)
+		}, refreshPeriod)
 	}, [])
 
 	const { loading, error, data, refetch } = useQuery(
