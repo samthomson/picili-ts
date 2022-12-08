@@ -24,11 +24,13 @@ const taskSummaryQuery = gql`
 			}
 		}
 		taskProcessor {
-			currentTasksBeingProcessed {
-				id
-				taskType
-				importTask
-				timesSeen
+			workers {
+				currentTaskBeingProcessed {
+					id
+					taskType
+					importTask
+					timesSeen
+				}
 			}
 		}
 	}
@@ -54,7 +56,7 @@ const TasksOverview: React.FunctionComponent = () => {
 		processed: { recent },
 	} = taskSummary
 	const taskProcessor: Types.API.TaskProcessor = data.taskProcessor
-	const { currentTasksBeingProcessed } = taskProcessor
+	const { workers } = taskProcessor
 
 	const queueAge = !oldest
 		? 'no tasks, or tasks are all scheduled in the future'
@@ -95,10 +97,10 @@ const TasksOverview: React.FunctionComponent = () => {
 				</table>
 			)}
 			<h2>processing</h2>
-			{currentTasksBeingProcessed.length === 0 && (
-				<>[no tasks being processed right this moment.]</>
+			{workers.length === 0 && (
+				<>[no workers are active at this moment.]</>
 			)}
-			{currentTasksBeingProcessed.length > 0 && (
+			{workers.length > 0 && (
 				<table>
 					<thead>
 						<tr>
@@ -109,12 +111,16 @@ const TasksOverview: React.FunctionComponent = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{currentTasksBeingProcessed.map((row, i) => (
+						{workers.map(({ currentTaskBeingProcessed }, i) => (
 							<tr key={i}>
-								<td>{row.id}</td>
-								<td>{row.taskType}</td>
-								<td>{String(row.importTask)}</td>
-								<td>{row.timesSeen}</td>
+								<td>{currentTaskBeingProcessed.id}</td>
+								<td>{currentTaskBeingProcessed.taskType}</td>
+								<td>
+									{String(
+										currentTaskBeingProcessed.importTask,
+									)}
+								</td>
+								<td>{currentTaskBeingProcessed.timesSeen}</td>
 							</tr>
 						))}
 					</tbody>

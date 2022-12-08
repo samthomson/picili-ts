@@ -45,10 +45,14 @@ export namespace API {
         searchableFilesCount: number
 	}
 
+	type TaskWorker = {
+		currentTaskBeingProcessed: Core.BaseModels.TaskAttributes
+	}
+
 	export interface TaskProcessor {
 		stopping: boolean
 		isImportingEnabled: boolean
-		currentTasksBeingProcessed: Core.BaseModels.TaskAttributes[]
+		workers: TaskWorker[]
 	}
 
 	export interface SearchResultItem {

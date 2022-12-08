@@ -4,6 +4,58 @@ import * as DBUtil from '../util/db'
 import * as Models from '../db/models'
 import Logger from '../services/logging'
 
+export class TaskProcessor {
+    threadNo: number
+    isVideoCapable: boolean
+    currentTaskBeingProcessed: Models.TaskInstance | undefined
+    callBackToUpdateHowManyProcessableTasksThereAre: () => void
+
+    private _isStopping = false
+    private _isShuttingDown = false
+
+    constructor(threadNo: number, callBackToUpdateHowManyProcessableTasksThereAre, isVideoCapable = false) {
+        this.threadNo = threadNo
+        this.isVideoCapable = isVideoCapable
+        this.callBackToUpdateHowManyProcessableTasksThereAre = callBackToUpdateHowManyProcessableTasksThereAre
+    }
+
+    get isStopping(): boolean {
+        return this._isStopping
+    }
+    set isStopping(stopping: boolean) {
+        this._isStopping = stopping
+    }
+
+    get isShuttingDown(): boolean {
+        return this._isShuttingDown
+    }
+    set isShuttingDown(shuttingDown: boolean) {
+        this._isShuttingDown = shuttingDown
+    }
+
+    public async work(): Promise<void> {
+        // Logger.info(`thread:${threadNo + 1} started`)
+        while (!this.isShuttingDown) {
+            // get next task
+            const nextTask = await DBUtil.getAndReserveNextTaskId(this._isStopping, this.isVideoCapable)
+            // if task, process task
+            if (nextTask) {
+                Logger.info(
+                    `[thread:${this.threadNo + 1}] will now start next task: ${nextTask.id}:${nextTask.taskType}...`,
+                )
+                this.currentTaskBeingProcessed = nextTask
+                await TaskUtil.processTask(nextTask.id, this.threadNo)
+                this.currentTaskBeingProcessed = undefined
+            } else {
+                Logger.info(`[thread:${this.threadNo + 1}] found no task, so delaying...`)
+                // else, delay ten seconds
+                await HelperUtil.delay(10000)
+            }
+            this.callBackToUpdateHowManyProcessableTasksThereAre()
+        }
+    }
+}
+
 export class TaskManager {
     public static getInstance(): TaskManager {
         return TaskManager._instance
@@ -16,7 +68,7 @@ export class TaskManager {
     private _isImportingEnabled = false
     private isShuttingDown = false
     private hasNowShutDown = false
-    private _tasksBeingProcessed: Models.TaskInstance[] = []
+    private workers: TaskProcessor[] = []
 
     constructor() {
         if (TaskManager._instance) {
@@ -28,32 +80,28 @@ export class TaskManager {
     get isStopping(): boolean {
         return this._isStopping
     }
-    set isStopping(stopping: boolean) {
+    setIsStopping(stopping: boolean) {
         this._isStopping = stopping
+        // tell each task to stop (or - to not continue after their current task)
+        this.workers.map((worker) => (worker.isStopping = true))
     }
 
     get isImportingEnabled() {
         return this._isImportingEnabled
     }
 
-    get tasksBeingProcessed() {
-        return this._tasksBeingProcessed
+    getWorkers() {
+        return this.workers
     }
 
     public async safelyShutDown(): Promise<boolean> {
         // starts shutting down and keeps checking if that has completed until it has
         this.isShuttingDown = true
+        this.workers.map((worker) => (worker.isShuttingDown = true))
         while (!this.hasNowShutDown) {
             await HelperUtil.delay(100)
         }
         return true
-    }
-
-    public addTaskBeingProcessed(task: Models.TaskInstance) {
-        this.tasksBeingProcessed.push(task)
-    }
-    public removeTaskBeingProcessed(task: Models.TaskInstance) {
-        this._tasksBeingProcessed = this.tasksBeingProcessed.filter(({ id }) => task.id !== id)
     }
 
     private async updateHowManyProcessableTasksThereAre() {
@@ -70,32 +118,15 @@ export class TaskManager {
         const videoCapableThreads = 1
 
         Logger.info(`creating ${parallelization} workers..`)
-        const workers = [...Array(parallelization).keys()].map((i) => this.work(i, i < videoCapableThreads))
-        await Promise.all(workers)
+        for (let i = 0; i < parallelization; i++) {
+            this.workers.push(new TaskProcessor(i, this.updateHowManyProcessableTasksThereAre, i < videoCapableThreads))
+        }
+        const workersWork = this.workers.map((worker) => worker.work())
+        await Promise.all(workersWork)
 
         if (this.isShuttingDown) {
             Logger.info('the task processor is shutting down now and will exit.')
             this.hasNowShutDown = true
-        }
-    }
-
-    private async work(threadNo: number, isVideoCapable = false): Promise<void> {
-        // Logger.info(`thread:${threadNo + 1} started`)
-        while (!this.isShuttingDown) {
-            // get next task
-            const nextTask = await DBUtil.getAndReserveNextTaskId(this._isStopping, isVideoCapable)
-            // if task, process task
-            if (nextTask) {
-                Logger.info(`[thread:${threadNo + 1}] will now start next task: ${nextTask.id}:${nextTask.taskType}...`)
-                this.addTaskBeingProcessed(nextTask)
-                await TaskUtil.processTask(nextTask.id, threadNo)
-                this.removeTaskBeingProcessed(nextTask)
-            } else {
-                Logger.info(`[thread:${threadNo + 1}] found no task, so delaying...`)
-                // else, delay ten seconds
-                await HelperUtil.delay(10000)
-            }
-            this.updateHowManyProcessableTasksThereAre()
         }
     }
 }

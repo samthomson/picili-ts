@@ -906,7 +906,7 @@ export const plantLookup = async (fileId: number): Promise<Types.Core.TaskProces
 
 export const ensureTaskProcessorIsRunning = () => {
     const taskManager = TaskManager.getInstance()
-    taskManager.isStopping = false
+    taskManager.setIsStopping(false)
 }
 
 export const removeAFileFromTheSystem = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
@@ -952,7 +952,7 @@ export const isTaskProcessorWorkingOnImportTasks = (): boolean => {
      * returns true if active tasks contains import tasks other than dropbox sync.
      */
     const taskManager = TaskManager.getInstance()
-    const tasks = taskManager.tasksBeingProcessed
+    const tasks = taskManager.getWorkers().map((task) => task.currentTaskBeingProcessed)
     const importTasks = tasks.filter((task) => task.importTask)
     const nonSyncImportTasks = importTasks.filter((task) => task.taskType !== Enums.TaskType.DROPBOX_SYNC)
 

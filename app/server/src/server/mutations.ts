@@ -82,7 +82,7 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
         }
     }
     if (!token) {
-        Logger.warn('dropbox oauth didn\'t come back with a token')
+        Logger.warn("dropbox oauth didn't come back with a token")
         return {
             success: false,
             error: 'missing dropbox oauth token',
@@ -102,7 +102,7 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
     const refreshToken = await DropboxUtil.exchangeCodeForRefreshToken(token)
 
     if (!refreshToken) {
-        Logger.warn('wasn\'t able to swap auth code for an access token')
+        Logger.warn("wasn't able to swap auth code for an access token")
         return {
             success: false,
             error: 'failed to exchange code for a refresh token, please try connecting again.',
@@ -118,10 +118,10 @@ const dropboxConnect = async (parent, args, context): Promise<any> => {
         success: !!connection,
         connection: connection
             ? {
-                syncPath: connection.syncPath,
-                syncEnabled: connection.syncEnabled,
-                invalidPathDetected: connection.invalidPathDetected,
-            }
+                  syncPath: connection.syncPath,
+                  syncEnabled: connection.syncEnabled,
+                  invalidPathDetected: connection.invalidPathDetected,
+              }
             : undefined,
     }
 }
@@ -135,7 +135,7 @@ const dropboxUpdate = async (parent, args, context): Promise<any> => {
     if (TasksUtil.isTaskProcessorTooBusyToBeInterrupted()) {
         return {
             success: false,
-            error: 'task processor too busy to interrupt'
+            error: 'task processor too busy to interrupt',
         }
     }
 
@@ -212,7 +212,7 @@ const dropboxDisconnect = async (parent, args, context): Promise<any> => {
 
 const stopProcessingImportTasks = (): boolean => {
     const taskManager = TaskManager.getInstance()
-    taskManager.isStopping = true
+    taskManager.setIsStopping(true)
 
     return true
 }
