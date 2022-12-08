@@ -25,7 +25,6 @@ interface IProps {
 const TypeAhead: React.FunctionComponent<IProps> = ({
 	currentIndividualQuery,
 }) => {
-	// todo: debounce
 	const {
 		error,
 		data,
