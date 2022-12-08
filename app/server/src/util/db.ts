@@ -493,7 +493,7 @@ export const performAutoCompleteQuery = async (
     */
 
     const query = `
-    SELECT sub.type, sub.subtype, sub.value, sub.conf, sub.uuid FROM (select tags.file_id as fileId, tags.type, tags.subtype, tags.value, tags.confidence as conf, files.uuid, files.datetime FROM tags JOIN files ON files.id = tags.file_id WHERE tags.value LIKE :value AND tags.confidence >= :confidence AND files.is_thumbnailed=TRUE AND files.user_id=:userId GROUP BY tags.type, tags.subtype, tags.value) as sub ORDER BY sub.conf DESC, sub.datetime DESC, sub.value ASC LIMIT 50;`
+    SELECT sub.type, sub.subtype, sub.value, sub.conf, sub.uuid FROM (select tags.file_id as fileId, tags.type, tags.subtype, tags.value, tags.confidence as conf, files.uuid, files.datetime FROM tags JOIN files ON files.id = tags.file_id WHERE tags.value LIKE :valueLike AND tags.value != :value AND tags.confidence >= :confidence AND files.is_thumbnailed=TRUE AND files.user_id=:userId GROUP BY tags.type, tags.subtype, tags.value) as sub ORDER BY sub.conf DESC, sub.datetime DESC, sub.value ASC LIMIT 50;`
 
     const results: Types.Core.DBAutoCompleteResult[] = await Database.query(query, {
         type: Sequelize.QueryTypes.SELECT,
@@ -501,7 +501,9 @@ export const performAutoCompleteQuery = async (
             userId,
             type,
             subtype,
-            value: `${value}%`,
+            valueLike: `${value}%`,
+            // true = show results which exactly match what the user typed, false = only show options with more text than the user typed - literally type'aheads'
+            value: true ? `${value}%` : value,
             confidence,
         },
     })
