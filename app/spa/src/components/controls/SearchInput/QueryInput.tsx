@@ -73,7 +73,6 @@ const QueryInput: React.FunctionComponent<IProps> = ({ disabled }) => {
 	}
 
 	React.useEffect(() => {
-		console.log('textInputValue', textInputValue)
 		// reset the 'query' used for the typeahead - as we know it's out of date now.
 		setCurrentIndividualQuery(undefined)
 		if (textInputValue !== '') {
