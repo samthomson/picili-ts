@@ -19,7 +19,7 @@ const autoCompleteGQL = gql`
 `
 
 interface IProps {
-	currentIndividualQuery: Types.API.IndividualSearchQuery
+	currentIndividualQuery?: Types.API.IndividualSearchQuery
 }
 
 const TypeAhead: React.FunctionComponent<IProps> = ({
@@ -35,7 +35,7 @@ const TypeAhead: React.FunctionComponent<IProps> = ({
 		variables: { query: currentIndividualQuery },
 	})
 
-	if (!currentIndividualQuery.value) {
+	if (!currentIndividualQuery?.value) {
 		return <></>
 	}
 	const autoCompleteResponse: Types.API.AutoCompleteResponse =

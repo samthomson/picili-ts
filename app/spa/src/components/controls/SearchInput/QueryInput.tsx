@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as ReactRedux from 'react-redux'
+import debounce from 'lodash.debounce'
 
 import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
@@ -14,6 +15,9 @@ const QueryInput: React.FunctionComponent<IProps> = ({ disabled }) => {
 	const dispatch = ReactRedux.useDispatch()
 
 	const [textInputValue, setTextInputValue] = React.useState<string>('')
+	const [currentIndividualQuery, setCurrentIndividualQuery] = React.useState<
+		Types.API.IndividualSearchQuery | undefined
+	>(undefined)
 
 	const parseTextToQuery = (
 		text: string,
@@ -68,6 +72,22 @@ const QueryInput: React.FunctionComponent<IProps> = ({ disabled }) => {
 		}
 	}
 
+	React.useEffect(() => {
+		console.log('textInputValue', textInputValue)
+		// reset the 'query' used for the typeahead - as we know it's out of date now.
+		setCurrentIndividualQuery(undefined)
+		if (textInputValue !== '') {
+			setCurrentIndividualQuery(undefined)
+			debouncedSearch(textInputValue)
+		}
+	}, [textInputValue])
+
+	const debouncedSearch = React.useRef(
+		debounce((textInputValue) => {
+			setCurrentIndividualQuery(parseTextToQuery(textInputValue))
+		}, 300),
+	).current
+
 	return (
 		<div id="query-input">
 			<input
@@ -78,9 +98,7 @@ const QueryInput: React.FunctionComponent<IProps> = ({ disabled }) => {
 				onKeyDown={onKeyDown}
 				disabled={disabled}
 			/>
-			<TypeAhead
-				currentIndividualQuery={parseTextToQuery(textInputValue)}
-			/>
+			<TypeAhead currentIndividualQuery={currentIndividualQuery} />
 		</div>
 	)
 }
