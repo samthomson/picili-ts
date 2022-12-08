@@ -19,7 +19,10 @@ export namespace API {
 	type TasksProcessable = {
 		total: number
 		processable: number
-		actionable: number
+		actionable: {
+			actionableTasksVideoCapable: number
+			actionableTasksNonVideoCapable: number
+		}
 		queues: TaskQueue[]
 	}
 

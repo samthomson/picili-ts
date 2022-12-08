@@ -283,9 +283,9 @@ export const reReserveTask = async (id: number): Promise<void> => {
 export const howManyTasksAreThere = async (): Promise<number> => {
     return await Models.TaskModel.count()
 }
-export const howManyProcessableTasksAreThere = async (isStopping: boolean): Promise<number> => {
+export const howManyProcessableTasksAreThere = async (isStopping: boolean, isVideoCapable = true): Promise<number> => {
     return await Models.TaskModel.count({
-        where: taskSelectionWhere(isStopping, true),
+        where: taskSelectionWhere(isStopping, isVideoCapable),
     })
 }
 export const howManyTasksToProcessAreThere = async (): Promise<number> => {

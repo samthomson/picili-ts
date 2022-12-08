@@ -31,9 +31,12 @@ const taskSummary = async (parents, args, context): Promise<Types.API.TaskSummar
 
     // get a second count with the real is stopping value as that is interesting too
     const taskManager = TaskManager.getInstance()
-    const howManyProcessableTasksAreThereThatAreActionable = await DBUtil.howManyProcessableTasksAreThere(
+    const howManyProcessableTasksAreThereThatAreActionableVideoCapable = await DBUtil.howManyProcessableTasksAreThere(
         taskManager.isStopping,
+        true,
     )
+    const howManyProcessableTasksAreThereThatAreActionableNonVideoCapable =
+        await DBUtil.howManyProcessableTasksAreThere(taskManager.isStopping, false)
 
     const queues = await DBUtil.getTaskTypeBreakdown()
     const lastMonthsProcessorLog = await DBUtil.taskProcessorMonthLog()
@@ -43,7 +46,10 @@ const taskSummary = async (parents, args, context): Promise<Types.API.TaskSummar
         processable: {
             total: howManyTasksAreThere,
             processable: howManyProcessableTasksAreThere,
-            actionable: howManyProcessableTasksAreThereThatAreActionable,
+            actionable: {
+                actionableTasksVideoCapable: howManyProcessableTasksAreThereThatAreActionableVideoCapable,
+                actionableTasksNonVideoCapable: howManyProcessableTasksAreThereThatAreActionableNonVideoCapable,
+            },
             queues,
         },
         processed: {

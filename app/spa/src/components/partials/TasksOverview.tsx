@@ -10,7 +10,10 @@ const taskSummaryQuery = gql`
 			oldest
 			processable {
 				total
-				actionable
+				actionable {
+					actionableTasksVideoCapable
+					actionableTasksNonVideoCapable
+				}
 				queues {
 					type
 					count
@@ -66,7 +69,8 @@ const TasksOverview: React.FunctionComponent = () => {
 		? 'no tasks, or tasks are all scheduled in the future'
 		: moment(oldest).from(moment())
 	const totalTasks = total
-	const actionableTasks = actionable
+	const { actionableTasksVideoCapable, actionableTasksNonVideoCapable } =
+		actionable
 	return (
 		<React.Fragment>
 			<h2>tasks queued</h2>
@@ -74,7 +78,10 @@ const TasksOverview: React.FunctionComponent = () => {
 			<br />
 			total tasks: {totalTasks}
 			<br />
-			actionable tasks: {actionableTasks}
+			actionable tasks (isVideoCapable): {actionableTasksVideoCapable}
+			<br />
+			actionable tasks (non video capable):{' '}
+			{actionableTasksNonVideoCapable}
 			<br />
 			<h2>queues</h2>
 			{queues.length === 0 && <>no tasks queued...</>}
