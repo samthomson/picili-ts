@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 import * as TaskUtil from '../util/tasks'
 import * as HelperUtil from '../util/helper'
 import * as DBUtil from '../util/db'
@@ -12,6 +14,9 @@ export class TaskProcessor {
 
     private _isStopping = false
     private _isShuttingDown = false
+
+    public timeLastStartedATask: string | undefined
+    public timeLastFinishedATask: string | undefined
 
     constructor(threadNo: number, callBackToUpdateHowManyProcessableTasksThereAre, isVideoCapable = false) {
         this.threadNo = threadNo
@@ -44,8 +49,10 @@ export class TaskProcessor {
                     `[thread:${this.threadNo + 1}] will now start next task: ${nextTask.id}:${nextTask.taskType}...`,
                 )
                 this.currentTaskBeingProcessed = nextTask
+                this.timeLastStartedATask = moment().toISOString()
                 await TaskUtil.processTask(nextTask.id, this.threadNo)
                 this.currentTaskBeingProcessed = undefined
+                this.timeLastFinishedATask = moment().toISOString()
             } else {
                 Logger.info(`[thread:${this.threadNo + 1}] found no task, so delaying...`)
                 // else, delay ten seconds

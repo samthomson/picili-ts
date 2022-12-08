@@ -48,6 +48,9 @@ export namespace API {
 	type TaskWorker = {
 		currentTaskBeingProcessed: Core.BaseModels.TaskAttributes
 		isVideoCapable: boolean
+        timeLastStartedATask: string
+        timeLastFinishedATask: string
+		threadNo: number
 	}
 
 	export interface TaskProcessor {

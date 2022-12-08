@@ -56,6 +56,9 @@ const typeDefs = gql`
         id: Int
         currentTaskBeingProcessed: Task
         isVideoCapable: Boolean
+        timeLastStartedATask: String
+        timeLastFinishedATask: String
+        threadNo: Int
     }
 
     type TaskProcessor {

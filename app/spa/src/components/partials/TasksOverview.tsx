@@ -31,7 +31,10 @@ const taskSummaryQuery = gql`
 					importTask
 					timesSeen
 				}
+				threadNo
 				isVideoCapable
+				timeLastStartedATask
+				timeLastFinishedATask
 			}
 		}
 	}
@@ -101,40 +104,84 @@ const TasksOverview: React.FunctionComponent = () => {
 			{workers.length === 0 && (
 				<>[no workers are active at this moment.]</>
 			)}
+			{/* if start is after end: render start as time spent working on task 
+			if end is after start: render time since end as time idle since last task */}
 			{workers.length > 0 && (
 				<table>
 					<thead>
 						<tr>
-							<td>id</td>
+							<td>thread</td>
 							<td>isVideoCapable</td>
-							<td>type</td>
-							<td>import?</td>
-							<td># attempted</td>
+							<td>timing</td>
+							<td>task: id</td>
+							<td>task: type</td>
+							<td>task: import?</td>
+							<td>task: # attempted</td>
 						</tr>
 					</thead>
 					<tbody>
 						{workers.map(
 							(
-								{ isVideoCapable, currentTaskBeingProcessed },
+								{
+									threadNo,
+									isVideoCapable,
+									timeLastStartedATask,
+									timeLastFinishedATask,
+									currentTaskBeingProcessed,
+								},
 								i,
-							) => (
-								<tr key={i}>
-									<td>{currentTaskBeingProcessed.id}</td>
-									<td>{isVideoCapable.toString()}</td>
+							) => {
+								const timeLastStarted =
+									moment(timeLastStartedATask)
+								const timeLastFinished = moment(
+									timeLastFinishedATask,
+								)
 
-									<td>
-										{currentTaskBeingProcessed.taskType}
-									</td>
-									<td>
-										{String(
-											currentTaskBeingProcessed.importTask,
+								const timingDisplay = timeLastStarted.isAfter(
+									timeLastFinished,
+								)
+									? `started ${moment
+											.duration(
+												timeLastStarted.diff(moment()),
+											)
+											.humanize()}`
+									: `idle since ${moment
+											.duration(
+												timeLastFinished.diff(moment()),
+											)
+											.humanize()}`
+
+								return (
+									<tr key={i}>
+										<td>{threadNo}</td>
+										<td>{isVideoCapable.toString()}</td>
+										<td>{timingDisplay}</td>
+										{currentTaskBeingProcessed && (
+											<>
+												<td>
+													{
+														currentTaskBeingProcessed.id
+													}
+												</td>
+												<td>
+													{
+														currentTaskBeingProcessed.taskType
+													}
+												</td>
+												<td>
+													{String(
+														currentTaskBeingProcessed.importTask,
+													)}
+												</td>
+											</>
 										)}
-									</td>
-									<td>
-										{currentTaskBeingProcessed.timesSeen}
-									</td>
-								</tr>
-							),
+
+										{!currentTaskBeingProcessed && (
+											<td colSpan={3}>[no task]</td>
+										)}
+									</tr>
+								)
+							},
 						)}
 					</tbody>
 				</table>
