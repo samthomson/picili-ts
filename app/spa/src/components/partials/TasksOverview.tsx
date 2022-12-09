@@ -145,27 +145,33 @@ const TasksOverview: React.FunctionComponent = () => {
 								)
 
 								const timingDisplay = (() => {
+									// haven't yet done anything
 									if (!timeLastStartedATask) {
 										return 'n/a'
 									}
 
-									return timeLastStarted.isAfter(
-										timeLastFinished,
-									)
-										? `started ${moment
-												.duration(
-													timeLastStarted.diff(
-														moment(),
-													),
-												)
-												.humanize()} ago`
-										: `idle since ${moment
-												.duration(
-													timeLastFinished.diff(
-														moment(),
-													),
-												)
-												.humanize()} ago`
+									// started a task but haven't finished one
+									if (
+										timeLastStartedATask &&
+										!timeLastFinishedATask
+									) {
+										return `started ${moment
+											.duration(
+												timeLastStarted.diff(moment()),
+											)
+											.humanize()} ago`
+									}
+
+									if (
+										timeLastStarted.isAfter(
+											timeLastFinished || moment(),
+										)
+									) {
+										return `idle since
+										${moment.duration(timeLastFinished.diff(moment())).humanize()} ago`
+									}
+
+									return '[unexpected timing state?]'
 								})()
 
 								return (
