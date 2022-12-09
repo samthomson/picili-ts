@@ -409,7 +409,6 @@ export const downloadDropboxFile = async (
         } else {
             return { success: true }
         }
-        return { success: true }
     } catch (err) {
         if (err?.code === 'ETIMEDOUT') {
             Logger.warn('dropbox api connectivity issue, will try again in 3 minutes', err)
