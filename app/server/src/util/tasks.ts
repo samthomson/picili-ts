@@ -668,7 +668,8 @@ export const addressLookup = async (fileId: number): Promise<Types.Core.TaskProc
 
         if (lookup.success) {
             const formattedAddress = lookup.data.display_name
-            file.address = formattedAddress
+            // truncate stupidly big addresses to 255 - not worth the outsized db impact of a larger field for a tiny minority of 255+ addresses which are surely full of junk if that big.
+            file.address = formattedAddress?.substring(0, 255)
             await file.save()
 
             const newLocationTags: Types.Core.Inputs.CreateTagInput[] = []
