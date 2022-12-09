@@ -370,12 +370,17 @@ export const downloadDropboxFile = async (
     fileExtension: string,
 ): Promise<Types.Core.DropboxDownloadFileResponse> => {
     try {
+        Logger.info('DropboxUtil.downloadDropboxFile 1 start')
         const dropboxConnection = await DBUtil.getDropboxConnection(userId)
         const { refreshToken: token } = dropboxConnection
         const access = await exchangeRefreshTokenForAccessToken(token)
 
+        Logger.info('DropboxUtil.downloadDropboxFile 2 exchanged token')
+
         const writeDir = 'processing'
         await FSExtra.ensureDir(writeDir)
+
+        Logger.info('DropboxUtil.downloadDropboxFile 3 processing dir exists')
 
         const url = 'https://content.dropboxapi.com/2/files/download'
         const options = {
@@ -386,22 +391,47 @@ export const downloadDropboxFile = async (
             },
         }
         const result = await fetch(url, options)
+
+        Logger.info('DropboxUtil.downloadDropboxFile 4 fetched result')
+
         const outPath = FileUtil.getProcessingPath(piciliFileId, fileExtension)
 
         switch (result.status) {
             case 200:
+                Logger.info('DropboxUtil.downloadDropboxFile 4.1 200 Ok')
                 const fileStream = fs.createWriteStream(outPath)
                 await new Promise((resolve, reject) => {
                     result.body.pipe(fileStream)
-                    result.body.on('error', reject)
+                    result.body.on('error', (err) => {
+                        Logger.error('DropboxUtil.downloadDropboxFile error with result.body writing to disk', err)
+                        Logger.error('associated data', {
+                            outPath,
+                            resultStats: result.status,
+                            dropboxFileId,
+                            piciliFileId,
+                        })
+                        reject()
+                    })
                     fileStream.on('finish', resolve)
+                    fileStream.on('error', (err) => {
+                        Logger.error('DropboxUtil.downloadDropboxFile error in fileStream writing to disk', err)
+                        Logger.error('associated data', {
+                            outPath,
+                            resultStats: result.status,
+                            dropboxFileId,
+                            piciliFileId,
+                        })
+                        reject()
+                    })
                 })
+                Logger.info('DropboxUtil.downloadDropboxFile 4.2 got past promise to write the file to disk')
                 break
             default:
                 Logger.error('non-200 code received when downloading dropbox file', { status: result.status, result })
                 return { success: false, retryInMinutes: 15 }
         }
         const fileCreatedOnDisk = FSExtra.pathExistsSync(outPath)
+        Logger.info('DropboxUtil.downloadDropboxFile 5 checked for file on disk')
 
         if (!fileCreatedOnDisk) {
             Logger.warn('dropbox file not found on disk after download/import', { dropboxFileId, piciliFileId })
