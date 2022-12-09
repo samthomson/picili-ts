@@ -15,9 +15,11 @@ const dropboxConnectionQuery = gql`
 		taskProcessor {
 			stopping
 			isImportingEnabled
-			currentTasksBeingProcessed {
-				id
-				taskType
+			workers {
+				currentTaskBeingProcessed {
+					id
+					taskType
+				}
 			}
 		}
 	}
@@ -37,8 +39,7 @@ const DropboxConnection: React.FunctionComponent = () => {
 	}
 
 	const hasDropboxConnection = data.dropboxConnection
-	const isBusyImporting =
-		(data.taskProcessor.currentTasksBeingProcessed?.length ?? 0) > 0
+	const isBusyImporting = (data.taskProcessor.workers?.length ?? 0) > 0
 
 	return (
 		<div>
