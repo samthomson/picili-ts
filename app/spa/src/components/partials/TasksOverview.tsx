@@ -162,10 +162,20 @@ const TasksOverview: React.FunctionComponent = () => {
 											.humanize()} ago`
 									}
 
+									// started a task after last finishing one
 									if (
 										timeLastStarted.isAfter(
-											timeLastFinished || moment(),
+											timeLastFinished,
 										)
+									) {
+										return `started
+										${moment.duration(timeLastFinished.diff(moment())).humanize()} ago`
+									}
+
+									// finished a task but not started a new one yet
+									if (
+										timeLastFinishedATask &&
+										!timeLastStartedATask
 									) {
 										return `idle since
 										${moment.duration(timeLastFinished.diff(moment())).humanize()} ago`
