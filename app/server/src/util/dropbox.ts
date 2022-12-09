@@ -386,10 +386,10 @@ export const downloadDropboxFile = async (
             },
         }
         const result = await fetch(url, options)
+        const outPath = FileUtil.getProcessingPath(piciliFileId, fileExtension)
 
         switch (result.status) {
             case 200:
-                const outPath = FileUtil.getProcessingPath(piciliFileId, fileExtension)
                 const fileStream = fs.createWriteStream(outPath)
                 await new Promise((resolve, reject) => {
                     result.body.pipe(fileStream)
@@ -401,9 +401,18 @@ export const downloadDropboxFile = async (
                 Logger.error('non-200 code received when downloading dropbox file', { status: result.status, result })
                 return { success: false, retryInMinutes: 15 }
         }
+        const fileCreatedOnDisk = FSExtra.pathExistsSync(outPath)
+
+        if (!fileCreatedOnDisk) {
+            Logger.warn('dropbox file not found on disk after download/import', { dropboxFileId, piciliFileId })
+            return { success: false, retryInMinutes: 15 }
+        } else {
+            return { success: true }
+        }
         return { success: true }
     } catch (err) {
         if (err?.code === 'ETIMEDOUT') {
+            Logger.warn('dropbox api connectivity issue, will try again in 3 minutes', err)
             // connectivity issue, try again in a few minutes
             return { success: false, retryInMinutes: 3 }
         }
