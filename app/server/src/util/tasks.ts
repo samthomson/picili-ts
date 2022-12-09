@@ -127,6 +127,7 @@ export const processTask = async (taskId: number, thread: number) => {
 
     // log task processing
     await DBUtil.createTaskProcessedLog({
+        taskId: task.id,
         taskType: task.taskType,
         thread,
         processingTime: milliseconds,
