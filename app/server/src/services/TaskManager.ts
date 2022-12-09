@@ -73,6 +73,8 @@ export class TaskProcessor {
                     timeLastStartedATask: this.timeLastStartedATask,
                     timeLastFinishedATask: this.timeLastFinishedATask,
                 })
+                this.currentTaskBeingProcessed = undefined
+                this.timeLastFinishedATask = moment().toISOString()
             }
         }
     }
