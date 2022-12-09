@@ -144,19 +144,29 @@ const TasksOverview: React.FunctionComponent = () => {
 									timeLastFinishedATask,
 								)
 
-								const timingDisplay = timeLastStarted.isAfter(
-									timeLastFinished,
-								)
-									? `started ${moment
-											.duration(
-												timeLastStarted.diff(moment()),
-											)
-											.humanize()} ago`
-									: `idle since ${moment
-											.duration(
-												timeLastFinished.diff(moment()),
-											)
-											.humanize()} ago`
+								const timingDisplay = (() => {
+									if (!timeLastStartedATask) {
+										return 'n/a'
+									}
+
+									return timeLastStarted.isAfter(
+										timeLastFinished,
+									)
+										? `started ${moment
+												.duration(
+													timeLastStarted.diff(
+														moment(),
+													),
+												)
+												.humanize()} ago`
+										: `idle since ${moment
+												.duration(
+													timeLastFinished.diff(
+														moment(),
+													),
+												)
+												.humanize()} ago`
+								})()
 
 								return (
 									<tr key={i}>
