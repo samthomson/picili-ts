@@ -1,5 +1,7 @@
 import React from 'react'
 import { useQuery, gql } from '@apollo/client'
+
+import * as Types from '@shared/declarations'
 import CreateDropboxConnection from './CreateDropboxConnection'
 import UpdateDropboxConnection from './UpdateDropboxConnection'
 import RemoveDropboxConnection from './RemoveDropboxConnection'
@@ -39,7 +41,12 @@ const DropboxConnection: React.FunctionComponent = () => {
 	}
 
 	const hasDropboxConnection = data.dropboxConnection
-	const isBusyImporting = (data.taskProcessor.workers?.length ?? 0) > 0
+	const taskProcessor: Types.API.TaskProcessor = data.taskProcessor
+
+	const isBusyImporting =
+		(taskProcessor.workers?.filter(
+			(worker) => !!worker?.currentTaskBeingProcessed,
+		).length ?? 0) > 0
 
 	return (
 		<div>
