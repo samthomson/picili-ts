@@ -151,12 +151,12 @@ const TasksOverview: React.FunctionComponent = () => {
 											.duration(
 												timeLastStarted.diff(moment()),
 											)
-											.humanize()}`
+											.humanize()} ago`
 									: `idle since ${moment
 											.duration(
 												timeLastFinished.diff(moment()),
 											)
-											.humanize()}`
+											.humanize()} ago`
 
 								return (
 									<tr key={i}>
