@@ -41,24 +41,39 @@ export class TaskProcessor {
     public async work(): Promise<void> {
         // Logger.info(`thread:${threadNo + 1} started`)
         while (!this.isShuttingDown) {
-            // get next task
-            const nextTask = await DBUtil.getAndReserveNextTaskId(this._isStopping, this.isVideoCapable)
-            // if task, process task
-            if (nextTask) {
-                Logger.info(
-                    `[thread:${this.threadNo + 1}] will now start next task: ${nextTask.id}:${nextTask.taskType}...`,
-                )
-                this.currentTaskBeingProcessed = nextTask
-                this.timeLastStartedATask = moment().toISOString()
-                await TaskUtil.processTask(nextTask.id, this.threadNo)
-                this.currentTaskBeingProcessed = undefined
-                this.timeLastFinishedATask = moment().toISOString()
-            } else {
-                Logger.info(`[thread:${this.threadNo + 1}] found no task, so delaying...`)
-                // else, delay ten seconds
-                await HelperUtil.delay(10000)
+            try {
+                // get next task
+                const nextTask = await DBUtil.getAndReserveNextTaskId(this._isStopping, this.isVideoCapable)
+                // if task, process task
+                if (nextTask) {
+                    Logger.info(
+                        `[thread:${this.threadNo + 1}] will now start next task: ${nextTask.id}:${
+                            nextTask.taskType
+                        }...`,
+                    )
+                    this.currentTaskBeingProcessed = nextTask
+                    this.timeLastStartedATask = moment().toISOString()
+                    await TaskUtil.processTask(nextTask.id, this.threadNo)
+                    this.currentTaskBeingProcessed = undefined
+                    this.timeLastFinishedATask = moment().toISOString()
+                } else {
+                    Logger.info(`[thread:${this.threadNo + 1}] found no task, so delaying...`)
+                    // else, delay ten seconds
+                    await HelperUtil.delay(10000)
+                }
+                this.callBackToUpdateHowManyProcessableTasksThereAre()
+            } catch (err) {
+                Logger.error('hit an exception in the workers work loop.', err)
+                Logger.error('associated data.', {
+                    threadNo: this.threadNo,
+                    isVideoCapable: this.isVideoCapable,
+                    currentTaskBeingProcessed: this.currentTaskBeingProcessed,
+                    _isStopping: this._isStopping,
+                    _isShuttingDown: this._isShuttingDown,
+                    timeLastStartedATask: this.timeLastStartedATask,
+                    timeLastFinishedATask: this.timeLastFinishedATask,
+                })
             }
-            this.callBackToUpdateHowManyProcessableTasksThereAre()
         }
     }
 }
