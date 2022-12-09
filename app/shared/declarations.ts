@@ -318,6 +318,7 @@ export namespace Core {
 		}
 
 		export interface CreateTaskProcessedLog {
+			taskId: number
 			taskType: Enums.TaskType
 			thread: number
 			processingTime: number
