@@ -72,20 +72,20 @@ const QueryInput: React.FunctionComponent<IProps> = ({ disabled }) => {
 		}
 	}
 
-	React.useEffect(() => {
-		// reset the 'query' used for the typeahead - as we know it's out of date now.
-		setCurrentIndividualQuery(undefined)
-		if (textInputValue !== '') {
-			setCurrentIndividualQuery(undefined)
-			debouncedSearch(textInputValue)
-		}
-	}, [textInputValue])
-
 	const debouncedSearch = React.useRef(
 		debounce((textInputValue) => {
 			setCurrentIndividualQuery(parseTextToQuery(textInputValue))
 		}, 300),
 	).current
+
+	React.useEffect(() => {
+		// reset the 'query' used for the typeahead - as we know it's out of date now.
+		setCurrentIndividualQuery(undefined)
+		debouncedSearch.cancel()
+		if (textInputValue !== '') {
+			debouncedSearch(textInputValue)
+		}
+	}, [textInputValue])
 
 	return (
 		<div id="query-input">
