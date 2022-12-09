@@ -1,0 +1,1 @@
+ALTER TABLE `task_processed_logs` ADD `task_id` INT UNSIGNED NOT NULL AFTER `id`;

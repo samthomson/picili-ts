@@ -1,0 +1,1 @@
+ALTER TABLE `picili`.`task_processed_logs` ADD INDEX `task_processed_logs_task_id` (`task_id`);
