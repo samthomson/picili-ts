@@ -196,6 +196,7 @@ export const TaskModel = Database.define<TaskInstance>(
 
 interface TaskProcessingLogAttributes {
     id: number
+    taskId: number
     taskType: Enums.TaskType
     thread: number
     processingTime: number
@@ -217,6 +218,7 @@ export const TaskProcessingLogModel = Database.define<TaskProcessingLogInstance>
             autoIncrement: true,
             primaryKey: true,
         },
+        taskId: Sequelize.INTEGER.UNSIGNED,
         taskType: Sequelize.ENUM(
             'DROPBOX_SYNC',
             'DROPBOX_FILE_IMPORT_IMAGE',
