@@ -550,6 +550,7 @@ export namespace Core {
 			importTask: boolean // default false
 			priority: number
 			timesSeen: number
+			isProcessed: boolean
 		}
 
 		export interface SystemEventAttributes {

@@ -225,6 +225,7 @@ const taskSelectionWhere = (isStopping: boolean, isVideoCapable: boolean) => {
         after: null,
         // if !isVideoCapable then don't allow video tasks (PROCESS_VIDEO_FILE) - otherwise nevermind
         ...(!isVideoCapable && { taskType: { [Sequelize.Op.not]: 'PROCESS_VIDEO_FILE' } }),
+        isProcessed: false,
     }
 
     return isStopping ? { ...baseWhere, importTask: false } : { ...baseWhere }
@@ -303,7 +304,7 @@ export const getTask = async (taskId: number): Promise<Models.TaskInstance> => {
 }
 
 export const getTaskTypeBreakdown = async (): Promise<Types.API.TaskQueue[]> => {
-    const query = `SELECT task_type as type, COUNT(*) as count FROM tasks GROUP BY type; `
+    const query = `SELECT task_type as type, COUNT(*) as count FROM tasks WHERE is_processed=FALSE GROUP BY type; `
     const taskBreakdownResult = await Database.query(query, {
         type: Sequelize.QueryTypes.SELECT,
     })
@@ -329,10 +330,14 @@ export const taskProcessorMonthLog = async (): Promise<Types.API.TasksProcessedS
 export const updateDependentTasks = async (taskId: number) => {
     await Models.TaskModel.update({ after: null }, { where: { after: taskId } })
 }
-export const removeTask = async (taskId: number): Promise<void> => {
-    await Models.TaskModel.destroy({
-        where: { id: taskId },
-    })
+
+export const completeATask = async (taskId: number): Promise<void> => {
+    await Models.TaskModel.update(
+        {
+            isProcessed: true,
+        },
+        { where: { id: taskId } },
+    )
 }
 
 export const getOldestTaskDate = async (): Promise<string | null> => {

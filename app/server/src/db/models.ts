@@ -147,7 +147,7 @@ export const SyncLogModel = Database.define<SyncLogInstance>(
 // }
 type TaskCreationAttributes = Sequelize.Optional<
     Types.Core.BaseModels.TaskAttributes,
-    'id' | 'timesSeen' | 'from' | 'after' | 'importTask'
+    'id' | 'timesSeen' | 'from' | 'after' | 'importTask' | 'isProcessed'
 >
 
 export interface TaskInstance
@@ -185,6 +185,7 @@ export const TaskModel = Database.define<TaskInstance>(
         importTask: Sequelize.BOOLEAN,
         priority: Sequelize.TINYINT.UNSIGNED,
         timesSeen: Sequelize.SMALLINT.UNSIGNED,
+        isProcessed: Sequelize.BOOLEAN,
     },
     {
         timestamps: true,

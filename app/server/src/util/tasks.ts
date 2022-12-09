@@ -139,7 +139,8 @@ export const finishATask = async (task: Models.TaskInstance): Promise<void> => {
     // update other tasks dependent on this one
     await DBUtil.updateDependentTasks(id)
     // delete/remove task
-    await DBUtil.removeTask(id)
+    // await DBUtil.removeTask(id)
+    await DBUtil.completeATask(id)
     // if dropbox sync, requeue
     if (taskType === Enums.TaskType.DROPBOX_SYNC) {
         await DBUtil.createTask({
