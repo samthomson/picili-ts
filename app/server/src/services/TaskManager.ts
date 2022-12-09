@@ -90,7 +90,7 @@ export class TaskManager {
     setIsStopping(stopping: boolean) {
         this._isStopping = stopping
         // tell each task to stop (or - to not continue after their current task)
-        this.workers.map((worker) => (worker.isStopping = true))
+        this.workers.map((worker) => (worker.isStopping = stopping))
     }
 
     get isImportingEnabled() {
@@ -126,7 +126,9 @@ export class TaskManager {
 
         Logger.info(`creating ${parallelization} workers..`)
         for (let i = 0; i < parallelization; i++) {
-            this.workers.push(new TaskProcessor(i, this.updateHowManyProcessableTasksThereAre, i < videoCapableThreads))
+            this.workers.push(
+                new TaskProcessor(i + 1, this.updateHowManyProcessableTasksThereAre, i < videoCapableThreads),
+            )
         }
         const workersWork = this.workers.map((worker) => worker.work())
         await Promise.all(workersWork)
