@@ -22,7 +22,6 @@ export const listAllDropboxfiles = async (userId: number): Promise<Types.Core.Dr
         return { success: false, error: 'NO_TOKEN', files: [] }
     }
 
-
     const access = await exchangeRefreshTokenForAccessToken(token)
 
     // query dropbox and get all files for that directory (recursively)
@@ -205,11 +204,16 @@ const dropboxListFolder = async (
         try {
             data = await result.json()
         } catch (err) {
-            Logger.error('encountered an error parsing json from dropbox api: list folder', { err, params: { path, cursor }, status: result?.status, result })
+            Logger.error('encountered an error parsing json from dropbox api: list folder', {
+                err,
+                params: { path, cursor },
+                status: result?.status,
+                result,
+            })
             return {
                 success: false,
                 listFolderResponse: null,
-                error: (err?.code || err?.message ) ?? 'UNKNOWN_ERROR',
+                error: (err?.code || err?.message) ?? 'UNKNOWN_ERROR',
             }
         }
 
@@ -404,8 +408,8 @@ export const downloadDropboxFile = async (
             return { success: false, retryInMinutes: 3 }
         }
 
-        Logger.error('Dropbox.downloadDropboxFile caught - UNEXPECTED - exception', {err})
-            
+        Logger.error('Dropbox.downloadDropboxFile caught - UNEXPECTED - exception', err)
+
         return { success: false, retryInMinutes: 60 * 24 }
     }
 }
