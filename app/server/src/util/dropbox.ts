@@ -425,6 +425,11 @@ export const downloadDropboxFile = async (
                         })
                         reject()
                     })
+                    result.body.on('end', (event) => {
+                        Logger.error(`DropboxUtil.downloadDropboxFile filestream emitted 'end' event`, event)
+                        Logger.warn(`associated data`, { taskId, fileStream, event })
+                        // reject()
+                    })
                     fileStream.on('finish', resolve)
                     fileStream.on('error', (err) => {
                         Logger.error('DropboxUtil.downloadDropboxFile error in fileStream writing to disk', err)
