@@ -412,8 +412,9 @@ export const downloadDropboxFile = async (
                         length: result?.body?.length ?? 'no result.body',
                         body: result.body,
                     })
-                    Logger.info('DropboxUtil.downloadDropboxFile 4.12 in promise associated result', result)
+                    Logger.info(`DropboxUtil.downloadDropboxFile 4.12 in promise associated (${taskId}) result`, result)
                     result.body.pipe(fileStream)
+                    Logger.info('DropboxUtil.downloadDropboxFile 4.13 set pipe', { taskId })
                     result.body.on('error', (err) => {
                         Logger.error('DropboxUtil.downloadDropboxFile error with result.body writing to disk', err)
                         Logger.error('associated data', {
