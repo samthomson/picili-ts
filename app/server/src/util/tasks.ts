@@ -187,7 +187,7 @@ export const fileImport = async (fileId: number, taskId: number): Promise<Types.
         const dropboxFile = file.dropbox_file
         const { dropboxId, path } = dropboxFile
 
-        const downloadOutcome = await DropboxUtil.downloadDropboxFile(dropboxId, userId, fileId, fileExtension)
+        const downloadOutcome = await DropboxUtil.downloadDropboxFile(dropboxId, userId, fileId, fileExtension, taskId)
 
         if (downloadOutcome.success) {
             // create file dir tags
