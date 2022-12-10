@@ -304,13 +304,42 @@ export const getTask = async (taskId: number): Promise<Models.TaskInstance> => {
 }
 
 export const getTaskTypeBreakdown = async (): Promise<Types.API.TaskQueue[]> => {
-    const query = `SELECT task_type as type, COUNT(*) as count FROM tasks WHERE is_processed=FALSE GROUP BY type; `
-    const taskBreakdownResult = await Database.query(query, {
-        type: Sequelize.QueryTypes.SELECT,
-    })
+    // const query = `SELECT task_type as type, COUNT(qyer) as count FROM tasks WHERE is_processed=FALSE GROUP BY type; `
+    // todo: maybe later relate tasks to file via file_id to only include users tasks. For now showing all tasks the system is working on is fine and perhaps preferable.
+    const query = `
+    SELECT query1.task_type as type, COUNT(query1.id) as count, COALESCE(count2, 0) as unblocked, COALESCE(count3, 0) as actionable
+    FROM tasks as query1
+    LEFT JOIN (
+        SELECT task_type, COUNT(id) as count2 
+        FROM tasks
+        WHERE is_processed=FALSE
+        AND after IS NULL
+        GROUP BY task_type
+    ) query2 ON query1.task_type = query2.task_type
+    LEFT JOIN (
+        SELECT task_type, COUNT(id) as count3 
+        FROM tasks
+        WHERE is_processed=FALSE
+        AND after IS NULL
+        AND TIMESTAMP(tasks.from) <= NOW()
+        GROUP BY task_type
+    ) query3 ON query1.task_type = query3.task_type
+    WHERE query1.is_processed=FALSE GROUP BY type;
+    `
+    const taskBreakdownResult: { type: string; count: number; unblocked: number; actionable: number }[] =
+        await Database.query(query, {
+            type: Sequelize.QueryTypes.SELECT,
+        })
 
     // @ts-ignore
-    return taskBreakdownResult?.map((row) => ({ type: row.type, count: row.count })) ?? []
+    return (
+        taskBreakdownResult?.map(({ type, count, unblocked, actionable }) => ({
+            type,
+            count,
+            unblocked,
+            actionable,
+        })) ?? []
+    )
 }
 
 export const createTaskProcessedLog = async (createObject: Types.Core.Inputs.CreateTaskProcessedLog) => {

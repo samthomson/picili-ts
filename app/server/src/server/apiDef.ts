@@ -22,6 +22,8 @@ const typeDefs = gql`
     type TaskQueue {
         type: String
         count: Int
+        unblocked: Int
+        actionable: Int
     }
     type TasksActionable {
         actionableTasksVideoCapable: Int

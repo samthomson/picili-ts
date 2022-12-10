@@ -14,6 +14,8 @@ export namespace API {
 	export type TaskQueue = {
 		type: string
 		count: number
+		unblocked: number
+		actionable: number
 	}
 
 	type TasksProcessable = {
