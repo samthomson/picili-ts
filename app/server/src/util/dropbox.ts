@@ -411,7 +411,7 @@ export const downloadDropboxFile = async (
                             taskId,
                             result,
                             length: result?.body?.length ?? 'no result.body',
-                            body: result.body,
+                            // body: result.body,
                         })
                         Logger.info(
                             `DropboxUtil.downloadDropboxFile 4.12 in promise associated (${taskId}) result`,
