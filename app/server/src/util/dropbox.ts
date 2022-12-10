@@ -433,6 +433,10 @@ export const downloadDropboxFile = async (
                         })
                         reject()
                     })
+                    fileStream.on('close', (event) => {
+                        Logger.warn(`DropboxUtil.downloadDropboxFile filestream emitted 'close' event`, { event })
+                        Logger.warn(`associated data`, { taskId, fileStream, event })
+                    })
                 })
                 Logger.info('DropboxUtil.downloadDropboxFile 4.2 got past promise to write the file to disk', {
                     taskId,
