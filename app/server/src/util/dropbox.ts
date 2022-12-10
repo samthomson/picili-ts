@@ -456,6 +456,7 @@ export const downloadDropboxFile = async (
                             `DropboxUtil.downloadDropboxFile 4.14 promise error thrown (${taskId}) result`,
                             err,
                         )
+                        reject()
                     }
                 })
                 Logger.info('DropboxUtil.downloadDropboxFile 4.2 got past promise to write the file to disk', {
