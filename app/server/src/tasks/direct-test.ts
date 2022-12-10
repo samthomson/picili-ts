@@ -15,7 +15,7 @@ import path from 'path'
 import FSExtra from 'fs-extra'
 
 const file = async () => {
-    await TasksUtil.fileImport(661)
+    await TasksUtil.fileImport(661, 8008)
     // await TasksUtil.processImage(619, 255)
     // corrupt test
     // await TasksUtil.processImage(32)
