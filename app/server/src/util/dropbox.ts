@@ -406,47 +406,57 @@ export const downloadDropboxFile = async (
                     outPath,
                 })
                 await new Promise((resolve, reject) => {
-                    Logger.info('DropboxUtil.downloadDropboxFile 4.12 in promise', {
-                        taskId,
-                        result,
-                        length: result?.body?.length ?? 'no result.body',
-                        body: result.body,
-                    })
-                    Logger.info(`DropboxUtil.downloadDropboxFile 4.12 in promise associated (${taskId}) result`, result)
-                    result.body.pipe(fileStream)
-                    Logger.info('DropboxUtil.downloadDropboxFile 4.13 set pipe', { taskId })
-                    result.body.on('error', (err) => {
-                        Logger.error('DropboxUtil.downloadDropboxFile error with result.body writing to disk', err)
-                        Logger.error('associated data', {
+                    try {
+                        Logger.info('DropboxUtil.downloadDropboxFile 4.12 in promise', {
                             taskId,
-                            outPath,
-                            resultStats: result.status,
-                            dropboxFileId,
-                            piciliFileId,
+                            result,
+                            length: result?.body?.length ?? 'no result.body',
+                            body: result.body,
                         })
-                        reject()
-                    })
-                    result.body.on('end', (event) => {
-                        Logger.error(`DropboxUtil.downloadDropboxFile filestream emitted 'end' event`, event)
-                        Logger.warn(`associated data`, { taskId, fileStream, event })
-                        // reject()
-                    })
-                    fileStream.on('finish', resolve)
-                    fileStream.on('error', (err) => {
-                        Logger.error('DropboxUtil.downloadDropboxFile error in fileStream writing to disk', err)
-                        Logger.error('associated data', {
-                            taskId,
-                            outPath,
-                            resultStats: result.status,
-                            dropboxFileId,
-                            piciliFileId,
+                        Logger.info(
+                            `DropboxUtil.downloadDropboxFile 4.12 in promise associated (${taskId}) result`,
+                            result,
+                        )
+                        result.body.pipe(fileStream)
+                        Logger.info('DropboxUtil.downloadDropboxFile 4.13 set pipe', { taskId })
+                        result.body.on('error', (err) => {
+                            Logger.error('DropboxUtil.downloadDropboxFile error with result.body writing to disk', err)
+                            Logger.error('associated data', {
+                                taskId,
+                                outPath,
+                                resultStats: result.status,
+                                dropboxFileId,
+                                piciliFileId,
+                            })
+                            reject()
                         })
-                        reject()
-                    })
-                    fileStream.on('close', (event) => {
-                        Logger.warn(`DropboxUtil.downloadDropboxFile filestream emitted 'close' event`, { event })
-                        Logger.warn(`associated data`, { taskId, fileStream, event })
-                    })
+                        result.body.on('end', (event) => {
+                            Logger.error(`DropboxUtil.downloadDropboxFile filestream emitted 'end' event`, event)
+                            Logger.warn(`associated data`, { taskId, fileStream, event })
+                            // reject()
+                        })
+                        fileStream.on('finish', resolve)
+                        fileStream.on('error', (err) => {
+                            Logger.error('DropboxUtil.downloadDropboxFile error in fileStream writing to disk', err)
+                            Logger.error('associated data', {
+                                taskId,
+                                outPath,
+                                resultStats: result.status,
+                                dropboxFileId,
+                                piciliFileId,
+                            })
+                            reject()
+                        })
+                        fileStream.on('close', (event) => {
+                            Logger.warn(`DropboxUtil.downloadDropboxFile filestream emitted 'close' event`, { event })
+                            Logger.warn(`associated data`, { taskId, fileStream, event })
+                        })
+                    } catch (err) {
+                        Logger.error(
+                            `DropboxUtil.downloadDropboxFile 4.14 promise error thrown (${taskId}) result`,
+                            err,
+                        )
+                    }
                 })
                 Logger.info('DropboxUtil.downloadDropboxFile 4.2 got past promise to write the file to disk', {
                     taskId,
