@@ -448,6 +448,7 @@ export const downloadDropboxFile = async (
             taskId,
             piciliFileId,
             dropboxFileId,
+            fileCreatedOnDisk,
         })
 
         if (!fileCreatedOnDisk) {
@@ -458,6 +459,12 @@ export const downloadDropboxFile = async (
             })
             return { success: false, retryInMinutes: 15 }
         } else {
+            Logger.info('DropboxUtil.downloadDropboxFile 6 reached the end, returning true', {
+                taskId,
+                piciliFileId,
+                dropboxFileId,
+                fileCreatedOnDisk,
+            })
             return { success: true }
         }
     } catch (err) {
