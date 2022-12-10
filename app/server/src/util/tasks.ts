@@ -28,7 +28,7 @@ export const processTask = async (taskId: number, thread: number) => {
                 break
             case Enums.TaskType.DROPBOX_FILE_IMPORT_IMAGE:
             case Enums.TaskType.DROPBOX_FILE_IMPORT_VIDEO:
-                taskOutcome = await fileImport(task.relatedPiciliFileId)
+                taskOutcome = await fileImport(task.relatedPiciliFileId, taskId)
                 if (!taskOutcome.success && taskOutcome.retryInMinutes) {
                     // requeue the task
                     await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
@@ -153,7 +153,7 @@ export const finishATask = async (task: Models.TaskInstance): Promise<void> => {
     }
 }
 
-export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
+export const fileImport = async (fileId: number, taskId: number): Promise<Types.Core.TaskProcessorResult> => {
     try {
         // get this file first, so that we can lift off the `userId` if we
         // get local picili file with dropbox file
@@ -164,7 +164,11 @@ export const fileImport = async (fileId: number): Promise<Types.Core.TaskProcess
         const isThereSpaceToImportAFile = await FileUtil.isThereSpaceToImportAFile(fileType)
 
         if (!isThereSpaceToImportAFile) {
-            Logger.warn('not enough space in procesing dir to import files from dropbox.')
+            Logger.warn('not enough space in procesing dir to import files from dropbox.', {
+                taskId,
+                fileId,
+                fileType,
+            })
             // create a system event
             await DBUtil.createSystemEvent({
                 userId,
