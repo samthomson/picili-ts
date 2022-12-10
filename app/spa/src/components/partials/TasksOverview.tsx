@@ -165,7 +165,7 @@ const TasksOverview: React.FunctionComponent = () => {
 									// started a task after last finishing one
 									if (
 										timeLastStarted.isAfter(
-											timeLastFinished,
+											timeLastFinished /* || moment()*/,
 										)
 									) {
 										return `started
@@ -174,8 +174,12 @@ const TasksOverview: React.FunctionComponent = () => {
 
 									// finished a task but not started a new one yet
 									if (
-										timeLastFinishedATask &&
-										!timeLastStartedATask
+										// this commented out line doesn't really make sense as there would always be a timeLastStartedATask if we have finished one.
+										// (timeLastFinishedATask &&
+										// 	!timeLastStartedATask) ||
+										timeLastFinished.isAfter(
+											timeLastStarted,
+										)
 									) {
 										return `idle since
 										${moment.duration(timeLastFinished.diff(moment())).humanize()} ago`
