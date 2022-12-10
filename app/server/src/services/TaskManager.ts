@@ -47,9 +47,7 @@ export class TaskProcessor {
                 // if task, process task
                 if (nextTask) {
                     Logger.info(
-                        `[thread:${this.threadNo + 1}] will now start next task: ${nextTask.id}:${
-                            nextTask.taskType
-                        }...`,
+                        `[thread:${this.threadNo}] will now start next task: ${nextTask.id}:${nextTask.taskType}...`,
                     )
                     this.currentTaskBeingProcessed = nextTask
                     this.timeLastStartedATask = moment().toISOString()
