@@ -408,7 +408,10 @@ export const downloadDropboxFile = async (
                 await new Promise((resolve, reject) => {
                     Logger.info('DropboxUtil.downloadDropboxFile 4.12 in promise', {
                         taskId,
+                        result,
+                        body: result.body,
                     })
+                    Logger.info('DropboxUtil.downloadDropboxFile 4.12 in promise associated result', result)
                     result.body.pipe(fileStream)
                     result.body.on('error', (err) => {
                         Logger.error('DropboxUtil.downloadDropboxFile error with result.body writing to disk', err)
