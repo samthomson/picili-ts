@@ -17,6 +17,8 @@ const taskSummaryQuery = gql`
 				queues {
 					type
 					count
+					unblocked
+					actionable
 				}
 			}
 			processed {
@@ -91,6 +93,8 @@ const TasksOverview: React.FunctionComponent = () => {
 						<tr>
 							<td>type</td>
 							<td>count</td>
+							<td>unblocked</td>
+							<td>actionable</td>
 						</tr>
 					</thead>
 					<tbody>
@@ -102,6 +106,8 @@ const TasksOverview: React.FunctionComponent = () => {
 										.toLowerCase()}
 								</td>
 								<td>{row.count}</td>
+								<td>{row.unblocked}</td>
+								<td>{row.actionable}</td>
 							</tr>
 						))}
 					</tbody>
