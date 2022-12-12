@@ -55,11 +55,17 @@ export const processTask = async (taskId: number, thread: number) => {
                 }
                 break
             case Enums.TaskType.ELEVATION_LOOKUP:
+                /*
+                // temporarily postpone all elevation looks indefinitely
                 taskOutcome = await elevationLookup(task.relatedPiciliFileId, taskId)
                 if (!taskOutcome.success && taskOutcome.retryInMinutes) {
                     // requeue the task
                     await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
                 }
+                */
+                // check again in a day (if an elevation processor has been implemented)
+                taskOutcome = { success: false, throttled: true }
+
                 break
             case Enums.TaskType.OCR_GENERIC:
                 taskOutcome = await ocrGeneric(task.relatedPiciliFileId)
