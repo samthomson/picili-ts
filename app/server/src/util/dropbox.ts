@@ -399,56 +399,79 @@ export const downloadDropboxFile = async (
                 return { success: false, retryInMinutes: 15 }
             */
 
-        const fileDownloadSuccess = await new Promise<boolean>(async (resolve, reject) => {
-            const pipeline = promisify(stream.pipeline)
+        const fileDownloadSuccess = await new Promise<{ success: boolean; retryInMinutes?: number }>(
+            async (resolve, reject) => {
+                const pipeline = promisify(stream.pipeline)
 
-            try {
-                await pipeline(
-                    got.stream
-                        .post(url, {
-                            body: '',
-                            headers: {
-                                Authorization: 'Bearer ' + access,
-                                'Dropbox-API-Arg': `{"path": "${dropboxFileId}"}`,
-                            },
-                            throwHttpErrors: false,
-                        })
-                        // todo: check for non-200 response here?
-                        // .on('response', async (resp) => {
-                        //     Logger.info('stream response', resp)
-                        // })
-                        .on('error', (error) => {
-                            Logger.warn(`1. Download failed: ${error.message}`)
-                            resolve(false)
-                        }),
-                    fs
-                        .createWriteStream(outPath)
-                        .on('error', (error) => {
-                            Logger.error(`4. Could not write file to system: ${error.message}`)
-                            resolve(false)
-                        })
-                        .on('finish', () => {
-                            Logger.info(`File downloaded to ${outPath}`)
-                            resolve(true)
-                        }),
-                )
-            } catch (err) {
-                Logger.error('2. caught error thrown in pipelines', err?.message)
-            }
-        })
+                try {
+                    await pipeline(
+                        got.stream
+                            .post(url, {
+                                body: '',
+                                headers: {
+                                    Authorization: 'Bearer ' + access,
+                                    'Dropbox-API-Arg': `{"path": "${dropboxFileId}"}`,
+                                },
+                                throwHttpErrors: false,
+                            })
+                            // todo: check for non-200 response here?
+                            .on('response', async (resp) => {
+                                if (resp?.statusCode !== 200) {
+                                    Logger.error('non-200 code received when downloading dropbox file', {
+                                        taskId,
+                                        status: resp?.statusCode,
+                                        resp,
+                                        piciliFileId,
+                                        dropboxFileId,
+                                    })
+                                    // todo: resolve this in a way that can be handled
+                                    return { success: false, retryInMinutes: 15 }
+                                }
+                                // Logger.info('stream response', resp)
+                            })
+                            .on('error', (error) => {
+                                Logger.warn(`1. Download failed: ${error.message}`)
+                                resolve({ success: false })
+                            }),
+                        fs
+                            .createWriteStream(outPath)
+                            .on('error', (error) => {
+                                Logger.error(`4. Could not write file to system: ${error.message}`)
+                                resolve({ success: false })
+                            })
+                            .on('finish', () => {
+                                Logger.info(`File downloaded to ${outPath}`)
+                                resolve({ success: true })
+                            }),
+                    )
+                } catch (err) {
+                    Logger.error('2. caught error thrown in pipelines', err?.message)
+                }
+            },
+        )
 
-        const fileCreatedOnDisk = FSExtra.pathExistsSync(outPath)
+        // were we throttled?
 
-        if (!fileCreatedOnDisk) {
-            Logger.warn('dropbox file not found on disk after download/import', {
-                taskId,
-                dropboxFileId,
-                piciliFileId,
-            })
-            return { success: false, retryInMinutes: 15 }
-        } else {
-            return { success: fileDownloadSuccess }
+        if (fileDownloadSuccess?.retryInMinutes) {
+            return fileDownloadSuccess
         }
+
+        if (fileDownloadSuccess.success) {
+            const fileCreatedOnDisk = FSExtra.pathExistsSync(outPath)
+            if (!fileCreatedOnDisk) {
+                Logger.warn('dropbox file not found on disk after download/import', {
+                    taskId,
+                    dropboxFileId,
+                    piciliFileId,
+                })
+                return { success: false, retryInMinutes: 15 }
+            } else {
+                return { success: fileDownloadSuccess.success }
+            }
+        } else {
+            return { success: false }
+        }
+
         // })()
         // return r
     } catch (err) {
