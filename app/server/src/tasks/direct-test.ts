@@ -315,6 +315,22 @@ const bulkFileDownload = async () => {
     }
 }
 
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+// const apiTestElevation = async () => {
+//     const results = await Models.FileModel.findAll({
+//         limit: 100,
+//     })
+
+//     for (let i = 0; i < results.length; i++) {
+//         const { latitude, longitude, address, id } = results[i]
+
+//         const apiResult = await APIUtil.openTopoDataElevationLookup(latitude, longitude, 8008)
+//         console.log({ id, address, elevation: apiResult.elevation })
+//         await delay(1000)
+//     }
+// }
+
 // file()
 // imaggaTest()
 // geo()
@@ -331,4 +347,5 @@ const bulkFileDownload = async () => {
 // createSystemEvent()
 // checkExifData()
 // testFileDownload()
-bulkFileDownload()
+// bulkFileDownload()
+// apiTestElevation()
