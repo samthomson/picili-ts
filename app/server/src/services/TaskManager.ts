@@ -5,7 +5,6 @@ import * as HelperUtil from '../util/helper'
 import * as DBUtil from '../util/db'
 import * as Models from '../db/models'
 import Logger from '../services/logging'
-import * as Enums from '../../../shared/enums'
 
 export class TaskProcessor {
     threadNo: number
