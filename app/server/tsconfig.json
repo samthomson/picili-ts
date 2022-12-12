@@ -7,7 +7,7 @@
 		"downlevelIteration": true,
 		"esModuleInterop": true,
 		"module": "commonjs",
-		"target": "ES5",
+		"target": "ES2015",
 		"noEmit": true,
 		"paths": {
 			"@shared/*": [

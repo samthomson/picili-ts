@@ -11,6 +11,9 @@ import * as fs from 'fs'
 import FSExtra from 'fs-extra'
 import moment from 'moment'
 import { Dropbox } from 'dropbox'
+import got from 'got-cjs'
+import { promisify } from 'node:util'
+import stream from 'node:stream'
 
 export const listAllDropboxfiles = async (userId: number): Promise<Types.Core.DropboxListFilesResponse> => {
     // get dropbox connection details for user
@@ -371,100 +374,20 @@ export const downloadDropboxFile = async (
     taskId: number,
 ): Promise<Types.Core.DropboxDownloadFileResponse> => {
     try {
-        Logger.info('DropboxUtil.downloadDropboxFile 1 start', { taskId, piciliFileId, dropboxFileId })
         const dropboxConnection = await DBUtil.getDropboxConnection(userId)
         const { refreshToken: token } = dropboxConnection
         const access = await exchangeRefreshTokenForAccessToken(token)
 
-        Logger.info('DropboxUtil.downloadDropboxFile 2 exchanged token', { taskId, piciliFileId, dropboxFileId })
-
         const writeDir = 'processing'
         await FSExtra.ensureDir(writeDir)
 
-        Logger.info('DropboxUtil.downloadDropboxFile 3 processing dir exists', { taskId, piciliFileId, dropboxFileId })
-
         const url = 'https://content.dropboxapi.com/2/files/download'
-        const options = {
-            method: 'POST',
-            headers: {
-                Authorization: 'Bearer ' + access,
-                'Dropbox-API-Arg': `{"path": "${dropboxFileId}"}`,
-            },
-        }
-        const result = await fetch(url, options)
-
-        Logger.info('DropboxUtil.downloadDropboxFile 4 fetched result', { taskId, piciliFileId, dropboxFileId })
 
         const outPath = FileUtil.getProcessingPath(piciliFileId, fileExtension)
 
-        switch (result.status) {
-            case 200:
-                Logger.info('DropboxUtil.downloadDropboxFile 4.1 200 Ok', { taskId, piciliFileId, dropboxFileId })
-                const fileStream = fs.createWriteStream(outPath)
-                Logger.info('DropboxUtil.downloadDropboxFile 4.11 created write stream', {
-                    taskId,
-                    outPath,
-                })
-                await new Promise((resolve, reject) => {
-                    try {
-                        Logger.info('DropboxUtil.downloadDropboxFile 4.12 in promise', {
-                            taskId,
-                            result,
-                            length: result?.body?.length ?? 'no result.body',
-                            // body: result.body,
-                        })
-                        Logger.info(
-                            `DropboxUtil.downloadDropboxFile 4.12 in promise associated (${taskId}) result`,
-                            result,
-                        )
-                        result.body.pipe(fileStream)
-                        Logger.info('DropboxUtil.downloadDropboxFile 4.13 set pipe', { taskId })
-                        result.body.on('error', (err) => {
-                            Logger.error('DropboxUtil.downloadDropboxFile error with result.body writing to disk', err)
-                            Logger.error('associated data', {
-                                taskId,
-                                outPath,
-                                resultStats: result.status,
-                                dropboxFileId,
-                                piciliFileId,
-                            })
-                            reject()
-                        })
-                        result.body.on('end', (event) => {
-                            Logger.error(`DropboxUtil.downloadDropboxFile filestream emitted 'end' event`, event)
-                            Logger.warn(`associated data`, { taskId, fileStream, event })
-                            // reject()
-                        })
-                        fileStream.on('finish', resolve)
-                        fileStream.on('error', (err) => {
-                            Logger.error('DropboxUtil.downloadDropboxFile error in fileStream writing to disk', err)
-                            Logger.error('associated data', {
-                                taskId,
-                                outPath,
-                                resultStats: result.status,
-                                dropboxFileId,
-                                piciliFileId,
-                            })
-                            reject()
-                        })
-                        fileStream.on('close', (event) => {
-                            Logger.warn(`DropboxUtil.downloadDropboxFile filestream emitted 'close' event`, { event })
-                            Logger.warn(`associated data`, { taskId, fileStream, event })
-                        })
-                    } catch (err) {
-                        Logger.error(
-                            `DropboxUtil.downloadDropboxFile 4.14 promise error thrown (${taskId}) result`,
-                            err,
-                        )
-                        reject()
-                    }
-                })
-                Logger.info('DropboxUtil.downloadDropboxFile 4.2 got past promise to write the file to disk', {
-                    taskId,
-                    piciliFileId,
-                    dropboxFileId,
-                })
-                break
+        /*
+            non-200:
+
             default:
                 Logger.error('non-200 code received when downloading dropbox file', {
                     taskId,
@@ -474,14 +397,47 @@ export const downloadDropboxFile = async (
                     dropboxFileId,
                 })
                 return { success: false, retryInMinutes: 15 }
-        }
-        const fileCreatedOnDisk = FSExtra.pathExistsSync(outPath)
-        Logger.info('DropboxUtil.downloadDropboxFile 5 checked for file on disk', {
-            taskId,
-            piciliFileId,
-            dropboxFileId,
-            fileCreatedOnDisk,
+            */
+
+        const fileDownloadSuccess = await new Promise<boolean>(async (resolve, reject) => {
+            const pipeline = promisify(stream.pipeline)
+
+            try {
+                await pipeline(
+                    got.stream
+                        .post(url, {
+                            body: '',
+                            headers: {
+                                Authorization: 'Bearer ' + access,
+                                'Dropbox-API-Arg': `{"path": "${dropboxFileId}"}`,
+                            },
+                            throwHttpErrors: false,
+                        })
+                        // todo: check for non-200 response here?
+                        // .on('response', async (resp) => {
+                        //     Logger.info('stream response', resp)
+                        // })
+                        .on('error', (error) => {
+                            Logger.warn(`1. Download failed: ${error.message}`)
+                            resolve(false)
+                        }),
+                    fs
+                        .createWriteStream(outPath)
+                        .on('error', (error) => {
+                            Logger.error(`4. Could not write file to system: ${error.message}`)
+                            resolve(false)
+                        })
+                        .on('finish', () => {
+                            Logger.info(`File downloaded to ${outPath}`)
+                            resolve(true)
+                        }),
+                )
+            } catch (err) {
+                Logger.error('2. caught error thrown in pipelines', err?.message)
+            }
         })
+
+        const fileCreatedOnDisk = FSExtra.pathExistsSync(outPath)
 
         if (!fileCreatedOnDisk) {
             Logger.warn('dropbox file not found on disk after download/import', {
@@ -491,15 +447,12 @@ export const downloadDropboxFile = async (
             })
             return { success: false, retryInMinutes: 15 }
         } else {
-            Logger.info('DropboxUtil.downloadDropboxFile 6 reached the end, returning true', {
-                taskId,
-                piciliFileId,
-                dropboxFileId,
-                fileCreatedOnDisk,
-            })
-            return { success: true }
+            return { success: fileDownloadSuccess }
         }
+        // })()
+        // return r
     } catch (err) {
+        // todo: probably don't need this dropbox check anymore
         if (err?.code === 'ETIMEDOUT') {
             Logger.warn('dropbox api connectivity issue, will try again in 3 minutes', err)
             Logger.info('associated with warning', { taskId, piciliFileId, dropboxFileId })

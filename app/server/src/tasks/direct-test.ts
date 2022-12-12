@@ -269,6 +269,52 @@ const checkExifData = async () => {
     console.log(exifData)
 }
 
+const testFileDownload = async () => {
+    await DropboxUtil.downloadDropboxFile('id:qEr0pTQv8p0AAAAAAAu_NQ', 8008, 8008, 'jpg', 8008)
+}
+
+const bulkFileDownload = async () => {
+    // populate list of files to test against
+    const dropboxFiles = await Models.DropboxFileModel.findAll({
+        include: Models.FileModel,
+    })
+
+    // test just against images
+    // @ts-ignore
+    const files = dropboxFiles.filter(({ file: { fileType } }) => fileType === Enums.FileType.IMAGE)
+
+    console.log('counts', { dCount: dropboxFiles.length, pCount: files.length })
+    // for each file
+    const outcome = {
+        success: 0,
+        failure: 0,
+    }
+    for (let i = 0; i < files.length && i < 200; i++) {
+        const { dropboxId } = dropboxFiles[i]
+        const outPath = FileUtil.getProcessingPath(i, 'jpg')
+        // timeout error
+        // console.log(dropboxFiles[i])
+        const timeoutCheck = setInterval(async () => {
+            Logger.warn('waited 60s for the task processor to downlaod a file', { dropboxId, outPath })
+            process.exit(0)
+        }, 60000)
+        // try to download
+        const downloadOutcome = await DropboxUtil.downloadDropboxFile(dropboxId, 3, i, 'jpg', 8008)
+        // reset timeout check
+        clearTimeout(timeoutCheck)
+        // clean up - delete the file
+        if (downloadOutcome.success) {
+            outcome.success++
+            // fs.rmSync(outPath)
+        } else {
+            outcome.failure++
+            Logger.info('3. failed to download the file', { dropboxId, outPath })
+            console.log(outcome)
+        }
+        console.log(outcome)
+    }
+}
+
 // file()
 // imaggaTest()
 // geo()
@@ -281,6 +327,8 @@ const checkExifData = async () => {
 // taskTest()
 // video()
 // error()
-testProcessingSize()
+// testProcessingSize()
 // createSystemEvent()
 // checkExifData()
+// testFileDownload()
+bulkFileDownload()

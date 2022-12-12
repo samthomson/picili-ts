@@ -5,6 +5,7 @@ import * as HelperUtil from '../util/helper'
 import * as DBUtil from '../util/db'
 import * as Models from '../db/models'
 import Logger from '../services/logging'
+import * as Enums from '../../../shared/enums'
 
 export class TaskProcessor {
     threadNo: number
@@ -51,11 +52,20 @@ export class TaskProcessor {
                     )
                     this.currentTaskBeingProcessed = nextTask
                     this.timeLastStartedATask = moment().toISOString()
+
+                    // const timeoutCheck = setInterval(async () => {
+                    //     Logger.warn('waited 30s for the task processor to complete a task')
+                    //     if (nextTask.taskType === Enums.TaskType.DROPBOX_FILE_IMPORT_IMAGE) {
+                    //         Logger.warn('waited for a DROPBOX_FILE_IMPORT_IMAGE task', nextTask)
+                    //     }
+                    // }, 30000)
+
                     await TaskUtil.processTask(nextTask.id, this.threadNo)
+                    // clearTimeout(timeoutCheck)
                     this.currentTaskBeingProcessed = undefined
                     this.timeLastFinishedATask = moment().toISOString()
                 } else {
-                    Logger.info(`[thread:${this.threadNo + 1}] found no task, so delaying...`)
+                    Logger.info(`[thread:${this.threadNo}] found no task, so delaying...`)
                     // else, delay ten seconds
                     await HelperUtil.delay(10000)
                 }
@@ -135,7 +145,7 @@ export class TaskManager {
         this.updateHowManyProcessableTasksThereAre()
 
         // todo: experiment with raising this, and later adjusting based on available resources
-        const parallelization = 5
+        const parallelization = 10
         // ffmpeg uses loads of ram, already it is limited to one thread (of CPU) but here we limit to only one ffmpeg/video task at a time. need about 1gb for one thread to run ffmpeg.
         const videoCapableThreads = 1
 
