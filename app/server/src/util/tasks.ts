@@ -55,7 +55,7 @@ export const processTask = async (taskId: number, thread: number) => {
                 }
                 break
             case Enums.TaskType.ELEVATION_LOOKUP:
-                taskOutcome = await elevationLookup(task.relatedPiciliFileId)
+                taskOutcome = await elevationLookup(task.relatedPiciliFileId, taskId)
                 if (!taskOutcome.success && taskOutcome.retryInMinutes) {
                     // requeue the task
                     await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
@@ -709,13 +709,13 @@ export const addressLookup = async (fileId: number): Promise<Types.Core.TaskProc
     }
 }
 
-export const elevationLookup = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
+export const elevationLookup = async (fileId: number, taskId: number): Promise<Types.Core.TaskProcessorResult> => {
     const file = await Models.FileModel.findByPk(fileId)
     const { userId, latitude, longitude } = file
 
     if (latitude && longitude) {
         // get elevation data and save on file model
-        const lookupElevation = await APIUtil.googleElevationLookup(latitude, longitude)
+        const lookupElevation = await APIUtil.googleElevationLookup(latitude, longitude, taskId)
 
         if (lookupElevation.success) {
             const { elevation } = lookupElevation
