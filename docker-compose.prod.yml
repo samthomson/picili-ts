@@ -47,6 +47,10 @@ services:
       # only in dev do we need phpmyadmin (so we can just bash into the server and stil use mysql/phpmyadmin)
       - phpmyadmin
     mem_limit: ${APP_MEM_LIMIT_PROD}
+    logging:
+      options:
+        max-size: 10m
+
 
   mysql:
     image: mysql:5.7
