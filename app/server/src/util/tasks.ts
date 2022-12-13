@@ -55,16 +55,12 @@ export const processTask = async (taskId: number, thread: number) => {
                 }
                 break
             case Enums.TaskType.ELEVATION_LOOKUP:
-                /*
                 // temporarily postpone all elevation looks indefinitely
                 taskOutcome = await elevationLookup(task.relatedPiciliFileId, taskId)
                 if (!taskOutcome.success && taskOutcome.retryInMinutes) {
                     // requeue the task
                     await DBUtil.postponeTask(task, taskOutcome.retryInMinutes)
                 }
-                */
-                // check again in a day (if an elevation processor has been implemented)
-                taskOutcome = { success: false, throttled: true }
 
                 break
             case Enums.TaskType.OCR_GENERIC:
@@ -721,7 +717,7 @@ export const elevationLookup = async (fileId: number, taskId: number): Promise<T
 
     if (latitude && longitude) {
         // get elevation data and save on file model
-        const lookupElevation = await APIUtil.googleElevationLookup(latitude, longitude, taskId)
+        const lookupElevation = await APIUtil.openTopoDataElevationLookup(latitude, longitude, taskId)
 
         if (lookupElevation.success) {
             const { elevation } = lookupElevation

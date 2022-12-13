@@ -317,19 +317,23 @@ const bulkFileDownload = async () => {
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-// const apiTestElevation = async () => {
-//     const results = await Models.FileModel.findAll({
-//         limit: 100,
-//     })
+const apiTestElevation = async () => {
+    const results = await Models.FileModel.findAll({
+        where: {
+            isThumbnailed: true,
+        },
+        offset: 250,
+        limit: 100,
+    })
 
-//     for (let i = 0; i < results.length; i++) {
-//         const { latitude, longitude, address, id } = results[i]
+    for (let i = 0; i < results.length; i++) {
+        const { latitude, longitude, address, id } = results[i]
 
-//         const apiResult = await APIUtil.openTopoDataElevationLookup(latitude, longitude, 8008)
-//         console.log({ id, address, elevation: apiResult.elevation })
-//         await delay(1000)
-//     }
-// }
+        const apiResult = await APIUtil.openTopoDataElevationLookup(latitude, longitude, 8008)
+        console.log({ id, address, elevation: apiResult?.elevation })
+        await delay(1000)
+    }
+}
 
 // file()
 // imaggaTest()
@@ -348,4 +352,4 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 // checkExifData()
 // testFileDownload()
 // bulkFileDownload()
-// apiTestElevation()
+apiTestElevation()

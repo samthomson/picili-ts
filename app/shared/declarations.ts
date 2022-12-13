@@ -217,13 +217,13 @@ export namespace ExternalAPI {
 		}
 	}
 
-	export namespace GoogleElevation {
-		type GoogleElevationResult = {
+	export namespace ElevationAPI {
+		type ElevationAPIResult = {
 			elevation: number
 		}
 
-		export type GoogleElevationResponse = {
-			results: GoogleElevationResult[]
+		export type ElevationAPIResponse = {
+			results: ElevationAPIResult[]
 			status: string
 		}
 	}

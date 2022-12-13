@@ -164,73 +164,16 @@ export const locationIQ = async (latitude: number, longitude: number): Promise<T
     }
 }
 
-export const googleElevationLookup = async (
-    latitude: number,
-    longitude: number,
-    taskId: number,
-): Promise<Types.Core.ElevationLookupResult> => {
-    const apiKey = process.env.API_GOOGLE_ELEVATION_KEY
-
-    const url = `https://maps.googleapis.com/maps/api/elevation/json?locations=${latitude},${longitude}&key=${apiKey}`
-
-    const options = {
-        method: 'GET',
-    }
-
-    const retryLimit = 3
-    const retryDelay = 15000
-    let requestAttempts = 0
-
-    while (requestAttempts < retryLimit) {
-        requestAttempts++
-        try {
-            const result = await fetch(url, options)
-            switch (result.status) {
-                case 200:
-                    const data: Types.ExternalAPI.GoogleElevation.GoogleElevationResponse = await result.json()
-
-                    Logger.info(`elevation lookup (taskId: ${taskId})`, data)
-                    const { elevation } = data.results[0]
-                    return { success: true, elevation }
-                    break
-                case 403:
-                    // throttled, wait a day/24hr
-                    return { success: false, throttled: true, requeueDelayMinutes: 60 * 24 }
-                    break
-                default:
-                    Logger.error('non 200 result from google elevation', {
-                        status: result.status,
-                        location: { latitude, longitude },
-                        result,
-                    })
-                    break
-            }
-        } catch (err) {
-            Logger.error('unexpected exception when calling google elevation API', err)
-            Logger.warn('associated error data', { latitude, longitude, taskId })
-            if (requestAttempts < retryLimit) {
-                await HelperUtil.delay(retryDelay)
-            } else {
-                Logger.warn(`hit exception calling google elevation api #${retryLimit} times in a row.`)
-                // try again in an hour
-                return {
-                    success: false,
-                    requeueDelayMinutes: 1 * 60,
-                }
-            }
-        }
-    }
-}
-
-/*
-prototype
 export const openTopoDataElevationLookup = async (
     latitude: number,
     longitude: number,
     taskId: number,
 ): Promise<Types.Core.ElevationLookupResult> => {
-    
-    const url = `https://api.opentopodata.org/v1/aster30m,bkg200m,emod2018,etopo1,eudem25m,gebco2020,mapzen,ned10m,nzdem8m,srtm30m,srtm90m?locations=${latitude},${longitude}`
+    if (!latitude || !longitude) {
+        return { success: false }
+    }
+
+    const url = `https://api.opentopodata.org/v1/mapzen?locations=${latitude},${longitude}`
 
     const options = {
         method: 'GET',
@@ -246,15 +189,17 @@ export const openTopoDataElevationLookup = async (
             const result = await fetch(url, options)
             switch (result.status) {
                 case 200:
-                    const data: Types.ExternalAPI.GoogleElevation.GoogleElevationResponse = await result.json()
+                    const data: Types.ExternalAPI.ElevationAPI.ElevationAPIResponse = await result.json()
 
                     Logger.info(`elevation lookup (open topo data) (taskId: ${taskId})`, data)
-                    const { elevation } = data.results[0]
+
+                    const elevation = data?.results?.[0].elevation ?? undefined
+
                     return { success: true, elevation }
                     break
-                case 403:
-                    // throttled, wait a day/24hr
-                    return { success: false, throttled: true, requeueDelayMinutes: 60 * 24 }
+                case 429:
+                    // throttled, wait a minute
+                    return { success: false, throttled: true, requeueDelayMinutes: 1 }
                     break
                 default:
                     console.log(result)
@@ -281,7 +226,6 @@ export const openTopoDataElevationLookup = async (
         }
     }
 }
-*/
 
 export const ocrGeneric = async (largeThumbnailPath: string): Promise<Types.Core.OCRGenericResult> => {
     const retryLimit = 3
