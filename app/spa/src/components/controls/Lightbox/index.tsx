@@ -22,6 +22,34 @@ const Lightbox: React.FunctionComponent = () => {
 	const lightboxIndex = ReactRedux.useSelector(Selectors.lightboxIndex)
 
 	React.useEffect(() => {
+		const handleKeyPress = (event: KeyboardEvent) => {
+			// escape
+			if (event.key === 'Escape') {
+				close()
+			}
+			// left
+			if (event.key === 'ArrowLeft') {
+				previous()
+			}
+			// right
+			if (event.key === 'ArrowRight') {
+				next()
+			}
+			// i
+			if (event.key === 'i') {
+				toggleInfo()
+			}
+		}
+		window.addEventListener('keydown', handleKeyPress)
+
+		return () => {
+			window.removeEventListener('keydown', handleKeyPress)
+		}
+	}, [])
+
+	const toggleInfo = () => setIsInfoShowing((prev) => !prev)
+
+	React.useEffect(() => {
 		setIsCurrentlyPlayingVideo(false)
 		if (typeof lightboxIndex === 'number') {
 			// preload neighbors
@@ -54,6 +82,7 @@ const Lightbox: React.FunctionComponent = () => {
 		setIsInfoShowing(false)
 		dispatch(Actions.lightboxClose())
 	}
+	// todo: title text on buttons
 
 	const previous = () => dispatch(Actions.lightboxPrevious())
 	const next = () => dispatch(Actions.lightboxNext())
@@ -181,7 +210,7 @@ const Lightbox: React.FunctionComponent = () => {
 					<button
 						id="lightbox-info"
 						className="lightbox-button"
-						onClick={() => setIsInfoShowing(!isInfoShowing)}
+						onClick={toggleInfo}
 					>
 						i
 					</button>
