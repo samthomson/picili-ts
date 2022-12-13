@@ -7,5 +7,5 @@ git clean -df
 
 # restart containers
 docker-compose -f docker-compose.prod.yml down
-docker-compose -f docker-compose.prod.yml build
+docker-compose -f docker-compose.prod.yml build app
 docker-compose -f docker-compose.prod.yml up -d
