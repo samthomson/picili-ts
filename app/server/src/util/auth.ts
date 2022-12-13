@@ -9,6 +9,7 @@ import * as DBUtil from './db'
 // }
 
 export const generateJWT = (userId: string): string => {
+    // todo: fail if JWT_COOKIE_SECRET is not set / blank
     return jwt.sign({ 'picili-user': true, userId }, process.env.JWT_COOKIE_SECRET || 'MISSING_SECRET', {
         expiresIn: '30 days',
     })
