@@ -1,4 +1,5 @@
 import sharp from 'sharp'
+import * as Sequelize from 'sequelize'
 import * as Types from '@shared/declarations'
 import * as TasksUtil from '../util/tasks'
 import * as FileUtil from '../util/file'
@@ -321,8 +322,14 @@ const apiTestElevation = async () => {
     const results = await Models.FileModel.findAll({
         where: {
             isThumbnailed: true,
+            latitude: {
+                [Sequelize.Op.not]: null,
+            },
+            longitude: {
+                [Sequelize.Op.not]: null,
+            },
         },
-        offset: 250,
+        offset: 350,
         limit: 100,
     })
 
