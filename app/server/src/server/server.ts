@@ -1,4 +1,4 @@
-import { ApolloServer, gql } from 'apollo-server-express'
+import { ApolloServer } from 'apollo-server-express'
 import { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 import express from 'express'
 import http from 'http'
@@ -47,11 +47,11 @@ const startApolloServer = async (typeDefs, resolvers) => {
         resolvers,
         introspection: true,
         plugins: [ApolloServerPluginDrainHttpServer({ httpServer }), ApolloServerPluginLandingPageGraphQLPlayground()],
-        context: (ctx) => {
-            const userId = AuthUtil.userIdFromRequestCookie(ctx.req)
+        context: async (ctx) => {
+            const userId = await AuthUtil.userIdFromRequestCookie(ctx.req)
             return {
                 ...ctx, // needed to set cookies
-                userId,
+                userId: typeof userId === 'number' ? userId : null,
             }
         },
         // set so that we always can get the error's stacktrace

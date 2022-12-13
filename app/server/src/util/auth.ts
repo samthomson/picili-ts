@@ -1,5 +1,5 @@
 import * as jwt from 'jsonwebtoken'
-// import * as DBUtil from './db'
+import * as DBUtil from './db'
 // import * as Models from '../db/models'
 
 // declare module 'jsonwebtoken' {
@@ -14,11 +14,14 @@ export const generateJWT = (userId: string): string => {
     })
 }
 
-export const userIdFromJWT = (jwtToken: string): string | undefined => {
+export const userIdFromJWT = async (jwtToken: string): Promise<string | undefined> => {
     try {
         const { userId } = <jwt.UserIDJwtPayload>jwt.verify(jwtToken, process.env.JWT_COOKIE_SECRET || 'MISSING_SECRET')
 
-        return userId
+        // check the jwt user id actually corresponds to a user
+        const user = await DBUtil.getUserById(userId)
+
+        return user ? userId : undefined
     } catch (error) {
         return undefined
     }
@@ -29,10 +32,10 @@ export const requestHasValidCookieToken = (ctx): boolean => {
     return !!ctx.userId
 }
 
-export const userIdFromRequestCookie = (req): string | undefined => {
+export const userIdFromRequestCookie = async (req): Promise<string | undefined> => {
     const authCookie = req?.cookies?.['picili-token']
 
-    return userIdFromJWT(authCookie)
+    return await userIdFromJWT(authCookie)
 }
 
 export const verifyRequestIsAuthenticated = (ctx): boolean => {

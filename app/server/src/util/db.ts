@@ -26,6 +26,16 @@ export const getUser = async (email: string, password: string): Promise<Models.U
     return passwordsMatch ? user : undefined
 }
 
+export const getUserById = async (id: number): Promise<Models.UserInstance> => {
+    const user = await Models.UserModel.findByPk(id)
+
+    if (!user) {
+        return undefined
+    }
+
+    return user
+}
+
 export const userWithEmailExists = async (email: string): Promise<boolean> => {
     const user = await Models.UserModel.findOne({
         where: {
