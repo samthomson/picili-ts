@@ -1,0 +1,6 @@
+app/server/thumbs
+app/server/processing
+app/server/logs
+app/server/node_modules
+app/spa/node_modules
+app/spa/build
