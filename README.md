@@ -56,7 +56,7 @@ Once a connection with dropbox is made via OAuth, and a directory (within your d
 |exif data|||||
 |subject|||&check;|[Imagga](https://imagga.com/)|
 |address / location| &check; ||&check;|[Location IQ](https://locationiq.com/)|
-|elevation|&check;||&check;|[Google Elevation API](https://developers.google.com/maps/documentation/elevation/overview)|
+|elevation|&check;||&check;|[Open Topo Data API](https://www.opentopodata.org/api/)|
 |plant species||&check;|&check;|[Pl@nt Net](https://my.plantnet.org/)|
 |text / OCR||&check;|&check;|[OCR Space](http://ocr.space/)|
 |text / number plates||&check;|&check;|[Plate recognizer](https://platerecognizer.com/)|
