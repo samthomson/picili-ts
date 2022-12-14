@@ -5,6 +5,7 @@ import * as SearchUtil from '../util/search'
 import { TaskManager } from '../services/TaskManager'
 import * as Types from '@shared/declarations'
 import moment from 'moment'
+import Logger from '../services/logging'
 
 const getDropboxConnection = async (parents, args, context): Promise<Types.API.DropboxConnectionEditableAttributes> => {
     AuthUtil.verifyRequestIsAuthenticated(context)
@@ -76,7 +77,9 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
     const sortOverload = args?.sortOverload
     const sortToUse = sortOverload && availableSortModes.includes(sortOverload) ? sortOverload : recommendedSortMode
 
+    const timeAtStartOfSearchUtil = moment()
     const results = await SearchUtil.search(userId, searchQuery, sortToUse)
+    const timeAtEndOfSearchUtil = moment().diff(timeAtStartOfSearchUtil)
 
     const totalItems = results.length
     const totalPages = Math.ceil(totalItems / perPage)
@@ -98,9 +101,6 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
         hasPreviousPage: page > 1 && page < totalPages,
     }
 
-    const timeAtEnd = moment()
-    const searchTime = timeAtEnd.diff(timeAtStart)
-
     const firstItem = page * perPage - perPage
     const items = results.slice(firstItem, firstItem + perPage)
 
@@ -120,6 +120,10 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
           )
         : undefined
 
+    const timeAtEnd = moment()
+    const searchTime = timeAtEnd.diff(timeAtStart)
+
+    Logger[searchTime > 500 ? 'warn' : 'info']('queries.search', { searchTime, timeAtEndOfSearchUtil })
     return {
         items,
         pageInfo,
