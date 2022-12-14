@@ -1,16 +1,27 @@
 import * as Types from '@shared/declarations'
 import * as Enums from '../../../shared/enums'
+import Logger from '../services/logging'
 import * as DBUtil from '../util/db'
 import Supercluster from 'supercluster'
+import moment from 'moment'
 
 const individualQuerySearch = async (
     userId: number,
     individualQuery: Types.API.IndividualSearchQuery,
     sort: Enums.SearchSort,
 ): Promise<Types.Core.SearchQueryResultSet> => {
+    const timeAtStart = moment()
     const dbResults = await DBUtil.performSearchQuery(userId, individualQuery, sort)
     // filter unique, as a file may match the queries on two tags (eg folder=china, location=china)
     const uniqueDbResults = Array.from(new Set(dbResults.map((x) => JSON.stringify(x)))).map((y) => JSON.parse(y))
+
+    const searchTime = moment().diff(timeAtStart)
+    Logger[searchTime > 250 ? 'warn' : 'info']('SearchUtil.individualQuerySearch', {
+        searchTime,
+        individualQuery,
+        sort,
+        userId,
+    })
 
     return { query: individualQuery, results: uniqueDbResults }
 }
