@@ -123,7 +123,7 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
     const timeAtEnd = moment()
     const searchTime = timeAtEnd.diff(timeAtStart)
 
-    Logger[searchTime > 500 ? 'warn' : 'info']('queries.search', { searchTime, timeAtEndOfSearchUtil })
+    Logger[searchTime > 500 ? 'warn' : 'info']('queries.search', { searchTime, timeAtEndOfSearchUtil, searchQuery })
     return {
         items,
         pageInfo,
