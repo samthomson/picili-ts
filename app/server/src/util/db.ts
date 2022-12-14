@@ -447,7 +447,7 @@ export const performSearchQuery = async (
     switch (type) {
         case 'map':
             const [latLower, latUpper, lngLower, lngUpper] = value.split(',')
-            const mapQuery = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight, files.file_type as fileType FROM files WHERE files.user_id = :userId AND files.latitude >= :latLower AND files.latitude <= :latUpper AND files.longitude >= :lngLower AND files.longitude <= :lngUpper AND  files.is_thumbnailed  ${sortSQL};`
+            const mapQuery = `SELECT SQL_NO_CACHE files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight, files.file_type as fileType FROM files WHERE files.user_id = :userId AND files.latitude >= :latLower AND files.latitude <= :latUpper AND files.longitude >= :lngLower AND files.longitude <= :lngUpper AND  files.is_thumbnailed  ${sortSQL};`
             const mapResults: Types.Core.DBSearchResult[] = await Database.query(mapQuery, {
                 type: Sequelize.QueryTypes.SELECT,
                 replacements: {
@@ -476,7 +476,7 @@ export const performSearchQuery = async (
             })
             break
         default:
-            const query = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight, files.file_type as fileType FROM tags JOIN files ON tags.file_id = files.id where ${
+            const query = `SELECT SQL_NO_CACHE files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight, files.file_type as fileType FROM tags JOIN files ON tags.file_id = files.id where ${
                 type ? `tags.type=:type and ` : ''
             }${
                 subtype ? `tags.subtype=:subtype and ` : ''
