@@ -41,19 +41,19 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 					<div>
 						<SearchSortSelect searchSorting={searchSorting} />
 					</div>
-				</>
-			)}
-			{displayJustified && (
-				<JustifiedImageGallery searchResults={searchResults} />
-			)}
-			{!displayJustified && (
-				<TiledImageGallery searchResults={searchResults} />
-			)}
+					{displayJustified && (
+						<JustifiedImageGallery searchResults={searchResults} />
+					)}
+					{!displayJustified && (
+						<TiledImageGallery searchResults={searchResults} />
+					)}
 
-			{paginationInfo?.hasMore && (
-				<>
-					<br />
-					<button onClick={loadMore}>load more</button>
+					{paginationInfo?.hasMore && (
+						<>
+							<br />
+							<button onClick={loadMore}>load more</button>
+						</>
+					)}
 				</>
 			)}
 		</React.Fragment>
