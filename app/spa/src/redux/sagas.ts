@@ -103,6 +103,13 @@ function* callSearchQuery(page = 1, withGeoAggregations = false) {
 }
 
 function* search(action: Actions.AttemptSearchAction) {
+	// don't do this if we have no query.
+	const searchFilter: Types.API.SearchQuery = yield select(
+		Selectors.searchQuery,
+	)
+	if (searchFilter.individualQueries.length === 0) {
+		return
+	}
 	yield put(Actions.searchingSet(true))
 	try {
 		const { withGeoAggregations } = action
