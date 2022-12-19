@@ -34,8 +34,7 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 			{individualQueries.length > 0 && paginationInfo && searchStats && (
 				<>
 					<p>
-						found {paginationInfo.totalItems} result(s){' '}
-						{paginationInfo.totalItems > 0 && (
+						{searchResults.length > 0 && (
 							<>in {searchStats.speed}ms</>
 						)}
 					</p>
@@ -51,7 +50,7 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 				<TiledImageGallery searchResults={searchResults} />
 			)}
 
-			{paginationInfo?.hasNextPage && (
+			{paginationInfo?.hasMore && (
 				<>
 					<br />
 					<button onClick={loadMore}>load more</button>

@@ -7,12 +7,17 @@ import * as APIUtil from '../util/apis'
 import * as DBUtil from '../util/db'
 import * as DropboxUtil from '../util/dropbox'
 import * as HelperUtil from '../util/helper'
-import * as Models from '../db/models'
+// import * as Models from '../db/models'
 import Logger from '../services/logging'
 import * as Enums from '../../../shared/enums'
+import moment from 'moment'
+// import Database from '../db/connection'
+import mysql from 'mysql2'
 
 import fs from 'fs'
 import path from 'path'
+
+/*
 import FSExtra from 'fs-extra'
 
 const file = async () => {
@@ -342,6 +347,76 @@ const apiTestElevation = async () => {
     }
 }
 
+
+// const mysqlTest = async () => {
+//     const timeAtStart = moment()
+
+//     const userId = 6
+//     const individualQuery = { value: 'image' }
+//     const sort = Enums.SearchSort.LATEST
+
+//     // await DBUtil.performSearchQuery(userId, individualQuery, sort)
+
+//     await Database.query(queryFromPhpMyadmin, {
+//         type: Sequelize.QueryTypes.SELECT,
+//     })
+
+//     const queryTime = moment().diff(timeAtStart)
+//     Logger[queryTime > 250 ? 'warn' : 'info']('SearchUtil.individualQuerySearch', {
+//         queryTime,
+//         // individualQuery,
+//         // sort,
+//         // userId,
+//     })
+// }
+*/
+
+const queryFromPhpMyadmin = `SELECT SQL_NO_CACHE files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight, files.file_type as fileType FROM tags JOIN files ON tags.file_id = files.id where tags.value = 'jpg' and tags.confidence >= 35 and files.is_thumbnailed and files.user_id = 6;`
+
+const geoQueryTimingTest = `SELECT SQL_NO_CACHE count(*)-- files.id, files.uuid, files.latitude, files.longitude 
+FROM files 
+WHERE files.user_id = 6 
+AND files.latitude >= -85.05 
+AND files.latitude <= 85.05 
+AND files.longitude >= -175.34 
+AND files.longitude <= 207.38 
+AND files.is_thumbnailed 
+ORDER BY files.datetime 
+LIMIT 100000;
+`
+
+const originalBigQuery = `SELECT SQL_NO_CACHE files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, 
+files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight, 
+files.file_type as fileType FROM tags INNER JOIN files ON tags.file_id = files.id 
+WHERE tags.value = 'image' and tags.confidence >= 35 
+and files.is_thumbnailed and files.user_id = 6 
+ORDER BY files.datetime DESC;`
+
+const directMysqlTest = async () => {
+    const timeAtStart = moment()
+    const connection = mysql.createConnection({
+        host: 'mysql',
+        user: 'root',
+        password: 'admin',
+        database: 'picili',
+    })
+
+    connection.connect()
+
+    connection.query(originalBigQuery, function (error, results, fields) {
+        if (error) throw error
+        const queryTime = moment().diff(timeAtStart)
+        Logger[queryTime > 250 ? 'warn' : 'info']('direct query timing', {
+            queryTime,
+            // individualQuery,
+            // sort,
+            // userId,
+        })
+    })
+
+    connection.end()
+}
+
 // file()
 // imaggaTest()
 // geo()
@@ -359,4 +434,6 @@ const apiTestElevation = async () => {
 // checkExifData()
 // testFileDownload()
 // bulkFileDownload()
-apiTestElevation()
+// apiTestElevation()
+// mysqlTest()
+directMysqlTest()

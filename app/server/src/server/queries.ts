@@ -59,15 +59,20 @@ const taskSummary = async (parents, args, context): Promise<Types.API.TaskSummar
     }
 }
 
+// todo: resupport not queries
 const search = async (parents, args, context): Promise<Types.API.SearchResult> => {
     AuthUtil.verifyRequestIsAuthenticated(context)
     const timeAtStart = moment()
 
     // lift arguments
     // search query
-    const searchQuery = args.filter
-    let page = args?.page ?? 1
+    const searchQuery: Types.API.SearchQuery = args.filter
+    const page = args?.page ?? 1
     const perPage = args?.perPage ?? 100
+
+    if (searchQuery.individualQueries.length === 0) {
+        throw new Error('no search query provided')
+    }
 
     // user
     const { userId } = context
@@ -77,35 +82,23 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
     const sortOverload = args?.sortOverload
     const sortToUse = sortOverload && availableSortModes.includes(sortOverload) ? sortOverload : recommendedSortMode
 
+    const offSet = page * perPage - perPage
+
     const timeAtStartOfSearchUtil = moment()
-    const results = await SearchUtil.search(userId, searchQuery, sortToUse)
+    const results = await DBUtil.newSearch(userId, searchQuery, sortToUse, perPage, offSet)
     const timeAtEndOfSearchUtil = moment().diff(timeAtStartOfSearchUtil)
 
-    const totalItems = results.length
-    const totalPages = Math.ceil(totalItems / perPage)
-
-    // in case client provided too high a page
-    if (page > totalPages) {
-        page = totalPages
-    }
-    if (page < 1) {
-        page = 1
-    }
+    // eg returned 101 items while perPage is 100
+    const hasMore = results.length > perPage
 
     const pageInfo = {
-        totalPages,
-        totalItems,
         page,
         perPage,
-        hasNextPage: page < totalPages,
-        hasPreviousPage: page > 1 && page < totalPages,
+        hasMore,
     }
 
-    const firstItem = page * perPage - perPage
-    const items = results.slice(firstItem, firstItem + perPage)
-
     const sorting =
-        items.length > 0
+        results.length > 0
             ? {
                   sortModesAvailable: availableSortModes,
                   sortUsed: sortToUse,
@@ -113,9 +106,13 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
             : undefined
 
     // geo clustering - only if they were on the map page
+    // todo: refactor this to use diff query
     const geoAggregations = args?.withGeoAggregations
         ? SearchUtil.geoAggregateResults(
-              results,
+              await DBUtil.geoQueryForClustering(
+                  SearchUtil.extractMapQueryFromSearchQueries(searchQuery.individualQueries),
+                  userId,
+              ),
               ...SearchUtil.extractMapParamsFromSearchQueries(searchQuery.individualQueries),
           )
         : undefined
@@ -125,7 +122,7 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
 
     Logger[searchTime > 500 ? 'warn' : 'info']('queries.search', { searchTime, timeAtEndOfSearchUtil, searchQuery })
     return {
-        items,
+        items: results,
         pageInfo,
         stats: { speed: searchTime },
         sorting,

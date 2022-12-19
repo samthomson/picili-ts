@@ -51,12 +51,9 @@ function* callSearchQuery(page = 1, withGeoAggregations = false) {
 						withGeoAggregations: $withGeoAggregations
 					) {
 						pageInfo {
-							totalPages
-							totalItems
 							page
 							perPage
-							hasNextPage
-							hasPreviousPage
+							hasMore
 						}
 						items {
 							fileId

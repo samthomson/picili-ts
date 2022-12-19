@@ -77,12 +77,9 @@ export namespace API {
 	}
 
 	export interface PaginationInfo {
-        totalPages: number
-        totalItems: number
         page: number
         perPage: number
-        hasNextPage: boolean
-        hasPreviousPage: boolean
+        hasMore: boolean
 	}
 
 	export interface SearchStats {
