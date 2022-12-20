@@ -1,0 +1,1 @@
+ALTER TABLE `picili`.`tasks` ADD INDEX `tasks_created_at` (`created_at`);
