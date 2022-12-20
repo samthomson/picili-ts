@@ -293,7 +293,11 @@ export const reReserveTask = async (id: number): Promise<void> => {
 }
 
 export const howManyTasksAreThere = async (): Promise<number> => {
-    return await Models.TaskModel.count()
+    return await Models.TaskModel.count({
+        where: {
+            isProcessed: false,
+        },
+    })
 }
 export const howManyProcessableTasksAreThere = async (isStopping: boolean, isVideoCapable = true): Promise<number> => {
     return await Models.TaskModel.count({
