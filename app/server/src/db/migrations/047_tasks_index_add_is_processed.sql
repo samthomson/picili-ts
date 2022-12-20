@@ -1,0 +1,1 @@
+ALTER TABLE `picili`.`tasks` ADD INDEX `tasks_is_processed` (`is_processed`);
