@@ -7,7 +7,7 @@ import * as APIUtil from '../util/apis'
 import * as DBUtil from '../util/db'
 import * as DropboxUtil from '../util/dropbox'
 import * as HelperUtil from '../util/helper'
-// import * as Models from '../db/models'
+import * as Models from '../db/models'
 import Logger from '../services/logging'
 import * as Enums from '../../../shared/enums'
 import moment from 'moment'
@@ -16,6 +16,7 @@ import mysql from 'mysql2'
 
 import fs from 'fs'
 import path from 'path'
+import { Model } from 'sequelize'
 
 /*
 import FSExtra from 'fs-extra'
@@ -417,6 +418,42 @@ const directMysqlTest = async () => {
     connection.end()
 }
 
+const fillPointType = async () => {
+    const files = await Models.FileModel.findAll({
+        where: {
+            // isThumbnailed: true,
+            // latitude: {
+            //     [Sequelize.Op.not]: null,
+            // },
+            // longitude: {
+            //     [Sequelize.Op.not]: null,
+            // },
+            location: {
+                [Sequelize.Op.eq]: null,
+            },
+        },
+        limit: 100000,
+    })
+    console.log(files.length)
+
+    for (let i = 0; i < files.length; i++) {
+        const { id, latitude, longitude, location } = files[i]
+        console.log('updating', id)
+        await Models.FileModel.update(
+            {
+                // @ts-ignore:
+                // location: { type: 'Point', coordinates: [latitude, longitude] },
+                location: { type: 'Point', coordinates: [-200, -200] },
+            },
+            {
+                where: {
+                    id,
+                },
+            },
+        )
+    }
+}
+
 // file()
 // imaggaTest()
 // geo()
@@ -436,4 +473,5 @@ const directMysqlTest = async () => {
 // bulkFileDownload()
 // apiTestElevation()
 // mysqlTest()
-directMysqlTest()
+// directMysqlTest()
+fillPointType()

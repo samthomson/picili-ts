@@ -539,6 +539,8 @@ export namespace Core {
 			datetime?: string
 			mediumHeight?: number
 			mediumWidth?: number
+			// todo: something better than this?
+			location?: string
 		}
 		
 		export interface TaskAttributes {
