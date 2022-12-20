@@ -7,7 +7,7 @@ import * as APIUtil from '../util/apis'
 import * as DBUtil from '../util/db'
 import * as DropboxUtil from '../util/dropbox'
 import * as HelperUtil from '../util/helper'
-// import * as Models from '../db/models'
+import * as Models from '../db/models'
 import Logger from '../services/logging'
 import * as Enums from '../../../shared/enums'
 import moment from 'moment'
@@ -16,7 +16,11 @@ import mysql from 'mysql2'
 
 import fs from 'fs'
 import path from 'path'
+import fetch from 'node-fetch'
 
+// import * as ZincSearchSDK from 'zincsearch-sdk'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+// const ZincSearchSDK = require('zincsearch-sdk')
 /*
 import FSExtra from 'fs-extra'
 
@@ -371,50 +375,160 @@ const apiTestElevation = async () => {
 // }
 */
 
-const queryFromPhpMyadmin = `SELECT SQL_NO_CACHE files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight, files.file_type as fileType FROM tags JOIN files ON tags.file_id = files.id where tags.value = 'jpg' and tags.confidence >= 35 and files.is_thumbnailed and files.user_id = 6;`
+// const queryFromPhpMyadmin = `SELECT SQL_NO_CACHE files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight, files.file_type as fileType FROM tags JOIN files ON tags.file_id = files.id where tags.value = 'jpg' and tags.confidence >= 35 and files.is_thumbnailed and files.user_id = 6;`
 
-const geoQueryTimingTest = `SELECT SQL_NO_CACHE count(*)-- files.id, files.uuid, files.latitude, files.longitude 
-FROM files 
-WHERE files.user_id = 6 
-AND files.latitude >= -85.05 
-AND files.latitude <= 85.05 
-AND files.longitude >= -175.34 
-AND files.longitude <= 207.38 
-AND files.is_thumbnailed 
-ORDER BY files.datetime 
-LIMIT 100000;
-`
+// const geoQueryTimingTest = `SELECT SQL_NO_CACHE count(*)-- files.id, files.uuid, files.latitude, files.longitude
+// FROM files
+// WHERE files.user_id = 6
+// AND files.latitude >= -85.05
+// AND files.latitude <= 85.05
+// AND files.longitude >= -175.34
+// AND files.longitude <= 207.38
+// AND files.is_thumbnailed
+// ORDER BY files.datetime
+// LIMIT 100000;
+// `
 
-const originalBigQuery = `SELECT SQL_NO_CACHE files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, 
-files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight, 
-files.file_type as fileType FROM tags INNER JOIN files ON tags.file_id = files.id 
-WHERE tags.value = 'image' and tags.confidence >= 35 
-and files.is_thumbnailed and files.user_id = 6 
-ORDER BY files.datetime DESC;`
+// const originalBigQuery = `SELECT SQL_NO_CACHE files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation,
+// files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight,
+// files.file_type as fileType FROM tags INNER JOIN files ON tags.file_id = files.id
+// WHERE tags.value = 'image' and tags.confidence >= 35
+// and files.is_thumbnailed and files.user_id = 6
+// ORDER BY files.datetime DESC;`
 
-const directMysqlTest = async () => {
-    const timeAtStart = moment()
-    const connection = mysql.createConnection({
-        host: 'mysql',
-        user: 'root',
-        password: 'admin',
-        database: 'picili',
+// const directMysqlTest = async () => {
+//     const timeAtStart = moment()
+//     const connection = mysql.createConnection({
+//         host: 'mysql',
+//         user: 'root',
+//         password: 'admin',
+//         database: 'picili',
+//     })
+
+//     connection.connect()
+
+//     connection.query(originalBigQuery, function (error, results, fields) {
+//         if (error) throw error
+//         const queryTime = moment().diff(timeAtStart)
+//         Logger[queryTime > 250 ? 'warn' : 'info']('direct query timing', {
+//             queryTime,
+//             // individualQuery,
+//             // sort,
+//             // userId,
+//         })
+//     })
+
+//     connection.end()
+// }
+
+const makeIndex = async () => {
+    const body = `{
+        "name": "file",
+        "storage_type": "disk",
+        "shard_num": 1,
+        "mappings": {
+            "properties": {
+                "is_thumbnailed": {
+                    "type": "bool",
+                    "index": true,
+                    "store": false,
+                    "sortable": true,
+                    "aggregatable": true,
+                    "highlightable": false
+                },
+                "latitude": {
+                    "type": "numeric",
+                    "index": true,
+                    "store": true,
+                    "highlightable": true
+                },
+                "longitude": {
+                    "type": "numeric",
+                    "index": true,
+                    "sortable": true,
+                    "aggregatable": true
+                },
+                "created_date": {
+                    "type": "date",
+                    "format": "2006-01-02T15:04:05Z07:00",
+                    "index": true,
+                    "sortable": true,
+                    "aggregatable": true
+                },
+                "tags": {
+                    "type": "nested",
+                    "index": true,
+                }
+            }
+        }
+    }`
+
+    const response = await fetch('http://zinc:4080/api/index', {
+        headers: {
+            Authorization: 'Basic ' + Buffer.from('zincuser' + ':' + 'zincpass').toString('base64'),
+        },
+        method: 'POST',
+        body,
     })
+    const data = await response.json()
 
-    connection.connect()
-
-    connection.query(originalBigQuery, function (error, results, fields) {
-        if (error) throw error
-        const queryTime = moment().diff(timeAtStart)
-        Logger[queryTime > 250 ? 'warn' : 'info']('direct query timing', {
-            queryTime,
-            // individualQuery,
-            // sort,
-            // userId,
+    console.log(data)
+}
+const zincIndex = async (): Promise<void> => {
+    // get all files with tags (limited to 100)
+    try {
+        /*
+        const files = await Models.FileModel.findAll({
+            where: {
+                isThumbnailed: true,
+            },
+            // offset: 0,
+            // include: [{ model: Models.DropboxFileModel }],
+            limit: 1,
+            include: [
+                {
+                    model: Models.TagModel,
+                    where: {
+                        confidence: {
+                            [Sequelize.Op.gte]: process.env.SEARCH_CONFIDENCE_THRESHOLD,
+                        },
+                    },
+                },
+            ],
         })
-    })
+        // @ts-ignore
+        const fileTagCounts = files.map((file) => file?.tags?.length)
+        console.log(fileTagCounts)
+        for (let i = 0; i < files.length; i++) {
+            // console.log(files[i].get({ plain: true }))
+            // console.log(files[i].toJSON())
+        }
+        */
 
-    connection.end()
+        await makeIndex()
+    } catch (err) {
+        console.error(err)
+    }
+
+    // get all tags
+    // create a zinc mapping
+    // const defaultClient = ZincSearchSDK.ApiClient.instance
+    // // Configure HTTP basic authorization: basicAuth
+    // const basicAuth = defaultClient.authentications['basicAuth']
+    // basicAuth.username = 'zincuser'
+    // basicAuth.password = 'zincpass'
+
+    // const api = new ZincSearchSDK.Default()
+    // const callback = function (error, data, response) {
+    //     if (error) {
+    //         console.error(error)
+    //     } else {
+    //         console.log('API called successfully. Returned data: ' + data)
+    //     }
+    // }
+    // api.healthz(callback)
+
+    // index files with tags as documents
 }
 
 // file()
@@ -436,4 +550,5 @@ const directMysqlTest = async () => {
 // bulkFileDownload()
 // apiTestElevation()
 // mysqlTest()
-directMysqlTest()
+// directMysqlTest()
+zincIndex()

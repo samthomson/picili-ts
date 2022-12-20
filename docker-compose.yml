@@ -107,6 +107,15 @@ services:
       - ./e2e/cypress:/app/cypress
       - ./e2e/cypress.json:/app/cypress.json
 
+  zinc:
+    image: public.ecr.aws/zinclabs/zinc:latest
+    restart: unless-stopped
+    ports:
+      - "4080:4080"
+    environment:
+      - ZINC_FIRST_ADMIN_USER=zincuser
+      - ZINC_FIRST_ADMIN_PASSWORD=zincpass
+
 volumes:
   mysqldata:
     driver: "local"
