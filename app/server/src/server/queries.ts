@@ -32,10 +32,9 @@ const taskSummary = async (parents, args, context): Promise<Types.API.TaskSummar
 
     // get a second count with the real is stopping value as that is interesting too
     const taskManager = TaskManager.getInstance()
-    const howManyProcessableTasksAreThereThatAreActionableVideoCapable = await DBUtil.howManyProcessableTasksAreThere(
-        taskManager.isStopping,
-        true,
-    )
+    const howManyProcessableTasksAreThereThatAreActionableVideoCapable = taskManager.isStopping
+        ? await DBUtil.howManyProcessableTasksAreThere(true, true)
+        : howManyProcessableTasksAreThere
     const howManyProcessableTasksAreThereThatAreActionableNonVideoCapable =
         await DBUtil.howManyProcessableTasksAreThere(taskManager.isStopping, false)
 
