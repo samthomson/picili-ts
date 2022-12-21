@@ -7,17 +7,14 @@ import * as APIUtil from '../util/apis'
 import * as DBUtil from '../util/db'
 import * as DropboxUtil from '../util/dropbox'
 import * as HelperUtil from '../util/helper'
-// import * as Models from '../db/models'
+import * as Models from '../db/models'
 import Logger from '../services/logging'
 import * as Enums from '../../../shared/enums'
 import moment from 'moment'
-// import Database from '../db/connection'
-import mysql from 'mysql2'
+import { processSearchReqeust } from '../server/queries'
 
 import fs from 'fs'
 import path from 'path'
-
-/*
 import FSExtra from 'fs-extra'
 
 const file = async () => {
@@ -346,75 +343,173 @@ const apiTestElevation = async () => {
         await delay(1000)
     }
 }
-
-
-// const mysqlTest = async () => {
-//     const timeAtStart = moment()
-
-//     const userId = 6
-//     const individualQuery = { value: 'image' }
-//     const sort = Enums.SearchSort.LATEST
-
-//     // await DBUtil.performSearchQuery(userId, individualQuery, sort)
-
-//     await Database.query(queryFromPhpMyadmin, {
-//         type: Sequelize.QueryTypes.SELECT,
-//     })
-
-//     const queryTime = moment().diff(timeAtStart)
-//     Logger[queryTime > 250 ? 'warn' : 'info']('SearchUtil.individualQuerySearch', {
-//         queryTime,
-//         // individualQuery,
-//         // sort,
-//         // userId,
-//     })
-// }
-*/
-
-const queryFromPhpMyadmin = `SELECT SQL_NO_CACHE files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight, files.file_type as fileType FROM tags JOIN files ON tags.file_id = files.id where tags.value = 'jpg' and tags.confidence >= 35 and files.is_thumbnailed and files.user_id = 6;`
-
-const geoQueryTimingTest = `SELECT SQL_NO_CACHE count(*)-- files.id, files.uuid, files.latitude, files.longitude 
-FROM files 
-WHERE files.user_id = 6 
-AND files.latitude >= -85.05 
-AND files.latitude <= 85.05 
-AND files.longitude >= -175.34 
-AND files.longitude <= 207.38 
-AND files.is_thumbnailed 
-ORDER BY files.datetime 
-LIMIT 100000;
-`
-
-const originalBigQuery = `SELECT SQL_NO_CACHE files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, 
-files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight, 
-files.file_type as fileType FROM tags INNER JOIN files ON tags.file_id = files.id 
-WHERE tags.value = 'image' and tags.confidence >= 35 
-and files.is_thumbnailed and files.user_id = 6 
-ORDER BY files.datetime DESC;`
-
-const directMysqlTest = async () => {
+const searchAll = async () => {
     const timeAtStart = moment()
-    const connection = mysql.createConnection({
-        host: 'mysql',
-        user: 'root',
-        password: 'admin',
-        database: 'picili',
-    })
+    const searchAll = await processSearchReqeust(
+        {
+            individualQueries: [
+                {
+                    value: '*',
+                },
+            ],
+        },
+        undefined,
+        6,
+        100,
+        1,
+        false,
+    )
 
-    connection.connect()
+    console.log('4. search all', moment().diff(timeAtStart))
+}
 
-    connection.query(originalBigQuery, function (error, results, fields) {
-        if (error) throw error
-        const queryTime = moment().diff(timeAtStart)
-        Logger[queryTime > 250 ? 'warn' : 'info']('direct query timing', {
-            queryTime,
-            // individualQuery,
-            // sort,
-            // userId,
-        })
-    })
+const searchSpeedTest = async () => {
+    let timeAtStart = moment()
+    const bigMapQuery = await processSearchReqeust(
+        {
+            individualQueries: [
+                {
+                    type: 'map',
+                    value: '-85.05112899999986,84.76213466381898,-128.89100932263923,250.3733326989959,0.45812290130932914',
+                },
+            ],
+        },
+        undefined,
+        6,
+        100,
+        1,
+        true,
+    )
 
-    connection.end()
+    console.log('1. big map query', moment().diff(timeAtStart))
+
+    timeAtStart = moment()
+    const bigMapQueryWithTwoTerms = await processSearchReqeust(
+        {
+            individualQueries: [
+                {
+                    value: 'cat',
+                },
+                {
+                    value: 'thailand',
+                },
+                {
+                    type: 'map',
+                    value: '-85.05112899999986,84.76213466381898,-128.89100932263923,250.3733326989959,0.45812290130932914',
+                },
+            ],
+        },
+        undefined,
+        6,
+        100,
+        1,
+        true,
+    )
+
+    console.log('2. big map query with two terms', moment().diff(timeAtStart))
+
+    timeAtStart = moment()
+    const mediumMapQuery = await processSearchReqeust(
+        {
+            individualQueries: [
+                {
+                    type: 'map',
+                    value: '-8.334909584848944,40.36010846645803,71.40011590467034,127.26460747240372,3.221323161168797',
+                },
+            ],
+        },
+        undefined,
+        6,
+        100,
+        1,
+        true,
+    )
+
+    console.log('3. medium map query', moment().diff(timeAtStart))
+
+    // 4.
+    await searchAll()
+
+    // 5. small term query
+
+    timeAtStart = moment()
+    await processSearchReqeust(
+        {
+            individualQueries: [
+                {
+                    value: 'cat',
+                },
+            ],
+        },
+        undefined,
+        6,
+        100,
+        1,
+        false,
+    )
+    console.log('5. small term query', moment().diff(timeAtStart))
+
+    // 6. medium term query
+
+    timeAtStart = moment()
+    const medium = await processSearchReqeust(
+        {
+            individualQueries: [
+                {
+                    value: 'morocco',
+                },
+            ],
+        },
+        undefined,
+        6,
+        100,
+        1,
+        false,
+    )
+
+    console.log('6. medium term query', moment().diff(timeAtStart))
+
+    timeAtStart = moment()
+    const big = await processSearchReqeust(
+        {
+            individualQueries: [
+                {
+                    value: 'sony',
+                },
+            ],
+        },
+        undefined,
+        6,
+        100,
+        1,
+        false,
+    )
+
+    console.log('7. big term query', moment().diff(timeAtStart))
+
+    // 7. small & medium
+    timeAtStart = moment()
+    await processSearchReqeust(
+        {
+            individualQueries: [
+                {
+                    value: 'cat',
+                },
+                {
+                    value: 'sony',
+                },
+            ],
+        },
+        undefined,
+        6,
+        100,
+        1,
+        false,
+    )
+
+    console.log('8. small & medium', moment().diff(timeAtStart))
+
+    // todo: 9. elevation
 }
 
 // file()
@@ -435,5 +530,42 @@ const directMysqlTest = async () => {
 // testFileDownload()
 // bulkFileDownload()
 // apiTestElevation()
-// mysqlTest()
-directMysqlTest()
+
+const seedLocations = async () => {
+    const files = await Models.FileModel.findAll({
+        where: {
+            // isThumbnailed: true,
+            // latitude: {
+            //     [Sequelize.Op.not]: null,
+            // },
+            // longitude: {
+            //     [Sequelize.Op.not]: null,
+            // },
+            location: {
+                [Sequelize.Op.eq]: null,
+            },
+        },
+        limit: 100000,
+    })
+    console.log(files.length)
+
+    for (let i = 0; i < files.length; i++) {
+        const { id, latitude, longitude, location } = files[i]
+        console.log('updating', id)
+        await Models.FileModel.update(
+            {
+                // @ts-ignore:
+                // location: { type: 'Point', coordinates: [latitude, longitude] },
+                location: { type: 'Point', coordinates: [-200, -200] },
+            },
+            {
+                where: {
+                    id,
+                },
+            },
+        )
+    }
+}
+
+searchSpeedTest()
+// seedLocations()

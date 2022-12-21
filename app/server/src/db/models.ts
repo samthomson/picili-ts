@@ -278,6 +278,7 @@ export const FileModel = Database.define<FileInstance>(
         datetime: Sequelize.DATE,
         mediumHeight: Sequelize.MEDIUMINT.UNSIGNED,
         mediumWidth: Sequelize.MEDIUMINT.UNSIGNED,
+        location: Sequelize.GEOMETRY('POINT'),
     },
     {
         timestamps: false,

@@ -1,7 +1,6 @@
 import * as Sequelize from 'sequelize'
 import bcrypt from 'bcrypt'
 import moment from 'moment'
-import SqlString from 'sequelize/lib/sql-string'
 
 import * as Types from '@shared/declarations'
 import * as Models from '../db/models'
@@ -394,7 +393,11 @@ export const getOldestTaskDate = async (): Promise<string | null> => {
 }
 
 export const createFile = async (fileCreationParams: Types.Core.Inputs.CreateFileInput): Promise<number> => {
-    const newFile = await Models.FileModel.create(fileCreationParams)
+    const newFile = await Models.FileModel.create({
+        ...fileCreationParams,
+        // default to a co-ordinate off map
+        location: { type: 'Point', coordinates: [-200, -200] },
+    })
     return newFile.id
 }
 
@@ -420,21 +423,95 @@ export const createMultipleTags = async (tagCreationParams: Types.Core.Inputs.Cr
     return true
 }
 
-export const newSearch = async (
+export const performSearchQuery = async (
     userId: number,
-    searchQuery: Types.API.SearchQuery,
-    sortToUse: Enums.SearchSort,
-    perPage: number,
-    offSet: number,
-): Promise<Types.API.SearchResultItem[]> => {
-    // todo: maybe refactor this whole func - looks janky
+    individualQuery: Types.API.IndividualSearchQuery,
+): Promise<Types.Core.DBSearchMatch[]> => {
+    const { type, subtype, value } = individualQuery
     const { SEARCH_CONFIDENCE_THRESHOLD: confidence } = process.env
 
+    // depending on query type, perform relevant query
+    switch (type) {
+        case 'map':
+            const [latLower, latUpper, lngLower, lngUpper] = value.split(',')
+            // todo: move to geometry.point search
+            // const mapQuery = `SELECT SQL_NO_CACHE files.id as fileId, 100 as score FROM files WHERE files.user_id = :userId AND files.latitude >= :latLower AND files.latitude <= :latUpper AND files.longitude >= :lngLower AND files.longitude <= :lngUpper AND files.is_thumbnailed;`
+
+            // lat long lat long
+            const mapQuery = `
+            SELECT SQL_NO_CACHE files.id as fileId, 100 as score 
+            FROM files 
+            WHERE 
+            files.user_id = :userId 
+            AND MBRContains( GeomFromText( 'LINESTRING(:latLower :lngLower, :latUpper :lngUpper)' ), files.location)
+            
+            AND files.is_thumbnailed;`
+            const mapResults: Types.Core.DBSearchMatch[] = await Database.query(mapQuery, {
+                type: Sequelize.QueryTypes.SELECT,
+                replacements: {
+                    userId,
+                    latLower: +latLower,
+                    latUpper: +latUpper,
+                    lngLower: +lngLower,
+                    lngUpper: +lngUpper,
+                },
+            })
+            return mapResults.map(({ fileId, score }) => ({
+                fileId,
+                score,
+            }))
+            break
+
+        // todo: elevation
+        //    case 'elevation':
+
+        default:
+            const query = (() => {
+                if (value === '*') {
+                    // wildcard query, select all.
+                    return `SELECT SQL_NO_CACHE files.id as fileId, 100 as score  
+                    FROM files
+                    WHERE files.is_thumbnailed AND files.user_id = :userId 
+                    `
+                }
+
+                // normal term query (with type and subtype optional)
+                return `SELECT SQL_NO_CACHE files.id as fileId, tags.confidence as score FROM tags JOIN files ON tags.file_id = files.id where ${
+                    type ? `tags.type=:type and ` : ''
+                }${
+                    subtype ? `tags.subtype=:subtype and ` : ''
+                } tags.value = :value and tags.confidence >= :confidence and files.is_thumbnailed and files.user_id = :userId`
+            })()
+
+            const results: Types.Core.DBSearchMatch[] = await Database.query(query, {
+                type: Sequelize.QueryTypes.SELECT,
+                replacements: {
+                    userId,
+                    type,
+                    subtype,
+                    value,
+                    confidence,
+                },
+            })
+            return results.map(({ fileId, score }) => ({ fileId, score }))
+            break
+    }
+}
+
+export const getAllResultData = async (
+    matches: Types.Core.DBSearchMatch[],
+    page: number,
+    perPage: number,
+    sortOverload: Enums.SearchSort,
+    userId: number,
+): Promise<Types.API.SearchResultItem[]> => {
     const sortSQL = (() => {
-        switch (sortToUse) {
+        switch (sortOverload) {
             case Enums.SearchSort.RELEVANCE:
+                // todo: what was this about?
                 // if (type !== 'map') {
-                return `ORDER BY score DESC`
+                const sortedIds = matches.map(({ fileId }) => fileId)
+                return `ORDER BY FIELD(id, ${sortedIds.join(', ')}) DESC`
             // } else {
             //     return `ORDER BY files.datetime DESC`
             // }
@@ -449,62 +526,27 @@ export const newSearch = async (
                 return `ORDER BY files.datetime DESC`
         }
     })()
-
-    // form query
-    const scoreSQL = new Array(searchQuery.individualQueries.length)
-        .fill(undefined)
-        .map((_, i) => `subQuery${i}.conf`)
-        .join(' + ')
-    let query = `SELECT SQL_NO_CACHE files.id, files.uuid, files.address, files.latitude, files.longitude, 
-    files.elevation, files.datetime, files.medium_width as mediumWidth, 
-    files.medium_height as mediumHeight, files.file_type as fileType, (${scoreSQL}) AS score
-    FROM files `
-
-    const formSubQuery = (individualQuery: Types.API.IndividualSearchQuery) => {
-        const { type, subtype, value } = individualQuery
-
-        const escapedType = SqlString.escape(type)
-        const escapedSubtype = SqlString.escape(subtype)
-        const escapedValue = SqlString.escape(value)
-
-        switch (type) {
-            case 'map':
-                const [latLower, latUpper, lngLower, lngUpper] = value.split(',')
-                return `SELECT files.id as fileId, 100 as conf FROM files WHERE files.user_id = :userId AND files.latitude >= ${latLower} AND files.latitude <= ${latUpper} AND files.longitude >= ${lngLower} AND files.longitude <= ${lngUpper} AND files.is_thumbnailed`
-            default:
-                return `SELECT files.id AS fileId, tags.confidence as conf FROM files JOIN tags ON tags.file_id = files.id WHERE ${
-                    type ? `tags.type='${escapedType}' AND ` : ''
-                }${
-                    subtype ? `tags.subtype='${escapedSubtype}' AND ` : ''
-                } tags.value = ${escapedValue} AND tags.confidence >= :confidence and files.is_thumbnailed and files.user_id = :userId`
-        }
-    }
-
-    for (let i = 0; i < searchQuery.individualQueries.length; i++) {
-        query += `INNER JOIN 
-        (
-            ${formSubQuery(searchQuery.individualQueries[i])}
-        ) as subQuery${i} ON subQuery${i}.fileId = files.id `
-    }
-
-    query += `
-    where files.is_thumbnailed and files.user_id = :userId`
-
-    query += ` ${sortSQL}`
-
-    query += ` LIMIT ${offSet}, ${perPage + 1}`
+    const fileIds = matches.map(({ fileId }) => fileId)
+    const query = `SELECT SQL_NO_CACHE files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, 
+    files.datetime, files.medium_width AS mediumWidth, files.medium_height AS mediumHeight, files.file_type AS fileType 
+    FROM files
+    WHERE id IN (${fileIds.join(',')})
+    ${sortSQL}
+    LIMIT :offset, :perPage`
 
     const results: Types.Core.DBSearchResult[] = await Database.query(query, {
         type: Sequelize.QueryTypes.SELECT,
         replacements: {
-            userId,
-            confidence,
+            ids: fileIds.join(','),
+            perPage,
+            offset: perPage * (page - 1),
         },
     })
-    const mappedResults = results.map((result) => {
-        // todo: destructure - looks basic
+
+    return results.map((result) => {
         return {
-            fileId: result.id,
+            fileId: result.fileId,
+            // todo: would be better to have this elsewhere
             userId,
             uuid: result.uuid,
             address: result.address,
@@ -515,45 +557,6 @@ export const newSearch = async (
             fileType: result.fileType,
         }
     })
-
-    return mappedResults
-}
-
-// todo: don't need full result set for clustering, refactor accordingly
-export const geoQueryForClustering = async (
-    individualQuery: Types.API.IndividualSearchQuery,
-    userId: number,
-): Promise<Types.API.SearchResultItem[]> => {
-    const [latLower, latUpper, lngLower, lngUpper] = individualQuery.value.split(',')
-    const query = `SELECT files.id, files.latitude, files.longitude, files.uuid FROM files WHERE files.user_id = :userId AND files.latitude >= :latLower AND files.latitude <= :latUpper AND files.longitude >= :lngLower AND files.longitude <= :lngUpper AND files.is_thumbnailed`
-
-    const results: Types.Core.DBSearchResult[] = await Database.query(query, {
-        type: Sequelize.QueryTypes.SELECT,
-        replacements: {
-            userId,
-            latLower,
-            latUpper,
-            lngLower,
-            lngUpper,
-        },
-    })
-
-    const mappedResults = results.map((result) => {
-        // todo: destructure - looks basic
-        return {
-            fileId: result.id,
-            userId,
-            uuid: result.uuid,
-            address: result.address,
-            latitude: result.latitude,
-            longitude: result.longitude,
-            mediumWidth: result.mediumWidth,
-            mediumHeight: result.mediumHeight,
-            fileType: result.fileType,
-        }
-    })
-
-    return mappedResults
 }
 
 export const performAutoCompleteQuery = async (

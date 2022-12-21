@@ -6,6 +6,7 @@ import { TaskManager } from '../services/TaskManager'
 import * as Types from '@shared/declarations'
 import moment from 'moment'
 import Logger from '../services/logging'
+import { SearchSort } from '@shared/enums'
 
 const getDropboxConnection = async (parents, args, context): Promise<Types.API.DropboxConnectionEditableAttributes> => {
     AuthUtil.verifyRequestIsAuthenticated(context)
@@ -58,42 +59,46 @@ const taskSummary = async (parents, args, context): Promise<Types.API.TaskSummar
     }
 }
 
-// todo: resupport not queries
-const search = async (parents, args, context): Promise<Types.API.SearchResult> => {
-    AuthUtil.verifyRequestIsAuthenticated(context)
+export const processSearchReqeust = async (
+    searchQuery: Types.API.SearchQuery,
+    sortOverload: SearchSort,
+    userId: number,
+    perPage: number,
+    page: number,
+    withGeoAggregations: boolean,
+): Promise<Types.API.SearchResult> => {
     const timeAtStart = moment()
-
-    // lift arguments
-    // search query
-    const searchQuery: Types.API.SearchQuery = args.filter
-    const page = args?.page ?? 1
-    const perPage = args?.perPage ?? 100
-
-    if (searchQuery.individualQueries.length === 0) {
-        throw new Error('no search query provided')
-    }
-
-    // user
-    const { userId } = context
 
     const { availableSortModes, recommendedSortMode } = SearchUtil.sortsForSearchQuery(searchQuery)
 
-    const sortOverload = args?.sortOverload
     const sortToUse = sortOverload && availableSortModes.includes(sortOverload) ? sortOverload : recommendedSortMode
 
-    const offSet = page * perPage - perPage
-
     const timeAtStartOfSearchUtil = moment()
-    const results = await DBUtil.newSearch(userId, searchQuery, sortToUse, perPage, offSet)
+
+    const resultIds: Types.Core.DBSearchMatch[] = await SearchUtil.search(userId, searchQuery, sortToUse)
+    const results =
+        resultIds.length > 0 ? await DBUtil.getAllResultData(resultIds, page, perPage, sortOverload, userId) : []
+
     const timeAtEndOfSearchUtil = moment().diff(timeAtStartOfSearchUtil)
 
-    // eg returned 101 items while perPage is 100
-    const hasMore = results.length > perPage
+    const totalItems = resultIds.length
+    const totalPages = Math.ceil(totalItems / perPage)
+
+    // in case client provided too high a page
+    if (page > totalPages) {
+        page = totalPages
+    }
+    if (page < 1) {
+        page = 1
+    }
 
     const pageInfo = {
+        totalPages,
+        totalItems,
         page,
         perPage,
-        hasMore,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1 && page < totalPages,
     }
 
     const sorting =
@@ -105,13 +110,9 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
             : undefined
 
     // geo clustering - only if they were on the map page
-    // todo: refactor this to use diff query
-    const geoAggregations = args?.withGeoAggregations
+    const geoAggregations = withGeoAggregations
         ? SearchUtil.geoAggregateResults(
-              await DBUtil.geoQueryForClustering(
-                  SearchUtil.extractMapQueryFromSearchQueries(searchQuery.individualQueries),
-                  userId,
-              ),
+              results,
               ...SearchUtil.extractMapParamsFromSearchQueries(searchQuery.individualQueries),
           )
         : undefined
@@ -120,6 +121,7 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
     const searchTime = timeAtEnd.diff(timeAtStart)
 
     Logger[searchTime > 500 ? 'warn' : 'info']('queries.search', { searchTime, timeAtEndOfSearchUtil, searchQuery })
+
     return {
         items: results,
         pageInfo,
@@ -127,6 +129,24 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
         sorting,
         geoAggregations,
     }
+}
+
+const search = async (parents, args, context): Promise<Types.API.SearchResult> => {
+    AuthUtil.verifyRequestIsAuthenticated(context)
+
+    const { filter: searchQuery, page = 1, perPage = 100, withGeoAggregations = false, sortOverload = undefined } = args
+    const { userId } = context
+
+    const searchResult = await processSearchReqeust(
+        searchQuery,
+        sortOverload,
+        userId,
+        perPage,
+        page,
+        withGeoAggregations,
+    )
+
+    return searchResult
 }
 
 const taskProcessor = async (parents, args, context): Promise<Types.API.TaskProcessor> => {

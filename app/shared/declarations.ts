@@ -77,9 +77,12 @@ export namespace API {
 	}
 
 	export interface PaginationInfo {
+        totalPages: number
+        totalItems: number
         page: number
         perPage: number
-        hasMore: boolean
+        hasNextPage: boolean
+        hasPreviousPage: boolean
 	}
 
 	export interface SearchStats {
@@ -470,8 +473,15 @@ export namespace Core {
 		throttled?: boolean
 	}
 	
-	export type DBSearchResult = {
-		id: number
+	export type DBSearchMatch = {
+		fileId: number
+		score: number
+		// latitude: number
+		// longitude: number
+	}
+
+	export type DBSearchResult =  {
+		fileId: number
 		uuid: string
 		address: string
 		latitude: number
@@ -539,6 +549,7 @@ export namespace Core {
 			datetime?: string
 			mediumHeight?: number
 			mediumWidth?: number
+			location?: {type: "Point", coordinates: [number, number]}
 		}
 		
 		export interface TaskAttributes {
@@ -563,7 +574,7 @@ export namespace Core {
 
 	export type SearchQueryResultSet = {
 		query: API.IndividualSearchQuery
-		results: API.SearchResultItem[]
+		results: Core.DBSearchMatch[]
 	}
 
 	export type FFMPEGProcessingResult = {

@@ -127,9 +127,12 @@ const typeDefs = gql`
     }
 
     type PaginationInfo {
+        totalPages: Int!
+        totalItems: Int!
         page: Int!
         perPage: Int!
-        hasMore: Boolean!
+        hasNextPage: Boolean!
+        hasPreviousPage: Boolean!
     }
 
     type SearchStats {
