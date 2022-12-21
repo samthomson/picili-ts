@@ -80,7 +80,7 @@ const findOverlappingResults = (arrayOfResultArrays: Types.Core.DBSearchMatch[][
 
     // sum scores from each result set
     const scoredResults = resultsThatAreInAllResultSets.map((result) => {
-        const { fileId } = result
+        const { fileId, latitude, longitude } = result
         // get scores from each result set
         let cumulativeScore = 0
         for (let i = 0; i < scores.length; i++) {
@@ -89,6 +89,8 @@ const findOverlappingResults = (arrayOfResultArrays: Types.Core.DBSearchMatch[][
         return {
             fileId,
             score: cumulativeScore,
+            latitude,
+            longitude,
         }
     })
 
@@ -169,9 +171,10 @@ export const autoComplete = async (
 }
 
 export const geoAggregateResults = (
-    results: Types.API.SearchResultItem[],
+    results: Types.Core.DBSearchMatch[],
     mapBounds: number[], // [-180, -85, 180, 85]
     zoom: number, // 2
+    userId: number,
 ): Types.API.GeoAggregations => {
     const supercluster = new Supercluster()
 
@@ -180,7 +183,8 @@ export const geoAggregateResults = (
         .filter(({ latitude, longitude }) => latitude !== undefined && longitude !== undefined)
         .map((result) => ({
             type: 'Feature',
-            properties: { cluster: false, fileId: result.fileId, uuid: result.uuid },
+            // todo: get uuid without selecting for every sub query?
+            properties: { cluster: false, fileId: result.fileId, uuid: null /*result.uuid*/ },
             geometry: {
                 type: 'Point',
                 coordinates: [result.longitude, result.latitude],
@@ -208,7 +212,6 @@ export const geoAggregateResults = (
             }
         })()
 
-        const userId = results[0].userId
         return {
             latitude,
             longitude,

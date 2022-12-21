@@ -83,11 +83,13 @@ const MapControl: React.FunctionComponent<IProps> = ({
 					el.className = 'marker'
 					el.title =
 						fileCount > 1 ? `${fileCount} results here` : uuid
-					el.style.backgroundImage = `url(${HelperUtil.thumbPath(
-						userId,
-						uuid,
-						'i',
-					)})`
+					// todo: tempish solution to not getting expensive uuid
+					// el.style.backgroundImage = `url(${HelperUtil.thumbPath(
+					// 	userId,
+					// 	uuid,
+					// 	'i',
+					// )})`
+					el.style.backgroundImage = `url(favicon.ico)`
 					el.style.width = `32px`
 					el.style.height = `32px`
 					el.style.backgroundSize = '100%'

@@ -476,8 +476,8 @@ export namespace Core {
 	export type DBSearchMatch = {
 		fileId: number
 		score: number
-		// latitude: number
-		// longitude: number
+		latitude?: number
+		longitude?: number
 	}
 
 	export type DBSearchResult =  {

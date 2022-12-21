@@ -112,8 +112,9 @@ export const processSearchReqeust = async (
     // geo clustering - only if they were on the map page
     const geoAggregations = withGeoAggregations
         ? SearchUtil.geoAggregateResults(
-              results,
+              resultIds,
               ...SearchUtil.extractMapParamsFromSearchQueries(searchQuery.individualQueries),
+              userId,
           )
         : undefined
 

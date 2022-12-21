@@ -439,7 +439,7 @@ export const performSearchQuery = async (
 
             // lat long lat long
             const mapQuery = `
-            SELECT SQL_NO_CACHE files.id as fileId, 100 as score 
+            SELECT SQL_NO_CACHE files.id as fileId, 100 as score, latitude, longitude 
             FROM files 
             WHERE 
             files.user_id = :userId 
@@ -456,9 +456,11 @@ export const performSearchQuery = async (
                     lngUpper: +lngUpper,
                 },
             })
-            return mapResults.map(({ fileId, score }) => ({
+            return mapResults.map(({ fileId, score, latitude, longitude }) => ({
                 fileId,
                 score,
+                latitude,
+                longitude,
             }))
             break
 
@@ -469,14 +471,16 @@ export const performSearchQuery = async (
             const query = (() => {
                 if (value === '*') {
                     // wildcard query, select all.
-                    return `SELECT SQL_NO_CACHE files.id as fileId, 100 as score  
+                    // todo: don't get lat/lon, just no map query?
+                    return `SELECT SQL_NO_CACHE files.id as fileId, 100 as score, latitude, longitude  
                     FROM files
                     WHERE files.is_thumbnailed AND files.user_id = :userId 
                     `
                 }
 
                 // normal term query (with type and subtype optional)
-                return `SELECT SQL_NO_CACHE files.id as fileId, tags.confidence as score FROM tags JOIN files ON tags.file_id = files.id where ${
+                // todo: don't get lat/lon, just no map query?
+                return `SELECT SQL_NO_CACHE files.id as fileId, tags.confidence as score, latitude, longitude FROM tags JOIN files ON tags.file_id = files.id where ${
                     type ? `tags.type=:type and ` : ''
                 }${
                     subtype ? `tags.subtype=:subtype and ` : ''
