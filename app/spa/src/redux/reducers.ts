@@ -71,11 +71,20 @@ export function appReducers(
 		case ActionType.SEARCH_QUERY_ADD:
 			// add to existing queries, unless it's of a certain type, then replace any similar query first
 			const { addSearchQuery } = action
-			const onlyAllowOneOfThisType = ['map', 'date']
+			const onlyAllowOneOfTheseTypes = ['map', 'date']
 			const oldIndividualQueries = state.searchQuery.individualQueries
-			const filteredQueries = oldIndividualQueries.filter(
-				({ type }) => !type || !onlyAllowOneOfThisType.includes(type),
-			)
+
+			// const filteredQueries = oldIndividualQueries.filter(({ type }) => !type || !onlyAllowOneOfThisType.includes(type),
+			// remove a query if it is the same type as the new one and that is one which only one should be allowed of
+			const filteredQueries = oldIndividualQueries.filter(({ type }) => {
+				const onlyAllowOneOfThisType =
+					(type && onlyAllowOneOfTheseTypes.includes(type)) ?? false
+				const newTypeMatchesCurrentType =
+					addSearchQuery?.type && addSearchQuery?.type === type // only relevant when type is set
+
+				return !(onlyAllowOneOfThisType && newTypeMatchesCurrentType)
+			})
+
 			const newQuery = {
 				...state.searchQuery,
 				individualQueries: [...filteredQueries, addSearchQuery],
