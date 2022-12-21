@@ -10,6 +10,8 @@ import * as HelperUtil from '../util/helper'
 import * as Models from '../db/models'
 import Logger from '../services/logging'
 import * as Enums from '../../../shared/enums'
+import moment from 'moment'
+import { processSearchReqeust } from '../server/queries'
 
 import fs from 'fs'
 import path from 'path'
@@ -341,6 +343,174 @@ const apiTestElevation = async () => {
         await delay(1000)
     }
 }
+const searchAll = async () => {
+    const timeAtStart = moment()
+    const searchAll = await processSearchReqeust(
+        {
+            individualQueries: [
+                {
+                    value: '*',
+                },
+            ],
+        },
+        undefined,
+        6,
+        100,
+        1,
+        false,
+    )
+
+    console.log('4. search all', moment().diff(timeAtStart))
+}
+
+const searchSpeedTest = async () => {
+    let timeAtStart = moment()
+    const bigMapQuery = await processSearchReqeust(
+        {
+            individualQueries: [
+                {
+                    type: 'map',
+                    value: '-85.05112899999986,84.76213466381898,-128.89100932263923,250.3733326989959,0.45812290130932914',
+                },
+            ],
+        },
+        undefined,
+        6,
+        100,
+        1,
+        true,
+    )
+
+    console.log('1. big map query', moment().diff(timeAtStart))
+
+    timeAtStart = moment()
+    const bigMapQueryWithTwoTerms = await processSearchReqeust(
+        {
+            individualQueries: [
+                {
+                    value: 'cat',
+                },
+                {
+                    value: 'thailand',
+                },
+                {
+                    type: 'map',
+                    value: '-85.05112899999986,84.76213466381898,-128.89100932263923,250.3733326989959,0.45812290130932914',
+                },
+            ],
+        },
+        undefined,
+        6,
+        100,
+        1,
+        true,
+    )
+
+    console.log('2. big map query with two terms', moment().diff(timeAtStart))
+
+    timeAtStart = moment()
+    const mediumMapQuery = await processSearchReqeust(
+        {
+            individualQueries: [
+                {
+                    type: 'map',
+                    value: '-8.334909584848944,40.36010846645803,71.40011590467034,127.26460747240372,3.221323161168797',
+                },
+            ],
+        },
+        undefined,
+        6,
+        100,
+        1,
+        true,
+    )
+
+    console.log('3. medium map query', moment().diff(timeAtStart))
+
+    // 4.
+    await searchAll()
+
+    // 5. small term query
+
+    timeAtStart = moment()
+    await processSearchReqeust(
+        {
+            individualQueries: [
+                {
+                    value: 'cat',
+                },
+            ],
+        },
+        undefined,
+        6,
+        100,
+        1,
+        false,
+    )
+    console.log('5. small term query', moment().diff(timeAtStart))
+
+    // 6. medium term query
+
+    timeAtStart = moment()
+    const medium = await processSearchReqeust(
+        {
+            individualQueries: [
+                {
+                    value: 'morocco',
+                },
+            ],
+        },
+        undefined,
+        6,
+        100,
+        1,
+        false,
+    )
+
+    console.log('6. medium term query', moment().diff(timeAtStart))
+
+    timeAtStart = moment()
+    const big = await processSearchReqeust(
+        {
+            individualQueries: [
+                {
+                    value: 'sony',
+                },
+            ],
+        },
+        undefined,
+        6,
+        100,
+        1,
+        false,
+    )
+
+    console.log('7. big term query', moment().diff(timeAtStart))
+
+    // 7. small & medium
+    timeAtStart = moment()
+    await processSearchReqeust(
+        {
+            individualQueries: [
+                {
+                    value: 'cat',
+                },
+                {
+                    value: 'sony',
+                },
+            ],
+        },
+        undefined,
+        6,
+        100,
+        1,
+        false,
+    )
+
+    console.log('8. small & medium', moment().diff(timeAtStart))
+
+    // todo: 9. elevation
+}
 
 // file()
 // imaggaTest()
@@ -359,4 +529,6 @@ const apiTestElevation = async () => {
 // checkExifData()
 // testFileDownload()
 // bulkFileDownload()
-apiTestElevation()
+// apiTestElevation()
+
+searchSpeedTest()

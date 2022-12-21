@@ -422,19 +422,84 @@ export const createMultipleTags = async (tagCreationParams: Types.Core.Inputs.Cr
 export const performSearchQuery = async (
     userId: number,
     individualQuery: Types.API.IndividualSearchQuery,
-    sort: Enums.SearchSort,
-): Promise<Types.API.SearchResultItem[]> => {
+): Promise<Types.Core.DBSearchMatch[]> => {
     const { type, subtype, value } = individualQuery
     const { SEARCH_CONFIDENCE_THRESHOLD: confidence } = process.env
 
-    const sortSQL = (() => {
-        switch (sort) {
-            case Enums.SearchSort.RELEVANCE:
-                if (type !== 'map') {
-                    return `ORDER BY tags.confidence DESC`
-                } else {
-                    return `ORDER BY files.datetime DESC`
+    // depending on query type, perform relevant query
+    switch (type) {
+        case 'map':
+            const [latLower, latUpper, lngLower, lngUpper] = value.split(',')
+            // todo: move to geometry.point search
+            const mapQuery = `SELECT SQL_NO_CACHE files.id as fileId, 100 as score FROM files WHERE files.user_id = :userId AND files.latitude >= :latLower AND files.latitude <= :latUpper AND files.longitude >= :lngLower AND files.longitude <= :lngUpper AND files.is_thumbnailed;`
+            const mapResults: Types.Core.DBSearchMatch[] = await Database.query(mapQuery, {
+                type: Sequelize.QueryTypes.SELECT,
+                replacements: {
+                    userId,
+                    latLower,
+                    latUpper,
+                    lngLower,
+                    lngUpper,
+                },
+            })
+            return mapResults.map(({ fileId, score }) => ({
+                fileId,
+                score,
+            }))
+            break
+
+        // todo: elevation
+        //    case 'elevation':
+
+        default:
+            const query = (() => {
+                if (value === '*') {
+                    // wildcard query, select all.
+                    return `SELECT SQL_NO_CACHE files.id as fileId, 100 as score  
+                    FROM files
+                    WHERE files.is_thumbnailed AND files.user_id = :userId 
+                    `
                 }
+
+                // normal term query (with type and subtype optional)
+                return `SELECT SQL_NO_CACHE files.id as fileId, tags.confidence as score FROM tags JOIN files ON tags.file_id = files.id where ${
+                    type ? `tags.type=:type and ` : ''
+                }${
+                    subtype ? `tags.subtype=:subtype and ` : ''
+                } tags.value = :value and tags.confidence >= :confidence and files.is_thumbnailed and files.user_id = :userId`
+            })()
+
+            const results: Types.Core.DBSearchMatch[] = await Database.query(query, {
+                type: Sequelize.QueryTypes.SELECT,
+                replacements: {
+                    userId,
+                    type,
+                    subtype,
+                    value,
+                    confidence,
+                },
+            })
+            return results.map(({ fileId, score }) => ({ fileId, score }))
+            break
+    }
+}
+
+export const getAllResultData = async (
+    matches: Types.Core.DBSearchMatch[],
+    page: number,
+    perPage: number,
+    sortOverload: Enums.SearchSort,
+): Promise<Types.API.SearchResultItem[]> => {
+    const sortSQL = (() => {
+        switch (sortOverload) {
+            // todo: support this
+            case Enums.SearchSort.RELEVANCE:
+                // if (type !== 'map') {
+                const sortedIds = matches.map(({ fileId }) => fileId)
+                return `ORDER BY FIELD(id, ${sortedIds.join(', ')}) DESC`
+            // } else {
+            //     return `ORDER BY files.datetime DESC`
+            // }
             case Enums.SearchSort.ELEVATION_HIGHEST:
                 return `ORDER BY files.elevation DESC`
             case Enums.SearchSort.ELEVATION_LOWEST:
@@ -446,70 +511,37 @@ export const performSearchQuery = async (
                 return `ORDER BY files.datetime DESC`
         }
     })()
+    const fileIds = matches.map(({ fileId }) => fileId)
+    const query = `SELECT SQL_NO_CACHE files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, 
+    files.datetime, files.medium_width AS mediumWidth, files.medium_height AS mediumHeight, files.file_type AS fileType 
+    FROM files
+    WHERE id IN (${fileIds.join(',')})
+    ${sortSQL}
+    LIMIT :offset, :perPage`
 
-    // depending on query type, perform relevant query
-    switch (type) {
-        case 'map':
-            const [latLower, latUpper, lngLower, lngUpper] = value.split(',')
-            const mapQuery = `SELECT SQL_NO_CACHE files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight, files.file_type as fileType FROM files WHERE files.user_id = :userId AND files.latitude >= :latLower AND files.latitude <= :latUpper AND files.longitude >= :lngLower AND files.longitude <= :lngUpper AND  files.is_thumbnailed  ${sortSQL};`
-            const mapResults: Types.Core.DBSearchResult[] = await Database.query(mapQuery, {
-                type: Sequelize.QueryTypes.SELECT,
-                replacements: {
-                    userId,
-                    latLower,
-                    latUpper,
-                    lngLower,
-                    lngUpper,
-                },
-            })
-            return mapResults.map((result) => {
-                // todo: deconstruct these
-                return {
-                    fileId: result.id,
-                    userId,
-                    uuid: result.uuid,
-                    address: result.address,
-                    latitude: result.latitude,
-                    longitude: result.longitude,
-                    // todo: remove this?
-                    confidence: 100,
-                    mediumWidth: result.mediumWidth,
-                    mediumHeight: result.mediumHeight,
-                    fileType: result.fileType,
-                }
-            })
-            break
-        default:
-            const query = `SELECT SQL_NO_CACHE files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, files.datetime, files.medium_width as mediumWidth, files.medium_height as mediumHeight, files.file_type as fileType FROM tags JOIN files ON tags.file_id = files.id where ${
-                type ? `tags.type=:type and ` : ''
-            }${
-                subtype ? `tags.subtype=:subtype and ` : ''
-            } tags.value = :value and tags.confidence >= :confidence and files.is_thumbnailed and files.user_id = :userId ${sortSQL};`
-            const results: Types.Core.DBSearchResult[] = await Database.query(query, {
-                type: Sequelize.QueryTypes.SELECT,
-                replacements: {
-                    userId,
-                    type,
-                    subtype,
-                    value,
-                    confidence,
-                },
-            })
-            return results.map((result) => {
-                return {
-                    fileId: result.id,
-                    userId,
-                    uuid: result.uuid,
-                    address: result.address,
-                    latitude: result.latitude,
-                    longitude: result.longitude,
-                    mediumWidth: result.mediumWidth,
-                    mediumHeight: result.mediumHeight,
-                    fileType: result.fileType,
-                }
-            })
-            break
-    }
+    const results: Types.Core.DBSearchResult[] = await Database.query(query, {
+        type: Sequelize.QueryTypes.SELECT,
+        replacements: {
+            ids: fileIds.join(','),
+            perPage,
+            offset: perPage * (page - 1),
+        },
+    })
+
+    return results.map((result) => {
+        return {
+            fileId: result.fileId,
+            // todo: this ov
+            userId: 8008,
+            uuid: result.uuid,
+            address: result.address,
+            latitude: result.latitude,
+            longitude: result.longitude,
+            mediumWidth: result.mediumWidth,
+            mediumHeight: result.mediumHeight,
+            fileType: result.fileType,
+        }
+    })
 }
 
 export const performAutoCompleteQuery = async (

@@ -11,7 +11,7 @@ const individualQuerySearch = async (
     sort: Enums.SearchSort,
 ): Promise<Types.Core.SearchQueryResultSet> => {
     const timeAtStart = moment()
-    const dbResults = await DBUtil.performSearchQuery(userId, individualQuery, sort)
+    const dbResults = await DBUtil.performSearchQuery(userId, individualQuery)
     // filter unique, as a file may match the queries on two tags (eg folder=china, location=china)
     const uniqueDbResults = Array.from(new Set(dbResults.map((x) => JSON.stringify(x)))).map((y) => JSON.parse(y))
 
@@ -26,7 +26,7 @@ const individualQuerySearch = async (
     return { query: individualQuery, results: uniqueDbResults }
 }
 
-const findOverlappingResults = (arrayOfResultArrays: Types.API.SearchResultItem[][]): Types.API.SearchResultItem[] => {
+const findOverlappingResults = (arrayOfResultArrays: Types.Core.DBSearchMatch[][]): Types.Core.DBSearchMatch[] => {
     // check for no results
     if (arrayOfResultArrays.length === 0) {
         return []
@@ -50,7 +50,7 @@ const findOverlappingResults = (arrayOfResultArrays: Types.API.SearchResultItem[
         .map((arrayOfResults) => arrayOfResults.map(({ fileId }) => fileId))
 
     // then go through each item and see if it is in all other arrays
-    const resultsThatAreInAllResultSets: Types.API.SearchResultItem[] = []
+    const resultsThatAreInAllResultSets: Types.Core.DBSearchMatch[] = []
     shortestSetOfResults.map((resultItem) => {
         // now see if it is in all other sets
         const occuringInOtherSet = otherSetsOfResultsIdsOnly.filter((arrayOfIds) =>
@@ -63,7 +63,39 @@ const findOverlappingResults = (arrayOfResultArrays: Types.API.SearchResultItem[
         }
     })
 
-    return resultsThatAreInAllResultSets
+    // todo: scoring could likely be skipped if the user isn't sorting by confidence
+    // map to k/v structure
+    const scores: Record<number, number>[] = new Array(arrayOfResultArrays.length).fill(new Object())
+
+    for (let i = 0; i < arrayOfResultArrays.length; i++) {
+        const arrayOfResults = arrayOfResultArrays[i]
+
+        scores[i] = {}
+
+        for (let j = 0; j < arrayOfResults.length; j++) {
+            const { fileId, score } = arrayOfResults[j]
+            scores[i][fileId] = score
+        }
+    }
+
+    // sum scores from each result set
+    const scoredResults = resultsThatAreInAllResultSets.map((result) => {
+        const { fileId } = result
+        // get scores from each result set
+        let cumulativeScore = 0
+        for (let i = 0; i < scores.length; i++) {
+            cumulativeScore += scores[i][fileId]
+        }
+        return {
+            fileId,
+            score: cumulativeScore,
+        }
+    })
+
+    // DESC sort by default
+    const sortedScoredResults = scoredResults.sort(({ score: a }, { score: b }) => b - a)
+
+    return sortedScoredResults
 }
 
 export const sortsForSearchQuery = (searchQuery: Types.API.SearchQuery): Types.Core.SortsForSearchQuery => {
@@ -97,7 +129,7 @@ export const search = async (
     userId: number,
     searchQuery: Types.API.SearchQuery,
     sortToUse: Enums.SearchSort,
-): Promise<Types.API.SearchResultItem[]> => {
+): Promise<Types.Core.DBSearchMatch[]> => {
     // foreach individual query, perform an individual query search
     const individualQueryPromises = searchQuery.individualQueries.map((individualQuery) =>
         individualQuerySearch(userId, individualQuery, sortToUse),
@@ -116,10 +148,11 @@ export const search = async (
     const overlappingResults = findOverlappingResults([...normalQueryResults.map(({ results }) => results)])
 
     // remove any not query results
-    const notResultIds = notQueryResults.map(({ results }) => results.map((result) => result.fileId))
+    const notResultIds = notQueryResults.map(({ results }) => results)
     const allNotResultIds = notResultIds.flat()
-    const flattenedNotResultIds: number[] = [...new Set(allNotResultIds)]
-    const filteredResults = overlappingResults.filter((result) => !flattenedNotResultIds.includes(result.fileId))
+    // const flattenedNotResultIds: number[] = [...new Set(allNotResultIds)]
+    const flattenedNotResultIds: Types.Core.DBSearchMatch[] = allNotResultIds
+    const filteredResults = overlappingResults.filter((result) => !flattenedNotResultIds.includes(result))
 
     // return those results
     const sortedResults = filteredResults
@@ -199,7 +232,6 @@ export const extractMapParamsFromSearchQueries = (
     if (!geoQuery) {
         return undefined
     }
-
     // convert our search map bounds to what the supercluster library wants.
     const [swLat, neLat, swLng, neLng, zoom] = geoQuery.value.split(',')
 

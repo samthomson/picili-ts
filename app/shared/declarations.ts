@@ -473,8 +473,15 @@ export namespace Core {
 		throttled?: boolean
 	}
 	
-	export type DBSearchResult = {
-		id: number
+	export type DBSearchMatch = {
+		fileId: number
+		score: number
+		// latitude: number
+		// longitude: number
+	}
+
+	export type DBSearchResult =  {
+		fileId: number
 		uuid: string
 		address: string
 		latitude: number
@@ -566,7 +573,7 @@ export namespace Core {
 
 	export type SearchQueryResultSet = {
 		query: API.IndividualSearchQuery
-		results: API.SearchResultItem[]
+		results: Core.DBSearchMatch[]
 	}
 
 	export type FFMPEGProcessingResult = {

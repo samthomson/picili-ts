@@ -91,7 +91,7 @@ const QueryInput: React.FunctionComponent<IProps> = ({ disabled }) => {
 		<div id="query-input">
 			<input
 				type="text"
-				placeholder="add query..."
+				placeholder="add query or search '*' for all"
 				value={textInputValue}
 				onChange={(e) => setTextInputValue(e.target.value)}
 				onKeyDown={onKeyDown}
