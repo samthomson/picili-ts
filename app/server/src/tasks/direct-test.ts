@@ -549,6 +549,7 @@ const seedLocations = async () => {
     })
     console.log(files.length)
 
+    /* */
     for (let i = 0; i < files.length; i++) {
         const { id, latitude, longitude, location } = files[i]
         console.log('updating', id)
@@ -556,7 +557,10 @@ const seedLocations = async () => {
             {
                 // @ts-ignore:
                 // location: { type: 'Point', coordinates: [latitude, longitude] },
-                location: { type: 'Point', coordinates: [-200, -200] },
+                location: {
+                    type: 'Point',
+                    coordinates: !(!!!latitude && !!!longitude) ? [latitude, longitude] : [-200, -200],
+                },
             },
             {
                 where: {
@@ -567,5 +571,5 @@ const seedLocations = async () => {
     }
 }
 
-searchSpeedTest()
-// seedLocations()
+// searchSpeedTest()
+seedLocations()
