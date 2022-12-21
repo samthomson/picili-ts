@@ -393,7 +393,11 @@ export const getOldestTaskDate = async (): Promise<string | null> => {
 }
 
 export const createFile = async (fileCreationParams: Types.Core.Inputs.CreateFileInput): Promise<number> => {
-    const newFile = await Models.FileModel.create(fileCreationParams)
+    const newFile = await Models.FileModel.create({
+        ...fileCreationParams,
+        // default to a co-ordinate off map
+        location: { type: 'Point', coordinates: [-200, -200] },
+    })
     return newFile.id
 }
 
@@ -431,15 +435,25 @@ export const performSearchQuery = async (
         case 'map':
             const [latLower, latUpper, lngLower, lngUpper] = value.split(',')
             // todo: move to geometry.point search
-            const mapQuery = `SELECT SQL_NO_CACHE files.id as fileId, 100 as score FROM files WHERE files.user_id = :userId AND files.latitude >= :latLower AND files.latitude <= :latUpper AND files.longitude >= :lngLower AND files.longitude <= :lngUpper AND files.is_thumbnailed;`
+            // const mapQuery = `SELECT SQL_NO_CACHE files.id as fileId, 100 as score FROM files WHERE files.user_id = :userId AND files.latitude >= :latLower AND files.latitude <= :latUpper AND files.longitude >= :lngLower AND files.longitude <= :lngUpper AND files.is_thumbnailed;`
+
+            // lat long lat long
+            const mapQuery = `
+            SELECT SQL_NO_CACHE files.id as fileId, 100 as score 
+            FROM files 
+            WHERE 
+            files.user_id = :userId 
+            AND MBRContains( GeomFromText( 'LINESTRING(:latLower :lngLower, :latUpper :lngUpper)' ), files.location)
+            
+            AND files.is_thumbnailed;`
             const mapResults: Types.Core.DBSearchMatch[] = await Database.query(mapQuery, {
                 type: Sequelize.QueryTypes.SELECT,
                 replacements: {
                     userId,
-                    latLower,
-                    latUpper,
-                    lngLower,
-                    lngUpper,
+                    latLower: +latLower,
+                    latUpper: +latUpper,
+                    lngLower: +lngLower,
+                    lngUpper: +lngUpper,
                 },
             })
             return mapResults.map(({ fileId, score }) => ({
@@ -489,11 +503,12 @@ export const getAllResultData = async (
     page: number,
     perPage: number,
     sortOverload: Enums.SearchSort,
+    userId: number,
 ): Promise<Types.API.SearchResultItem[]> => {
     const sortSQL = (() => {
         switch (sortOverload) {
-            // todo: support this
             case Enums.SearchSort.RELEVANCE:
+                // todo: what was this about?
                 // if (type !== 'map') {
                 const sortedIds = matches.map(({ fileId }) => fileId)
                 return `ORDER BY FIELD(id, ${sortedIds.join(', ')}) DESC`
@@ -531,8 +546,8 @@ export const getAllResultData = async (
     return results.map((result) => {
         return {
             fileId: result.fileId,
-            // todo: this ov
-            userId: 8008,
+            // todo: would be better to have this elsewhere
+            userId,
             uuid: result.uuid,
             address: result.address,
             latitude: result.latitude,

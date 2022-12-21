@@ -545,6 +545,10 @@ export const processImage = async (
             updatedAgain = true
             hasLongitude = true
         }
+        if (hasLatitude && hasLongitude) {
+            file.location = { type: 'Point', coordinates: [exifData.latitude, exifData.longitude] }
+            updatedAgain = true
+        }
         if (exifData?.altitude) {
             file.elevation = exifData.altitude
             updatedAgain = true

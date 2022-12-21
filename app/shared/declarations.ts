@@ -549,6 +549,7 @@ export namespace Core {
 			datetime?: string
 			mediumHeight?: number
 			mediumWidth?: number
+			location?: {type: "Point", coordinates: [number, number]}
 		}
 		
 		export interface TaskAttributes {

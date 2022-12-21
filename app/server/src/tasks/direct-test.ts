@@ -531,4 +531,41 @@ const searchSpeedTest = async () => {
 // bulkFileDownload()
 // apiTestElevation()
 
+const seedLocations = async () => {
+    const files = await Models.FileModel.findAll({
+        where: {
+            // isThumbnailed: true,
+            // latitude: {
+            //     [Sequelize.Op.not]: null,
+            // },
+            // longitude: {
+            //     [Sequelize.Op.not]: null,
+            // },
+            location: {
+                [Sequelize.Op.eq]: null,
+            },
+        },
+        limit: 100000,
+    })
+    console.log(files.length)
+
+    for (let i = 0; i < files.length; i++) {
+        const { id, latitude, longitude, location } = files[i]
+        console.log('updating', id)
+        await Models.FileModel.update(
+            {
+                // @ts-ignore:
+                // location: { type: 'Point', coordinates: [latitude, longitude] },
+                location: { type: 'Point', coordinates: [-200, -200] },
+            },
+            {
+                where: {
+                    id,
+                },
+            },
+        )
+    }
+}
+
 searchSpeedTest()
+// seedLocations()
