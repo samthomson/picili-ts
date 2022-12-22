@@ -435,7 +435,7 @@ export const performSearchQuery = async (
         case 'map':
             const [latLower, latUpper, lngLower, lngUpper] = value.split(',')
             const mapQuery = `
-            SELECT SQL_NO_CACHE files.id as fileId, 100 as score, latitude, longitude 
+            SELECT files.id as fileId, 100 as score, latitude, longitude 
             FROM files 
             WHERE 
             files.user_id = :userId 
@@ -468,7 +468,7 @@ export const performSearchQuery = async (
                 if (value === '*') {
                     // wildcard query, select all.
                     // todo: don't get lat/lon, just on map query?
-                    return `SELECT SQL_NO_CACHE files.id as fileId, 100 as score, latitude, longitude  
+                    return `SELECT files.id as fileId, 100 as score, latitude, longitude  
                     FROM files
                     WHERE files.is_thumbnailed AND files.user_id = :userId 
                     `
@@ -476,7 +476,7 @@ export const performSearchQuery = async (
 
                 // normal term query (with type and subtype optional)
                 // todo: don't get lat/lon, just on map query?
-                return `SELECT SQL_NO_CACHE files.id as fileId, tags.confidence as score, latitude, longitude FROM tags JOIN files ON tags.file_id = files.id where ${
+                return `SELECT files.id as fileId, tags.confidence as score, latitude, longitude FROM tags JOIN files ON tags.file_id = files.id where ${
                     type ? `tags.type=:type and ` : ''
                 }${
                     subtype ? `tags.subtype=:subtype and ` : ''
@@ -527,7 +527,7 @@ export const getAllResultData = async (
         }
     })()
     const fileIds = matches.map(({ fileId }) => fileId)
-    const query = `SELECT SQL_NO_CACHE files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, 
+    const query = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, 
     files.datetime, files.medium_width AS mediumWidth, files.medium_height AS mediumHeight, files.file_type AS fileType 
     FROM files
     WHERE id IN (${fileIds.join(',')})
