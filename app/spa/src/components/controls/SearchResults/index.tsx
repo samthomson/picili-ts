@@ -28,6 +28,7 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 	const searchSorting = ReactRedux.useSelector(Selectors.searchSorting)
 
 	const loadMore = () => dispatch(Actions.searchNext())
+	const refreshQuery = () => dispatch(Actions.attemptSearch())
 
 	return (
 		<React.Fragment>
@@ -38,6 +39,12 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 						{paginationInfo.totalItems > 0 && (
 							<>in {searchStats.speed}ms</>
 						)}
+						<button
+							id="refresh-query-button"
+							onClick={refreshQuery}
+						>
+							[refresh]
+						</button>
 					</p>
 					<div>
 						<SearchSortSelect searchSorting={searchSorting} />

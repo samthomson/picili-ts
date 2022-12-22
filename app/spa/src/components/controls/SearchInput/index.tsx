@@ -19,7 +19,6 @@ const SearchInput: React.FunctionComponent = () => {
 	const isSearching = ReactRedux.useSelector(Selectors.searchIsSearching)
 
 	const resetQuery = () => dispatch(Actions.searchQueryReset())
-	const refreshQuery = () => dispatch(Actions.attemptSearch())
 	const isMobile = useIsMobile()
 
 	return (
@@ -38,12 +37,6 @@ const SearchInput: React.FunctionComponent = () => {
 					<>
 						<button id="reset-query-button" onClick={resetQuery}>
 							[clear]
-						</button>
-						<button
-							id="refresh-query-button"
-							onClick={refreshQuery}
-						>
-							[refresh]
 						</button>
 					</>
 				)}
