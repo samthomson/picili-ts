@@ -527,7 +527,7 @@ export const getAllResultData = async (
         }
     })()
     const fileIds = matches.map(({ fileId }) => fileId)
-    const query = `SELECT files.id, files.uuid, files.address, files.latitude, files.longitude, files.elevation, 
+    const query = `SELECT files.id as fileId, files.uuid, files.address, files.latitude, files.longitude, files.elevation, 
     files.datetime, files.medium_width AS mediumWidth, files.medium_height AS mediumHeight, files.file_type AS fileType 
     FROM files
     WHERE id IN (${fileIds.join(',')})
