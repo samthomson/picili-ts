@@ -135,7 +135,7 @@ export const processSearchReqeust = async (
 const search = async (parents, args, context): Promise<Types.API.SearchResult> => {
     AuthUtil.verifyRequestIsAuthenticated(context)
 
-    const { filter: searchQuery, page = 1, perPage = 100, withGeoAggregations = false, sortOverload = undefined } = args
+    const { filter: searchQuery, page = 1, perPage = 50, withGeoAggregations = false, sortOverload = undefined } = args
     const { userId } = context
 
     const searchResult = await processSearchReqeust(

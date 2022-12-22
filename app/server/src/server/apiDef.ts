@@ -232,7 +232,7 @@ const typeDefs = gql`
         search(
             filter: SearchFilter!
             page: Int! = 1
-            perPage: Int! = 100
+            perPage: Int! = 50
             sortOverload: SearchSort
             withGeoAggregations: Boolean = false
         ): SearchQueryResponse
