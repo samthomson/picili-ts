@@ -26,7 +26,10 @@ const individualQuerySearch = async (
     return { query: individualQuery, results: uniqueDbResults }
 }
 
-const findOverlappingResults = (arrayOfResultArrays: Types.Core.DBSearchMatch[][]): Types.Core.DBSearchMatch[] => {
+const findOverlappingResults = (
+    arrayOfResultArrays: Types.Core.DBSearchMatch[][],
+    sortMode: Enums.SearchSort,
+): Types.Core.DBSearchMatch[] => {
     // check for no results
     if (arrayOfResultArrays.length === 0) {
         return []
@@ -63,41 +66,47 @@ const findOverlappingResults = (arrayOfResultArrays: Types.Core.DBSearchMatch[][
         }
     })
 
-    // todo: scoring could likely be skipped if the user isn't sorting by confidence
-    // map to k/v structure
-    const scores: Record<number, number>[] = new Array(arrayOfResultArrays.length).fill(new Object())
+    // scoring can be skipped if the user isn't sorting by confidence - just return early
 
-    for (let i = 0; i < arrayOfResultArrays.length; i++) {
-        const arrayOfResults = arrayOfResultArrays[i]
+    if (sortMode !== Enums.SearchSort.RELEVANCE) {
+        return resultsThatAreInAllResultSets
+    } else {
+        // map to k/v structure
+        const scores: Record<number, number>[] = new Array(arrayOfResultArrays.length).fill(new Object())
 
-        scores[i] = {}
+        for (let i = 0; i < arrayOfResultArrays.length; i++) {
+            const arrayOfResults = arrayOfResultArrays[i]
 
-        for (let j = 0; j < arrayOfResults.length; j++) {
-            const { fileId, score } = arrayOfResults[j]
-            scores[i][fileId] = score
+            scores[i] = {}
+
+            for (let j = 0; j < arrayOfResults.length; j++) {
+                const { fileId, score } = arrayOfResults[j]
+                scores[i][fileId] = score
+            }
         }
+
+        // sum scores from each result set
+        const scoredResults = resultsThatAreInAllResultSets.map((result) => {
+            const { fileId, latitude, longitude } = result
+            // get scores from each result set
+            let cumulativeScore = 0
+            for (let i = 0; i < scores.length; i++) {
+                cumulativeScore += scores[i][fileId]
+            }
+            return {
+                fileId,
+                score: cumulativeScore,
+                latitude,
+                longitude,
+            }
+        })
+
+        // DESC sort by default
+        const sortedScoredResults = scoredResults.sort(({ score: a }, { score: b }) => b - a)
+
+        // sorting by confidence, so sort accordingly.
+        return sortedScoredResults
     }
-
-    // sum scores from each result set
-    const scoredResults = resultsThatAreInAllResultSets.map((result) => {
-        const { fileId, latitude, longitude } = result
-        // get scores from each result set
-        let cumulativeScore = 0
-        for (let i = 0; i < scores.length; i++) {
-            cumulativeScore += scores[i][fileId]
-        }
-        return {
-            fileId,
-            score: cumulativeScore,
-            latitude,
-            longitude,
-        }
-    })
-
-    // DESC sort by default
-    const sortedScoredResults = scoredResults.sort(({ score: a }, { score: b }) => b - a)
-
-    return sortedScoredResults
 }
 
 export const sortsForSearchQuery = (searchQuery: Types.API.SearchQuery): Types.Core.SortsForSearchQuery => {
@@ -147,7 +156,7 @@ export const search = async (
     )
 
     // find overlapping results
-    const overlappingResults = findOverlappingResults([...normalQueryResults.map(({ results }) => results)])
+    const overlappingResults = findOverlappingResults([...normalQueryResults.map(({ results }) => results)], sortToUse)
 
     // remove any not query results
     const notResultIds = notQueryResults.map(({ results }) => results)
