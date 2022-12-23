@@ -1,11 +1,13 @@
 import * as React from 'react'
 import * as ReactRedux from 'react-redux'
 import classNames from 'classnames'
-import { UnstyledButton } from '@mantine/core'
-import { IconX } from '@tabler/icons'
+import * as MantineCore from '@mantine/core'
+import * as Icons from '@tabler/icons'
 
 import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
+import * as Selectors from 'src/redux/selectors'
+
 interface IProps {
 	individualQuery: Types.API.IndividualSearchQuery
 	disabled: boolean
@@ -16,6 +18,8 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 	disabled,
 }) => {
 	const dispatch = ReactRedux.useDispatch()
+
+	const isSearching = ReactRedux.useSelector(Selectors.searchIsSearching)
 
 	const removeQuery = (
 		type: string | undefined = undefined,
@@ -34,6 +38,8 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 
 	const { type, subtype, value, isNotQuery = false } = individualQuery
 
+	// todo: get first result of query to use photo from
+
 	return (
 		<div
 			className={classNames({
@@ -41,6 +47,17 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 				'not-query': isNotQuery,
 			})}
 		>
+			<div className="img-loader-space">
+				{isSearching ? (
+					<MantineCore.Loader size="xs" color="grey" />
+				) : true ? (
+					<img src="http://localhost:3501/thumbs/6/246e2bd7-8c86-4427-bb75-9c75f60f614c/i.jpg" />
+				) : (
+					<Icons.IconPhotoCancel size={20} />
+				)}
+			</div>
+
+			<Icons.IconLanguageHiragana size={16} />
 			{type === 'map' && <>[map bounds]</>}
 			{type !== 'map' && (
 				<>
@@ -50,15 +67,16 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 					{value && <>{value}</>}
 				</>
 			)}
-			<UnstyledButton
+			<MantineCore.UnstyledButton
 				disabled={disabled}
 				onClick={() =>
 					removeQuery(type || undefined, subtype || undefined, value)
 				}
 				title="remove this query"
+				className="remove-query"
 			>
-				<IconX size={20} />
-			</UnstyledButton>
+				<Icons.IconX size={20} />
+			</MantineCore.UnstyledButton>
 		</div>
 	)
 }

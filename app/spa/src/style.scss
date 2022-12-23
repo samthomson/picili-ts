@@ -169,13 +169,27 @@ a {
     // todo: on mobile, no right padding (search mode toggle)
     .individual-query {
       display: inline-flex;
-      justify-content: middle;
       border: 1px solid $silverColor;
       border-radius: $margin;
-      padding: 3px 6px 3px 8px;
+      padding: 3px 6px 3px 4px;
       margin: 4px;
 
       color: $greyDarkText;
+      
+      .img-loader-space {
+        height: 20px;
+        width: 20px; 
+        display: flex;
+        align-items: center;   
+        margin-right: 4px; 
+      }
+
+      img {
+        height: 20px;
+        width: 20px;
+
+        border-radius: 6px; 
+      }
 
       &:hover {
         border-color: $greyColor;
@@ -187,11 +201,13 @@ a {
         text-decoration: line-through;
       }
 
-      & svg {
+      .remove-query {
         display: flex;
-        stroke: $silverColor;
+        svg {
+          stroke: $silverColor;
+        }
 
-        &:hover {
+        &:hover svg {
           stroke: $primaryColor;
         }
       }
@@ -203,6 +219,7 @@ a {
 
     #queries-and-input {
       flex: 1;
+      display: flex;
     }
 
     #clear-button-space {
