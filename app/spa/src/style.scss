@@ -188,6 +188,13 @@ a {
     #clear-button-space {
       background-color: burlywood;
       flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      
+      & svg {
+        display: flex;
+        align-items: center;
+      }
     }
 
     #query-input {
