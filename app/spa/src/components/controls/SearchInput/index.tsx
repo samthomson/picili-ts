@@ -33,7 +33,7 @@ const SearchInput: React.FunctionComponent = () => {
 	return (
 		<div id="search-bar">
 			<div id="search-input">
-				<Paper shadow="md">
+				<Paper shadow="lg" radius="md">
 					<div id="quey-input-and-close-button">
 						<div id="queries-and-input">
 							{individualQueries.map((individualQuery, index) => (
@@ -64,6 +64,7 @@ const SearchInput: React.FunctionComponent = () => {
 					<SegmentedControl
 						size="md"
 						value={location.pathname === '/' ? 'grid' : 'map'}
+						radius="md"
 						data={[
 							{
 								value: 'grid',
