@@ -38,8 +38,16 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 
 	const { type, subtype, value, isNotQuery = false } = individualQuery
 
-	// todo: get first result of query to use photo from
+	const Icon = (() => {
+		switch (type) {
+			case 'map':
+				return Icons.IconMapSearch
+			default:
+				return Icons.IconLanguageHiragana
+		}
+	})()
 
+	// todo: get first result of query to use photo from
 	return (
 		<div
 			className={classNames({
@@ -57,16 +65,18 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 				)}
 			</div>
 
-			<Icons.IconLanguageHiragana size={16} />
-			{type === 'map' && <>[map bounds]</>}
-			{type !== 'map' && (
-				<>
-					{type && <>{type}</>}
-					{subtype && <>.{subtype}</>}
-					{type && <>=</>}
-					{value && <>{value}</>}
-				</>
-			)}
+			<Icon size={16} />
+			<div className="query-display-text">
+				{type === 'map' && <>map</>}
+				{type !== 'map' && (
+					<>
+						{type && <>{type}</>}
+						{subtype && <>.{subtype}</>}
+						{type && <>=</>}
+						{value && <>{value}</>}
+					</>
+				)}
+			</div>
 			<MantineCore.UnstyledButton
 				disabled={disabled}
 				onClick={() =>
