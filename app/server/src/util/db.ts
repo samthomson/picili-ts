@@ -432,7 +432,7 @@ export const performSearchQuery = async (
 
     // depending on query type, perform relevant query
     switch (type) {
-        case 'map':
+        case Enums.QueryType.MAP:
             const [latLower, latUpper, lngLower, lngUpper] = value.split(',')
             const mapQuery = `
             SELECT files.id as fileId, 100 as score, latitude, longitude 

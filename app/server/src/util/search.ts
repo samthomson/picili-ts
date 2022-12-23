@@ -239,7 +239,7 @@ export const extractMapParamsFromSearchQueries = (
     individualQueries: Types.API.IndividualSearchQuery[],
 ): [number[], number] | undefined => {
     // get just the map query
-    const geoQuery = individualQueries.find((query) => query.type === 'map')
+    const geoQuery = individualQueries.find((query) => query.type === Enums.QueryType.MAP)
 
     if (!geoQuery) {
         return undefined

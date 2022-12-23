@@ -7,6 +7,7 @@ import * as Icons from '@tabler/icons'
 import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
+import * as Enums from '../../../../../shared/enums'
 
 interface IProps {
 	individualQuery: Types.API.IndividualSearchQuery
@@ -40,7 +41,7 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 
 	const Icon = (() => {
 		switch (type) {
-			case 'map':
+			case Enums.QueryType.MAP:
 				return Icons.IconMapSearch
 			default:
 				return Icons.IconLanguageHiragana
@@ -67,8 +68,8 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 
 			<Icon size={16} />
 			<div className="query-display-text">
-				{type === 'map' && <>map</>}
-				{type !== 'map' && (
+				{type === Enums.QueryType.MAP && <>map</>}
+				{type !== Enums.QueryType.MAP && (
 					<>
 						{type && <>{type}</>}
 						{subtype && <>.{subtype}</>}

@@ -32,3 +32,7 @@ export enum AspectRatio {
     PORTRAIT = 'PORTRAIT',
     LANDSCAPE = 'LANDSCAPE',
 }
+
+export enum QueryType {
+    MAP = 'map'
+}

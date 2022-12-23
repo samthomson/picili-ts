@@ -8,6 +8,7 @@ import * as Selectors from 'src/redux/selectors'
 import SearchPageTemplate from 'src/components/pages/Search/SearchPageTemplate'
 import SearchResults from 'src/components/controls/SearchResults/index'
 import Map from 'src/components/controls/Map'
+import * as Enums from '../../../../../shared/enums'
 
 import useIsMobile from 'src/util/hooks/use-is-mobile.hook'
 import { Redirect } from 'react-router-dom'
@@ -25,7 +26,7 @@ const MapPage: React.FunctionComponent = () => {
 		zoom: number,
 	): void => {
 		const mapQuery = {
-			type: 'map',
+			type: Enums.QueryType.MAP,
 			value: `${bounds._sw.lat},${bounds._ne.lat},${bounds._sw.lng},${bounds._ne.lng},${zoom}`,
 		}
 
