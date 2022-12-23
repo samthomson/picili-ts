@@ -9,6 +9,7 @@ $primaryColor: maroon;
 $blackColor: black;
 $silverColor: silver;
 $greyColor: grey;
+$greyDarkText: #696969;
 
 $headerHeight: 58px;
 $margin: 8px;
@@ -167,13 +168,32 @@ a {
     flex: 1;
     // todo: on mobile, no right padding (search mode toggle)
     .individual-query {
-      display: inline-block;
-      border: 1px solid gray;
-      padding: 4px;
+      display: inline-flex;
+      justify-content: middle;
+      border: 1px solid $silverColor;
+      border-radius: $margin;
+      padding: 3px 6px 3px 8px;
       margin: 4px;
+
+      color: $greyDarkText;
+
+      &:hover {
+        border-color: $greyColor;
+      }
+
+      align-items: center;
 
       &.not-query {
         text-decoration: line-through;
+      }
+
+      & svg {
+        display: flex;
+        stroke: $silverColor;
+
+        &:hover {
+          stroke: $primaryColor;
+        }
       }
     }
 

@@ -1,6 +1,8 @@
 import * as React from 'react'
 import * as ReactRedux from 'react-redux'
 import classNames from 'classnames'
+import { UnstyledButton } from '@mantine/core'
+import { IconX } from '@tabler/icons'
 
 import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
@@ -48,14 +50,15 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 					{value && <>{value}</>}
 				</>
 			)}
-			<button
+			<UnstyledButton
 				disabled={disabled}
 				onClick={() =>
 					removeQuery(type || undefined, subtype || undefined, value)
 				}
+				title="remove this query"
 			>
-				remove
-			</button>
+				<IconX size={20} />
+			</UnstyledButton>
 		</div>
 	)
 }
