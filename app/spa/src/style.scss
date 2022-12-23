@@ -312,7 +312,8 @@ a {
 	.justified-row img {
 		width: auto;
 		max-height: 100%;
-		margin-right: 8px;
+		margin-right: $margin;
+    border-radius: $margin;
 	}
 
 	.justified-row img:last-child {
