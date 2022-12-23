@@ -160,14 +160,11 @@ a {
 }
 
 #search-bar {
-  border: 1px solid silver;
-  background-color: yellow;
   display: flex;
+  gap: $margin;
 
   #search-input {
-    background-color: orange;
     flex: 1;
-
     // todo: on mobile, no right padding (search mode toggle)
     .individual-query {
       display: inline-block;
@@ -180,12 +177,24 @@ a {
       }
     }
 
+    #quey-input-and-close-button {
+      display: flex;
+    }
+
+    #queries-and-input {
+      flex: 1;
+    }
+
+    #clear-button-space {
+      background-color: burlywood;
+      flex: 0 0 auto;
+    }
+
     #query-input {
       display: inline-block;
       border: 1px solid $primaryColor;
       padding: 4px;
       margin: 4px;
-      position: absolute;
       background: #fff;
     }
 
@@ -200,7 +209,6 @@ a {
 
   // todo: on mobile, hide this
   #search-mode-toggle {
-    background-color: red;
     flex: 0 0 auto;
 
     .search-mode-toggle-option {
