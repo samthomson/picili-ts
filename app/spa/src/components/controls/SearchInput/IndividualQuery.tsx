@@ -40,9 +40,33 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 	const { type, subtype, value, isNotQuery = false } = individualQuery
 
 	const Icon = (() => {
-		switch (type) {
-			case Enums.QueryType.MAP:
+		switch (true) {
+			case type === Enums.QueryType.MAP:
 				return Icons.IconMapSearch
+
+			case type === Enums.QueryType.EXIF:
+				return Icons.IconAperture
+
+			case type === Enums.QueryType.SUBJECT:
+				return Icons.IconPhotoSearch
+
+			case type === Enums.QueryType.OCR &&
+				subtype === Enums.QuerySubtype.TEXT:
+				return Icons.IconTextRecognition
+
+			case type === Enums.QueryType.OCR &&
+				subtype === Enums.QuerySubtype.NUMBER_PLATE:
+				return Icons.IconCarCrash
+
+			case type === Enums.QueryType.LOCATION:
+				return Icons.IconMapPin
+
+			case type === Enums.QueryType.FILETYPE:
+				return Icons.IconFileCheck
+
+			// todo: plant IconPlant
+			// todo: directory
+
 			default:
 				return Icons.IconLanguageHiragana
 		}

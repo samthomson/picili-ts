@@ -34,5 +34,20 @@ export enum AspectRatio {
 }
 
 export enum QueryType {
-    MAP = 'map'
+    MAP = 'map',
+    // DATE = 'date',
+    // DATE_RANGE = 'date_range',
+    // ELEVATION_RANGE = 'elevation_range',
+    EXIF = 'exif',
+    SUBJECT = 'subject',
+    OCR = 'ocr',
+    LOCATION = 'location',
+    FILETYPE = 'filetype'
+    // todo: plant 
+    // todo: directory
+}
+
+export enum QuerySubtype {
+    TEXT = 'text',
+    NUMBER_PLATE = 'number_plate',
 }
