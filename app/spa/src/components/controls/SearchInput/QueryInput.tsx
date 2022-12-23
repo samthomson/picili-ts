@@ -4,6 +4,7 @@ import debounce from 'lodash.debounce'
 
 import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
+import * as Selectors from 'src/redux/selectors'
 
 import TypeAhead from './TypeAhead'
 
@@ -18,6 +19,10 @@ const QueryInput: React.FunctionComponent<IProps> = ({ disabled }) => {
 	const [currentIndividualQuery, setCurrentIndividualQuery] = React.useState<
 		Types.API.IndividualSearchQuery | undefined
 	>(undefined)
+
+	const individualQueries = ReactRedux.useSelector(
+		Selectors.searchIndividualQueries,
+	)
 
 	const parseTextToQuery = (
 		text: string,
@@ -69,6 +74,11 @@ const QueryInput: React.FunctionComponent<IProps> = ({ disabled }) => {
 			setTextInputValue('')
 			// do search
 			dispatch(Actions.attemptSearch())
+		}
+
+		if (event.key === 'Backspace' && textInputValue === '') {
+			const lastQuery = individualQueries?.[individualQueries.length - 1]
+			if (lastQuery) dispatch(Actions.searchQueryRemove(lastQuery))
 		}
 	}
 
