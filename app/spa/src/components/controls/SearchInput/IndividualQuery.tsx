@@ -72,47 +72,63 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 		}
 	})()
 
+	// todo: also get from updated search query
+	const numberOfResults = 787
+
 	// todo: get first result of query to use photo from
 	return (
-		<div
-			className={classNames({
-				'individual-query': true,
-				'not-query': isNotQuery,
-			})}
+		<MantineCore.Indicator
+			label={`${numberOfResults}`}
+			inline
+			processing={isSearching}
+			size={22}
+			// todo: get/share primary color from/via saas
+			color={numberOfResults > 0 ? 'maroon' : 'gray'}
 		>
-			<div className="img-loader-space">
-				{isSearching ? (
-					<MantineCore.Loader size="xs" color="grey" />
-				) : true ? (
-					<img src="http://localhost:3501/thumbs/6/246e2bd7-8c86-4427-bb75-9c75f60f614c/i.jpg" />
-				) : (
-					<Icons.IconPhotoCancel size={20} />
-				)}
-			</div>
-
-			<Icon size={16} />
-			<div className="query-display-text">
-				{type === Enums.QueryType.MAP && <>map</>}
-				{type !== Enums.QueryType.MAP && (
-					<>
-						{type && <>{type}</>}
-						{subtype && <>.{subtype}</>}
-						{type && <>=</>}
-						{value && <>{value}</>}
-					</>
-				)}
-			</div>
-			<MantineCore.UnstyledButton
-				disabled={disabled}
-				onClick={() =>
-					removeQuery(type || undefined, subtype || undefined, value)
-				}
-				title="remove this query"
-				className="remove-query"
+			<div
+				className={classNames({
+					'individual-query': true,
+					'not-query': isNotQuery,
+				})}
 			>
-				<Icons.IconX size={20} />
-			</MantineCore.UnstyledButton>
-		</div>
+				<div className="img-loader-space">
+					{isSearching ? (
+						<MantineCore.Loader size="xs" color="grey" />
+					) : true ? (
+						<img src="http://localhost:3501/thumbs/6/246e2bd7-8c86-4427-bb75-9c75f60f614c/i.jpg" />
+					) : (
+						<Icons.IconPhotoCancel size={20} />
+					)}
+				</div>
+
+				<Icon size={16} />
+				<div className="query-display-text">
+					{type === Enums.QueryType.MAP && <>map</>}
+					{type !== Enums.QueryType.MAP && (
+						<>
+							{type && <>{type}</>}
+							{subtype && <>.{subtype}</>}
+							{type && <>=</>}
+							{value && <>{value}</>}
+						</>
+					)}
+				</div>
+				<MantineCore.UnstyledButton
+					disabled={disabled}
+					onClick={() =>
+						removeQuery(
+							type || undefined,
+							subtype || undefined,
+							value,
+						)
+					}
+					title="remove this query"
+					className="remove-query"
+				>
+					<Icons.IconX size={20} />
+				</MantineCore.UnstyledButton>
+			</div>
+		</MantineCore.Indicator>
 	)
 }
 const MemoizedIndividualQuery = React.memo(IndividualQuery)
