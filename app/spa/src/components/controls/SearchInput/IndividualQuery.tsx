@@ -82,6 +82,7 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 			inline
 			processing={isSearching}
 			size={22}
+			withBorder
 			// todo: get/share primary color from/via saas
 			color={numberOfResults > 0 ? 'maroon' : 'gray'}
 		>
