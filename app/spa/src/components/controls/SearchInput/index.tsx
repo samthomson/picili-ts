@@ -48,7 +48,10 @@ const SearchInput: React.FunctionComponent = () => {
 						</div>
 						<div id="clear-button-space">
 							{individualQueries.length > 0 && (
-								<UnstyledButton onClick={resetQuery}>
+								<UnstyledButton
+									onClick={resetQuery}
+									title="clear all queries"
+								>
 									<IconX size={20} />
 								</UnstyledButton>
 							)}

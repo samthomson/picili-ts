@@ -186,14 +186,20 @@ a {
     }
 
     #clear-button-space {
-      background-color: burlywood;
       flex: 0 0 auto;
       display: flex;
       align-items: center;
+      padding-right: $margin;
+      padding-left: $margin;
       
       & svg {
         display: flex;
         align-items: center;
+        stroke: $greyColor
+      }
+
+      &:hover svg {
+        stroke: $primaryColor;
       }
     }
 
