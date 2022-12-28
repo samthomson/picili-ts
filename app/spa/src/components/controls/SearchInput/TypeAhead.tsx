@@ -188,6 +188,8 @@ const TypeAhead: React.FunctionComponent = () => {
 				dispatch(Actions.attemptSearch())
 			}}
 			onKeyDown={onKeyDown}
+			// todo: style
+			// variant="unstyled"
 		/>
 	)
 }
