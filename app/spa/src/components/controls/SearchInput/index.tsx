@@ -14,7 +14,7 @@ import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
 
 import IndividualQuery from './IndividualQuery'
-import QueryInput from './QueryInput'
+import TypeAhead from 'src/components/controls/SearchInput/TypeAhead'
 
 import useIsMobile from 'src/util/hooks/use-is-mobile.hook'
 
@@ -43,7 +43,7 @@ const SearchInput: React.FunctionComponent = () => {
 									disabled={isSearching}
 								/>
 							))}
-							<QueryInput disabled={isSearching} />
+							<TypeAhead />
 							{isSearching && <>[searching icon/spinner]</>}
 						</div>
 						<div id="clear-button-space">

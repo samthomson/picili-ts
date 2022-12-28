@@ -244,12 +244,16 @@ a {
       }
     }
 
-    #query-input {
-      display: inline-block;
-      border: 1px solid $primaryColor;
-      padding: 4px;
-      margin: 4px;
-      background: #fff;
+    // #query-input {
+    //   display: inline-block;
+    //   border: 1px solid $primaryColor;
+    //   padding: 4px;
+    //   margin: 4px;
+    //   background: #fff;
+    // }
+
+    .auto-complete-item-image {
+      border-radius: $margin;
     }
 
     #reset-query-button {
