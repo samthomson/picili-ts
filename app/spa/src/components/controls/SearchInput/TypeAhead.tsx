@@ -219,8 +219,10 @@ const TypeAhead: React.FunctionComponent = () => {
 				// todo: get these from vars (shared above with style of right section)
 				// 26 = width of 18 + margin of 8.
 				rightSectionWidth={26}
+				// todo: get this from a const, and use in the api too.
+				limit={50}
 				// todo: style
-				// variant="unstyled"
+				variant="unstyled"
 			/>
 		</form>
 	)
