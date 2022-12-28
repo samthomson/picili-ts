@@ -143,19 +143,7 @@ const TypeAhead: React.FunctionComponent = () => {
 
 	// return pressed: parse/add as query to redux and clear textInputValue
 	const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-		if (event.key === 'Enter') {
-			if (textInputValue === '') {
-				return
-			}
-			// parse/add to query
-			const add = parseTextToQuery(textInputValue)
-			dispatch(Actions.searchQueryAdd(add))
-			// clear input
-			setTextInputValue('')
-			// do search
-			dispatch(Actions.attemptSearch())
-		}
-
+		// return/enter is handled in a warpping form element to the dropdown
 		if (event.key === 'Backspace' && textInputValue === '') {
 			const lastQuery = individualQueries?.[individualQueries.length - 1]
 			if (lastQuery) {
@@ -175,33 +163,56 @@ const TypeAhead: React.FunctionComponent = () => {
 		})) ?? []
 
 	return (
-		<MantineCore.Autocomplete
-			placeholder="type a query or search '*' for all"
-			itemComponent={AutoCompleteItem}
-			data={results}
-			value={textInputValue}
-			onChange={setTextInputValue}
-			// todo: if no icon show a fixed width whatever so there's no resize on load
-			rightSection={
-				error ? (
-					<Icons.IconMoodCry size={18} color="red" />
-				) : loading ? (
-					<MantineCore.Loader size="xs" color="grey" />
-				) : (
-					''
-				)
-			}
-			onItemSubmit={(item) => {
-				const { type, subtype, value } = item
+		<form
+			onSubmit={(e) => {
+				/*
+				hackily wrap the typeahead in a form so I can get the user
+				pressing return but only when they are not pressing return
+				to select a dropdown item (as then I'd add the text and item 
+				to the search query).
+				*/
+				e.preventDefault()
 
-				dispatch(Actions.searchQueryAdd({ type, subtype, value }))
+				if (textInputValue === '') {
+					return
+				}
+				// parse/add to query
+				const add = parseTextToQuery(textInputValue)
+				dispatch(Actions.searchQueryAdd(add))
+				// clear input
 				setTextInputValue('')
+				// do search
 				dispatch(Actions.attemptSearch())
 			}}
-			onKeyDown={onKeyDown}
-			// todo: style
-			// variant="unstyled"
-		/>
+		>
+			<MantineCore.Autocomplete
+				placeholder="type a query or search '*' for all"
+				itemComponent={AutoCompleteItem}
+				data={results}
+				value={textInputValue}
+				onChange={setTextInputValue}
+				// todo: if no icon show a fixed width whatever so there's no resize on load
+				rightSection={
+					error ? (
+						<Icons.IconMoodCry size={18} color="red" />
+					) : loading ? (
+						<MantineCore.Loader size="xs" color="grey" />
+					) : (
+						''
+					)
+				}
+				onItemSubmit={(item) => {
+					const { type, subtype, value } = item
+
+					dispatch(Actions.searchQueryAdd({ type, subtype, value }))
+					setTextInputValue('')
+					dispatch(Actions.attemptSearch())
+				}}
+				onKeyDown={onKeyDown}
+				// todo: style
+				// variant="unstyled"
+			/>
+		</form>
 	)
 }
 
