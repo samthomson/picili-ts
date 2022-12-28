@@ -67,6 +67,7 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 		}
 	}, [lightboxIndex])
 
+	// todo: memoize this monstrosity
 	const calculateJustifiedImageGallery = () => {
 		const holdingRows: Row[] = []
 		let rowInProgress: Row = []
