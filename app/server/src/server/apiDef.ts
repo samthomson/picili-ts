@@ -103,7 +103,15 @@ const typeDefs = gql`
         searchableFilesCount: Int
     }
 
+    # // todo: merge these two types?
     input IndividualQuery {
+        type: String
+        subtype: String
+        value: String!
+        isNotQuery: Boolean
+    }
+
+    type IndividualQueryType {
         type: String
         subtype: String
         value: String!
@@ -126,6 +134,11 @@ const typeDefs = gql`
         fileType: FileType
     }
 
+    type QueryStats {
+        query: IndividualQueryType
+        resultCount: Int
+    }
+
     type PaginationInfo {
         totalPages: Int!
         totalItems: Int!
@@ -133,6 +146,7 @@ const typeDefs = gql`
         perPage: Int!
         hasNextPage: Boolean!
         hasPreviousPage: Boolean!
+        queryStats: [QueryStats]
     }
 
     type SearchStats {

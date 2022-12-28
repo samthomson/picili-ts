@@ -140,12 +140,17 @@ export const search = async (
     userId: number,
     searchQuery: Types.API.SearchQuery,
     sortToUse: Enums.SearchSort,
-): Promise<Types.Core.DBSearchMatch[]> => {
+): Promise<Types.Core.MatchingResultData> => {
     // foreach individual query, perform an individual query search
     const individualQueryPromises = searchQuery.individualQueries.map((individualQuery) =>
         individualQuerySearch(userId, individualQuery, sortToUse),
     )
     const individualQueryResultSets: Types.Core.SearchQueryResultSet[] = await Promise.all(individualQueryPromises)
+
+    const queryStats: Types.API.QueryStats[] = individualQueryResultSets.map((results) => ({
+        query: results.query,
+        resultCount: results.results.length,
+    }))
 
     // divide `individualQueryResults` into normal queries and not queries.
     const normalQueryResults: Types.Core.SearchQueryResultSet[] = individualQueryResultSets.filter(
@@ -167,7 +172,7 @@ export const search = async (
 
     // return those results
     const sortedResults = filteredResults
-    return sortedResults
+    return { searchMatches: sortedResults, queryStats }
 }
 
 export const autoComplete = async (

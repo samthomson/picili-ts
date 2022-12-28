@@ -75,7 +75,7 @@ export const processSearchReqeust = async (
 
     const timeAtStartOfSearchUtil = moment()
 
-    const resultIds: Types.Core.DBSearchMatch[] = await SearchUtil.search(userId, searchQuery, sortToUse)
+    const { searchMatches: resultIds, queryStats } = await SearchUtil.search(userId, searchQuery, sortToUse)
     const results =
         resultIds.length > 0 ? await DBUtil.getAllResultData(resultIds, page, perPage, sortOverload, userId) : []
 
@@ -99,6 +99,7 @@ export const processSearchReqeust = async (
         perPage,
         hasNextPage: page < totalPages,
         hasPreviousPage: page > 1 && page < totalPages,
+        queryStats,
     }
 
     const sorting =

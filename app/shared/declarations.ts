@@ -76,6 +76,11 @@ export namespace API {
 		fileType: Enums.FileType
 	}
 
+	export interface QueryStats {
+		query: IndividualSearchQuery
+		resultCount: number
+	}
+
 	export interface PaginationInfo {
         totalPages: number
         totalItems: number
@@ -83,6 +88,7 @@ export namespace API {
         perPage: number
         hasNextPage: boolean
         hasPreviousPage: boolean
+		queryStats: QueryStats[]
 	}
 
 	export interface SearchStats {
@@ -478,6 +484,11 @@ export namespace Core {
 		score: number
 		latitude?: number
 		longitude?: number
+	}
+
+	export type MatchingResultData = {
+		searchMatches: DBSearchMatch[]
+		queryStats: API.QueryStats[]
 	}
 
 	export type DBSearchResult =  {
