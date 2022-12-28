@@ -69,7 +69,9 @@ const parseTextToQuery = (text: string): Types.API.IndividualSearchQuery => {
 	}
 }
 
-const TypeAhead: React.FunctionComponent = () => {
+const TypeAhead: React.FunctionComponent<{
+	textInputRef: React.RefObject<HTMLInputElement>
+}> = ({ textInputRef }) => {
 	const [textInputValue, setTextInputValue] = React.useState<string>('')
 	const [debouncedSearchQuery, setDebouncedSearchQuery] = React.useState<
 		Types.API.IndividualSearchQuery | undefined
@@ -184,13 +186,16 @@ const TypeAhead: React.FunctionComponent = () => {
 				// do search
 				dispatch(Actions.attemptSearch())
 			}}
+			id="typeahead-form-wrapper"
 		>
 			<MantineCore.Autocomplete
+				id="typeahead-search-input"
 				placeholder="type a query or search '*' for all"
 				itemComponent={AutoCompleteItem}
 				data={results}
 				value={textInputValue}
 				onChange={setTextInputValue}
+				ref={textInputRef}
 				// todo: if no icon show a fixed width whatever so there's no resize on load
 				rightSection={
 					<div
@@ -221,8 +226,9 @@ const TypeAhead: React.FunctionComponent = () => {
 				rightSectionWidth={26}
 				// todo: get this from a const, and use in the api too.
 				limit={50}
-				// todo: style
 				variant="unstyled"
+				// clicking this shouldn't trigger focus event in parent
+				onClick={(e) => e.stopPropagation()}
 			/>
 		</form>
 	)

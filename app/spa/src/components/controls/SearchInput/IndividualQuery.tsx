@@ -85,6 +85,7 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 			withBorder
 			// todo: get/share primary color from/via saas
 			color={numberOfResults > 0 ? 'maroon' : 'gray'}
+			onClick={(e) => e.stopPropagation()}
 		>
 			<div
 				className={classNames({
@@ -116,13 +117,14 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 				</div>
 				<MantineCore.UnstyledButton
 					disabled={disabled}
-					onClick={() =>
+					onClick={(e: React.SyntheticEvent) => {
+						e.stopPropagation()
 						removeQuery(
 							type || undefined,
 							subtype || undefined,
 							value,
 						)
-					}
+					}}
 					title="remove this query"
 					className="remove-query"
 				>

@@ -217,13 +217,24 @@ a {
       }
     }
 
-    #quey-input-and-close-button {
+		#typeahead-form-wrapper {
+      display: inline-flex;
+      vertical-align: top;
+      height: 36px;
+      align-items: center;
+    }
+
+    #typeahead-search-input {
+      // background-color: purple;
+      width: 250px;
+    }
+
+    #query-input-and-close-button {
       display: flex;
     }
 
     #queries-and-input {
       flex: 1;
-      display: flex;
     }
 
     #clear-button-space {

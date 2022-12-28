@@ -26,15 +26,26 @@ const SearchInput: React.FunctionComponent = () => {
 	)
 	const isSearching = ReactRedux.useSelector(Selectors.searchIsSearching)
 
-	const resetQuery = () => dispatch(Actions.searchQueryReset())
+	const resetQuery = (e: React.SyntheticEvent) => {
+		e.stopPropagation()
+		dispatch(Actions.searchQueryReset())
+	}
 	const isMobile = useIsMobile()
 	const location = useLocation()
+
+	const typeaheadInputRef = React.useRef<HTMLInputElement>(null)
 
 	return (
 		<div id="search-bar">
 			<div id="search-input">
 				<Paper shadow="lg" radius="md">
-					<div id="quey-input-and-close-button">
+					<div
+						id="query-input-and-close-button"
+						onClick={() => {
+							// focus the text input so that we make the whole search query ui seem like a text input
+							typeaheadInputRef?.current?.focus()
+						}}
+					>
 						<div id="queries-and-input">
 							{individualQueries.map((individualQuery, index) => (
 								<IndividualQuery
@@ -43,7 +54,8 @@ const SearchInput: React.FunctionComponent = () => {
 									disabled={isSearching}
 								/>
 							))}
-							<TypeAhead />
+							<TypeAhead textInputRef={typeaheadInputRef} />
+							{/* // todo: this is redundant now */}
 							{isSearching && <>[searching icon/spinner]</>}
 						</div>
 						<div id="clear-button-space">
