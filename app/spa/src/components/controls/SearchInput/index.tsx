@@ -1,14 +1,6 @@
 import * as React from 'react'
 import * as ReactRedux from 'react-redux'
 import { NavLink, useLocation } from 'react-router-dom'
-import {
-	Center,
-	Box,
-	SegmentedControl,
-	Paper,
-	UnstyledButton,
-} from '@mantine/core'
-// todo: refactor above imports
 import * as MantineCore from '@mantine/core'
 import { IconLayout2, IconMap2, IconX } from '@tabler/icons'
 
@@ -72,7 +64,7 @@ const SearchInput: React.FunctionComponent = () => {
 			</MantineCore.Tabs>
 			<div id="search-bar">
 				<div id="search-input">
-					<Paper shadow="lg" radius="md">
+					<MantineCore.Paper shadow="lg" radius="md">
 						<div
 							id="query-input-and-close-button"
 							onClick={() => {
@@ -102,20 +94,20 @@ const SearchInput: React.FunctionComponent = () => {
 							</div>
 							<div id="clear-button-space">
 								{individualQueries.length > 0 && (
-									<UnstyledButton
+									<MantineCore.UnstyledButton
 										onClick={resetQuery}
 										title="clear all queries"
 									>
 										<IconX size={20} />
-									</UnstyledButton>
+									</MantineCore.UnstyledButton>
 								)}
 							</div>
 						</div>
-					</Paper>
+					</MantineCore.Paper>
 				</div>
 				{!isMobile && (
 					<div id="search-mode-toggle">
-						<SegmentedControl
+						<MantineCore.SegmentedControl
 							size="md"
 							value={location.pathname === '/' ? 'grid' : 'map'}
 							radius="md"
@@ -124,10 +116,12 @@ const SearchInput: React.FunctionComponent = () => {
 									value: 'grid',
 									label: (
 										<NavLink exact={true} to="/">
-											<Center>
+											<MantineCore.Center>
 												<IconLayout2 size={16} />
-												<Box ml={10}>Grid</Box>
-											</Center>
+												<MantineCore.Box ml={10}>
+													Grid
+												</MantineCore.Box>
+											</MantineCore.Center>
 										</NavLink>
 									),
 								},
@@ -135,10 +129,12 @@ const SearchInput: React.FunctionComponent = () => {
 									value: 'map',
 									label: (
 										<NavLink exact={true} to="/map">
-											<Center>
+											<MantineCore.Center>
 												<IconMap2 size={16} />
-												<Box ml={10}>Map</Box>
-											</Center>
+												<MantineCore.Box ml={10}>
+													Map
+												</MantineCore.Box>
+											</MantineCore.Center>
 										</NavLink>
 									),
 								},
