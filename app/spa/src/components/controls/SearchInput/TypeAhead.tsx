@@ -69,31 +69,6 @@ const parseTextToQuery = (text: string): Types.API.IndividualSearchQuery => {
 	}
 }
 
-const AutoCompleteItem = React.forwardRef<HTMLDivElement, ItemProps>(
-	function whatever({ uuid, value, userId, ...others }: ItemProps, ref) {
-		/*
-		subtype: "imagga"
-		type: "subject"
-		uuid: "246e2bd7-8c86-4427-bb75-9c75f60f614c"
-		value: "canyon"
-		*/
-		return (
-			<div ref={ref} {...others}>
-				<MantineCore.Group noWrap>
-					<img
-						key={uuid}
-						src={HelperUtil.thumbPath(userId, uuid, 'i')}
-						className="auto-complete-item-image"
-					/>
-					<div>
-						<MantineCore.Text>{value}</MantineCore.Text>
-					</div>
-				</MantineCore.Group>
-			</div>
-		)
-	},
-)
-
 const TypeAhead: React.FunctionComponent = () => {
 	const [textInputValue, setTextInputValue] = React.useState<string>('')
 	const [debouncedSearchQuery, setDebouncedSearchQuery] = React.useState<
@@ -129,6 +104,42 @@ const TypeAhead: React.FunctionComponent = () => {
 		skip: !debouncedSearchQuery,
 		variables: { query: debouncedSearchQuery },
 	})
+
+	const AutoCompleteItem = React.forwardRef<HTMLDivElement, ItemProps>(
+		function whatever({ uuid, value, userId, ...others }: ItemProps, ref) {
+			/*
+			subtype: "imagga"
+			type: "subject"
+			uuid: "246e2bd7-8c86-4427-bb75-9c75f60f614c"
+			value: "canyon"
+			*/
+			return (
+				<div ref={ref} {...others}>
+					<MantineCore.Group noWrap>
+						<img
+							key={uuid}
+							src={HelperUtil.thumbPath(userId, uuid, 'i')}
+							className="auto-complete-item-image"
+						/>
+						<div>
+							<MantineCore.Text>
+								<MantineCore.Highlight
+									highlight={textInputValue}
+									highlightStyles={{
+										// todo: get from some centralized place; sass or styled js
+										backgroundColor: 'maroon',
+										color: '#fff',
+									}}
+								>
+									{value}
+								</MantineCore.Highlight>
+							</MantineCore.Text>
+						</div>
+					</MantineCore.Group>
+				</div>
+			)
+		},
+	)
 
 	// return pressed: parse/add as query to redux and clear textInputValue
 	const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
