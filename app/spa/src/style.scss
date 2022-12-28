@@ -190,7 +190,7 @@ a {
       }
 
       .query-display-text {
-        margin-left: $margin / 2;
+        margin-left: calc($margin / 2);
       }
 
       img {
