@@ -175,6 +175,7 @@ a {
       margin: 4px;
 
       color: $greyDarkText;
+      cursor: default;
       
       .img-loader-space {
         height: 20px;
@@ -235,6 +236,7 @@ a {
 
     #queries-and-input {
       flex: 1;
+      cursor: text;
     }
 
     #clear-button-space {
