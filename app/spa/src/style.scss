@@ -73,6 +73,9 @@ a {
     left: 0px;
     bottom: 0px;
     top: 0px;
+    display: flex;
+    flex-direction: column;
+    gap: $margin;
   }
 }
 
@@ -106,11 +109,11 @@ a {
   height: 100%;
 	width: 100%;
 	display: flex;
+  flex: auto;
 	// overflow-y: auto; // set this to auto to re-instate results container specific scroll and not page wide
 
 	margin: 0 auto;
 	// justify-content: center;
-  background: yellow;
 
 	#map-container {
     flex: 50%;
@@ -163,6 +166,7 @@ a {
 #search-bar {
   display: flex;
   gap: $margin;
+  flex: none;
 
   #search-input {
     flex: 1;
