@@ -163,10 +163,15 @@ a {
   }
 }
 
+
+#search-tabs-and-search-bar {
+}
+
 #search-bar {
   display: flex;
   gap: $margin;
   flex: none;
+  margin-top: $margin;
 
   #search-input {
     flex: 1;
