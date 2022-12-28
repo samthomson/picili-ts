@@ -137,6 +137,7 @@ const typeDefs = gql`
     type QueryStats {
         query: IndividualQueryType
         resultCount: Int
+        firstResultUUID: String
     }
 
     type PaginationInfo {
@@ -146,7 +147,8 @@ const typeDefs = gql`
         perPage: Int!
         hasNextPage: Boolean!
         hasPreviousPage: Boolean!
-        queryStats: [QueryStats]
+        queryStats: [QueryStats]!
+        userId: Int!
     }
 
     type SearchStats {

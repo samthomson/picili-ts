@@ -8,17 +8,20 @@ import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
 import * as Enums from '../../../../../shared/enums'
+import * as HelperUtil from 'src/util/helper'
 
 interface IProps {
 	individualQuery: Types.API.IndividualSearchQuery
 	disabled: boolean
-	resultCount?: number
+	queryStats?: Types.API.QueryStats
+	userId?: number
 }
 
 const IndividualQuery: React.FunctionComponent<IProps> = ({
 	individualQuery,
 	disabled,
-	resultCount,
+	queryStats,
+	userId,
 }) => {
 	const dispatch = ReactRedux.useDispatch()
 
@@ -74,10 +77,16 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 		}
 	})()
 
+	const resultCount = queryStats?.resultCount
+	const firstResultURL =
+		queryStats?.firstResultUUID && !!userId
+			? HelperUtil.thumbPath(userId, queryStats.firstResultUUID, 'm')
+			: ''
+
 	// todo: get first result of query to use photo from
 	return (
 		<MantineCore.Indicator
-			label={`${resultCount}`}
+			label={!!resultCount ? `${resultCount}` : null}
 			inline
 			processing={isSearching}
 			size={22}
@@ -96,7 +105,7 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 					{isSearching ? (
 						<MantineCore.Loader size="xs" color="grey" />
 					) : true ? (
-						<img src="http://localhost:3501/thumbs/6/246e2bd7-8c86-4427-bb75-9c75f60f614c/i.jpg" />
+						<img src={firstResultURL} />
 					) : (
 						<Icons.IconPhotoCancel size={20} />
 					)}

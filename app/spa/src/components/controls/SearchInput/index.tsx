@@ -56,10 +56,10 @@ const SearchInput: React.FunctionComponent = () => {
 									key={index}
 									individualQuery={individualQuery}
 									disabled={isSearching}
-									resultCount={
+									queryStats={
 										paginationInfo?.queryStats?.[index]
-											?.resultCount
 									}
+									userId={paginationInfo?.userId}
 								/>
 							))}
 							<TypeAhead textInputRef={typeaheadInputRef} />

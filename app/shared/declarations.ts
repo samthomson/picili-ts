@@ -79,6 +79,7 @@ export namespace API {
 	export interface QueryStats {
 		query: IndividualSearchQuery
 		resultCount: number
+		firstResultUUID: string 
 	}
 
 	export interface PaginationInfo {
@@ -89,6 +90,7 @@ export namespace API {
         hasNextPage: boolean
         hasPreviousPage: boolean
 		queryStats: QueryStats[]
+		userId: number
 	}
 
 	export interface SearchStats {

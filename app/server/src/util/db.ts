@@ -36,6 +36,16 @@ export const getUserById = async (id: number): Promise<Models.UserInstance> => {
     return user
 }
 
+export const getFileById = async (id: number): Promise<Models.FileInstance> => {
+    const file = await Models.FileModel.findByPk(id)
+
+    if (!file) {
+        return undefined
+    }
+
+    return file
+}
+
 export const userWithEmailExists = async (email: string): Promise<boolean> => {
     const user = await Models.UserModel.findOne({
         where: {

@@ -100,6 +100,7 @@ export const processSearchReqeust = async (
         hasNextPage: page < totalPages,
         hasPreviousPage: page > 1 && page < totalPages,
         queryStats,
+        userId,
     }
 
     const sorting =

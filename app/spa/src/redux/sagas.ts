@@ -64,7 +64,9 @@ function* callSearchQuery(page = 1, withGeoAggregations = false) {
 									value
 								}
 								resultCount
+								firstResultUUID
 							}
+							userId
 						}
 						items {
 							fileId

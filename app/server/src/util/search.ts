@@ -147,10 +147,13 @@ export const search = async (
     )
     const individualQueryResultSets: Types.Core.SearchQueryResultSet[] = await Promise.all(individualQueryPromises)
 
-    const queryStats: Types.API.QueryStats[] = individualQueryResultSets.map((results) => ({
-        query: results.query,
-        resultCount: results.results.length,
-    }))
+    const queryStats: Types.API.QueryStats[] = await Promise.all(
+        individualQueryResultSets.map(async (results) => ({
+            query: results.query,
+            resultCount: results.results.length,
+            firstResultUUID: (await DBUtil.getFileById(results.results[0].fileId))?.uuid,
+        })),
+    )
 
     // divide `individualQueryResults` into normal queries and not queries.
     const normalQueryResults: Types.Core.SearchQueryResultSet[] = individualQueryResultSets.filter(
