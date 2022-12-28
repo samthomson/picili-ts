@@ -81,7 +81,7 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 	const firstResultURL =
 		queryStats?.firstResultUUID && !!userId
 			? HelperUtil.thumbPath(userId, queryStats.firstResultUUID, 'm')
-			: ''
+			: undefined
 
 	return (
 		<MantineCore.Indicator
@@ -104,7 +104,7 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 				<div className="img-loader-space">
 					{isSearching ? (
 						<MantineCore.Loader size="xs" color="grey" />
-					) : true ? (
+					) : firstResultURL ? (
 						<img src={firstResultURL} />
 					) : (
 						<Icons.IconPhotoCancel size={20} />
