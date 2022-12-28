@@ -193,13 +193,20 @@ const TypeAhead: React.FunctionComponent = () => {
 				onChange={setTextInputValue}
 				// todo: if no icon show a fixed width whatever so there's no resize on load
 				rightSection={
-					error ? (
-						<Icons.IconMoodCry size={18} color="red" />
-					) : loading ? (
-						<MantineCore.Loader size="xs" color="grey" />
-					) : (
-						''
-					)
+					<div
+						style={{
+							width: 18,
+							display: 'flex',
+						}}
+					>
+						{error ? (
+							<Icons.IconMoodCry size={18} color="red" />
+						) : loading ? (
+							<MantineCore.Loader size={18} color="grey" />
+						) : (
+							''
+						)}
+					</div>
 				}
 				onItemSubmit={(item) => {
 					const { type, subtype, value } = item
@@ -209,6 +216,9 @@ const TypeAhead: React.FunctionComponent = () => {
 					dispatch(Actions.attemptSearch())
 				}}
 				onKeyDown={onKeyDown}
+				// todo: get these from vars (shared above with style of right section)
+				// 26 = width of 18 + margin of 8.
+				rightSectionWidth={26}
 				// todo: style
 				// variant="unstyled"
 			/>
