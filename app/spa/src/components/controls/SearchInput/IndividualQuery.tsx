@@ -83,7 +83,6 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 			? HelperUtil.thumbPath(userId, queryStats.firstResultUUID, 'm')
 			: ''
 
-	// todo: get first result of query to use photo from
 	return (
 		<MantineCore.Indicator
 			disabled={!resultCount}
