@@ -86,7 +86,8 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 	// todo: get first result of query to use photo from
 	return (
 		<MantineCore.Indicator
-			label={!!resultCount ? `${resultCount}` : null}
+			disabled={!resultCount}
+			label={`${resultCount}`}
 			inline
 			processing={isSearching}
 			size={22}
