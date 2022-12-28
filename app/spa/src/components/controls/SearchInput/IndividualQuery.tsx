@@ -108,9 +108,10 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 					{type === Enums.QueryType.MAP && <>map</>}
 					{type !== Enums.QueryType.MAP && (
 						<>
-							{type && <>{type}</>}
+							{/* {type && <>{type}</>}
 							{subtype && <>.{subtype}</>}
-							{type && <>=</>}
+							{type && <>=</>} */}
+							{subtype && <>{subtype}=</>}
 							{value && <>{value}</>}
 						</>
 					)}
