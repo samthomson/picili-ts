@@ -151,7 +151,7 @@ export const search = async (
         individualQueryResultSets.map(async (results) => ({
             query: results.query,
             resultCount: results.results.length,
-            firstResultUUID: (await DBUtil.getFileById(results.results[0].fileId))?.uuid,
+            firstResultUUID: (await DBUtil.getFileById(results.results[0]?.fileId))?.uuid,
         })),
     )
 
