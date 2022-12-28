@@ -12,11 +12,13 @@ import * as Enums from '../../../../../shared/enums'
 interface IProps {
 	individualQuery: Types.API.IndividualSearchQuery
 	disabled: boolean
+	resultCount?: number
 }
 
 const IndividualQuery: React.FunctionComponent<IProps> = ({
 	individualQuery,
 	disabled,
+	resultCount,
 }) => {
 	const dispatch = ReactRedux.useDispatch()
 
@@ -72,19 +74,16 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 		}
 	})()
 
-	// todo: also get from updated search query
-	const numberOfResults = 787
-
 	// todo: get first result of query to use photo from
 	return (
 		<MantineCore.Indicator
-			label={`${numberOfResults}`}
+			label={`${resultCount}`}
 			inline
 			processing={isSearching}
 			size={22}
 			withBorder
 			// todo: get/share primary color from/via saas
-			color={numberOfResults > 0 ? 'maroon' : 'gray'}
+			color={!!resultCount && resultCount > 0 ? 'maroon' : 'gray'}
 			onClick={(e) => e.stopPropagation()}
 		>
 			<div

@@ -57,6 +57,14 @@ function* callSearchQuery(page = 1, withGeoAggregations = false) {
 							perPage
 							hasNextPage
 							hasPreviousPage
+							queryStats {
+								query {
+									type
+									subtype
+									value
+								}
+								resultCount
+							}
 						}
 						items {
 							fileId

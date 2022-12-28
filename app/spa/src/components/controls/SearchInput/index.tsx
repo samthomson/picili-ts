@@ -26,6 +26,10 @@ const SearchInput: React.FunctionComponent = () => {
 	)
 	const isSearching = ReactRedux.useSelector(Selectors.searchIsSearching)
 
+	const paginationInfo = ReactRedux.useSelector(
+		Selectors.searchPaginationInfo,
+	)
+
 	const resetQuery = (e: React.SyntheticEvent) => {
 		e.stopPropagation()
 		dispatch(Actions.searchQueryReset())
@@ -52,6 +56,10 @@ const SearchInput: React.FunctionComponent = () => {
 									key={index}
 									individualQuery={individualQuery}
 									disabled={isSearching}
+									resultCount={
+										paginationInfo?.queryStats?.[index]
+											?.resultCount
+									}
 								/>
 							))}
 							<TypeAhead textInputRef={typeaheadInputRef} />
