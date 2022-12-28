@@ -4,6 +4,7 @@ import { Store } from 'src/redux/store'
 import { searchQuery } from './selectors'
 import * as Enums from '../../../shared/enums'
 
+// todo: put userId into store
 const initialState: Store = {
 	userAuthStatusIsKnown: false,
 	userIsAuthenticated: false,
