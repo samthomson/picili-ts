@@ -124,6 +124,7 @@ export namespace API {
 	}
 
 	export type IndividualSearchQuery = {
+		// todo: update this to use enum type?s
 		type?: string
 		subtype?: string
 		value: string
