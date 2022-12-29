@@ -109,12 +109,14 @@ const ElevationQueryBuilder: React.FunctionComponent<{
 					className="elevation-bound-input"
 				/>
 			</div>
-			<div>
+			<div className="button-to-add-query-container">
 				<MantineCore.Button
 					radius="md"
 					size="md"
 					onClick={addElevationQuery}
 					leftIcon={<Icons.IconSearch />}
+					variant="outline"
+					color="gray"
 				>
 					Search for files between{' '}
 					{formatValueToMeters(rangeValue[0].toString())} and{' '}

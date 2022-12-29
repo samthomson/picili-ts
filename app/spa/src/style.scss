@@ -469,19 +469,26 @@ a {
   }
 }
 
-#elevation-query-builder {
-  width: 80%;
-  margin: 0 auto;
-  padding-top: 40px;
+#query-builder-tabs {
 
-  #elevation-range-inputs {
-    display: flex;
-    gap: 16px;
-    margin-top: $margin * 2;
-    margin-bottom: $margin * 3;
+  .button-to-add-query-container {
+    float: right;
+  }
 
-    .elevation-bound-input {
-      flex-grow: 1;
+  #elevation-query-builder {
+    width: 80%;
+    margin: 0 auto;
+    padding-top: 40px;
+
+    #elevation-range-inputs {
+      display: flex;
+      gap: 16px;
+      margin-top: $margin * 2;
+      margin-bottom: $margin * 3;
+
+      .elevation-bound-input {
+        flex-grow: 1;
+      }
     }
   }
 }
