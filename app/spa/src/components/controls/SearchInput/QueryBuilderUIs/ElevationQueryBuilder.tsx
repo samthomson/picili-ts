@@ -6,6 +6,7 @@ import * as Icons from '@tabler/icons'
 import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
 import * as Enums from '../../../../../../shared/enums'
+import * as HelperUtil from 'src/util/helper'
 
 const ElevationQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
@@ -52,7 +53,7 @@ const ElevationQueryBuilder: React.FunctionComponent<{
 		if (!value) return ''
 
 		return !Number.isNaN(parseFloat(value))
-			? `${value}m`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+			? HelperUtil.formatNumber(value) + 'm'
 			: ' '
 	}
 

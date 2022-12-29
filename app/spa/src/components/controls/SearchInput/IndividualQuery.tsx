@@ -86,6 +86,35 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 			? HelperUtil.thumbPath(userId, queryStats.firstResultUUID, 'm')
 			: undefined
 
+	const queryDisplayValue = (
+		individualQuery: Types.API.IndividualSearchQuery,
+	) => {
+		const { type, subtype, value } = individualQuery
+
+		switch (type) {
+			case Enums.QueryType.MAP:
+				return <>map</>
+			case Enums.QueryType.ELEVATION:
+				const range = value.split(':')
+				return (
+					<>
+						{HelperUtil.formatNumber(range[0])}m -{' '}
+						{HelperUtil.formatNumber(range[1])}m
+					</>
+				)
+			default:
+				return (
+					<>
+						{/* {type && <>{type}</>}
+				{subtype && <>.{subtype}</>}
+				{type && <>=</>} */}
+						{subtype && <>{subtype}=</>}
+						{value && <>{value}</>}
+					</>
+				)
+		}
+	}
+
 	return (
 		<MantineCore.Indicator
 			disabled={!resultCount}
@@ -116,16 +145,7 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 
 				<Icon size={16} />
 				<div className="query-display-text">
-					{type === Enums.QueryType.MAP && <>map</>}
-					{type !== Enums.QueryType.MAP && (
-						<>
-							{/* {type && <>{type}</>}
-							{subtype && <>.{subtype}</>}
-							{type && <>=</>} */}
-							{subtype && <>{subtype}=</>}
-							{value && <>{value}</>}
-						</>
-					)}
+					{queryDisplayValue(individualQuery)}
 				</div>
 				<MantineCore.UnstyledButton
 					onClick={(e: React.SyntheticEvent) => {
