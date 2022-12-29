@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as ReactRedux from 'react-redux'
 import { NavLink, useLocation } from 'react-router-dom'
 import * as MantineCore from '@mantine/core'
-import { IconLayout2, IconMap2, IconX } from '@tabler/icons'
+import * as Icons from '@tabler/icons'
 
 import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
@@ -69,7 +69,7 @@ const SearchInput: React.FunctionComponent = () => {
 										onClick={resetQuery}
 										title="clear all queries"
 									>
-										<IconX size={20} />
+										<Icons.IconX size={20} />
 									</MantineCore.UnstyledButton>
 								)}
 							</div>
@@ -88,7 +88,7 @@ const SearchInput: React.FunctionComponent = () => {
 									label: (
 										<NavLink exact={true} to="/">
 											<MantineCore.Center>
-												<IconLayout2 size={16} />
+												<Icons.IconLayout2 size={16} />
 												<MantineCore.Box ml={10}>
 													Grid
 												</MantineCore.Box>
@@ -101,7 +101,7 @@ const SearchInput: React.FunctionComponent = () => {
 									label: (
 										<NavLink exact={true} to="/map">
 											<MantineCore.Center>
-												<IconMap2 size={16} />
+												<Icons.IconMap2 size={16} />
 												<MantineCore.Box ml={10}>
 													Map
 												</MantineCore.Box>
