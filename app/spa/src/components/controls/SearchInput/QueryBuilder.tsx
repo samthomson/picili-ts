@@ -41,6 +41,7 @@ const QueryBuilder: React.FunctionComponent = () => {
 		},
 	]
 	const isMobile = useIsMobile()
+	const theme = MantineCore.useMantineTheme()
 
 	return (
 		<>
@@ -49,8 +50,10 @@ const QueryBuilder: React.FunctionComponent = () => {
 				onClose={() => setSearchMode(undefined)}
 				title="Construct a search query"
 				size="lg"
+				overlayColor={theme.colors.gray[2]}
+				overlayOpacity={0.55}
+				overlayBlur={3}
 			>
-				searchMode: {searchMode}
 				<MantineCore.Tabs
 					variant="outline"
 					radius="md"
