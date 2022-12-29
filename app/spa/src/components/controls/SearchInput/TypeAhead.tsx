@@ -170,7 +170,7 @@ const TypeAhead: React.FunctionComponent<{
 				/*
 				hackily wrap the typeahead in a form so I can get the user
 				pressing return but only when they are not pressing return
-				to select a dropdown item (as then I'd add the text and item 
+				to select a dropdown item (as then I'd add the text and item
 				to the search query).
 				*/
 				e.preventDefault()
