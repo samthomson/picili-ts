@@ -48,6 +48,7 @@ const QueryBuilder: React.FunctionComponent = () => {
 				opened={typeof searchMode !== 'undefined'}
 				onClose={() => setSearchMode(undefined)}
 				title="Construct a search query"
+				size="lg"
 			>
 				searchMode: {searchMode}
 				<MantineCore.Tabs
