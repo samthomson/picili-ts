@@ -18,7 +18,6 @@ const SearchInput: React.FunctionComponent = () => {
 	const individualQueries = ReactRedux.useSelector(
 		Selectors.searchIndividualQueries,
 	)
-	const isSearching = ReactRedux.useSelector(Selectors.searchIsSearching)
 
 	const paginationInfo = ReactRedux.useSelector(
 		Selectors.searchPaginationInfo,
