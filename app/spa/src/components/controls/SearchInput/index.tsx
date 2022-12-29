@@ -78,7 +78,6 @@ const SearchInput: React.FunctionComponent = () => {
 										<IndividualQuery
 											key={index}
 											individualQuery={individualQuery}
-											disabled={isSearching}
 											queryStats={
 												paginationInfo?.queryStats?.[
 													index
@@ -89,8 +88,6 @@ const SearchInput: React.FunctionComponent = () => {
 									),
 								)}
 								<TypeAhead textInputRef={typeaheadInputRef} />
-								{/* // todo: this is redundant now */}
-								{isSearching && <>[searching icon/spinner]</>}
 							</div>
 							<div id="clear-button-space">
 								{individualQueries.length > 0 && (

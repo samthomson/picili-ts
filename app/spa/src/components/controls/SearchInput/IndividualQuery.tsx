@@ -12,14 +12,12 @@ import * as HelperUtil from 'src/util/helper'
 
 interface IProps {
 	individualQuery: Types.API.IndividualSearchQuery
-	disabled: boolean
 	queryStats?: Types.API.QueryStats
 	userId?: number
 }
 
 const IndividualQuery: React.FunctionComponent<IProps> = ({
 	individualQuery,
-	disabled,
 	queryStats,
 	userId,
 }) => {
@@ -125,7 +123,6 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 					)}
 				</div>
 				<MantineCore.UnstyledButton
-					disabled={disabled}
 					onClick={(e: React.SyntheticEvent) => {
 						e.stopPropagation()
 						removeQuery(
