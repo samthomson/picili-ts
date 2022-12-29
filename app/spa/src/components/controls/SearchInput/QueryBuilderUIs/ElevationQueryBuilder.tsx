@@ -3,24 +3,38 @@ import * as ReactRedux from 'react-redux'
 import * as MantineCore from '@mantine/core'
 
 import * as Actions from 'src/redux/actions'
+import * as Selectors from 'src/redux/selectors'
 import * as Enums from '../../../../../../shared/enums'
 
 const ElevationQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
 }> = ({ closeModal }) => {
-	const defaultMinMax = [-500, 1000]
+	const defaultMinMax = [-500, 10000]
 
-	const [rangeValue, setRangeValue] = React.useState<[number, number]>([
-		defaultMinMax[0],
-		defaultMinMax[1],
-	])
+	const currentElevationQuery = ReactRedux.useSelector(
+		Selectors.searchIndividualQueryOfType('elevation'),
+	)
+
+	const [rangeValue, setRangeValue] = React.useState<[number, number]>(
+		// todo: refactor this hackyness
+		currentElevationQuery
+			? [
+					currentElevationQuery.value
+						.split(':')
+						.map((val) => +val)[0],
+					currentElevationQuery.value
+						.split(':')
+						.map((val) => +val)[1],
+			  ]
+			: [defaultMinMax[0], defaultMinMax[1]],
+	)
 
 	const dispatch = ReactRedux.useDispatch()
 
 	const addElevationQuery = () => {
 		const newElevationQuery = {
 			type: Enums.QueryType.ELEVATION,
-			value: `${rangeValue[0]}-${rangeValue[1]}`,
+			value: `${rangeValue[0]}:${rangeValue[1]}`,
 		}
 		dispatch(Actions.searchQueryAdd(newElevationQuery))
 		dispatch(Actions.attemptSearch())

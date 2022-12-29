@@ -56,6 +56,15 @@ export const searchIndividualQueries = (
 	return state.searchQuery.individualQueries
 }
 
+// todo: update this to use enum type?s
+export const searchIndividualQueryOfType =
+	(type: string) =>
+	(state: Store): Types.API.IndividualSearchQuery | undefined => {
+		return state.searchQuery.individualQueries.find(
+			(query) => query.type === type,
+		)
+	}
+
 export const searchIsSearching = (state: Store): boolean => {
 	return state.isSearching
 }
