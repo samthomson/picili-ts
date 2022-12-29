@@ -37,7 +37,7 @@ export enum QueryType {
     MAP = 'map',
     // DATE = 'date',
     // DATE_RANGE = 'date_range',
-    // ELEVATION_RANGE = 'elevation_range',
+    ELEVATION = 'elevation',
     EXIF = 'exif',
     SUBJECT = 'subject',
     OCR = 'ocr',

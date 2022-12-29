@@ -470,8 +470,35 @@ export const performSearchQuery = async (
             }))
             break
 
-        // todo: elevation
-        //    case 'elevation':
+        case Enums.QueryType.ELEVATION:
+            const [lowerBounds, upperBounds] = value.split('-').map((literal) => +literal)
+
+            if (!lowerBounds || !upperBounds) {
+                Logger.warn('malformed elevation query', { userId, individualQuery })
+                return []
+            }
+
+            const elevationQuery = `
+            SELECT files.id as fileId, 100 as score, latitude, longitude 
+            FROM files 
+            WHERE 
+            files.user_id = :userId 
+            AND files.elevation >= :lowerBounds AND files.elevation <= :upperBounds            
+            AND files.is_thumbnailed;`
+            const elevationResults: Types.Core.DBSearchMatch[] = await Database.query(elevationQuery, {
+                type: Sequelize.QueryTypes.SELECT,
+                replacements: {
+                    userId,
+                    lowerBounds,
+                    upperBounds,
+                },
+            })
+            return elevationResults.map(({ fileId, score, latitude, longitude }) => ({
+                fileId,
+                score,
+                latitude,
+                longitude,
+            }))
 
         default:
             const query = (() => {
