@@ -1,7 +1,6 @@
 import * as React from 'react'
 import mapboxgl, { Map, Marker, LngLatBounds } from 'mapbox-gl'
 
-import * as HelperUtil from 'src/util/helper'
 import * as Types from '@shared/declarations'
 
 // todo: is it okay for this to be hard coded?
