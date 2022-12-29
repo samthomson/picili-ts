@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as ReactRedux from 'react-redux'
 import * as MantineCore from '@mantine/core'
+import * as Icons from '@tabler/icons'
 
 import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
@@ -113,6 +114,7 @@ const ElevationQueryBuilder: React.FunctionComponent<{
 					radius="md"
 					size="md"
 					onClick={addElevationQuery}
+					leftIcon={<Icons.IconSearch />}
 				>
 					Search for files between{' '}
 					{formatValueToMeters(rangeValue[0].toString())} and{' '}
