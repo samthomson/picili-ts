@@ -471,7 +471,7 @@ export const performSearchQuery = async (
             break
 
         case Enums.QueryType.ELEVATION:
-            const [lowerBounds, upperBounds] = value.split('-').map((literal) => +literal)
+            const [lowerBounds, upperBounds] = value.split(':').map((literal) => +literal)
 
             if (!lowerBounds || !upperBounds) {
                 Logger.warn('malformed elevation query', { userId, individualQuery })
