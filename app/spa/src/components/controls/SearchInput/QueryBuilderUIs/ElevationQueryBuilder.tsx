@@ -56,76 +56,68 @@ const ElevationQueryBuilder: React.FunctionComponent<{
 	}
 
 	return (
-		<div style={{ height: 300 }}>
-			<div
-				style={{
-					width: '80%',
-					margin: '0 auto',
-					paddingTop: '40px',
-				}}
-			>
-				<MantineCore.RangeSlider
-					// color="pink"
-					size="xl"
-					radius="xl"
-					labelAlwaysOn
-					// marks={[
-					// 	{ value: 20, label: '20%' },
-					// 	{ value: 50, label: '50%' },
-					// 	{ value: 80, label: '80%' },
-					// ]}
+		<div id="elevation-query-builder">
+			<MantineCore.RangeSlider
+				// color="pink"
+				size="xl"
+				radius="xl"
+				labelAlwaysOn
+				// marks={[
+				// 	{ value: 20, label: '20%' },
+				// 	{ value: 50, label: '50%' },
+				// 	{ value: 80, label: '80%' },
+				// ]}
+				min={defaultMinMax[0]}
+				max={defaultMinMax[1]}
+				value={rangeValue}
+				onChange={setRangeValue}
+				label={formatValueToMeters}
+			/>
+			<div id="elevation-range-inputs">
+				<MantineCore.NumberInput
+					label="Minimum"
+					defaultValue={rangeValue[0]}
+					value={rangeValue[0]}
+					onChange={(val) =>
+						setRangeValue([
+							val ? val : defaultMinMax[0],
+							rangeValue[1],
+						])
+					}
 					min={defaultMinMax[0]}
 					max={defaultMinMax[1]}
-					value={rangeValue}
-					onChange={setRangeValue}
+					parser={parseValueFromMeters}
+					formatter={formatValueToMeters}
+					className="elevation-bound-input"
 				/>
-				<div>
-					<MantineCore.NumberInput
-						label="Minimum elevation"
-						defaultValue={rangeValue[0]}
-						value={rangeValue[0]}
-						onChange={(val) =>
-							setRangeValue([
-								val ? val : defaultMinMax[0],
-								rangeValue[1],
-							])
-						}
-						min={defaultMinMax[0]}
-						max={defaultMinMax[1]}
-						parser={parseValueFromMeters}
-						formatter={formatValueToMeters}
-					/>
-				</div>
-				<div>
-					<MantineCore.NumberInput
-						label="Maximum elevation"
-						defaultValue={rangeValue[1]}
-						value={rangeValue[1]}
-						onChange={(val) =>
-							setRangeValue([
-								rangeValue[0],
-								val ? val : defaultMinMax[1],
-							])
-						}
-						min={defaultMinMax[0]}
-						max={defaultMinMax[1]}
-						parser={parseValueFromMeters}
-						formatter={formatValueToMeters}
-					/>
-				</div>
-				<div>
-					lower: {rangeValue[0]}m, upper: {rangeValue[1]}m
-				</div>
-				<div>
-					<MantineCore.Button
-						radius="md"
-						size="md"
-						onClick={addElevationQuery}
-					>
-						Search for files between {rangeValue[0]}m and{' '}
-						{rangeValue[1]}m
-					</MantineCore.Button>
-				</div>
+
+				<MantineCore.NumberInput
+					label="Maximum"
+					defaultValue={rangeValue[1]}
+					value={rangeValue[1]}
+					onChange={(val) =>
+						setRangeValue([
+							rangeValue[0],
+							val ? val : defaultMinMax[1],
+						])
+					}
+					min={defaultMinMax[0]}
+					max={defaultMinMax[1]}
+					parser={parseValueFromMeters}
+					formatter={formatValueToMeters}
+					className="elevation-bound-input"
+				/>
+			</div>
+			<div>
+				<MantineCore.Button
+					radius="md"
+					size="md"
+					onClick={addElevationQuery}
+				>
+					Search for files between{' '}
+					{formatValueToMeters(rangeValue[0].toString())} and{' '}
+					{formatValueToMeters(rangeValue[1].toString())}
+				</MantineCore.Button>
 			</div>
 		</div>
 	)
