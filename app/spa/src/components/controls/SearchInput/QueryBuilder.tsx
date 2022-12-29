@@ -50,7 +50,11 @@ const QueryBuilder: React.FunctionComponent = () => {
 				title="Construct a search query"
 			>
 				searchMode: {searchMode}
-				<MantineCore.Tabs variant="outline" value={searchMode}>
+				<MantineCore.Tabs
+					variant="outline"
+					radius="md"
+					value={searchMode}
+				>
 					<MantineCore.Tabs.List>
 						{tabs.map((tab, index) => (
 							<MantineCore.Tabs.Tab
