@@ -8,8 +8,11 @@ import * as Enums from '../../../../../../shared/enums'
 const ElevationQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
 }> = ({ closeModal }) => {
+	const defaultMinMax = [-500, 1000]
+
 	const [rangeValue, setRangeValue] = React.useState<[number, number]>([
-		-500, 10000,
+		defaultMinMax[0],
+		defaultMinMax[1],
 	])
 
 	const dispatch = ReactRedux.useDispatch()
@@ -24,6 +27,18 @@ const ElevationQueryBuilder: React.FunctionComponent<{
 
 		// close modal
 		closeModal()
+	}
+
+	const parseValueFromMeters = (value?: string): string => {
+		return value?.replace(/\m\s?|(,*)/g, '') ?? ''
+	}
+
+	const formatValueToMeters = (value?: string): string => {
+		if (!value) return ''
+
+		return !Number.isNaN(parseFloat(value))
+			? `${value}m`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+			: ' '
 	}
 
 	return (
@@ -45,8 +60,8 @@ const ElevationQueryBuilder: React.FunctionComponent<{
 					// 	{ value: 50, label: '50%' },
 					// 	{ value: 80, label: '80%' },
 					// ]}
-					min={-500}
-					max={10000}
+					min={defaultMinMax[0]}
+					max={defaultMinMax[1]}
 					value={rangeValue}
 					onChange={setRangeValue}
 				/>
@@ -56,21 +71,15 @@ const ElevationQueryBuilder: React.FunctionComponent<{
 						defaultValue={rangeValue[0]}
 						value={rangeValue[0]}
 						onChange={(val) =>
-							setRangeValue([val ? val : -500, rangeValue[1]])
+							setRangeValue([
+								val ? val : defaultMinMax[0],
+								rangeValue[1],
+							])
 						}
-						min={-500}
-						max={10000}
-						parser={(value) => value?.replace(/\m\s?|(,*)/g, '')}
-						formatter={(value) => {
-							if (!value) return ''
-
-							return !Number.isNaN(parseFloat(value))
-								? `${value}m`.replace(
-										/\B(?=(\d{3})+(?!\d))/g,
-										',',
-								  )
-								: ' '
-						}}
+						min={defaultMinMax[0]}
+						max={defaultMinMax[1]}
+						parser={parseValueFromMeters}
+						formatter={formatValueToMeters}
 					/>
 				</div>
 				<div>
@@ -79,21 +88,15 @@ const ElevationQueryBuilder: React.FunctionComponent<{
 						defaultValue={rangeValue[1]}
 						value={rangeValue[1]}
 						onChange={(val) =>
-							setRangeValue([rangeValue[0], val ? val : 10000])
+							setRangeValue([
+								rangeValue[0],
+								val ? val : defaultMinMax[1],
+							])
 						}
-						min={-500}
-						max={10000}
-						parser={(value) => value?.replace(/\m\s?|(,*)/g, '')}
-						formatter={(value) => {
-							if (!value) return ''
-
-							return !Number.isNaN(parseFloat(value))
-								? `${value}m`.replace(
-										/\B(?=(\d{3})+(?!\d))/g,
-										',',
-								  )
-								: ' '
-						}}
+						min={defaultMinMax[0]}
+						max={defaultMinMax[1]}
+						parser={parseValueFromMeters}
+						formatter={formatValueToMeters}
 					/>
 				</div>
 				<div>
