@@ -71,15 +71,11 @@ const SearchInput: React.FunctionComponent = () => {
 						</MantineCore.Tabs.Tab>
 					</MantineCore.Tabs.List>
 
-					<MantineCore.Tabs.Panel value="gallery" pt="xs">
-						Gallery tab content
-					</MantineCore.Tabs.Panel>
-
-					<MantineCore.Tabs.Panel value="messages" pt="xs">
+					<MantineCore.Tabs.Panel value="elevation" pt="xs">
 						Messages tab content
 					</MantineCore.Tabs.Panel>
 
-					<MantineCore.Tabs.Panel value="settings" pt="xs">
+					<MantineCore.Tabs.Panel value="colour" pt="xs">
 						Settings tab content
 					</MantineCore.Tabs.Panel>
 				</MantineCore.Tabs>
