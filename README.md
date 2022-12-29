@@ -127,3 +127,13 @@ The bigger the size of your collection then the bigger the VPS you will need (si
 Picili has been architected to be as portable as possible, and for this reason doesn't make use of attachable volume storage or similar - which may be cheaper in terms of storage than upgrading the VPS but comes at the cost of vendor lockin.
 
 So if picili runs out of space then to continue syncing you will need to upgrade the underlying VPS to one with more storage.
+
+A note on memory limits:
+- 1gb vps
+	- set swap to 2gb thus creating 3gb of ram.
+	- set app to use half of that via `APP_MEM_LIMIT_PROD` (1536m - 50% of 3gb.)
+- 2gb vps
+	- set swap to 4gb, creating 6gb of ram
+	- set app to use half - 3gb (ie 3072m)
+
+// todo: set max memory for spa build script to use env var some how
