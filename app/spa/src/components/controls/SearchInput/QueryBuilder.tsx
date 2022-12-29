@@ -4,7 +4,9 @@ import * as Icons from '@tabler/icons'
 
 import useIsMobile from 'src/util/hooks/use-is-mobile.hook'
 
-const QueryBuilder: React.FunctionComponent = () => {
+const QueryBuilder: React.FunctionComponent<{
+	closing: () => void
+}> = ({ closing }) => {
 	// todo: populate search tabs from an array, use for modal too
 
 	const [searchMode, setSearchMode] = React.useState<undefined | string>(
@@ -43,17 +45,23 @@ const QueryBuilder: React.FunctionComponent = () => {
 	const isMobile = useIsMobile()
 	const theme = MantineCore.useMantineTheme()
 
+	const onClose = () => {
+		setSearchMode(undefined)
+		closing()
+	}
+
 	return (
 		<>
 			<MantineCore.Modal
 				opened={typeof searchMode !== 'undefined'}
-				onClose={() => setSearchMode(undefined)}
+				onClose={onClose}
 				title="Construct a search query"
 				size="lg"
 				overlayColor={theme.colors.gray[2]}
 				overlayOpacity={0.55}
 				overlayBlur={3}
 				overflow="inside"
+				trapFocus={false}
 			>
 				<MantineCore.Tabs
 					variant="outline"
@@ -65,7 +73,11 @@ const QueryBuilder: React.FunctionComponent = () => {
 							<MantineCore.Tabs.Tab
 								key={index}
 								value={tab.value}
-								onClick={() => setSearchMode(tab.clickValue)}
+								onClick={() =>
+									tab?.clickValue
+										? setSearchMode(tab.clickValue)
+										: onClose()
+								}
 								icon={tab.icon}
 							>
 								{!isMobile ? tab.label : ''}

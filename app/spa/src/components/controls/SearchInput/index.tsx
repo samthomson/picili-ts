@@ -27,15 +27,24 @@ const SearchInput: React.FunctionComponent = () => {
 	const resetQuery = (e: React.SyntheticEvent) => {
 		e.stopPropagation()
 		dispatch(Actions.searchQueryReset())
+		focusInput()
 	}
 	const isMobile = useIsMobile()
 	const location = useLocation()
 
 	const typeaheadInputRef = React.useRef<HTMLInputElement>(null)
 
+	const onCloseModal = (): void => {
+		focusInput()
+	}
+
+	const focusInput = () => {
+		typeaheadInputRef?.current?.focus()
+	}
+
 	return (
 		<div id="search-tabs-and-search-bar">
-			<QueryBuilder />
+			<QueryBuilder closing={onCloseModal} />
 			<div id="search-bar">
 				<div id="search-input">
 					<MantineCore.Paper shadow="lg" radius="md">
@@ -43,7 +52,7 @@ const SearchInput: React.FunctionComponent = () => {
 							id="query-input-and-close-button"
 							onClick={() => {
 								// focus the text input so that we make the whole search query ui seem like a text input
-								typeaheadInputRef?.current?.focus()
+								focusInput()
 							}}
 						>
 							<div id="queries-and-input">
@@ -58,6 +67,7 @@ const SearchInput: React.FunctionComponent = () => {
 												]
 											}
 											userId={paginationInfo?.userId}
+											focusInput={focusInput}
 										/>
 									),
 								)}

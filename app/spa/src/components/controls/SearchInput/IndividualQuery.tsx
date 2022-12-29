@@ -14,12 +14,14 @@ interface IProps {
 	individualQuery: Types.API.IndividualSearchQuery
 	queryStats?: Types.API.QueryStats
 	userId?: number
+	focusInput: () => void
 }
 
 const IndividualQuery: React.FunctionComponent<IProps> = ({
 	individualQuery,
 	queryStats,
 	userId,
+	focusInput,
 }) => {
 	const dispatch = ReactRedux.useDispatch()
 
@@ -130,6 +132,7 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 							subtype || undefined,
 							value,
 						)
+						focusInput()
 					}}
 					title="remove this query"
 					className="remove-query"
