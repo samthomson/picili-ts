@@ -53,6 +53,7 @@ const QueryBuilder: React.FunctionComponent = () => {
 				overlayColor={theme.colors.gray[2]}
 				overlayOpacity={0.55}
 				overlayBlur={3}
+				overflow="inside"
 			>
 				<MantineCore.Tabs
 					variant="outline"
