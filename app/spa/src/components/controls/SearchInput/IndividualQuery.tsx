@@ -69,6 +69,9 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 			case type === Enums.QueryType.FILETYPE:
 				return Icons.IconFileCheck
 
+			case type === Enums.QueryType.ELEVATION:
+				return Icons.IconMountain
+
 			// todo: plant IconPlant
 			// todo: directory
 
