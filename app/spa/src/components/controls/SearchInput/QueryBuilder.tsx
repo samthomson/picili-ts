@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as MantineCore from '@mantine/core'
+import * as Icons from '@tabler/icons'
 
 const QueryBuilder: React.FunctionComponent = () => {
 	// todo: populate search tabs from an array, use for modal too
@@ -12,28 +13,28 @@ const QueryBuilder: React.FunctionComponent = () => {
 		value: string
 		clickValue: undefined | string
 		label: string
-		// icon:
+		icon: React.ReactNode
 		content: React.ReactNode
 	}[] = [
 		{
-			value: 'text',
+			value: 'all',
 			clickValue: undefined,
-			label: 'Text search',
-			// icon:
+			label: 'All search modes',
+			icon: <Icons.IconSearch size={14} />,
 			content: <>search content</>,
 		},
 		{
 			value: 'elevation',
 			clickValue: 'elevation',
 			label: 'Elevation',
-			// icon:
+			icon: <Icons.IconMountain size={14} />,
 			content: <>Elevation content</>,
 		},
 		{
 			value: 'colour',
 			clickValue: 'colour',
 			label: 'Colour',
-			// icon:
+			icon: <Icons.IconColorFilter size={14} />,
 			content: <>Colour content</>,
 		},
 	]
@@ -53,7 +54,7 @@ const QueryBuilder: React.FunctionComponent = () => {
 								key={index}
 								value={tab.value}
 								onClick={() => setSearchMode(tab.clickValue)}
-								// icon={<IconPhoto size={14} />}
+								icon={tab.icon}
 							>
 								{tab.label}
 							</MantineCore.Tabs.Tab>
@@ -71,14 +72,14 @@ const QueryBuilder: React.FunctionComponent = () => {
 					))}
 				</MantineCore.Tabs>
 			</MantineCore.Modal>
-			<MantineCore.Tabs variant="outline" radius="md" value="text">
+			<MantineCore.Tabs variant="outline" radius="md" value={'all'}>
 				<MantineCore.Tabs.List>
 					{tabs.map((tab, index) => (
 						<MantineCore.Tabs.Tab
 							key={index}
 							value={tab.value}
 							onClick={() => setSearchMode(tab.clickValue)}
-							// icon={<IconPhoto size={14} />}
+							icon={tab.icon}
 						>
 							{tab.label}
 						</MantineCore.Tabs.Tab>
