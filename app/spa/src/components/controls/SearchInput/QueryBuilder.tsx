@@ -8,6 +8,36 @@ const QueryBuilder: React.FunctionComponent = () => {
 		undefined,
 	)
 
+	const tabs: {
+		value: string
+		clickValue: undefined | string
+		label: string
+		// icon:
+		content: React.ReactNode
+	}[] = [
+		{
+			value: 'text',
+			clickValue: undefined,
+			label: 'Text search',
+			// icon:
+			content: <>search content</>,
+		},
+		{
+			value: 'elevation',
+			clickValue: 'elevation',
+			label: 'Elevation',
+			// icon:
+			content: <>Elevation content</>,
+		},
+		{
+			value: 'colour',
+			clickValue: 'colour',
+			label: 'Colour',
+			// icon:
+			content: <>Colour content</>,
+		},
+	]
+
 	return (
 		<>
 			<MantineCore.Modal
@@ -18,60 +48,41 @@ const QueryBuilder: React.FunctionComponent = () => {
 				searchMode: {searchMode}
 				<MantineCore.Tabs variant="outline" value={searchMode}>
 					<MantineCore.Tabs.List>
-						<MantineCore.Tabs.Tab
-							value="text"
-							onClick={() => setSearchMode(undefined)}
-							// icon={<IconPhoto size={14} />}
-						>
-							Text search
-						</MantineCore.Tabs.Tab>
-						<MantineCore.Tabs.Tab
-							value="elevation"
-							onClick={() => setSearchMode('elevation')}
-							// icon={<IconMessageCircle size={14} />}
-						>
-							Elevation
-						</MantineCore.Tabs.Tab>
-						<MantineCore.Tabs.Tab
-							value="colour"
-							onClick={() => setSearchMode('colour')}
-							// icon={<IconSettings size={14} />}
-						>
-							Colour
-						</MantineCore.Tabs.Tab>
+						{tabs.map((tab, index) => (
+							<MantineCore.Tabs.Tab
+								key={index}
+								value={tab.value}
+								onClick={() => setSearchMode(tab.clickValue)}
+								// icon={<IconPhoto size={14} />}
+							>
+								{tab.label}
+							</MantineCore.Tabs.Tab>
+						))}
 					</MantineCore.Tabs.List>
 
-					<MantineCore.Tabs.Panel value="elevation" pt="xs">
-						Messages tab content
-					</MantineCore.Tabs.Panel>
-
-					<MantineCore.Tabs.Panel value="colour" pt="xs">
-						Settings tab content
-					</MantineCore.Tabs.Panel>
+					{tabs.map((tab, index) => (
+						<MantineCore.Tabs.Panel
+							key={index}
+							value={tab.value}
+							pt="xs"
+						>
+							{tab.content}
+						</MantineCore.Tabs.Panel>
+					))}
 				</MantineCore.Tabs>
 			</MantineCore.Modal>
 			<MantineCore.Tabs variant="outline" radius="md" value="text">
 				<MantineCore.Tabs.List>
-					<MantineCore.Tabs.Tab
-						value="text"
-						// icon={<IconPhoto size={14} />}
-					>
-						Text search
-					</MantineCore.Tabs.Tab>
-					<MantineCore.Tabs.Tab
-						value="elevation"
-						// icon={<IconMessageCircle size={14} />}
-						onClick={() => setSearchMode('elevation')}
-					>
-						Elevation
-					</MantineCore.Tabs.Tab>
-					<MantineCore.Tabs.Tab
-						value="colour"
-						// icon={<IconSettings size={14} />}
-						onClick={() => setSearchMode('colour')}
-					>
-						Colour
-					</MantineCore.Tabs.Tab>
+					{tabs.map((tab, index) => (
+						<MantineCore.Tabs.Tab
+							key={index}
+							value={tab.value}
+							onClick={() => setSearchMode(tab.clickValue)}
+							// icon={<IconPhoto size={14} />}
+						>
+							{tab.label}
+						</MantineCore.Tabs.Tab>
+					))}
 				</MantineCore.Tabs.List>
 			</MantineCore.Tabs>
 		</>
