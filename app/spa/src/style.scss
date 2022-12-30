@@ -319,6 +319,7 @@ a {
     text-transform: capitalize;
   }
 
+  // todo: obsolete now?
   ul {
     list-style: none;
     padding-left: 0;
@@ -369,14 +370,15 @@ a {
   bottom: 0;
   left: 0;
   right: 0;
-  background: yellowgreen;
+  background: #fff;
+  // background: yellowgreen;
 
   &.open {
     display: block
   }
 
   #video-wrapper {
-    background-color: mediumpurple;
+    // background-color: mediumpurple;
     // leave space for the video controls
     height: calc(100% - 40px - $lightboxMargin);
     position: relative;
@@ -403,7 +405,7 @@ a {
     top: $lightboxMargin;
     bottom: $lightboxMargin;
 
-    background-color: orange;
+    // background-color: orange;
     overflow-y: auto;
 
     &.with-info {
@@ -428,7 +430,7 @@ a {
     }
     
     #info-underneath {
-      background-color: lightseagreen;
+      // background-color: lightseagreen;
     }
 
     /*
@@ -449,7 +451,7 @@ a {
     width: 0px;
     overflow: hidden;
     overflow-y: auto;
-    background-color: aqua;
+    // background-color: aqua;
 
     &.with-info {
       width: 240px;
@@ -457,12 +459,41 @@ a {
 
     .lightbox-information-piece {
       margin-bottom: $margin;
-      
+
       svg {
         margin-right: $margin;
       }
     }
   }
+
+ #lightbox-file-info, #info-underneath {
+
+  .lightbox-tag-group {
+    margin-bottom: $margin;
+    // background-color: burlywood;
+
+    .lightbox-tag {
+      display: inline;
+      // background-color: mediumorchid;
+      align-items: center;
+      display: inline-flex;
+      margin-right: $margin;
+      margin-bottom: $margin / 2;
+      text-transform: none;
+      border: 1px solid silver;
+      border-radius: $margin / 2;
+      padding: $margin / 2;
+      cursor: pointer;
+      font-size: smaller;
+
+      svg {
+        margin-right: $margin / 2;
+        display: block;
+      }
+    }
+  }
+ }
+
 
   .lightbox-button {
     position: absolute;
