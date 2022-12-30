@@ -20,5 +20,5 @@ export const APIURL = (): string => {
 	return `${baseAPIURL()}/graphql`
 }
 
-export const formatNumber = (value: string): string =>
+export const formatNumber = (value: string | number): string =>
 	`${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')

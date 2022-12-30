@@ -1,9 +1,12 @@
 import * as React from 'react'
 import * as ReactRedux from 'react-redux'
 import { useQuery, gql } from '@apollo/client'
+import moment from 'moment'
+import * as Icons from '@tabler/icons'
 
 import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
+import * as HelperUtil from 'src/util/helper'
 
 const fileInfoQuery = gql`
 	query fileInfo($fileId: Int!) {
@@ -66,19 +69,34 @@ const LightboxInfo: React.FunctionComponent<IProps> = ({
 	}
 	return (
 		<>
-			<p>{fileInfo?.address && <>address: {fileInfo.address} </>}</p>
-			<p>{fileInfo?.datetime && <>datetime: {fileInfo.datetime} </>}</p>
-			<p>
-				{fileInfo?.location && (
-					<>
-						location: {fileInfo.location.latitude},
-						{fileInfo.location.longitude}{' '}
-					</>
-				)}
-			</p>
-			<p>
-				{fileInfo?.elevation && <>elevation: {fileInfo.elevation}m </>}
-			</p>
+			{fileInfo?.address && (
+				<div className="lightbox-information-piece">
+					<Icons.IconMapPin size={14} />
+					{fileInfo.address}
+				</div>
+			)}
+
+			{fileInfo?.datetime && (
+				<div className="lightbox-information-piece">
+					<Icons.IconCalendar size={14} />
+					{moment(fileInfo.datetime).format('h:mma, MMM Do Y')}{' '}
+				</div>
+			)}
+
+			{fileInfo?.location && (
+				<div className="lightbox-information-piece">
+					<Icons.IconMap2 size={14} />
+					{fileInfo.location.latitude},{fileInfo.location.longitude}
+				</div>
+			)}
+
+			{fileInfo?.elevation && (
+				<div className="lightbox-information-piece">
+					<Icons.IconMountain size={14} />
+					{HelperUtil.formatNumber(fileInfo.elevation)}m
+				</div>
+			)}
+
 			<p>
 				{fileInfo?.pathOnDropbox && (
 					<>on dropbox: {fileInfo.pathOnDropbox} </>
