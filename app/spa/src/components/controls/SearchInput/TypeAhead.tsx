@@ -196,6 +196,7 @@ const TypeAhead: React.FunctionComponent<{
 				value={textInputValue}
 				onChange={setTextInputValue}
 				ref={textInputRef}
+				autoFocus
 				// todo: if no icon show a fixed width whatever so there's no resize on load
 				rightSection={
 					<div
