@@ -1,6 +1,8 @@
 import * as React from 'react'
 import * as ReactRedux from 'react-redux'
 import { NavLink } from 'react-router-dom'
+import * as MantineCore from '@mantine/core'
+import * as Icons from '@tabler/icons'
 
 import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
@@ -8,7 +10,6 @@ import * as Selectors from 'src/redux/selectors'
 import ProcessorSummaryHeader from 'src/components/controls/ProcessorSummaryHeader'
 
 const Header: React.FunctionComponent = () => {
-	// const loadingSomething = false // searchService.bSearching || httpService.bMakingRequestToServer
 	const isAuthenticated = ReactRedux.useSelector(
 		Selectors.userIsAuthenticated,
 	)
@@ -39,29 +40,43 @@ const Header: React.FunctionComponent = () => {
 					{isAuthenticated && (
 						<div>
 							<ProcessorSummaryHeader />
-							{/* <span
-								id="processing-header-output"
-								*ngIf="bProcessing"
-								class="ui basic tiny label"
-								title="{{cProcessingFiles | number}} file(s) to go, across {{cProcessingTasks | number}} task(s)"
-							>
-								<i class="fa fa-cogs"></i>&nbsp;
-								Synchronising / Processing
-							</span> */}
 
-							<NavLink
-								exact={true}
-								className="ui tiny button"
-								to="/admin"
-							>
-								<i className="fa fa-cog" aria-hidden="true"></i>
-								&nbsp;settings
-							</NavLink>
+							<MantineCore.Menu shadow="md" width={200}>
+								<MantineCore.Menu.Target>
+									<MantineCore.Button
+										variant="subtle"
+										color="gray"
+										radius="md"
+										rightIcon={
+											<Icons.IconChevronDown size={14} />
+										}
+									>
+										Stuff
+									</MantineCore.Button>
+								</MantineCore.Menu.Target>
 
-							<button className="ui tiny button" onClick={logOut}>
-								<i className="fa fa-cog" aria-hidden="true"></i>
-								&nbsp;logout
-							</button>
+								<MantineCore.Menu.Dropdown>
+									<NavLink
+										exact={true}
+										className="ui tiny button"
+										to="/admin"
+									>
+										<MantineCore.Menu.Item
+											icon={
+												<Icons.IconSettings size={16} />
+											}
+										>
+											Settings
+										</MantineCore.Menu.Item>
+									</NavLink>
+									<MantineCore.Menu.Item
+										icon={<Icons.IconLogout size={16} />}
+										onClick={logOut}
+									>
+										Log out
+									</MantineCore.Menu.Item>
+								</MantineCore.Menu.Dropdown>
+							</MantineCore.Menu>
 						</div>
 					)}
 					{!isAuthenticated && (
