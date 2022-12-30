@@ -100,6 +100,9 @@ const displayContentForTag = (tag: Types.API.Tag) => {
 		case type === 'location':
 			return `${subtype}: ${value}`
 
+		case type === 'exif' && subtype === 'aperture':
+			return `aperture: f/${value}`
+
 		case type === 'exif' && subtype === 'exposuretime':
 			const fraction = 1 / +value
 			return `exposure: 1/${fraction}`
