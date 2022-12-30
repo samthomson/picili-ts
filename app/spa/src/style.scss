@@ -387,7 +387,7 @@ a {
   }
 
   #video-control-space {
-    background-color: palevioletred;
+    // background-color: palevioletred;
     position: absolute;
     display: none;
     left: 0;
@@ -497,12 +497,15 @@ a {
  }
 
 
-  .lightbox-button {
+ .lightbox-button {
+  width: $lightboxButtonSize;
+  height: $lightboxButtonSize;
+
+  &.right-side {
     position: absolute;
     right: $lightboxMargin;
-    width: $lightboxButtonSize;
-    height: $lightboxButtonSize;
   }
+}
 
   #lightbox-close {
     top: $lightboxMargin;

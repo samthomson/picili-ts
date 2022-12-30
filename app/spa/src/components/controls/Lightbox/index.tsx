@@ -166,20 +166,30 @@ const Lightbox: React.FunctionComponent = () => {
 												Enums.FileType.VIDEO,
 										})}
 									>
-										<button
-											id="lightbox-play"
-											onClick={() => {
-												// attempt to play video
-												setIsCurrentlyPlayingVideo(
-													!isCurrentlyPlayingVideo,
-												)
-											}}
-										>
-											{isCurrentlyPlayingVideo
-												? 'pause'
-												: 'play'}
-										</button>{' '}
-										[fullscreen]
+										<div id="vdeo-buttons">
+											<MantineCore.ActionIcon
+												id="lightbox-play"
+												className="lightbox-button"
+												onClick={() => {
+													setIsCurrentlyPlayingVideo(
+														!isCurrentlyPlayingVideo,
+													)
+												}}
+												radius="md"
+												variant="light"
+											>
+												{!isCurrentlyPlayingVideo ? (
+													<Icons.IconPlayerPlay
+														size={28}
+													/>
+												) : (
+													<Icons.IconPlayerPause
+														size={28}
+													/>
+												)}
+											</MantineCore.ActionIcon>
+											{/* [fullscreen] */}
+										</div>
 									</div>
 								</div>
 							</div>
@@ -210,7 +220,7 @@ const Lightbox: React.FunctionComponent = () => {
 
 					<MantineCore.ActionIcon
 						id="lightbox-info"
-						className="lightbox-button"
+						className="lightbox-button right-side"
 						radius="md"
 						variant="light"
 						onClick={toggleInfo}
@@ -220,7 +230,7 @@ const Lightbox: React.FunctionComponent = () => {
 
 					<MantineCore.ActionIcon
 						id="lightbox-left"
-						className="lightbox-button"
+						className="lightbox-button right-side"
 						onClick={previous}
 						radius="md"
 						variant="light"
@@ -230,7 +240,7 @@ const Lightbox: React.FunctionComponent = () => {
 
 					<MantineCore.ActionIcon
 						id="lightbox-right"
-						className="lightbox-button"
+						className="lightbox-button right-side"
 						onClick={next}
 						radius="md"
 						variant="light"
@@ -241,7 +251,7 @@ const Lightbox: React.FunctionComponent = () => {
 			)}
 			<MantineCore.ActionIcon
 				id="lightbox-close"
-				className="lightbox-button"
+				className="lightbox-button right-side"
 				radius="md"
 				variant="light"
 				onClick={close}
