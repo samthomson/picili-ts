@@ -34,21 +34,25 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 		<React.Fragment>
 			{individualQueries.length > 0 && paginationInfo && searchStats && (
 				<>
-					<p>
-						found {paginationInfo.totalItems} result(s){' '}
-						{paginationInfo.totalItems > 0 && (
-							<>in {searchStats.speed}ms</>
-						)}
-						<button
-							id="refresh-query-button"
-							onClick={refreshQuery}
-						>
-							[refresh]
-						</button>
-					</p>
-					<div>
-						<SearchSortSelect searchSorting={searchSorting} />
+					<div className="results-overview">
+						<div className="results-overview-column">
+							found {paginationInfo.totalItems} result(s){' '}
+							{paginationInfo.totalItems > 0 && (
+								<>in {searchStats.speed}ms</>
+							)}
+							<button
+								id="refresh-query-button"
+								onClick={refreshQuery}
+							>
+								[refresh]
+							</button>
+						</div>
+						<div className="results-overview-column">
+							<SearchSortSelect searchSorting={searchSorting} />
+						</div>
 					</div>
+
+					<div></div>
 					{displayJustified && (
 						<JustifiedImageGallery searchResults={searchResults} />
 					)}

@@ -304,7 +304,21 @@ a {
   }
 }
 
+.results-overview {
+  display: flex;
+
+  .results-overview-column {
+    flex-grow: 1;
+  }
+}
+
 #sort-select {
+  float: right;
+
+  .sort-capitalised {
+    text-transform: capitalize;
+  }
+
   ul {
     list-style: none;
     padding-left: 0;
