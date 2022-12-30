@@ -23,25 +23,35 @@ const Lightbox: React.FunctionComponent = () => {
 
 	const lightboxIndex = ReactRedux.useSelector(Selectors.lightboxIndex)
 
-	React.useEffect(() => {
-		const handleKeyPress = (event: KeyboardEvent) => {
-			// escape
-			if (event.key === 'Escape') {
-				close()
-			}
-			// left
-			if (event.key === 'ArrowLeft') {
-				previous()
-			}
-			// right
-			if (event.key === 'ArrowRight') {
-				next()
-			}
-			// i
-			if (event.key === 'i') {
-				toggleInfo()
-			}
+	const togglePlayingVideo = () => {
+		setIsCurrentlyPlayingVideo(
+			(isCurrentlyPlayingVideo) => !isCurrentlyPlayingVideo,
+		)
+	}
+
+	const handleKeyPress = (event: KeyboardEvent) => {
+		// escape
+		if (event.key === 'Escape') {
+			close()
 		}
+		// left
+		if (event.key === 'ArrowLeft') {
+			previous()
+		}
+		// right
+		if (event.key === 'ArrowRight') {
+			next()
+		}
+		// i
+		if (event.key === 'i') {
+			toggleInfo()
+		}
+		// space
+		if (event.key === ' ') {
+			togglePlayingVideo()
+		}
+	}
+	React.useEffect(() => {
 		window.addEventListener('keydown', handleKeyPress)
 
 		return () => {
@@ -170,11 +180,7 @@ const Lightbox: React.FunctionComponent = () => {
 											<MantineCore.ActionIcon
 												id="lightbox-play"
 												className="lightbox-button"
-												onClick={() => {
-													setIsCurrentlyPlayingVideo(
-														!isCurrentlyPlayingVideo,
-													)
-												}}
+												onClick={togglePlayingVideo}
 												radius="md"
 												variant="light"
 											>
