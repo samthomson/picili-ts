@@ -373,14 +373,14 @@ a {
   left: 0;
   right: 0;
   background: #fff;
-  background: yellowgreen;
+  // background: yellowgreen;
 
   &.open {
     display: block
   }
 
   #video-wrapper {
-    background-color: mediumpurple;
+    // background-color: mediumpurple;
     // leave space for the video controls
     height: calc(100% - 40px - $lightboxMargin);
     position: relative;
@@ -407,7 +407,7 @@ a {
     top: $lightboxMargin;
     bottom: $lightboxMargin;
 
-    background-color: orange;
+    // background-color: orange;
     overflow-y: auto;
 
     &.with-info {
@@ -432,7 +432,7 @@ a {
     }
     
     #info-underneath {
-      background-color: lightseagreen;
+      // background-color: lightseagreen;
     }
 
     /*
@@ -453,7 +453,7 @@ a {
     width: 0px;
     overflow: hidden;
     overflow-y: auto;
-    background-color: aqua;
+    // background-color: aqua;
 
     &.with-info {
       width: $lightboxInfoWidth;
