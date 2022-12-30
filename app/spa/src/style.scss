@@ -15,6 +15,8 @@ $headerHeight: 58px;
 $margin: 8px;
 $lightboxMargin: ($margin * 2);
 $navWidth: 160px;
+$lightboxButtonSize: 40px;
+$lightboxInfoWidth: 320px;
 
 //
 //
@@ -371,14 +373,14 @@ a {
   left: 0;
   right: 0;
   background: #fff;
-  // background: yellowgreen;
+  background: yellowgreen;
 
   &.open {
     display: block
   }
 
   #video-wrapper {
-    // background-color: mediumpurple;
+    background-color: mediumpurple;
     // leave space for the video controls
     height: calc(100% - 40px - $lightboxMargin);
     position: relative;
@@ -401,15 +403,15 @@ a {
   #lightbox-file-content {
     position: absolute;
     left: $lightboxMargin;
-    right: 80px;
+    right: 40px + ($lightboxMargin * 2);
     top: $lightboxMargin;
     bottom: $lightboxMargin;
 
-    // background-color: orange;
+    background-color: orange;
     overflow-y: auto;
 
     &.with-info {
-      right: 300px;
+      right: $lightboxInfoWidth + ($lightboxMargin * 3) + $lightboxButtonSize;
     }
 
     img {
@@ -430,7 +432,7 @@ a {
     }
     
     #info-underneath {
-      // background-color: lightseagreen;
+      background-color: lightseagreen;
     }
 
     /*
@@ -445,16 +447,16 @@ a {
 
   #lightbox-file-info {
     position: absolute;
-    right: 50px;
+    right: $lightboxButtonSize + (2 * $lightboxMargin);
     top: $lightboxMargin;
     bottom: $lightboxMargin;
     width: 0px;
     overflow: hidden;
     overflow-y: auto;
-    // background-color: aqua;
+    background-color: aqua;
 
     &.with-info {
-      width: 240px;
+      width: $lightboxInfoWidth;
     }
 
     .lightbox-information-piece {
@@ -498,27 +500,24 @@ a {
   .lightbox-button {
     position: absolute;
     right: $lightboxMargin;
-    cursor: pointer;
-    font-size: 36px;
-    // color: $cAvailableGrey;
+    width: $lightboxButtonSize;
+    height: $lightboxButtonSize;
   }
 
   #lightbox-close {
-    top: $margin;
-    margin-right: -5px;
+    top: $lightboxMargin;
   }
 
   #lightbox-info {
-    top: ($margin * 7);
-    font-size: 26px;
+    top: $lightboxButtonSize + ($lightboxMargin * 2);
   }
   
   #lightbox-left {
-    bottom: ($margin * 7);
+    bottom: $lightboxButtonSize + ($lightboxMargin * 2);
   }
 
   #lightbox-right {
-    bottom: $margin;
+    bottom: $lightboxMargin;
   }
 }
 

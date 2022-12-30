@@ -1,6 +1,8 @@
 import * as React from 'react'
 import * as ReactRedux from 'react-redux'
 import classNames from 'classnames'
+import * as MantineCore from '@mantine/core'
+import * as Icons from '@tabler/icons'
 
 import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
@@ -124,7 +126,6 @@ const Lightbox: React.FunctionComponent = () => {
 		>
 			{result && (
 				<>
-					{/* <div> */}
 					<div
 						id="lightbox-file-content"
 						className={classNames({
@@ -207,38 +208,46 @@ const Lightbox: React.FunctionComponent = () => {
 						)}
 					</div>
 
-					<button
+					<MantineCore.ActionIcon
 						id="lightbox-info"
 						className="lightbox-button"
+						radius="md"
+						variant="light"
 						onClick={toggleInfo}
 					>
-						i
-					</button>
+						<Icons.IconFileInfo size={28} />
+					</MantineCore.ActionIcon>
 
-					<button
+					<MantineCore.ActionIcon
 						id="lightbox-left"
 						className="lightbox-button"
 						onClick={previous}
+						radius="md"
+						variant="light"
 					>
-						l
-					</button>
-					<button
+						<Icons.IconArrowNarrowLeft size={28} />
+					</MantineCore.ActionIcon>
+
+					<MantineCore.ActionIcon
 						id="lightbox-right"
 						className="lightbox-button"
 						onClick={next}
+						radius="md"
+						variant="light"
 					>
-						r
-					</button>
-					{/* </div> */}
+						<Icons.IconArrowNarrowRight size={28} />
+					</MantineCore.ActionIcon>
 				</>
 			)}
-			<button
+			<MantineCore.ActionIcon
 				id="lightbox-close"
 				className="lightbox-button"
+				radius="md"
+				variant="light"
 				onClick={close}
 			>
-				x
-			</button>
+				<Icons.IconX size={28} />
+			</MantineCore.ActionIcon>
 		</div>
 	)
 }
