@@ -112,7 +112,7 @@ const VideoQueryBuilder: React.FunctionComponent<{
 	}
 
 	return (
-		<div id="elevation-query-builder">
+		<div id="date-range-query-builder">
 			<MantineCore.RangeSlider
 				size="xl"
 				radius="xl"
