@@ -47,7 +47,9 @@ const ElevationQueryBuilder: React.FunctionComponent<{
 		[number, number] | undefined
 	>(
 		currentElevationQuery &&
-			HelperUtil.parseRangeValueToArray(currentElevationQuery.value),
+			HelperUtil.parseRangeValueToArrayNumeric(
+				currentElevationQuery.value,
+			),
 	)
 
 	React.useEffect(() => {

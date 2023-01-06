@@ -43,22 +43,20 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 	// 	  ]
 	// 	: undefined
 
-	// todo:
-	// const currentElevationQuery = ReactRedux.useSelector(
-	// 	Selectors.searchIndividualQueryOfType('elevation'),
-	// )
+	const currentDateRangeQuery = ReactRedux.useSelector(
+		Selectors.searchIndividualQueryOfType(Enums.QueryType.DATE_RANGE),
+	)
 
-	const [value, setValue] = React.useState<MantineDates.DateRangePickerValue>(
-		[new Date(2021, 11, 1), new Date(2021, 11, 5)],
+	const [value, setValue] = React.useState<
+		MantineDates.DateRangePickerValue | undefined
+	>(
+		currentDateRangeQuery
+			? HelperUtil.parseRangeValueToArrayDates(
+					currentDateRangeQuery.value,
+			  )
+			: [moment().toDate(), moment().toDate()],
 	)
 	// todo:
-	// const [rangeValue, setRangeValue] = React.useState<
-	// 	[number, number] | undefined
-	// >(
-	// 	currentElevationQuery &&
-	// 		HelperUtil.parseRangeValueToArray(currentElevationQuery.value),
-	// )
-
 	// React.useEffect(() => {
 	// 	const parsedAPIMinMax = elevationRangeData?.queryBuilders
 	// 		?.elevation && [
@@ -70,7 +68,7 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 	// 	if (
 	// 		parsedAPIMinMax &&
 	// 		parsedAPIMinMax !== rangeValue &&
-	// 		!currentElevationQuery
+	// 		!currentDateRangeQuery
 	// 	) {
 	// 		setRangeValue([parsedAPIMinMax[0], parsedAPIMinMax[1]])
 	// 	}

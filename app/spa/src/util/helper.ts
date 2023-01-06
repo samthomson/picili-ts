@@ -40,10 +40,24 @@ export const isNumber = (value?: string | number): boolean =>
 	value !== '' &&
 	!isNaN(Number(+value))
 
-export const parseRangeValueToArray = (value: string): [number, number] => {
+export const parseRangeValueToArray = (value: string): [string, string] => {
+	return [value.split(':')[0], value.split(':')[1]]
+}
+
+export const parseRangeValueToArrayNumeric = (
+	value: string,
+): [number, number] => {
 	return [
 		value.split(':').map((val) => +val)[0],
 		value.split(':').map((val) => +val)[1],
+	]
+}
+
+export const parseRangeValueToArrayDates = (value: string): [Date, Date] => {
+	const parts = parseRangeValueToArray(value)
+	return [
+		parts.map((val) => moment(val).toDate())[0],
+		parts.map((val) => moment(val).toDate())[1],
 	]
 }
 

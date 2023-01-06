@@ -50,7 +50,7 @@ const VideoQueryBuilder: React.FunctionComponent<{
 		[number, number] | undefined
 	>(
 		currentVideoQuery &&
-			HelperUtil.parseRangeValueToArray(currentVideoQuery.value),
+			HelperUtil.parseRangeValueToArrayNumeric(currentVideoQuery.value),
 	)
 
 	React.useEffect(() => {
