@@ -79,6 +79,9 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 				subtype === Enums.QuerySubtype.LENGTH:
 				return Icons.IconVideo
 
+			case type === Enums.QueryType.COLOUR:
+				return Icons.IconColorFilter
+
 			// todo: plant IconPlant
 			// todo: directory
 

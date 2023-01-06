@@ -6,6 +6,7 @@ import useIsMobile from 'src/util/hooks/use-is-mobile.hook'
 import ElevationQueryBuilder from './QueryBuilderUIs/ElevationQueryBuilder'
 import VideoQueryBuilder from './QueryBuilderUIs/VideoQueryBuilder'
 import DateRangeQueryBuilder from './QueryBuilderUIs/DateRangeQueryBuilder'
+import ColourQueryBuilder from './QueryBuilderUIs/ColourQueryBuilder'
 
 const QueryBuilder: React.FunctionComponent<{
 	closing: () => void
@@ -51,14 +52,13 @@ const QueryBuilder: React.FunctionComponent<{
 			icon: <Icons.IconMountain size={14} />,
 			content: <ElevationQueryBuilder closeModal={closeModal} />,
 		},
-		// todo: colour query
-		// {
-		// 	value: 'colour',
-		// 	clickValue: 'colour',
-		// 	label: 'Colour',
-		// 	icon: <Icons.IconColorFilter size={14} />,
-		// 	content: <>Colour content</>,
-		// },
+		{
+			value: 'colour',
+			clickValue: 'colour',
+			label: 'Colour',
+			icon: <Icons.IconColorFilter size={14} />,
+			content: <ColourQueryBuilder closeModal={closeModal} />,
+		},
 		{
 			value: 'video',
 			clickValue: 'video',

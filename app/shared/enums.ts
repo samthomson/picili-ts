@@ -43,7 +43,8 @@ export enum QueryType {
     OCR = 'ocr',
     LOCATION = 'location',
     FILETYPE = 'filetype',
-    VIDEO = 'video'
+    VIDEO = 'video',
+    COLOUR = 'colour'
     // todo: plant 
     // todo: directory
 }
