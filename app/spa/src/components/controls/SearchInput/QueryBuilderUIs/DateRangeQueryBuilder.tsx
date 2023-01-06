@@ -11,6 +11,7 @@ import * as Selectors from 'src/redux/selectors'
 import * as Enums from '../../../../../../shared/enums'
 import * as HelperUtil from 'src/util/helper'
 import * as Types from '@shared/declarations'
+import useIsMobile from 'src/util/hooks/use-is-mobile.hook'
 
 const dateRangeMinMaxQuery = gql`
 	query {
@@ -31,6 +32,8 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 	const { loading, error, data } = useQuery(dateRangeMinMaxQuery, {
 		fetchPolicy: 'no-cache',
 	})
+
+	const isMobile = useIsMobile()
 
 	const dateRangeData: Types.API.UIState = data?.UIState
 
@@ -123,6 +126,9 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 				size="md"
 				radius="md"
 				icon={<Icons.IconCalendar size={16} />}
+				dropdownType="modal"
+				amountOfMonths={isMobile ? 1 : 3}
+				allowSingleDateInRange={true}
 			/>
 			<div className="button-to-add-query-container">
 				<MantineCore.Button
