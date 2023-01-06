@@ -535,6 +535,37 @@ export const performSearchQuery = async (
                 longitude,
             }))
 
+        case type === Enums.QueryType.DATE_RANGE:
+            const [dateLowerBounds, dateUpperBounds] = value.split(':')
+
+            // todo: validate dates? eg make isValidDateTime function
+            // if (!HelperUtil.isValidDateTime(dateLowerBounds) || !HelperUtil.isValidDateTime(dateUpperBounds)) {
+            //     Logger.warn('malformed date range query', { userId, individualQuery })
+            //     return []
+            // }
+
+            const dateRangeQuery = `
+            SELECT files.id as fileId, 100 as score, latitude, longitude 
+            FROM files 
+            WHERE files.user_id = :userId
+            AND files.datetime >= :lowerBounds AND files.datetime <= :upperBounds           
+            AND files.is_thumbnailed;
+            `
+            const dateRangeResults: Types.Core.DBSearchMatch[] = await Database.query(dateRangeQuery, {
+                type: Sequelize.QueryTypes.SELECT,
+                replacements: {
+                    userId,
+                    lowerBounds: dateLowerBounds,
+                    upperBounds: dateUpperBounds,
+                },
+            })
+            return dateRangeResults.map(({ fileId, score, latitude, longitude }) => ({
+                fileId,
+                score,
+                latitude,
+                longitude,
+            }))
+
         default:
             const query = (() => {
                 if (value === '*') {

@@ -36,7 +36,7 @@ export enum AspectRatio {
 export enum QueryType {
     MAP = 'map',
     // DATE = 'date',
-    // DATE_RANGE = 'date_range',
+    DATE_RANGE = 'date_range',
     ELEVATION = 'elevation',
     EXIF = 'exif',
     SUBJECT = 'subject',
