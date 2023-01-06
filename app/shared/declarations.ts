@@ -174,15 +174,18 @@ export namespace API {
 		items: SystemEvent[]
 	}
 
+	export type MinMax = {
+		min: number
+		max: number
+	}
+
+	export type QueryBuildersUIData = {
+		elevation?: MinMax
+		videoLength?: MinMax
+	}
+
 	export type UIState = {
-		queryBuilders: {
-			elevation: {
-				min: number, max: number
-			} | undefined
-			videoLength: {
-				min: number, max: number
-			} | undefined
-		}
+		queryBuilders: QueryBuildersUIData
 	}
 }
 export namespace ExternalAPI {

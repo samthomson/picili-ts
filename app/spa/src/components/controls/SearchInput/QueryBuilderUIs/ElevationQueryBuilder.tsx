@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useQuery, gql } from '@apollo/client'
 import * as ReactRedux from 'react-redux'
 import * as MantineCore from '@mantine/core'
 import * as Icons from '@tabler/icons'
@@ -7,37 +8,74 @@ import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
 import * as Enums from '../../../../../../shared/enums'
 import * as HelperUtil from 'src/util/helper'
+import * as Types from '@shared/declarations'
+
+const elevationMinMaxQuery = gql`
+	query {
+		UIState {
+			queryBuilders {
+				elevation {
+					min
+					max
+				}
+			}
+		}
+	}
+`
 
 const ElevationQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
 }> = ({ closeModal }) => {
-	// todo: get from api
-	const defaultMinMax = [-500, 10000]
+	const { loading, error, data } = useQuery(elevationMinMaxQuery, {
+		fetchPolicy: 'no-cache',
+	})
+
+	const elevationRangeData: Types.API.UIState = data?.UIState
+
+	const defaultMinMax = elevationRangeData?.queryBuilders?.elevation
+		? [
+				elevationRangeData.queryBuilders.elevation.min,
+				elevationRangeData.queryBuilders.elevation.max,
+		  ]
+		: undefined
 
 	const currentElevationQuery = ReactRedux.useSelector(
 		Selectors.searchIndividualQueryOfType('elevation'),
 	)
 
-	const [rangeValue, setRangeValue] = React.useState<[number, number]>(
+	const [rangeValue, setRangeValue] = React.useState<
+		[number, number] | undefined
+	>(
 		// todo: refactor this hackyness
-		currentElevationQuery
-			? [
-					currentElevationQuery.value
-						.split(':')
-						.map((val) => +val)[0],
-					currentElevationQuery.value
-						.split(':')
-						.map((val) => +val)[1],
-			  ]
-			: [defaultMinMax[0], defaultMinMax[1]],
+		currentElevationQuery && [
+			currentElevationQuery.value.split(':').map((val) => +val)[0],
+			currentElevationQuery.value.split(':').map((val) => +val)[1],
+		],
 	)
+
+	React.useEffect(() => {
+		const parsedAPIMinMax = elevationRangeData?.queryBuilders
+			?.elevation && [
+			elevationRangeData.queryBuilders.elevation.min,
+			elevationRangeData.queryBuilders.elevation.max,
+		]
+
+		// only overwrite if we don't have an existing query from redux
+		if (
+			parsedAPIMinMax &&
+			parsedAPIMinMax !== rangeValue &&
+			!currentElevationQuery
+		) {
+			setRangeValue([parsedAPIMinMax[0], parsedAPIMinMax[1]])
+		}
+	}, [elevationRangeData?.queryBuilders.elevation])
 
 	const dispatch = ReactRedux.useDispatch()
 
 	const addElevationQuery = () => {
 		const newElevationQuery = {
 			type: Enums.QueryType.ELEVATION,
-			value: `${rangeValue[0]}:${rangeValue[1]}`,
+			value: `${rangeValue?.[0]}:${rangeValue?.[1]}`,
 		}
 		dispatch(Actions.searchQueryAdd(newElevationQuery))
 		dispatch(Actions.attemptSearch())
@@ -58,18 +96,27 @@ const ElevationQueryBuilder: React.FunctionComponent<{
 			: ' '
 	}
 
+	if (loading) {
+		// todo: proper loading ui
+		return <>loading...</>
+	}
+
+	if (error) {
+		return <>{error?.message}</>
+	}
+
+	// todo: refactor, these are the same thing
+	if (!defaultMinMax || !rangeValue) {
+		// todo: nicer error
+		return <>no elevation data to search against.</>
+	}
+
 	return (
 		<div id="elevation-query-builder">
 			<MantineCore.RangeSlider
-				// color="pink"
 				size="xl"
 				radius="xl"
 				labelAlwaysOn
-				// marks={[
-				// 	{ value: 20, label: '20%' },
-				// 	{ value: 50, label: '50%' },
-				// 	{ value: 80, label: '80%' },
-				// ]}
 				min={defaultMinMax[0]}
 				max={defaultMinMax[1]}
 				value={rangeValue}

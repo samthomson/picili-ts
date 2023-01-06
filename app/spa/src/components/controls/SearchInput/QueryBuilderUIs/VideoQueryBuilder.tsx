@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useQuery, gql } from '@apollo/client'
 import * as ReactRedux from 'react-redux'
 import * as MantineCore from '@mantine/core'
 import * as Icons from '@tabler/icons'
@@ -7,34 +8,76 @@ import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
 import * as Enums from '../../../../../../shared/enums'
 import * as HelperUtil from 'src/util/helper'
+import * as Types from '@shared/declarations'
+
+// todo: cut relevant half out
+const videoMinMaxQuery = gql`
+	query {
+		UIState {
+			queryBuilders {
+				videoLength {
+					min
+					max
+				}
+			}
+		}
+	}
+`
 
 const VideoQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
 }> = ({ closeModal }) => {
-	// todo: get min/max range from api
-	const defaultMinMax = [0, 3600]
+	const { loading, error, data } = useQuery(videoMinMaxQuery, {
+		fetchPolicy: 'no-cache',
+	})
+
+	const dispatch = ReactRedux.useDispatch()
+
+	const videoLengthRangeData: Types.API.UIState = data?.UIState
+
+	const defaultMinMax = videoLengthRangeData?.queryBuilders?.videoLength
+		? [
+				videoLengthRangeData.queryBuilders.videoLength.min,
+				videoLengthRangeData.queryBuilders.videoLength.max,
+		  ]
+		: undefined
 
 	const currentVideoQuery = ReactRedux.useSelector(
 		Selectors.searchIndividualQueryOfType('video', 'length'),
 	)
 
-	const [rangeValue, setRangeValue] = React.useState<[number, number]>(
+	const [rangeValue, setRangeValue] = React.useState<
+		[number, number] | undefined
+	>(
 		// todo: refactor this hackyness
-		currentVideoQuery
-			? [
-					currentVideoQuery.value.split(':').map((val) => +val)[0],
-					currentVideoQuery.value.split(':').map((val) => +val)[1],
-			  ]
-			: [defaultMinMax[0], defaultMinMax[1]],
+		currentVideoQuery && [
+			currentVideoQuery.value.split(':').map((val) => +val)[0],
+			currentVideoQuery.value.split(':').map((val) => +val)[1],
+		],
 	)
 
-	const dispatch = ReactRedux.useDispatch()
+	React.useEffect(() => {
+		const parsedAPIMinMax = videoLengthRangeData?.queryBuilders
+			?.videoLength && [
+			videoLengthRangeData.queryBuilders.videoLength.min,
+			videoLengthRangeData.queryBuilders.videoLength.max,
+		]
+
+		// only overwrite if we don't have an existing query from redux
+		if (
+			parsedAPIMinMax &&
+			parsedAPIMinMax !== rangeValue &&
+			!currentVideoQuery
+		) {
+			setRangeValue([parsedAPIMinMax[0], parsedAPIMinMax[1]])
+		}
+	}, [videoLengthRangeData?.queryBuilders.videoLength])
 
 	const addVideoQuery = () => {
 		const newVideoQuery = {
 			type: Enums.QueryType.VIDEO,
 			subtype: Enums.QuerySubtype.LENGTH,
-			value: `${rangeValue[0]}:${rangeValue[1]}`,
+			value: `${rangeValue?.[0]}:${rangeValue?.[1]}`,
 		}
 		dispatch(Actions.searchQueryAdd(newVideoQuery))
 		dispatch(Actions.attemptSearch())
@@ -54,6 +97,21 @@ const VideoQueryBuilder: React.FunctionComponent<{
 
 		// we know it is string/numeric and not undefined from above func
 		return HelperUtil.formatLengthToDuration(+(value as string))
+	}
+
+	if (loading) {
+		// todo: proper loading ui
+		return <>loading...</>
+	}
+
+	if (error) {
+		return <>{error?.message}</>
+	}
+
+	// todo: refactor, these are the same thing
+	if (!defaultMinMax || !rangeValue) {
+		// todo: nicer error
+		return <>no video data to search against.</>
 	}
 
 	return (
