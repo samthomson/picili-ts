@@ -121,6 +121,7 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 				minDate={moment(defaultMinMax?.[0]).toDate()}
 				maxDate={moment(defaultMinMax?.[1]).toDate()}
 				size="md"
+				radius="md"
 			/>
 			<div className="button-to-add-query-container">
 				<MantineCore.Button
