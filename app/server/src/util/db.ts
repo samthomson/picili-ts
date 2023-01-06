@@ -545,12 +545,12 @@ export const performSearchQuery = async (
             // }
 
             const dateRangeQuery = `
-            SELECT files.id as fileId, 100 as score, latitude, longitude 
-            FROM files 
-            WHERE files.user_id = :userId
-            AND files.datetime >= :lowerBounds AND files.datetime <= :upperBounds           
-            AND files.is_thumbnailed;
-            `
+                SELECT files.id as fileId, 100 as score, latitude, longitude 
+                FROM files 
+                WHERE files.user_id = :userId
+                AND files.datetime >= :lowerBounds AND files.datetime <= :upperBounds           
+                AND files.is_thumbnailed;
+                `
             const dateRangeResults: Types.Core.DBSearchMatch[] = await Database.query(dateRangeQuery, {
                 type: Sequelize.QueryTypes.SELECT,
                 replacements: {
@@ -560,6 +560,38 @@ export const performSearchQuery = async (
                 },
             })
             return dateRangeResults.map(({ fileId, score, latitude, longitude }) => ({
+                fileId,
+                score,
+                latitude,
+                longitude,
+            }))
+
+        case type === Enums.QueryType.COLOUR:
+            const [r, g, b] = value.split(',').map((val) => +val)
+
+            // todo: validate colours? eg make isValidRGBColour function
+            // if (!HelperUtil.isValidRGBColour(r) || !HelperUtil.isValidRGBColour(g) || !HelperUtil.isValidRGBColour(b))) {
+            //     Logger.warn('malformed colour query', { userId, individualQuery })
+            //     return []
+            // }
+
+            const colourQuery = `
+            SELECT files.id as fileId, 100 as score, latitude, longitude 
+            FROM files 
+            WHERE files.user_id = :userId AND files.is_thumbnailed
+            ORDER BY ((CAST(r as SIGNED)-:r)*(CAST(r as SIGNED)-:r))+((CAST(g as SIGNED)-:g)*(CAST(g as SIGNED)-:g))+((CAST(b as SIGNED)-:b)*(CAST(b as SIGNED)-:b)) 
+            DESC LIMIT 0, 100
+            `
+            const colourResults: Types.Core.DBSearchMatch[] = await Database.query(colourQuery, {
+                type: Sequelize.QueryTypes.SELECT,
+                replacements: {
+                    userId,
+                    r,
+                    g,
+                    b,
+                },
+            })
+            return colourResults.map(({ fileId, score, latitude, longitude }) => ({
                 fileId,
                 score,
                 latitude,
