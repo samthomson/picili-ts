@@ -120,6 +120,7 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 				placeholder="Select an inclusive date range"
 				minDate={moment(defaultMinMax?.[0]).toDate()}
 				maxDate={moment(defaultMinMax?.[1]).toDate()}
+				size="md"
 			/>
 			<div className="button-to-add-query-container">
 				<MantineCore.Button
