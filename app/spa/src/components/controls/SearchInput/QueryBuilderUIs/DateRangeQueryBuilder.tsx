@@ -47,6 +47,9 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 	// 	Selectors.searchIndividualQueryOfType('elevation'),
 	// )
 
+	const [value, setValue] = React.useState<MantineDates.DateRangePickerValue>(
+		[new Date(2021, 11, 1), new Date(2021, 11, 5)],
+	)
 	// todo:
 	// const [rangeValue, setRangeValue] = React.useState<
 	// 	[number, number] | undefined
@@ -105,7 +108,7 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 
 	return (
 		<div id="date-range-query-builder">
-			<MantineDates.DatePicker />
+			<MantineDates.DateRangePicker value={value} onChange={setValue} />
 			<div className="button-to-add-query-container">
 				{/* // todo:  */}
 				{/* <MantineCore.Button
