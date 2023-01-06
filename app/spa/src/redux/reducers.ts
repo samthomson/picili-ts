@@ -73,7 +73,12 @@ export function appReducers(
 		case ActionType.SEARCH_QUERY_ADD:
 			// add to existing queries, unless it's of a certain type, then replace any similar query first
 			const { addSearchQuery } = action
-			const onlyAllowOneOfTheseTypes = [Enums.QueryType.MAP, 'date']
+			// if I add multiple of the same type (eg multiple video queries) then I'll need to separate on subtype also
+			const onlyAllowOneOfTheseTypes = [
+				Enums.QueryType.MAP,
+				'date',
+				Enums.QueryType.VIDEO,
+			]
 			const oldIndividualQueries = state.searchQuery.individualQueries
 
 			// const filteredQueries = oldIndividualQueries.filter(({ type }) => !type || !onlyAllowOneOfThisType.includes(type),
