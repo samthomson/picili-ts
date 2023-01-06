@@ -129,6 +129,8 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 				dropdownType="modal"
 				amountOfMonths={isMobile ? 1 : 3}
 				allowSingleDateInRange={true}
+				// todo: hopefully this issue gets sorted https://github.com/mantinedev/mantine/issues/3302
+				// allowFreeInput
 			/>
 			<div className="button-to-add-query-container">
 				<MantineCore.Button
