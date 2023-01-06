@@ -121,10 +121,11 @@ const VideoQueryBuilder: React.FunctionComponent<{
 					variant="outline"
 					color="gray"
 				>
-					Search for files between {/* // use update */}
+					Find videos from {/* // use update */}
 					{/* {formatValueToMeters(rangeValue[0].toString())} and{' '}
 					{formatValueToMeters(rangeValue[1].toString())} */}
-					{rangeValue[0].toString()} and {rangeValue[1].toString()}
+					{rangeValue[0].toString()} to {rangeValue[1].toString()}{' '}
+					seconds in length
 				</MantineCore.Button>
 			</div>
 		</div>
