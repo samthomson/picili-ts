@@ -4,6 +4,7 @@ import * as ReactRedux from 'react-redux'
 import * as MantineCore from '@mantine/core'
 import * as Icons from '@tabler/icons'
 import * as MantineDates from '@mantine/dates'
+import moment from 'moment'
 
 import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
@@ -77,18 +78,19 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 
 	const dispatch = ReactRedux.useDispatch()
 
-	// todo:
-	// const addElevationQuery = () => {
-	// 	const newElevationQuery = {
-	// 		type: Enums.QueryType.ELEVATION,
-	// 		value: `${rangeValue?.[0]}:${rangeValue?.[1]}`,
-	// 	}
-	// 	dispatch(Actions.searchQueryAdd(newElevationQuery))
-	// 	dispatch(Actions.attemptSearch())
+	const addDateRangeQuery = () => {
+		const newDateRangeQuery = {
+			type: Enums.QueryType.DATE_RANGE,
+			value: `${moment(value?.[0]).format('YYYY-MM-DD')}:${moment(
+				value?.[1],
+			).format('YYYY-MM-DD')}`,
+		}
+		dispatch(Actions.searchQueryAdd(newDateRangeQuery))
+		dispatch(Actions.attemptSearch())
 
-	// 	// close modal
-	// 	closeModal()
-	// }
+		// close modal
+		closeModal()
+	}
 
 	// todo:
 	// if (loading) {
@@ -108,21 +110,24 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 
 	return (
 		<div id="date-range-query-builder">
-			<MantineDates.DateRangePicker value={value} onChange={setValue} />
+			<MantineDates.DateRangePicker
+				value={value}
+				onChange={setValue}
+				// allowFreeInput={true}
+			/>
 			<div className="button-to-add-query-container">
-				{/* // todo:  */}
-				{/* <MantineCore.Button
+				<MantineCore.Button
 					radius="md"
 					size="md"
-					onClick={addElevationQuery}
+					onClick={addDateRangeQuery}
 					leftIcon={<Icons.IconSearch />}
 					variant="outline"
 					color="gray"
 				>
-					Search for files between{' '}
-					{formatValueToMeters(rangeValue[0].toString())} and{' '}
-					{formatValueToMeters(rangeValue[1].toString())}
-				</MantineCore.Button> */}
+					Search for files between
+					{/* {formatValueToMeters(rangeValue[0].toString())} and{' '}
+					{formatValueToMeters(rangeValue[1].toString())} */}
+				</MantineCore.Button>
 			</div>
 		</div>
 	)
