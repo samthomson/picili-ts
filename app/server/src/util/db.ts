@@ -555,8 +555,8 @@ export const performSearchQuery = async (
                 type: Sequelize.QueryTypes.SELECT,
                 replacements: {
                     userId,
-                    lowerBounds: dateLowerBounds,
-                    upperBounds: dateUpperBounds,
+                    lowerBounds: moment(dateLowerBounds).startOf('day').format(),
+                    upperBounds: moment(dateUpperBounds).endOf('day').format(),
                 },
             })
             return dateRangeResults.map(({ fileId, score, latitude, longitude }) => ({
