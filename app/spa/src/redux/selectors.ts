@@ -58,10 +58,10 @@ export const searchIndividualQueries = (
 
 // todo: update this to use enum type?s
 export const searchIndividualQueryOfType =
-	(type: string) =>
+	(type: string, subtype?: string) =>
 	(state: Store): Types.API.IndividualSearchQuery | undefined => {
-		return state.searchQuery.individualQueries.find(
-			(query) => query.type === type,
+		return state.searchQuery.individualQueries.find((query) =>
+			query.type === type && !!subtype ? query.subtype === subtype : true,
 		)
 	}
 

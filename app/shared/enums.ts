@@ -42,7 +42,8 @@ export enum QueryType {
     SUBJECT = 'subject',
     OCR = 'ocr',
     LOCATION = 'location',
-    FILETYPE = 'filetype'
+    FILETYPE = 'filetype',
+    VIDEO = 'video'
     // todo: plant 
     // todo: directory
 }
@@ -50,4 +51,5 @@ export enum QueryType {
 export enum QuerySubtype {
     TEXT = 'text',
     NUMBER_PLATE = 'number_plate',
+    LENGTH = 'length',
 }
