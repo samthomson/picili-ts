@@ -11,6 +11,7 @@ import * as HelperUtil from 'src/util/helper'
 const ElevationQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
 }> = ({ closeModal }) => {
+	// todo: get from api
 	const defaultMinMax = [-500, 10000]
 
 	const currentElevationQuery = ReactRedux.useSelector(
