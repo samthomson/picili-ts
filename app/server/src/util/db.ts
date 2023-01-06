@@ -7,6 +7,7 @@ import * as Models from '../db/models'
 import Database from '../db/connection'
 import * as Enums from '../../../shared/enums'
 import * as TasksUtil from './tasks'
+import * as HelperUtil from './helper'
 import Logger from '../services/logging'
 
 export const getUser = async (email: string, password: string): Promise<Models.UserInstance> => {
@@ -441,8 +442,8 @@ export const performSearchQuery = async (
     const { SEARCH_CONFIDENCE_THRESHOLD: confidence } = process.env
 
     // depending on query type, perform relevant query
-    switch (type) {
-        case Enums.QueryType.MAP:
+    switch (true) {
+        case type === Enums.QueryType.MAP:
             const [latLower, latUpper, lngLower, lngUpper] = value.split(',')
             const mapQuery = `
             SELECT files.id as fileId, 100 as score, latitude, longitude 
@@ -470,21 +471,21 @@ export const performSearchQuery = async (
             }))
             break
 
-        case Enums.QueryType.ELEVATION:
+        case type === Enums.QueryType.ELEVATION:
             const [lowerBounds, upperBounds] = value.split(':').map((literal) => +literal)
 
-            if (!lowerBounds || !upperBounds) {
+            if (!HelperUtil.isNumber(lowerBounds) || !HelperUtil.isNumber(upperBounds)) {
                 Logger.warn('malformed elevation query', { userId, individualQuery })
                 return []
             }
 
             const elevationQuery = `
-            SELECT files.id as fileId, 100 as score, latitude, longitude 
-            FROM files 
-            WHERE 
-            files.user_id = :userId 
-            AND files.elevation >= :lowerBounds AND files.elevation <= :upperBounds            
-            AND files.is_thumbnailed;`
+                SELECT files.id as fileId, 100 as score, latitude, longitude 
+                FROM files 
+                WHERE 
+                files.user_id = :userId 
+                AND files.elevation >= :lowerBounds AND files.elevation <= :upperBounds            
+                AND files.is_thumbnailed;`
             const elevationResults: Types.Core.DBSearchMatch[] = await Database.query(elevationQuery, {
                 type: Sequelize.QueryTypes.SELECT,
                 replacements: {
@@ -494,6 +495,40 @@ export const performSearchQuery = async (
                 },
             })
             return elevationResults.map(({ fileId, score, latitude, longitude }) => ({
+                fileId,
+                score,
+                latitude,
+                longitude,
+            }))
+
+        case type === Enums.QueryType.VIDEO && subtype === Enums.QuerySubtype.LENGTH:
+            const [videoLengthLowerBounds, videoLengthUpperBounds] = value.split(':').map((literal) => +literal)
+
+            if (!HelperUtil.isNumber(videoLengthLowerBounds) || !HelperUtil.isNumber(videoLengthUpperBounds)) {
+                Logger.warn('malformed video length query', { userId, individualQuery })
+                return []
+            }
+
+            const videoLengthQuery = `
+            SELECT files.id as fileId, 100 as score, latitude, longitude 
+            FROM files 
+            JOIN tags on tags.file_id = files.id
+            WHERE 
+            files.user_id = 6 
+            AND files.file_type = 'VIDEO'
+            AND tags.type = 'metadata' AND tags.subtype = 'length'  
+            AND tags.value >= :lowerBounds AND tags.value <= :upperBounds            
+            AND files.is_thumbnailed;
+            `
+            const videoLengthResults: Types.Core.DBSearchMatch[] = await Database.query(videoLengthQuery, {
+                type: Sequelize.QueryTypes.SELECT,
+                replacements: {
+                    userId,
+                    lowerBounds: videoLengthLowerBounds,
+                    upperBounds: videoLengthUpperBounds,
+                },
+            })
+            return videoLengthResults.map(({ fileId, score, latitude, longitude }) => ({
                 fileId,
                 score,
                 latitude,
