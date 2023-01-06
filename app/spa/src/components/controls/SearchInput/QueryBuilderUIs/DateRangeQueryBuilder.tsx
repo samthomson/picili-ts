@@ -99,20 +99,20 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 	}
 
 	// todo:
-	// if (loading) {
-	// 	// todo: proper loading ui
-	// 	return <>loading...</>
-	// }
+	if (loading) {
+		// todo: proper loading ui
+		return <>loading...</>
+	}
 
-	// if (error) {
-	// 	return <>{error?.message}</>
-	// }
+	if (error) {
+		return <>{error?.message}</>
+	}
 
-	// // todo: refactor, these are the same thing
-	// if (!defaultMinMax || !rangeValue) {
-	// 	// todo: nicer error
-	// 	return <>no elevation data to search against.</>
-	// }
+	// todo: refactor, these are the same thing
+	if (!defaultMinMax || !value) {
+		// todo: nicer error
+		return <>no date data to search against.</>
+	}
 
 	return (
 		<div id="date-range-query-builder">
