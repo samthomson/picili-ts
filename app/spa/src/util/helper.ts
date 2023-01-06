@@ -46,3 +46,6 @@ export const parseRangeValueToArray = (value: string): [number, number] => {
 		value.split(':').map((val) => +val)[1],
 	]
 }
+
+export const formatDateForUI = (date: string): string =>
+	moment(date).format('MMM Do Y')

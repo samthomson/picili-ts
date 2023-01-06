@@ -124,7 +124,7 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 					variant="outline"
 					color="gray"
 				>
-					Search for files between
+					Search for files
 					{/* {formatValueToMeters(rangeValue[0].toString())} and{' '}
 					{formatValueToMeters(rangeValue[1].toString())} */}
 				</MantineCore.Button>

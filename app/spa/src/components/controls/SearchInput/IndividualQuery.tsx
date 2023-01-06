@@ -72,6 +72,9 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 			case type === Enums.QueryType.ELEVATION:
 				return Icons.IconMountain
 
+			case type === Enums.QueryType.DATE_RANGE:
+				return Icons.IconCalendar
+
 			case type === Enums.QueryType.VIDEO &&
 				subtype === Enums.QuerySubtype.LENGTH:
 				return Icons.IconVideo
@@ -122,6 +125,16 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 						)}
 					</>
 				)
+
+			case type === Enums.QueryType.DATE_RANGE:
+				const dateRange = value.split(':')
+				return (
+					<>
+						{HelperUtil.formatDateForUI(dateRange[0])} -{' '}
+						{HelperUtil.formatDateForUI(dateRange[1])}
+					</>
+				)
+
 			default:
 				return (
 					<>
