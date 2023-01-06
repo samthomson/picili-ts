@@ -74,11 +74,11 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 			parsedAPIMinMax !== value &&
 			!currentDateRangeQuery
 		) {
-			// todo: ?
-			// setValue([
-			// 	moment(parsedAPIMinMax[0]).toDate(),
-			// 	moment(parsedAPIMinMax[1]).toDate(),
-			// ])
+			// if no query, set to latest date
+			setValue([
+				moment(parsedAPIMinMax[1]).toDate(),
+				moment(parsedAPIMinMax[1]).toDate(),
+			])
 		}
 	}, [dateRangeData?.queryBuilders.dateRange])
 
