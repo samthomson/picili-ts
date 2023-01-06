@@ -43,37 +43,30 @@ const VideoQueryBuilder: React.FunctionComponent<{
 		closeModal()
 	}
 
-	// todo: update formatter/parser
-	// const parseValueFromMeters = (value?: string): string => {
-	// 	return value?.replace(/\m\s?|(,*)/g, '') ?? ''
-	// }
+	const parseValueFromDuration = (value?: string): string => {
+		return HelperUtil.parseDurationToLengthInSeconds(
+			value as string,
+		).toString()
+	}
 
-	// const formatValueToMeters = (value?: string): string => {
-	// 	if (!value) return ''
+	const formatValueToDuration = (value?: string): string => {
+		if (!HelperUtil.isNumber(value)) return ''
 
-	// 	return !Number.isNaN(parseFloat(value))
-	// 		? HelperUtil.formatNumber(value) + 'm'
-	// 		: ' '
-	// }
+		// we know it is string/numeric and not undefined from above func
+		return HelperUtil.formatLengthToDuration(+(value as string))
+	}
 
 	return (
 		<div id="elevation-query-builder">
 			<MantineCore.RangeSlider
-				// color="pink"
 				size="xl"
 				radius="xl"
 				labelAlwaysOn
-				// marks={[
-				// 	{ value: 20, label: '20%' },
-				// 	{ value: 50, label: '50%' },
-				// 	{ value: 80, label: '80%' },
-				// ]}
 				min={defaultMinMax[0]}
 				max={defaultMinMax[1]}
 				value={rangeValue}
 				onChange={setRangeValue}
-				// todo: format
-				// label={formatValueToMeters}
+				label={formatValueToDuration}
 			/>
 			<div id="elevation-range-inputs">
 				<MantineCore.NumberInput
@@ -88,9 +81,8 @@ const VideoQueryBuilder: React.FunctionComponent<{
 					}
 					min={defaultMinMax[0]}
 					max={defaultMinMax[1]}
-					// todo: use updated
-					// parser={parseValueFromMeters}
-					// formatter={formatValueToMeters}
+					parser={parseValueFromDuration}
+					formatter={formatValueToDuration}
 					className="elevation-bound-input"
 				/>
 
@@ -106,9 +98,8 @@ const VideoQueryBuilder: React.FunctionComponent<{
 					}
 					min={defaultMinMax[0]}
 					max={defaultMinMax[1]}
-					// todo: use updated
-					// parser={parseValueFromMeters}
-					// formatter={formatValueToMeters}
+					parser={parseValueFromDuration}
+					formatter={formatValueToDuration}
 					className="elevation-bound-input"
 				/>
 			</div>

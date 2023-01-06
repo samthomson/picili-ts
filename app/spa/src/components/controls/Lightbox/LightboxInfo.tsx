@@ -114,14 +114,7 @@ const displayContentForTag = (tag: Types.API.Tag) => {
 			return `${value}mm`
 
 		case type === 'metadata' && subtype === 'length':
-			return (
-				'length: ' +
-				moment
-					.utc(
-						moment.duration({ seconds: +value }).as('milliseconds'),
-					)
-					.format('HH:mm:ss')
-			)
+			return 'length: ' + HelperUtil.formatLengthToDuration(+value)
 
 		case type === 'metadata' && subtype === 'size':
 			return formatBytes(+value)

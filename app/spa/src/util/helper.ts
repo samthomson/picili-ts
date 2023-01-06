@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 export const thumbPath = (
 	userId: number,
 	uuid: string,
@@ -22,3 +24,18 @@ export const APIURL = (): string => {
 
 export const formatNumber = (value: string | number): string =>
 	`${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
+export const formatLengthToDuration = (length: number): string =>
+	moment
+		.utc(moment.duration({ seconds: +length }).as('milliseconds'))
+		.format('HH:mm:ss')
+
+export const parseDurationToLengthInSeconds = (duration: string): number => {
+	return moment.duration(duration).as('seconds')
+}
+
+export const isNumber = (value?: string | number): boolean =>
+	typeof value !== 'undefined' &&
+	value != null &&
+	value !== '' &&
+	!isNaN(Number(+value))
