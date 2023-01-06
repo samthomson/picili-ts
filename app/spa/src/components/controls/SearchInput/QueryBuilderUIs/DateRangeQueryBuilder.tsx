@@ -117,7 +117,7 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 				value={value}
 				onChange={setValue}
 				// allowFreeInput={true}
-
+				placeholder="Select an inclusive date range"
 				minDate={moment(defaultMinMax?.[0]).toDate()}
 				maxDate={moment(defaultMinMax?.[1]).toDate()}
 			/>
