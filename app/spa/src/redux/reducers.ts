@@ -78,6 +78,7 @@ export function appReducers(
 				Enums.QueryType.MAP,
 				'date',
 				Enums.QueryType.VIDEO,
+				Enums.QueryType.ELEVATION,
 			]
 			const oldIndividualQueries = state.searchQuery.individualQueries
 
