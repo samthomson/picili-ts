@@ -5,6 +5,7 @@ import * as Icons from '@tabler/icons'
 import useIsMobile from 'src/util/hooks/use-is-mobile.hook'
 import ElevationQueryBuilder from './QueryBuilderUIs/ElevationQueryBuilder'
 import VideoQueryBuilder from './QueryBuilderUIs/VideoQueryBuilder'
+import DateRangeQueryBuilder from './QueryBuilderUIs/DateRangeQueryBuilder'
 
 const QueryBuilder: React.FunctionComponent<{
 	closing: () => void
@@ -35,6 +36,13 @@ const QueryBuilder: React.FunctionComponent<{
 			label: 'All search modes',
 			icon: <Icons.IconSearch size={14} />,
 			content: <>search content</>,
+		},
+		{
+			value: 'date_range',
+			clickValue: 'date_range',
+			label: 'Date range',
+			icon: <Icons.IconCalendar size={14} />,
+			content: <DateRangeQueryBuilder closeModal={closeModal} />,
 		},
 		{
 			value: 'elevation',
