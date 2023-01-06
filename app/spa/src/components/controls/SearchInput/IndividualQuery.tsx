@@ -72,6 +72,10 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 			case type === Enums.QueryType.ELEVATION:
 				return Icons.IconMountain
 
+			case type === Enums.QueryType.VIDEO &&
+				subtype === Enums.QuerySubtype.LENGTH:
+				return Icons.IconVideo
+
 			// todo: plant IconPlant
 			// todo: directory
 
@@ -91,15 +95,31 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 	) => {
 		const { type, subtype, value } = individualQuery
 
-		switch (type) {
-			case Enums.QueryType.MAP:
+		switch (true) {
+			case type === Enums.QueryType.MAP:
 				return <>map</>
-			case Enums.QueryType.ELEVATION:
+			case type === Enums.QueryType.ELEVATION:
 				const range = value.split(':')
 				return (
 					<>
 						{HelperUtil.formatNumber(range[0])}m -{' '}
 						{HelperUtil.formatNumber(range[1])}m
+					</>
+				)
+
+			case type === Enums.QueryType.VIDEO &&
+				subtype === Enums.QuerySubtype.LENGTH:
+				const videoLengthRange = value.split(':')
+				return (
+					<>
+						length:
+						{HelperUtil.formatLengthToDuration(
+							+videoLengthRange[0],
+						)}{' '}
+						-{' '}
+						{HelperUtil.formatLengthToDuration(
+							+videoLengthRange[1],
+						)}
 					</>
 				)
 			default:
