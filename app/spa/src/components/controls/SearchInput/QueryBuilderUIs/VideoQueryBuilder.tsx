@@ -49,11 +49,8 @@ const VideoQueryBuilder: React.FunctionComponent<{
 	const [rangeValue, setRangeValue] = React.useState<
 		[number, number] | undefined
 	>(
-		// todo: refactor this hackyness
-		currentVideoQuery && [
-			currentVideoQuery.value.split(':').map((val) => +val)[0],
-			currentVideoQuery.value.split(':').map((val) => +val)[1],
-		],
+		currentVideoQuery &&
+			HelperUtil.parseRangeValueToArray(currentVideoQuery.value),
 	)
 
 	React.useEffect(() => {

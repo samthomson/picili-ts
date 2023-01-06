@@ -39,3 +39,10 @@ export const isNumber = (value?: string | number): boolean =>
 	value != null &&
 	value !== '' &&
 	!isNaN(Number(+value))
+
+export const parseRangeValueToArray = (value: string): [number, number] => {
+	return [
+		value.split(':').map((val) => +val)[0],
+		value.split(':').map((val) => +val)[1],
+	]
+}

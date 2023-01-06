@@ -46,11 +46,8 @@ const ElevationQueryBuilder: React.FunctionComponent<{
 	const [rangeValue, setRangeValue] = React.useState<
 		[number, number] | undefined
 	>(
-		// todo: refactor this hackyness
-		currentElevationQuery && [
-			currentElevationQuery.value.split(':').map((val) => +val)[0],
-			currentElevationQuery.value.split(':').map((val) => +val)[1],
-		],
+		currentElevationQuery &&
+			HelperUtil.parseRangeValueToArray(currentElevationQuery.value),
 	)
 
 	React.useEffect(() => {
