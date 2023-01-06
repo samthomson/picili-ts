@@ -827,3 +827,41 @@ export const getLatestSystemEvents = async (userId: number): Promise<Types.API.S
 
     return parsedEvents
 }
+
+export const getElevationMinMax = async (userId: number): Promise<{ min: number; max: number } | undefined> => {
+    const query = `
+    SELECT MIN(elevation) as min, MAX(elevation) as max FROM files
+    where files.user_id = :userId AND files.is_thumbnailed;
+    `
+    const elevationMinMax: { min: number; max: number }[] = await Database.query(query, {
+        type: Sequelize.QueryTypes.SELECT,
+        replacements: {
+            userId,
+        },
+    })
+
+    return elevationMinMax?.[0]
+        ? { min: Math.floor(elevationMinMax[0].min), max: Math.ceil(elevationMinMax[0].max) }
+        : undefined
+}
+
+export const getVideoLengthMinMax = async (userId: number): Promise<{ min: number; max: number } | undefined> => {
+    const query = `
+    SELECT MIN(CAST(value AS UNSIGNED)) as min, MAX(CAST(value AS UNSIGNED)) as max FROM tags
+    join files on files.id = tags.file_id 
+    where files.user_id = :userId
+    AND files.file_type = 'VIDEO'
+    AND tags.type  = 'metadata' AND tags.subtype = 'length'
+    AND files.is_thumbnailed;
+    `
+    const videoLengthMinMax: { min: number; max: number }[] = await Database.query(query, {
+        type: Sequelize.QueryTypes.SELECT,
+        replacements: {
+            userId,
+        },
+    })
+
+    return videoLengthMinMax?.[0]
+        ? { min: Math.floor(videoLengthMinMax[0].min), max: Math.ceil(videoLengthMinMax[0].max) }
+        : undefined
+}

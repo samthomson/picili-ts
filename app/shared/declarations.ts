@@ -173,6 +173,17 @@ export namespace API {
 	export type SystemEventsResponse = {
 		items: SystemEvent[]
 	}
+
+	export type UIState = {
+		queryBuilders: {
+			elevation: {
+				min: number, max: number
+			} | undefined
+			videoLength: {
+				min: number, max: number
+			} | undefined
+		}
+	}
 }
 export namespace ExternalAPI {
 	export namespace Dropbox {

@@ -237,6 +237,20 @@ const typeDefs = gql`
         items: [SystemEvent]!
     }
 
+    type MinMax {
+        min: Int
+        max: Int
+    }
+
+    type QueryBuilders {
+        elevation: MinMax
+        videoLength: MinMax
+    }
+
+    type UIState {
+        queryBuilders: QueryBuilders
+    }
+
     type Query {
         validateToken(token: String!): Boolean
         dropboxConnection: DropboxConnection
@@ -254,6 +268,7 @@ const typeDefs = gql`
         ): SearchQueryResponse
         autoComplete(query: IndividualQuery): AutoCompleteResponse
         fileInfo(fileId: Int!): FileInfo
+        UIState: UIState
     }
     type Mutation {
         login(authInput: LoginInput!): AuthResponse

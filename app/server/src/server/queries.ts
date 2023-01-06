@@ -235,6 +235,20 @@ const systemEvents = async (parents, args, context): Promise<Types.API.SystemEve
     }
 }
 
+const UIState = async (parents, args, context): Promise<Types.API.UIState> => {
+    const { userId } = context
+
+    const elevationMinMax = await DBUtil.getElevationMinMax(userId)
+    const videoMinMax = await DBUtil.getVideoLengthMinMax(userId)
+
+    return {
+        queryBuilders: {
+            elevation: elevationMinMax,
+            videoLength: videoMinMax,
+        },
+    }
+}
+
 const queries = {
     validateToken: (parent, args, ctx) => AuthUtil.requestHasValidCookieToken(ctx),
     dropboxConnection: getDropboxConnection,
@@ -245,6 +259,7 @@ const queries = {
     autoComplete,
     fileInfo,
     systemEvents,
+    UIState,
 }
 
 export default queries
