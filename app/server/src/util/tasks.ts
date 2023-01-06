@@ -428,7 +428,14 @@ export const processImage = async (
         // create thumbnails, while testing if corrupt and getting other image data
         const thumbnailingResult = await FileUtil.generateThumbnails(userId, fileId, uuid, fileExtension)
         // get medium width/height dimensions
-        const { success: isThumbnailed, mediumWidth, mediumHeight, isCorrupt, exifData } = thumbnailingResult
+        const {
+            success: isThumbnailed,
+            mediumWidth,
+            mediumHeight,
+            isCorrupt,
+            exifData,
+            dominantColour,
+        } = thumbnailingResult
 
         // update file model with gleamed data
 
@@ -442,6 +449,9 @@ export const processImage = async (
             file.isThumbnailed = isThumbnailed
             file.mediumWidth = mediumWidth
             file.mediumHeight = mediumHeight
+            file.r = dominantColour.r
+            file.g = dominantColour.g
+            file.b = dominantColour.b
             // safe to queue for subject detection
             await DBUtil.createTask({
                 taskType: Enums.TaskType.SUBJECT_DETECTION,

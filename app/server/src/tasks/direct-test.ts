@@ -18,8 +18,8 @@ import path from 'path'
 import FSExtra from 'fs-extra'
 
 const file = async () => {
-    await TasksUtil.fileImport(661, 8008)
-    // await TasksUtil.processImage(619, 255)
+    // await TasksUtil.fileImport(1, 8008)
+    await TasksUtil.processImage(1, 255)
     // corrupt test
     // await TasksUtil.processImage(32)
     // invalid geo test
@@ -512,7 +512,6 @@ const searchSpeedTest = async () => {
     // todo: 9. elevation
 }
 
-// file()
 // imaggaTest()
 // geo()
 // geoThrottleTest()
@@ -572,4 +571,6 @@ const seedLocations = async () => {
 }
 
 // searchSpeedTest()
-seedLocations()
+// seedLocations()
+
+file()

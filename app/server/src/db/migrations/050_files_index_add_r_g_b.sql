@@ -1,0 +1,1 @@
+ALTER TABLE `picili`.`files` ADD INDEX `files_r_g_b` (`r`, `g`, `b`);

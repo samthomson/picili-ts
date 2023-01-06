@@ -403,6 +403,7 @@ export namespace Core {
 		mediumWidth?: number
 		mediumHeight?: number
 		exifData?: ExifData
+		dominantColour?: { r: number, g: number, b: number}
 	}
 	export type VideoCreationResponse = {
 		success: boolean
@@ -584,6 +585,9 @@ export namespace Core {
 			mediumHeight?: number
 			mediumWidth?: number
 			location?: {type: "Point", coordinates: [number, number]}
+			r?: number
+			g?: number
+			b?: number
 		}
 		
 		export interface TaskAttributes {

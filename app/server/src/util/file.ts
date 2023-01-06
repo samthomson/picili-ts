@@ -137,6 +137,12 @@ export const generateThumbnails = async (
 
         const sharpImage = sharp(inPath)
         let mediumWidth = undefined
+
+        // parse dominant colour
+        const {
+            dominant: { r, g, b },
+        } = await sharpImage.stats()
+
         for (let i = 0; i < THUMB_SIZES.length; i++) {
             const thumbSize = THUMB_SIZES[i]
             const { name: size, width, height } = thumbSize
@@ -170,6 +176,7 @@ export const generateThumbnails = async (
             mediumWidth,
             mediumHeight: 300,
             exifData,
+            dominantColour: { r, g, b },
         }
     } catch (err) {
         Logger.error('hit error while thumbnailing: ', { err })
