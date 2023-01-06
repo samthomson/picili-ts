@@ -79,6 +79,7 @@ export function appReducers(
 				'date',
 				Enums.QueryType.VIDEO,
 				Enums.QueryType.ELEVATION,
+				Enums.QueryType.DATE_RANGE,
 			]
 			const oldIndividualQueries = state.searchQuery.individualQueries
 
