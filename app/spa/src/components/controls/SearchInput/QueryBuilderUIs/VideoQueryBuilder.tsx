@@ -10,7 +10,6 @@ import * as Enums from '../../../../../../shared/enums'
 import * as HelperUtil from 'src/util/helper'
 import * as Types from '@shared/declarations'
 
-// todo: cut relevant half out
 const videoMinMaxQuery = gql`
 	query {
 		UIState {

@@ -241,10 +241,15 @@ const typeDefs = gql`
         min: Int
         max: Int
     }
+    type MinMaxString {
+        min: String
+        max: String
+    }
 
     type QueryBuilders {
         elevation: MinMax
         videoLength: MinMax
+        dateRange: MinMaxString
     }
 
     type UIState {

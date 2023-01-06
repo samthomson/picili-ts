@@ -12,36 +12,34 @@ import * as Enums from '../../../../../../shared/enums'
 import * as HelperUtil from 'src/util/helper'
 import * as Types from '@shared/declarations'
 
-// todo:
-// const elevationMinMaxQuery = gql`
-// 	query {
-// 		UIState {
-// 			queryBuilders {
-// 				elevation {
-// 					min
-// 					max
-// 				}
-// 			}
-// 		}
-// 	}
-// `
+const dateRangeMinMaxQuery = gql`
+	query {
+		UIState {
+			queryBuilders {
+				dateRange {
+					min
+					max
+				}
+			}
+		}
+	}
+`
 
 const DateRangeQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
 }> = ({ closeModal }) => {
-	// todo:
-	// const { loading, error, data } = useQuery(elevationMinMaxQuery, {
-	// 	fetchPolicy: 'no-cache',
-	// })
+	const { loading, error, data } = useQuery(dateRangeMinMaxQuery, {
+		fetchPolicy: 'no-cache',
+	})
 
-	// const elevationRangeData: Types.API.UIState = data?.UIState
+	const dateRangeData: Types.API.UIState = data?.UIState
 
-	// const defaultMinMax = elevationRangeData?.queryBuilders?.elevation
-	// 	? [
-	// 			elevationRangeData.queryBuilders.elevation.min,
-	// 			elevationRangeData.queryBuilders.elevation.max,
-	// 	  ]
-	// 	: undefined
+	const defaultMinMax = dateRangeData?.queryBuilders?.dateRange
+		? [
+				dateRangeData.queryBuilders.dateRange.min,
+				dateRangeData.queryBuilders.dateRange.max,
+		  ]
+		: undefined
 
 	const currentDateRangeQuery = ReactRedux.useSelector(
 		Selectors.searchIndividualQueryOfType(Enums.QueryType.DATE_RANGE),
@@ -56,23 +54,30 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 			  )
 			: [moment().toDate(), moment().toDate()],
 	)
-	// todo:
-	// React.useEffect(() => {
-	// 	const parsedAPIMinMax = elevationRangeData?.queryBuilders
-	// 		?.elevation && [
-	// 		elevationRangeData.queryBuilders.elevation.min,
-	// 		elevationRangeData.queryBuilders.elevation.max,
-	// 	]
 
-	// 	// only overwrite if we don't have an existing query from redux
-	// 	if (
-	// 		parsedAPIMinMax &&
-	// 		parsedAPIMinMax !== rangeValue &&
-	// 		!currentDateRangeQuery
-	// 	) {
-	// 		setRangeValue([parsedAPIMinMax[0], parsedAPIMinMax[1]])
-	// 	}
-	// }, [elevationRangeData?.queryBuilders.elevation])
+	React.useEffect(() => {
+		const parsedAPIMinMax = dateRangeData?.queryBuilders?.dateRange && [
+			moment(
+				dateRangeData.queryBuilders.dateRange.min as string,
+			).toDate(),
+			moment(
+				dateRangeData.queryBuilders.dateRange.max as string,
+			).toDate(),
+		]
+
+		// only overwrite if we don't have an existing query from redux
+		if (
+			parsedAPIMinMax &&
+			parsedAPIMinMax !== value &&
+			!currentDateRangeQuery
+		) {
+			// todo: ?
+			// setValue([
+			// 	moment(parsedAPIMinMax[0]).toDate(),
+			// 	moment(parsedAPIMinMax[1]).toDate(),
+			// ])
+		}
+	}, [dateRangeData?.queryBuilders.dateRange])
 
 	const dispatch = ReactRedux.useDispatch()
 
@@ -112,6 +117,9 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 				value={value}
 				onChange={setValue}
 				// allowFreeInput={true}
+
+				minDate={moment(defaultMinMax?.[0]).toDate()}
+				maxDate={moment(defaultMinMax?.[1]).toDate()}
 			/>
 			<div className="button-to-add-query-container">
 				<MantineCore.Button

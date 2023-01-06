@@ -174,14 +174,20 @@ export namespace API {
 		items: SystemEvent[]
 	}
 
+	// todo: surely these could be refactored
 	export type MinMax = {
 		min: number
 		max: number
+	}
+	export type MinMaxString = {
+		min: string
+		max: string
 	}
 
 	export type QueryBuildersUIData = {
 		elevation?: MinMax
 		videoLength?: MinMax
+		dateRange?: MinMaxString
 	}
 
 	export type UIState = {

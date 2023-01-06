@@ -896,3 +896,23 @@ export const getVideoLengthMinMax = async (userId: number): Promise<{ min: numbe
         ? { min: Math.floor(videoLengthMinMax[0].min), max: Math.ceil(videoLengthMinMax[0].max) }
         : undefined
 }
+
+export const getDateRangeMinMax = async (userId: number): Promise<{ min: string; max: string } | undefined> => {
+    const query = `
+    SELECT MIN(datetime) as min, MAX(datetime) as max FROM files
+    where files.user_id = :userId AND files.is_thumbnailed;
+    `
+    const dateRangeMinMax: { min: string; max: string }[] = await Database.query(query, {
+        type: Sequelize.QueryTypes.SELECT,
+        replacements: {
+            userId,
+        },
+    })
+
+    return dateRangeMinMax?.[0]
+        ? {
+              min: moment(dateRangeMinMax[0].min).format(),
+              max: moment(dateRangeMinMax[0].max).format(),
+          }
+        : undefined
+}
