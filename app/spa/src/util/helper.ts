@@ -2,11 +2,11 @@ import moment from 'moment'
 
 export const thumbPath = (
 	userId: number,
-	uuid: string,
+	fileId: number,
 	size: string,
 	extension = 'jpg',
 ): string => {
-	return `${baseAPIURL()}/thumbs/${userId}/${uuid}/${size}.${extension}`
+	return `${baseAPIURL()}/thumbs/${userId}/${fileId}/${size}.${extension}`
 }
 
 export const baseAPIURL = (): string => {

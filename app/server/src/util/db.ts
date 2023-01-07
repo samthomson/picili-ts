@@ -662,7 +662,7 @@ export const getAllResultData = async (
         }
     })()
     const fileIds = matches.map(({ fileId }) => fileId)
-    const query = `SELECT files.id as fileId, files.uuid, files.address, files.latitude, files.longitude, files.elevation, 
+    const query = `SELECT files.id as fileId, files.address, files.latitude, files.longitude, files.elevation, 
     files.datetime, files.medium_width AS mediumWidth, files.medium_height AS mediumHeight, files.file_type AS fileType 
     FROM files
     WHERE id IN (${fileIds.join(',')})
@@ -683,7 +683,7 @@ export const getAllResultData = async (
             fileId: result.fileId,
             // todo: would be better to have this elsewhere
             userId,
-            uuid: result.uuid,
+            // uuid: result.uuid,
             address: result.address,
             latitude: result.latitude,
             longitude: result.longitude,
@@ -724,7 +724,7 @@ export const performAutoCompleteQuery = async (
 
     // todo: define limit in a consts file and share with typeahead component in spa
     const query = `
-    SELECT sub.type, sub.subtype, sub.value, sub.conf, sub.uuid FROM (select tags.file_id as fileId, tags.type, tags.subtype, tags.value, tags.confidence as conf, files.uuid, files.datetime FROM tags JOIN files ON files.id = tags.file_id WHERE tags.value LIKE :valueLike AND tags.value != :value AND tags.confidence >= :confidence AND files.is_thumbnailed=TRUE AND files.user_id=:userId GROUP BY tags.type, tags.subtype, tags.value) as sub ORDER BY sub.conf DESC, sub.datetime DESC, sub.value ASC LIMIT 50;`
+    SELECT sub.fileId, sub.type, sub.subtype, sub.value, sub.conf FROM (select tags.file_id as fileId, tags.type, tags.subtype, tags.value, tags.confidence as conf, files.datetime FROM tags JOIN files ON files.id = tags.file_id WHERE tags.value LIKE :valueLike AND tags.value != :value AND tags.confidence >= :confidence AND files.is_thumbnailed=TRUE AND files.user_id=:userId GROUP BY tags.type, tags.subtype, tags.value) as sub ORDER BY sub.conf DESC, sub.datetime DESC, sub.value ASC LIMIT 50;`
 
     const results: Types.Core.DBAutoCompleteResult[] = await Database.query(query, {
         type: Sequelize.QueryTypes.SELECT,
@@ -743,7 +743,8 @@ export const performAutoCompleteQuery = async (
         type: result.type,
         subtype: result.subtype,
         value: result.value,
-        uuid: result.uuid,
+        fileId: result.fileId,
+        // uuid: result.uuid,
     }))
 }
 

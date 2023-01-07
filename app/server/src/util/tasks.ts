@@ -270,12 +270,12 @@ export const processVideo = async (
 ): Promise<Types.Core.TaskProcessorResult> => {
     // look up file
     const file = await Models.FileModel.findByPk(fileId)
-    const { userId, uuid, fileExtension } = file
+    const { userId, fileExtension } = file
 
     const videoProcessingResult = await FileUtil.generateVideoFiles(
         userId,
         fileId,
-        uuid,
+        // uuid,
         fileExtension,
         videoProcessingTaskId,
     )
@@ -423,10 +423,10 @@ export const processImage = async (
 ): Promise<Types.Core.TaskProcessorResult> => {
     try {
         const file = await Models.FileModel.findByPk(fileId)
-        const { userId, uuid, fileExtension } = file
+        const { userId, fileExtension } = file
 
         // create thumbnails, while testing if corrupt and getting other image data
-        const thumbnailingResult = await FileUtil.generateThumbnails(userId, fileId, uuid, fileExtension)
+        const thumbnailingResult = await FileUtil.generateThumbnails(userId, fileId, fileExtension)
         // get medium width/height dimensions
         const {
             success: isThumbnailed,
@@ -611,8 +611,8 @@ export const removeProcessingImage = async (fileId: number): Promise<Types.Core.
 
 export const subjectDetection = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
     const file = await Models.FileModel.findByPk(fileId)
-    const { userId, uuid } = file
-    const largeThumbPath = FileUtil.thumbPath(userId, uuid, 'xl')
+    const { userId } = file
+    const largeThumbPath = FileUtil.thumbPath(userId, fileId, 'xl')
 
     // get imagga tags
     const imaggaTaggingResult = await APIUtil.imagga(largeThumbPath)
@@ -760,8 +760,8 @@ export const elevationLookup = async (fileId: number, taskId: number): Promise<T
 
 export const ocrGeneric = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
     const file = await Models.FileModel.findByPk(fileId)
-    const { userId, uuid } = file
-    const thumbPath = FileUtil.thumbPath(userId, uuid, 'xl')
+    const { userId } = file
+    const thumbPath = FileUtil.thumbPath(userId, fileId, 'xl')
 
     const ocrResult = await APIUtil.ocrGeneric(thumbPath)
 
@@ -800,8 +800,8 @@ export const ocrGeneric = async (fileId: number): Promise<Types.Core.TaskProcess
 
 export const ocrNumberplate = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
     const file = await Models.FileModel.findByPk(fileId)
-    const { userId, uuid } = file
-    const thumbPath = FileUtil.thumbPath(userId, uuid, 'xl')
+    const { userId } = file
+    const thumbPath = FileUtil.thumbPath(userId, fileId, 'xl')
 
     const ocrNumberplateResult = await APIUtil.ocrNumberplate(thumbPath)
 
@@ -851,8 +851,8 @@ export const ocrNumberplate = async (fileId: number): Promise<Types.Core.TaskPro
 
 export const plantLookup = async (fileId: number): Promise<Types.Core.TaskProcessorResult> => {
     const file = await Models.FileModel.findByPk(fileId)
-    const { userId, uuid } = file
-    const thumbPath = FileUtil.thumbPath(userId, uuid, 'xl')
+    const { userId } = file
+    const thumbPath = FileUtil.thumbPath(userId, fileId, 'xl')
 
     const plantnetResult = await APIUtil.plantLookup(thumbPath)
 
@@ -939,11 +939,10 @@ export const removeAFileFromTheSystem = async (fileId: number): Promise<Types.Co
     await DBUtil.removeTagsForFile(fileId)
     // remove picili file
     if (file) {
-        const { userId, uuid } = file
         // set no thumbnails, so file won't be returned in results
         await DBUtil.setNoThumbnailsOnFile(fileId)
         // remove thumbnails
-        thumbnailRemovalSuccess = await FileUtil.removeThumbnails(file.userId, file.uuid)
+        thumbnailRemovalSuccess = await FileUtil.removeThumbnails(file.userId, fileId)
         await DBUtil.removeFile(fileId)
         return { success: thumbnailRemovalSuccess }
     } else {

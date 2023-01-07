@@ -75,9 +75,9 @@ const Lightbox: React.FunctionComponent = () => {
 			]
 			const realNeighbours = neighbours.filter((index) => results[index])
 			realNeighbours.forEach((preloadIndex) => {
-				const { userId, uuid } = results[preloadIndex]
+				const { userId, fileId } = results[preloadIndex]
 				let image = new Image()
-				image.src = HelperUtil.thumbPath(userId, uuid, 'xl')
+				image.src = HelperUtil.thumbPath(userId, fileId, 'xl')
 				// cleanup
 				// @ts-expect-error it is intentionally we set it to a non htmlelement value, we do that to force clean the memory as otherwise iterating through many lightbox images could lead to high memory usage
 				image = null
@@ -107,7 +107,7 @@ const Lightbox: React.FunctionComponent = () => {
 			{
 				src: HelperUtil.thumbPath(
 					result.userId,
-					result.uuid,
+					result.fileId,
 					'mp4',
 					'mp4',
 				),
@@ -116,7 +116,7 @@ const Lightbox: React.FunctionComponent = () => {
 			{
 				src: HelperUtil.thumbPath(
 					result.userId,
-					result.uuid,
+					result.fileId,
 					'webm',
 					'webm',
 				),
@@ -149,7 +149,7 @@ const Lightbox: React.FunctionComponent = () => {
 								<img
 									src={HelperUtil.thumbPath(
 										result.userId,
-										result.uuid,
+										result.fileId,
 										'xl',
 									)}
 								/>
@@ -161,7 +161,7 @@ const Lightbox: React.FunctionComponent = () => {
 									<div id="video-wrapper">
 										<VideoJS
 											options={options}
-											key={result.uuid}
+											key={result.fileId + ''}
 											isPlaying={isCurrentlyPlayingVideo}
 											setVideoPlayingState={
 												setIsCurrentlyPlayingVideo

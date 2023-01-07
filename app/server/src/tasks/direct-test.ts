@@ -41,17 +41,17 @@ const bulkImaggaTest = async () => {
     let successes = 0,
         failures = 0
     for (let i = 0; i < files.length; i++) {
-        const { id, userId, uuid } = files[i]
+        const { id: fileId, userId } = files[i]
 
-        const largeThumbPath = FileUtil.thumbPath(userId, uuid, 'l')
+        const largeThumbPath = FileUtil.thumbPath(userId, fileId, 'l')
 
         const outcome = await APIUtil.imagga(largeThumbPath)
 
         if (outcome.success) {
-            Logger.info('success', { id })
+            Logger.info('success', { fileId })
             successes++
         } else {
-            Logger.error('failure', { ...outcome, id, largeThumbPath })
+            Logger.error('failure', { ...outcome, fileId, largeThumbPath })
             failures++
         }
     }
@@ -69,7 +69,7 @@ const geo = async () => {
 }
 
 const throttleTest = async () => {
-    const largeThumbPath = FileUtil.thumbPath(3, '7c6f4ecd-c50e-40e4-88dc-9e4b0144c815', 'xl')
+    const largeThumbPath = FileUtil.thumbPath(3, 8008, 'xl')
     for (let i = 0; i < 5; i++) {
         const res = await APIUtil.ocrGeneric(largeThumbPath)
         console.log(JSON.stringify(res))
@@ -89,7 +89,7 @@ const dupTagTest = async () => {
 }
 
 const apiTest = async () => {
-    const largeThumbPath = FileUtil.thumbPath(3, '7c6f4ecd-c50e-40e4-88dc-9e4b0144c815', 'l')
+    const largeThumbPath = FileUtil.thumbPath(3, 8008, 'l')
     const apiResult = await APIUtil.ocrGeneric(largeThumbPath)
     console.log(apiResult)
 }
@@ -101,7 +101,7 @@ const taskTest = async () => {
 }
 
 const removeThumbnailTest = async () => {
-    const result = await FileUtil.removeThumbnails(3, '8b6f6934-22eb-4227-8bf4-7b729b0dd6ea')
+    const result = await FileUtil.removeThumbnails(3, 8008)
     console.log(result)
 }
 

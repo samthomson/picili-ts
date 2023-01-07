@@ -42,11 +42,11 @@ const TiledImageGallery: React.FunctionComponent<IProps> = ({
 			{searchResults.map((result, resultIndex) => {
 				return (
 					<img
-						title={result.uuid}
+						title={result.fileId + ''}
 						key={resultIndex}
 						src={HelperUtil.thumbPath(
 							result.userId,
-							result.uuid,
+							result.fileId,
 							's',
 						)}
 						onClick={() => openLightbox(resultIndex)}

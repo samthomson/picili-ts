@@ -17,13 +17,13 @@ export const getProcessingPath = (piciliFileId: number, extension: string) => {
     return `processing/${piciliFileId}.${extension}`
 }
 
-const getBaseThumbpathDirectory = (userId: number, uuid: string) => {
-    return `thumbs/${userId}/${uuid}`
+const getBaseThumbpathDirectory = (userId: number, fileId: number) => {
+    return `thumbs/${userId}/${fileId}`
 }
 //todo: use thumbsizes enum
-export const thumbPath = (userId: number, uuid: string, size: string) => {
-    // thumbs/[userId]/[uuid]/[size].jpg
-    return `thumbs/${userId}/${uuid}/${size}.jpg`
+export const thumbPath = (userId: number, fileId: number, size: string) => {
+    // thumbs/[userId]/[fileId]/[size].jpg
+    return `thumbs/${userId}/${fileId}/${size}.jpg`
 }
 
 export const THUMB_SIZES = [
@@ -94,7 +94,7 @@ export const readExif = async (sharpInstance: sharp.Sharp): Promise<Types.Core.E
 export const generateThumbnails = async (
     userId: number,
     piciliFileId: number,
-    uuid: string,
+    // uuid: string,
     extension: string,
 ): Promise<Types.Core.ThumbnailCreationResponse> => {
     // icon			i
@@ -109,7 +109,7 @@ export const generateThumbnails = async (
     })()
 
     const inPath = getProcessingPath(piciliFileId, requestExtension)
-    const outPathDirectory = `thumbs/${userId}/${uuid}`
+    const outPathDirectory = `thumbs/${userId}/${piciliFileId}`
 
     let base64MediumThumbBuffer = undefined
     try {
@@ -146,7 +146,7 @@ export const generateThumbnails = async (
         for (let i = 0; i < THUMB_SIZES.length; i++) {
             const thumbSize = THUMB_SIZES[i]
             const { name: size, width, height } = thumbSize
-            const outPathFull = `thumbs/${userId}/${uuid}/${size}.jpg`
+            const outPathFull = `thumbs/${userId}/${piciliFileId}/${size}.jpg`
             // todo: lower quality to reduce filesizes
             const data = await sharpImage.rotate().resize(width, height).toFormat('jpeg').toFile(outPathFull)
 
@@ -206,8 +206,8 @@ export const removeProcessingFile = (piciliFileId: number, extension: string): b
     return removalStatuses.every((val) => val)
 }
 
-export const removeThumbnails = (userId: number, uuid: string): boolean => {
-    const directory = getBaseThumbpathDirectory(userId, uuid)
+export const removeThumbnails = (userId: number, fileId: number): boolean => {
+    const directory = getBaseThumbpathDirectory(userId, fileId)
     // `unlinkSync` will throw an error if the file didn't exist
     if (FSExtra.pathExistsSync(directory)) {
         fs.rmSync(directory, { recursive: true, force: true })
@@ -223,12 +223,12 @@ export const removeThumbnails = (userId: number, uuid: string): boolean => {
 export const generateVideoFiles = async (
     userId: number,
     piciliFileId: number,
-    uuid: string,
+    // uuid: string,
     extension: string,
     videoProcessingTaskId: number,
 ): Promise<Types.Core.VideoCreationResponse> => {
     const processingPath = getProcessingPath(piciliFileId, extension)
-    const outPathDirectory = `thumbs/${userId}/${uuid}`
+    const outPathDirectory = `thumbs/${userId}/${piciliFileId}`
 
     // ensure uuid dir exists
     await FSExtra.ensureDir(outPathDirectory)
@@ -246,7 +246,7 @@ export const generateVideoFiles = async (
             )
             return { success, metaData: videoMetaData }
         } else {
-            Logger.error('video file encoder not programmed.', { userId, piciliFileId, uuid, extension })
+            Logger.error('video file encoder not programmed.', { userId, piciliFileId, extension })
             return { success: false }
         }
     } catch (err) {

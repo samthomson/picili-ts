@@ -19,14 +19,14 @@ const autoCompleteGQL = gql`
 				type
 				subtype
 				value
-				uuid
+				fileId
 			}
 		}
 	}
 `
 
 interface ItemProps extends MantineCore.SelectItemProps {
-	uuid: string
+	fileId: number
 	value: string
 	userId: number
 }
@@ -108,7 +108,10 @@ const TypeAhead: React.FunctionComponent<{
 	})
 
 	const AutoCompleteItem = React.forwardRef<HTMLDivElement, ItemProps>(
-		function whatever({ uuid, value, userId, ...others }: ItemProps, ref) {
+		function whatever(
+			{ fileId, value, userId, ...others }: ItemProps,
+			ref,
+		) {
 			/*
 			subtype: "imagga"
 			type: "subject"
@@ -119,8 +122,8 @@ const TypeAhead: React.FunctionComponent<{
 				<div ref={ref} {...others}>
 					<MantineCore.Group noWrap>
 						<img
-							key={uuid}
-							src={HelperUtil.thumbPath(userId, uuid, 'i')}
+							key={fileId}
+							src={HelperUtil.thumbPath(userId, fileId, 'i')}
 							className="auto-complete-item-image"
 						/>
 						<div>

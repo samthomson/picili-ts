@@ -64,13 +64,12 @@ function* callSearchQuery(page = 1, withGeoAggregations = false) {
 									value
 								}
 								resultCount
-								firstResultUUID
+								firstResultFileId
 							}
 							userId
 						}
 						items {
 							fileId
-							uuid
 							userId
 							mediumWidth
 							mediumHeight
@@ -92,7 +91,6 @@ function* callSearchQuery(page = 1, withGeoAggregations = false) {
 								longitude
 								fileCount
 								fileId
-								uuid
 								userId
 							}
 						}

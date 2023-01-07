@@ -92,8 +92,8 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 
 	const resultCount = queryStats?.resultCount
 	const firstResultURL =
-		queryStats?.firstResultUUID && !!userId
-			? HelperUtil.thumbPath(userId, queryStats.firstResultUUID, 'm')
+		queryStats?.firstResultFileId && !!userId
+			? HelperUtil.thumbPath(userId, queryStats.firstResultFileId, 'm')
 			: undefined
 
 	const queryDisplayValue = (

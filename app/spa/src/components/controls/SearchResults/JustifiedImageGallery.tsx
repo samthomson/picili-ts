@@ -203,11 +203,11 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 							{row.map((result, rowResultIndex) => {
 								return (
 									<img
-										title={result.uuid}
+										title={result.fileId + ''}
 										key={rowResultIndex}
 										src={HelperUtil.thumbPath(
 											result.userId,
-											result.uuid,
+											result.fileId,
 											'm',
 										)}
 										width={`${result.scaledWidth}px`}

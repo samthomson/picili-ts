@@ -124,7 +124,7 @@ const typeDefs = gql`
 
     type SearchResult {
         fileId: Int
-        uuid: String
+        # uuid: String
         userId: Int
         mediumWidth: Int
         mediumHeight: Int
@@ -137,7 +137,8 @@ const typeDefs = gql`
     type QueryStats {
         query: IndividualQueryType
         resultCount: Int
-        firstResultUUID: String
+        # firstResultUUID: String
+        firstResultFileId: String
     }
 
     type PaginationInfo {
@@ -165,7 +166,7 @@ const typeDefs = gql`
         longitude: Float!
         fileCount: Int!
         fileId: Int
-        uuid: String
+        # uuid: String
         userId: Int
     }
 
@@ -185,7 +186,7 @@ const typeDefs = gql`
         type: String!
         subtype: String
         value: String!
-        uuid: String!
+        # uuid: String!
     }
 
     type AutoCompleteResponse {

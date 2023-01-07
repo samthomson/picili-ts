@@ -18,6 +18,7 @@ export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.
 
     const fileType = HelperUtil.fileTypeFromExtension(fileExtension)
 
+    // todo: strip out uuid, prob redundant now
     const uuid = UUID.v4()
     const fileCreationParams = {
         userId,

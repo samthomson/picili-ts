@@ -67,7 +67,7 @@ export namespace API {
 	export interface SearchResultItem {
 		fileId: number
 		userId: number
-		uuid: string
+		// uuid: string
 		address: string
 		latitude: number
 		longitude: number
@@ -79,7 +79,8 @@ export namespace API {
 	export interface QueryStats {
 		query: IndividualSearchQuery
 		resultCount: number
-		firstResultUUID: string 
+		// firstResultUUID: string 
+		firstResultFileId: number 
 	}
 
 	export interface PaginationInfo {
@@ -107,7 +108,7 @@ export namespace API {
 		longitude: number
 		fileCount: number
 		fileId: number
-		uuid: string
+		// uuid: string
 		userId: number
 	}
 
@@ -139,7 +140,8 @@ export namespace API {
 		type: string
 		subtype?: string
 		value: string
-		uuid: string
+		fileId: number
+		// uuid: string
 	}
 
 	export type AutoCompleteResponse = {
@@ -517,7 +519,7 @@ export namespace Core {
 
 	export type DBSearchResult =  {
 		fileId: number
-		uuid: string
+		// uuid: string
 		address: string
 		latitude: number
 		longitude: number
@@ -530,7 +532,8 @@ export namespace Core {
 		type: string
 		subtype: string
 		value: string
-		uuid: string
+		// uuid: string
+		fileId: number
 	}
 
 	export type SortsForSearchQuery = {

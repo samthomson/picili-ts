@@ -151,7 +151,8 @@ export const search = async (
         individualQueryResultSets.map(async (results) => ({
             query: results.query,
             resultCount: results.results.length,
-            firstResultUUID: (await DBUtil.getFileById(results.results[0]?.fileId))?.uuid,
+            // firstResultUUID: (await DBUtil.getFileById(results.results[0]?.fileId))?.uuid,
+            firstResultFileId: results.results[0]?.fileId,
         })),
     )
 
@@ -201,7 +202,7 @@ export const geoAggregateResults = (
         .map((result) => ({
             type: 'Feature',
             // todo: get uuid without selecting for every sub query?
-            properties: { cluster: false, fileId: result.fileId, uuid: null /*result.uuid*/ },
+            properties: { cluster: false, fileId: result.fileId /*, uuid: null*/ /*result.uuid*/ },
             geometry: {
                 type: 'Point',
                 coordinates: [result.longitude, result.latitude],
@@ -217,15 +218,15 @@ export const geoAggregateResults = (
         const [longitude, latitude] = cluster.geometry.coordinates
 
         // for each cluster we'll return, get the data either from the first result in the cluster or from the cluster itself when there is only one result in that aggregation.
-        const { fileId, uuid, fileCount } = (() => {
+        const { fileId, fileCount } = (() => {
             if (cluster.properties.cluster) {
                 // lots of results per aggregation, take the first
-                const { fileId, uuid } = supercluster.getLeaves(cluster.id, 1)[0].properties
+                const { fileId } = supercluster.getLeaves(cluster.id, 1)[0].properties
                 const { point_count: fileCount } = cluster.properties
-                return { fileId, uuid, fileCount }
+                return { fileId, fileCount }
             } else {
-                const { fileId, uuid } = cluster.properties
-                return { fileId, uuid, fileCount: 1 }
+                const { fileId } = cluster.properties
+                return { fileId, fileCount: 1 }
             }
         })()
 
@@ -234,7 +235,7 @@ export const geoAggregateResults = (
             longitude,
             fileCount,
             fileId,
-            uuid,
+            // uuid,
             userId,
         }
     })

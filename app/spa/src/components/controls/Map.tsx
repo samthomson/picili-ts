@@ -2,6 +2,7 @@ import * as React from 'react'
 import mapboxgl, { Map, Marker, LngLatBounds } from 'mapbox-gl'
 
 import * as Types from '@shared/declarations'
+import * as HelperUtil from 'src/util/helper'
 
 // todo: is it okay for this to be hard coded?
 mapboxgl.accessToken =
@@ -75,20 +76,21 @@ const MapControl: React.FunctionComponent<IProps> = ({
 
 			searchResultClusters.forEach((cluster) => {
 				if (map && cluster?.latitude && cluster?.longitude) {
-					const { latitude, longitude, uuid, fileCount, userId } =
+					const { latitude, longitude, fileId, fileCount, userId } =
 						cluster
 
 					const el = document.createElement('div')
 					el.className = 'marker'
 					el.title =
-						fileCount > 1 ? `${fileCount} results here` : uuid
+						fileCount > 1
+							? `${fileCount} results here`
+							: fileId + ''
 					// todo: tempish solution to not getting expensive uuid
-					// el.style.backgroundImage = `url(${HelperUtil.thumbPath(
-					// 	userId,
-					// 	uuid,
-					// 	'i',
-					// )})`
-					el.style.backgroundImage = `url(favicon.ico)`
+					el.style.backgroundImage = `url(${HelperUtil.thumbPath(
+						userId,
+						fileId,
+						'i',
+					)})`
 					el.style.width = `32px`
 					el.style.height = `32px`
 					el.style.backgroundSize = '100%'
