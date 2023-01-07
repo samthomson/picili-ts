@@ -86,7 +86,7 @@ const QueryBuilder: React.FunctionComponent<{
 				overlayOpacity={0.55}
 				overlayBlur={3}
 				overflow="inside"
-				trapFocus={false}
+				trapFocus={true}
 			>
 				<MantineCore.Tabs
 					variant="outline"
