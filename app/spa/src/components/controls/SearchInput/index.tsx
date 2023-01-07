@@ -50,10 +50,8 @@ const SearchInput: React.FunctionComponent = () => {
 					<MantineCore.Paper shadow="lg" radius="md">
 						<div
 							id="query-input-and-close-button"
-							onClick={() => {
-								// focus the text input so that we make the whole search query ui seem like a text input
-								focusInput()
-							}}
+							// focus the text input so that we make the whole search query ui seem like a text input
+							onClick={focusInput}
 						>
 							<div id="queries-and-input">
 								{individualQueries.map(
