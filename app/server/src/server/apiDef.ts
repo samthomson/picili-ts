@@ -187,6 +187,7 @@ const typeDefs = gql`
         subtype: String
         value: String!
         # uuid: String!
+        fileId: String!
     }
 
     type AutoCompleteResponse {
