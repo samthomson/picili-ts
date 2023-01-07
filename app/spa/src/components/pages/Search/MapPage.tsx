@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as ReactRedux from 'react-redux'
+import useMeasure from 'react-use-measure'
 
 import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
@@ -21,6 +22,11 @@ const MapPage: React.FunctionComponent = () => {
 	)
 	const isMobile = useIsMobile()
 
+	const [ref, { width }] = useMeasure()
+	const [resultsGridWidth, setResultsGridWidth] = React.useState<number>(
+		width / 2,
+	)
+
 	const boundsChanged = (
 		bounds: Types.Core.MapBounds,
 		zoom: number,
@@ -34,13 +40,27 @@ const MapPage: React.FunctionComponent = () => {
 		dispatch(Actions.attemptSearch(true))
 	}
 
+	React.useEffect(() => {
+		// calculate optimal width for results grid
+		const MARGIN = 16
+		const SCROLLBAR_SPACE = 16
+		const halfWidth = width * 0.55 - MARGIN
+		// todo: get margin from jss?
+		const bestFitOfThumbs = Math.floor(halfWidth / (125 + 8))
+		const enclosingWidth = bestFitOfThumbs * (125 + 8) + SCROLLBAR_SPACE
+
+		setResultsGridWidth(enclosingWidth)
+	}, [width])
+
 	if (isMobile) {
 		return <Redirect to="/" />
 	}
 
+	// const ref = React.useRef<HTMLHeadingElement>(null)
+
 	return (
 		<SearchPageTemplate>
-			<div id="map-results-container">
+			<div id="map-results-container" ref={ref}>
 				<div id="map-container">
 					<Map
 						searchResultClusters={
@@ -49,7 +69,12 @@ const MapPage: React.FunctionComponent = () => {
 						boundsChanged={boundsChanged}
 					/>
 				</div>
-				<div id="results-container">
+				<div
+					id="results-container"
+					style={{
+						width: `${resultsGridWidth}px`,
+					}}
+				>
 					<SearchResults />
 				</div>
 			</div>
