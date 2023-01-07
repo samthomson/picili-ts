@@ -60,8 +60,10 @@ export const searchIndividualQueries = (
 export const searchIndividualQueryOfType =
 	(type: string, subtype?: string) =>
 	(state: Store): Types.API.IndividualSearchQuery | undefined => {
-		return state.searchQuery.individualQueries.find((query) =>
-			query.type === type && !!subtype ? query.subtype === subtype : true,
+		return state.searchQuery.individualQueries.find(
+			(query) =>
+				query.type === type &&
+				(!!subtype ? query.subtype === subtype : true),
 		)
 	}
 
