@@ -44,6 +44,7 @@ const SearchSortSelect: React.FunctionComponent<IProps> = ({
 						variant="outline"
 						color="gray"
 						radius="md"
+						size="xs"
 						rightIcon={<Icons.IconChevronDown size={14} />}
 					>
 						<span style={{ marginRight: 4 }}>Sort by:</span>
