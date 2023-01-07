@@ -309,6 +309,7 @@ a {
 
 .results-overview {
   display: flex;
+  margin-bottom: $margin;
 
   .results-overview-column {
     flex-grow: 1;
