@@ -121,7 +121,7 @@ a {
     flex: 1;
     height: 100%;
     display: flex;
-    background: blue;
+    // background: blue;
 
 		// #map-container {
 		// 	height: 100%;
@@ -134,7 +134,7 @@ a {
 	#results-container {
     overflow-y: auto;
 		vertical-align: top;
-    background: green;
+    // background: green;
     padding-left: $margin;
 
 		// padding: 0 ($spacing - $gridSpacing / 2) $spacing ($spacing - $gridSpacing / 2);
