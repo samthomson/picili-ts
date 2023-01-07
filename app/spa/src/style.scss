@@ -135,7 +135,7 @@ a {
     overflow-y: auto;
 		vertical-align: top;
     // background: green;
-    padding-left: $margin;
+    // padding-left: $margin;
 
 		// padding: 0 ($spacing - $gridSpacing / 2) $spacing ($spacing - $gridSpacing / 2);
 	}
@@ -310,6 +310,7 @@ a {
 .results-overview {
   display: flex;
   margin-bottom: $margin;
+  padding-left: $margin;
 
   .results-overview-column {
     flex-grow: 1;
@@ -341,7 +342,7 @@ a {
 
 #tiled-gallery {
   img {
-    margin-right: 8px;
+    margin-left: 8px;
     margin-bottom: 8px;
     float: left;
     border-radius: $margin;
