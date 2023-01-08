@@ -47,7 +47,8 @@ const FolderQueryBuilder: React.FunctionComponent<{
 		}
 
 		const newDirectoryQuery = {
-			type: Enums.QueryType.DIRECTORY,
+			type: Enums.QueryType.PATH,
+			subtype: Enums.QuerySubtype.DIRECTORY,
 			value: selectedFolder,
 		}
 		dispatch(Actions.searchQueryAdd(newDirectoryQuery))

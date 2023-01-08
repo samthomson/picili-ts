@@ -82,7 +82,8 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 			case type === Enums.QueryType.COLOUR:
 				return Icons.IconColorFilter
 
-			case type === Enums.QueryType.DIRECTORY:
+			case type === Enums.QueryType.PATH &&
+				subtype === Enums.QuerySubtype.DIRECTORY:
 				return Icons.IconFolders
 
 			// todo: plant IconPlant
@@ -141,7 +142,8 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 					</>
 				)
 
-			case type === Enums.QueryType.DIRECTORY:
+			case type === Enums.QueryType.PATH &&
+				subtype === Enums.QuerySubtype.DIRECTORY:
 				return <span title={value}>{value.split('/').pop()}</span>
 
 			default:
