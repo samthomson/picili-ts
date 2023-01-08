@@ -113,9 +113,7 @@ const QueryBuilder: React.FunctionComponent<{
 										: onClose()
 								}
 								icon={tab.icon}
-							>
-								{!isMobile ? tab.label : ''}
-							</MantineCore.Tabs.Tab>
+							/>
 						))}
 					</MantineCore.Tabs.List>
 
