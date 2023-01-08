@@ -168,6 +168,11 @@ export namespace API {
 		elevation?: number
 		pathOnDropbox?: string
 		tags: Tag[]
+		mainColour?: {
+			r: number
+            g: number
+            b: number
+		}
 	}
 
 	export interface SystemEvent extends Omit<Core.BaseModels.SystemEventAttributes, 'userId'> { datetime: string }

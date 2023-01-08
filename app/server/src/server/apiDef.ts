@@ -220,6 +220,12 @@ const typeDefs = gql`
         confidence: Int!
     }
 
+    type RGB {
+        r: Int!
+        g: Int!
+        b: Int!
+    }
+
     type FileInfo {
         address: String
         datetime: String
@@ -227,6 +233,7 @@ const typeDefs = gql`
         elevation: Float
         pathOnDropbox: String
         tags: [Tag]
+        mainColour: RGB
     }
 
     type SystemEvent {

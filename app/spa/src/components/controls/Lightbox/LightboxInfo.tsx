@@ -25,6 +25,11 @@ const fileInfoQuery = gql`
 				value
 				confidence
 			}
+			mainColour {
+				r
+				g
+				b
+			}
 		}
 	}
 `
@@ -211,6 +216,21 @@ const LightboxInfo: React.FunctionComponent<IProps> = ({
 				<div className="lightbox-information-piece">
 					<Icons.IconFolders size={14} />
 					{fileInfo.pathOnDropbox}
+				</div>
+			)}
+
+			{fileInfo?.mainColour && (
+				<div className="lightbox-information-piece">
+					<Icons.IconPalette size={14} />
+					<div
+						className="colour-swatch"
+						style={{
+							background: `rgb(${fileInfo.mainColour.r}, ${fileInfo.mainColour.g}, ${fileInfo.mainColour.b})`,
+						}}
+					/>
+					average colour (rgb:{' '}
+					{`${fileInfo.mainColour.r}, ${fileInfo.mainColour.g}, ${fileInfo.mainColour.b}`}
+					)
 				</div>
 			)}
 
