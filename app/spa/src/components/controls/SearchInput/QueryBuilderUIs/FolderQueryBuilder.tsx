@@ -80,16 +80,34 @@ const FolderQueryBuilder: React.FunctionComponent<{
 						},
 						folderIndex,
 					) => (
-						<div id="folder-summary" key={folderIndex}>
-							id: {id}
-							<br />
-							fileDirectory: {fileDirectory}
-							<br />
-							latestDirectoryPath: {latestDirectoryPath}
-							<br />
-							latestDate: {latestDate}
-							<br />
-							fileCount: {fileCount}
+						<div className="folder-summary" key={folderIndex}>
+							<div className="image-part">
+								<img
+									key={id}
+									src={HelperUtil.thumbPath(
+										// todo: get properly
+										3,
+										id,
+										's',
+									)}
+									className="folder-summary-image"
+								/>
+							</div>
+							<div className="summary-part">
+								<Icons.IconFolder size={12} /> {fileDirectory}
+								<br />
+								<Icons.IconFolders size={12} />{' '}
+								{latestDirectoryPath}
+								<br />
+								{fileCount} file
+								{fileCount > 1 && 's'}
+								{!!latestDate && (
+									<>
+										&nbsp;&middot;{' '}
+										{HelperUtil.formatDateForUI(latestDate)}
+									</>
+								)}
+							</div>
 							<hr />
 						</div>
 					),
@@ -104,6 +122,7 @@ const FolderQueryBuilder: React.FunctionComponent<{
 					leftIcon={<Icons.IconSearch />}
 					variant="outline"
 					color="gray"
+					disabled={true}
 				>
 					Search for files in {'gfdgfds'}
 				</MantineCore.Button>

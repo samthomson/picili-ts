@@ -557,6 +557,38 @@ a {
       }
     }
   }
+
+  #folder-query-builder {
+
+    #folder-summary-list {
+      margin-bottom: $margin;
+      overflow-y: auto;
+      max-height: 50vh;
+    
+      .folder-summary {
+        display: flex;
+        margin-bottom: $margin;
+
+        &:last-of-type {
+          margin-bottom: 0;
+        }
+        
+        .image-part {
+          width: 70px;
+          background-color: red;
+
+          .folder-summary-image {
+            width: 100%;
+          }
+        }
+        .summary-part {
+          flex: 1;
+          padding-left: $margin;
+          background-color: yellow
+        }
+      }
+    }
+  }
 }
 
 //
