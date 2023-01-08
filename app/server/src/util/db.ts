@@ -973,7 +973,7 @@ export const getFolderSummary = async (userId: number): Promise<Types.API.Folder
             id,
             fileDirectory,
             latestDirectoryPath: pathWithoutFile,
-            latestDate: moment(latestDate).format(),
+            latestDate: latestDate && moment(latestDate).format(),
             fileCount,
         }
     })
