@@ -82,6 +82,9 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 			case type === Enums.QueryType.COLOUR:
 				return Icons.IconColorFilter
 
+			case type === Enums.QueryType.DIRECTORY:
+				return Icons.IconFolders
+
 			// todo: plant IconPlant
 			// todo: directory
 
@@ -137,6 +140,9 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 						{HelperUtil.formatDateForUI(dateRange[1])}
 					</>
 				)
+
+			case type === Enums.QueryType.DIRECTORY:
+				return <span title={value}>{value.split('/').pop()}</span>
 
 			default:
 				return (
