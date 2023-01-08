@@ -44,9 +44,9 @@ export enum QueryType {
     LOCATION = 'location',
     FILETYPE = 'filetype',
     VIDEO = 'video',
-    COLOUR = 'colour'
+    COLOUR = 'colour',
+    DIRECTORY = 'DIRECTORY',
     // todo: plant 
-    // todo: directory
 }
 
 export enum QuerySubtype {

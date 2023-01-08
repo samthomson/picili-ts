@@ -5,7 +5,6 @@ import * as MantineCore from '@mantine/core'
 import * as Icons from '@tabler/icons'
 
 import * as Actions from 'src/redux/actions'
-import * as Selectors from 'src/redux/selectors'
 import * as Enums from '../../../../../../shared/enums'
 import * as HelperUtil from 'src/util/helper'
 import * as Types from '@shared/declarations'
@@ -38,18 +37,25 @@ const FolderQueryBuilder: React.FunctionComponent<{
 
 	const dispatch = ReactRedux.useDispatch()
 
-	// todo:
-	// const addFolderQuery = () => {
-	// 	const newElevationQuery = {
-	// 		type: Enums.QueryType.,
-	// 		value: `${rangeValue?.[0]}:${rangeValue?.[1]}`,
-	// 	}
-	// 	dispatch(Actions.searchQueryAdd(newElevationQuery))
-	// 	dispatch(Actions.attemptSearch())
+	const [selectedFolder, setSelectedFolder] = React.useState<
+		string | undefined
+	>(undefined)
 
-	// 	// close modal
-	// 	closeModal()
-	// }
+	const addFolderQuery = () => {
+		if (!selectedFolder) {
+			return
+		}
+
+		const newDirectoryQuery = {
+			type: Enums.QueryType.DIRECTORY,
+			value: selectedFolder,
+		}
+		dispatch(Actions.searchQueryAdd(newDirectoryQuery))
+		dispatch(Actions.attemptSearch())
+
+		// close modal
+		closeModal()
+	}
 
 	if (loading) {
 		// todo: proper loading ui
@@ -82,7 +88,13 @@ const FolderQueryBuilder: React.FunctionComponent<{
 						},
 						folderIndex,
 					) => (
-						<div className="folder-summary" key={folderIndex}>
+						<div
+							className="folder-summary"
+							key={folderIndex}
+							onClick={() =>
+								setSelectedFolder(latestDirectoryPath)
+							}
+						>
 							<div className="image-part">
 								<img
 									key={id}
@@ -119,13 +131,20 @@ const FolderQueryBuilder: React.FunctionComponent<{
 				<MantineCore.Button
 					radius="md"
 					size="md"
-					// onClick={addElevationQuery}
+					onClick={addFolderQuery}
 					leftIcon={<Icons.IconSearch />}
 					variant="outline"
 					color="gray"
-					disabled={true}
+					disabled={!selectedFolder}
 				>
-					Search for files in {'gfdgfds'}
+					{selectedFolder ? (
+						<>
+							Search for files in:&nbsp;{' '}
+							<strong>{selectedFolder.split('/').pop()}</strong>
+						</>
+					) : (
+						'Search'
+					)}
 				</MantineCore.Button>
 			</div>
 		</div>

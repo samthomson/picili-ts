@@ -568,6 +568,7 @@ a {
       .folder-summary {
         display: flex;
         margin-bottom: $margin;
+        cursor: pointer;
 
         &:last-of-type {
           margin-bottom: 0;
