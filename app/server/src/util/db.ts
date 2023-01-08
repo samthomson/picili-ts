@@ -951,3 +951,29 @@ export const getDateRangeMinMax = async (userId: number): Promise<{ min: string;
           }
         : undefined
 }
+
+export const getFolderSummary = async (userId: number): Promise<Types.API.FolderSummary[]> => {
+    const query = `SELECT file_directory as fileDirectory, files.id, COUNT(files.id), MAX(datetime) as latestDate, dropbox_files.path as latestFilePath
+    FROM files
+    JOIN dropbox_files on dropbox_files.id = files.dropbox_file_id 
+    WHERE files.is_thumbnailed AND files.user_id = :userId
+    GROUP BY files.file_directory
+    ORDER BY files.datetime desc`
+
+    const dbFolders: Types.Core.DBFolderSummary[] = await Database.query(query, {
+        type: Sequelize.QueryTypes.SELECT,
+        replacements: {
+            userId,
+        },
+    })
+
+    return dbFolders.map(({ id, fileDirectory, latestFilePath, latestDate }) => {
+        const pathWithoutFile = latestFilePath.substring(0, latestFilePath.lastIndexOf('/'))
+        return {
+            id,
+            fileDirectory,
+            latestDirectoryPath: pathWithoutFile,
+            latestDate: moment(latestDate).format(),
+        }
+    })
+}

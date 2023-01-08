@@ -241,12 +241,14 @@ const UIState = async (parents, args, context): Promise<Types.API.UIState> => {
     const elevationMinMax = await DBUtil.getElevationMinMax(userId)
     const videoMinMax = await DBUtil.getVideoLengthMinMax(userId)
     const dateRangeMinMax = await DBUtil.getDateRangeMinMax(userId)
+    const folders = await DBUtil.getFolderSummary(userId)
 
     return {
         queryBuilders: {
             elevation: elevationMinMax,
             videoLength: videoMinMax,
             dateRange: dateRangeMinMax,
+            folders,
         },
     }
 }

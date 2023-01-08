@@ -255,10 +255,18 @@ const typeDefs = gql`
         max: String
     }
 
+    type LatestFolder {
+        id: Int!
+        fileDirectory: String!
+        latestDirectoryPath: String!
+        latestDate: String
+    }
+
     type QueryBuilders {
         elevation: MinMax
         videoLength: MinMax
         dateRange: MinMaxString
+        folders: [LatestFolder]
     }
 
     type UIState {

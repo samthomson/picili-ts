@@ -195,6 +195,14 @@ export namespace API {
 		elevation?: MinMax
 		videoLength?: MinMax
 		dateRange?: MinMaxString
+		folders?: FolderSummary[]
+	}
+
+	export type FolderSummary = {
+		id: number
+		fileDirectory: string
+		latestDirectoryPath: string
+		latestDate?: string
 	}
 
 	export type UIState = {
@@ -633,6 +641,13 @@ export namespace Core {
 		minRate: string
 		maxRate: string
 		bufSize: string
+	}
+
+	export type DBFolderSummary = {
+		id: number
+		fileDirectory: string
+		latestFilePath: string
+		latestDate?: string
 	}
 }
 
