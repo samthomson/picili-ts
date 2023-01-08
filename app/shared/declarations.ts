@@ -203,6 +203,7 @@ export namespace API {
 		fileDirectory: string
 		latestDirectoryPath: string
 		latestDate?: string
+		fileCount: number
 	}
 
 	export type UIState = {
@@ -648,6 +649,7 @@ export namespace Core {
 		fileDirectory: string
 		latestFilePath: string
 		latestDate?: string
+		fileCount: number
 	}
 }
 

@@ -260,6 +260,7 @@ const typeDefs = gql`
         fileDirectory: String!
         latestDirectoryPath: String!
         latestDate: String
+        fileCount: Int!
     }
 
     type QueryBuilders {

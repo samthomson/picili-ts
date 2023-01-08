@@ -6,7 +6,8 @@ import useIsMobile from 'src/util/hooks/use-is-mobile.hook'
 import ElevationQueryBuilder from './QueryBuilderUIs/ElevationQueryBuilder'
 import VideoQueryBuilder from './QueryBuilderUIs/VideoQueryBuilder'
 import DateRangeQueryBuilder from './QueryBuilderUIs/DateRangeQueryBuilder'
-import ColourQueryBuilder from './QueryBuilderUIs/ColourQueryBuilder'
+// import ColourQueryBuilder from './QueryBuilderUIs/ColourQueryBuilder'
+import FolderQueryBuilder from './QueryBuilderUIs/FolderQueryBuilder'
 
 const QueryBuilder: React.FunctionComponent<{
 	closing: () => void
@@ -44,6 +45,13 @@ const QueryBuilder: React.FunctionComponent<{
 			label: 'Date range',
 			icon: <Icons.IconCalendar size={14} />,
 			content: <DateRangeQueryBuilder closeModal={closeModal} />,
+		},
+		{
+			value: 'folders',
+			clickValue: 'folders',
+			label: 'Folders',
+			icon: <Icons.IconFolder size={14} />,
+			content: <FolderQueryBuilder closeModal={closeModal} />,
 		},
 		{
 			value: 'elevation',

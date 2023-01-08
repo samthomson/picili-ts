@@ -953,7 +953,7 @@ export const getDateRangeMinMax = async (userId: number): Promise<{ min: string;
 }
 
 export const getFolderSummary = async (userId: number): Promise<Types.API.FolderSummary[]> => {
-    const query = `SELECT file_directory as fileDirectory, files.id, COUNT(files.id), MAX(datetime) as latestDate, dropbox_files.path as latestFilePath
+    const query = `SELECT file_directory as fileDirectory, files.id, COUNT(files.id) as fileCount, MAX(datetime) as latestDate, dropbox_files.path as latestFilePath
     FROM files
     JOIN dropbox_files on dropbox_files.id = files.dropbox_file_id 
     WHERE files.is_thumbnailed AND files.user_id = :userId
@@ -967,13 +967,14 @@ export const getFolderSummary = async (userId: number): Promise<Types.API.Folder
         },
     })
 
-    return dbFolders.map(({ id, fileDirectory, latestFilePath, latestDate }) => {
+    return dbFolders.map(({ id, fileDirectory, latestFilePath, latestDate, fileCount }) => {
         const pathWithoutFile = latestFilePath.substring(0, latestFilePath.lastIndexOf('/'))
         return {
             id,
             fileDirectory,
             latestDirectoryPath: pathWithoutFile,
             latestDate: moment(latestDate).format(),
+            fileCount,
         }
     })
 }
