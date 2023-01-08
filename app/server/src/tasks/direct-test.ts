@@ -575,12 +575,15 @@ const seedLocations = async () => {
 
 // file()
 
-// const bulkColourAnalysisTest = async () => {
-//     const files = await Models.FileModel.findAll()
-//     for (let i = 0; i < files.length && i < 1; i++) {
-//         const { id } = files[i]
+const bulkDirPathTest = async () => {
+    const files = await Models.FileModel.findAll()
+    for (let i = 0; i < files.length && i < 500; i++) {
+        const { id } = files[i]
 
-//         await TasksUtil.fileImport(id, 8008)
-//         await TasksUtil.processImage(id, 255)
-//     }
-// }
+        await TasksUtil.fileImport(id, 8008)
+        // await TasksUtil.processImage(id, 255)
+    }
+    // await TasksUtil.fileImport(60, 8008)
+}
+
+bulkDirPathTest()

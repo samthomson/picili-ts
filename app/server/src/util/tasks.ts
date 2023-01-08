@@ -196,35 +196,42 @@ export const fileImport = async (fileId: number, taskId: number): Promise<Types.
             const fileType = HelperUtil.fileTypeFromExtension(fileExtension)
             const { fileDirectory } = HelperUtil.splitPathIntoParts(path)
             const directories = HelperUtil.individualDirectoriesFromParentDir(fileDirectory)
-            const newDirectoryTags = directories.map((dir) => ({
+            const newPathTags = directories.map((dir) => ({
                 fileId,
-                type: 'folder',
-                subtype: '',
+                type: 'path',
+                subtype: 'folder',
                 value: dir,
                 confidence: 100,
             }))
-            newDirectoryTags.push({
+            newPathTags.push({
                 fileId,
-                type: 'filename',
-                subtype: '',
+                type: 'path',
+                subtype: 'filename',
                 value: fileName,
                 confidence: 100,
             })
-            newDirectoryTags.push({
+            newPathTags.push({
                 fileId,
-                type: 'filetype',
-                subtype: '',
+                type: 'path',
+                subtype: 'filetype',
                 value: fileType,
                 confidence: 100,
             })
-            newDirectoryTags.push({
+            newPathTags.push({
                 fileId,
-                type: 'fileextension',
-                subtype: '',
+                type: 'path',
+                subtype: 'extension',
                 value: fileExtension,
                 confidence: 100,
             })
-            await DBUtil.createMultipleTags(newDirectoryTags)
+            newPathTags.push({
+                fileId,
+                type: 'path',
+                subtype: 'directory',
+                value: fileDirectory,
+                confidence: 100,
+            })
+            await DBUtil.createMultipleTags(newPathTags)
         }
 
         return downloadOutcome
