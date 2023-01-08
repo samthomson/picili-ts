@@ -68,6 +68,8 @@ const FolderQueryBuilder: React.FunctionComponent<{
 
 	return (
 		<div id="folder-query-builder">
+			Select one of {folderSummaryData.length} folder
+			{folderSummaryData.length > 1 && 's'}.
 			<div id="folder-summary-list">
 				{folderSummaryData.map(
 					(
@@ -113,7 +115,6 @@ const FolderQueryBuilder: React.FunctionComponent<{
 					),
 				)}
 			</div>
-
 			<div className="button-to-add-query-container">
 				<MantineCore.Button
 					radius="md"
