@@ -52,13 +52,13 @@ const QueryBuilder: React.FunctionComponent<{
 			icon: <Icons.IconMountain size={14} />,
 			content: <ElevationQueryBuilder closeModal={closeModal} />,
 		},
-		{
-			value: 'colour',
-			clickValue: 'colour',
-			label: 'Colour',
-			icon: <Icons.IconColorFilter size={14} />,
-			content: <ColourQueryBuilder closeModal={closeModal} />,
-		},
+		// {
+		// 	value: 'colour',
+		// 	clickValue: 'colour',
+		// 	label: 'Colour',
+		// 	icon: <Icons.IconColorFilter size={14} />,
+		// 	content: <ColourQueryBuilder closeModal={closeModal} />,
+		// },
 		{
 			value: 'video',
 			clickValue: 'video',
