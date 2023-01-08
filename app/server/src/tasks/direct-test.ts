@@ -573,4 +573,14 @@ const seedLocations = async () => {
 // searchSpeedTest()
 // seedLocations()
 
-file()
+// file()
+
+// const bulkColourAnalysisTest = async () => {
+//     const files = await Models.FileModel.findAll()
+//     for (let i = 0; i < files.length && i < 1; i++) {
+//         const { id } = files[i]
+
+//         await TasksUtil.fileImport(id, 8008)
+//         await TasksUtil.processImage(id, 255)
+//     }
+// }
