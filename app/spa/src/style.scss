@@ -483,16 +483,16 @@ a {
       align-items: center;
       display: inline-flex;
       margin-right: $margin;
-      margin-bottom: $margin / 2;
+      margin-bottom: calc($margin / 2);
       text-transform: none;
       border: 1px solid silver;
-      border-radius: $margin / 2;
-      padding: $margin / 2;
+      border-radius: calc($margin / 2);
+      padding: calc($margin / 2);
       cursor: pointer;
       font-size: smaller;
 
       svg {
-        margin-right: $margin / 2;
+        margin-right: calc($margin / 2);
         display: block;
       }
     }
