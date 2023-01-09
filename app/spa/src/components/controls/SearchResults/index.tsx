@@ -47,10 +47,22 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 			const { scrollTop, clientHeight, scrollHeight } =
 				scrollableRef?.current
 
+			// we want to automatically load more when the user is half way down
+			// but half way down the 'current'/last 'page' of results, as otherwise
+			// the user would always exponentially less scrolling per additional load
+			// and have an equally growing number of results off page which they
+			// might not even look at.
 			const position = scrollTop + clientHeight
-			const percentageScrolled = (position / scrollHeight) * 100
+			// const percentageScrolled = (position / scrollHeight) * 100
 
-			if (percentageScrolled > 50) {
+			const page = paginationInfo?.page ?? 1
+			const perPage = scrollHeight / page
+			const ignorableHeight = (page - 1) * perPage
+			const positionInLastPage = position - ignorableHeight
+			const percentageScrolledLastPage =
+				(positionInLastPage / perPage) * 100
+
+			if (percentageScrolledLastPage >= 50) {
 				// raise load more event
 				debouncedLoadMore()
 			}
