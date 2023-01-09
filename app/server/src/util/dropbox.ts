@@ -446,6 +446,14 @@ export const downloadDropboxFile = async (
                     )
                 } catch (err) {
                     Logger.error('2. caught error thrown in pipelines', err)
+                    Logger.error('associated data', {
+                        dropboxFileId,
+                        userId,
+                        piciliFileId,
+                        fileExtension,
+                        taskId,
+                        outPath,
+                    })
                 }
             },
         )
