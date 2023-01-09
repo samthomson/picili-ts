@@ -228,7 +228,7 @@ const LightboxInfo: React.FunctionComponent<IProps> = ({
 							background: `rgb(${fileInfo.mainColour.r}, ${fileInfo.mainColour.g}, ${fileInfo.mainColour.b})`,
 						}}
 					/>
-					average colour (rgb:{' '}
+					dominant colour (rgb:{' '}
 					{`${fileInfo.mainColour.r}, ${fileInfo.mainColour.g}, ${fileInfo.mainColour.b}`}
 					)
 				</div>
