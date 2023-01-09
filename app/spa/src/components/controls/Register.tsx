@@ -10,6 +10,7 @@ const registerQuery = gql`
 		register(authInput: $authInput) {
 			token
 			error
+			userId
 		}
 	}
 `
@@ -28,7 +29,12 @@ const Register: React.FunctionComponent = () => {
 
 	React.useEffect(() => {
 		if (data?.register.token) {
-			dispatch(Actions.attemptLoginSucceeded(data.register.token))
+			dispatch(
+				Actions.attemptLoginSucceeded(
+					data.register.token,
+					data.register.userId,
+				),
+			)
 		}
 		if (data?.register.error) {
 			setError(data.register.error)

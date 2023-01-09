@@ -4,10 +4,10 @@ import { Store } from 'src/redux/store'
 import { searchQuery } from './selectors'
 import * as Enums from '../../../shared/enums'
 
-// todo: put userId into store
 const initialState: Store = {
 	userAuthStatusIsKnown: false,
 	userIsAuthenticated: false,
+	userId: undefined,
 	somethingIsLoading: false,
 	searchResult: undefined,
 	searchQuery: {
@@ -34,13 +34,15 @@ export function appReducers(
 			return {
 				...state,
 				userIsAuthenticated: true,
+				userId: action.userId,
 			}
 		case ActionType.AUTH_STATUS_VERIFIED:
-			const userIsAuthenticated = action.isVerified
+			const { isVerified: userIsAuthenticated, userId } = action
 			return {
 				...state,
 				userIsAuthenticated,
 				userAuthStatusIsKnown: true,
+				userId,
 			}
 		case ActionType.SET_GLOBAL_LOADING_STATE:
 			const { somethingIsLoading } = action

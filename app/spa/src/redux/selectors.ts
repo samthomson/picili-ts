@@ -8,6 +8,9 @@ export const userAuthStatusIsKnown = (state: Store): boolean => {
 export const userIsAuthenticated = (state: Store): boolean => {
 	return state.userIsAuthenticated
 }
+export const userId = (state: Store): number | undefined => {
+	return state?.userId
+}
 export const somethingIsLoading = (state: Store): boolean => {
 	return state.somethingIsLoading
 }

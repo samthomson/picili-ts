@@ -12,6 +12,7 @@ const typeDefs = gql`
     }
     type AuthResponse {
         token: String
+        userId: Int
         error: String
     }
     type DropboxConnection {
@@ -274,8 +275,13 @@ const typeDefs = gql`
         queryBuilders: QueryBuilders
     }
 
+    type ValidateTokenResponse {
+        isValid: Boolean!
+        userId: Int
+    }
+
     type Query {
-        validateToken(token: String!): Boolean
+        validateToken(token: String!): ValidateTokenResponse
         dropboxConnection: DropboxConnection
         taskSummary: TaskSummary
         systemEvents: SystemEventsResponse

@@ -31,6 +31,7 @@ export type Action =
 	| {
 			type: ActionType.LOGIN_SUCCEEDED
 			token: string
+			userId: number
 	  }
 	| {
 			type: ActionType.LOGIN_FAILED
@@ -42,6 +43,7 @@ export type Action =
 	| {
 			type: ActionType.AUTH_STATUS_VERIFIED
 			isVerified: boolean
+			userId?: number
 	  }
 	| {
 			type: ActionType.SET_GLOBAL_LOADING_STATE
@@ -116,10 +118,14 @@ export const attemptLogin = (email: string): LoginAction => {
 	}
 }
 
-export const attemptLoginSucceeded = (token: string): Action => {
+export const attemptLoginSucceeded = (
+	token: string,
+	userId: number,
+): Action => {
 	return {
 		type: ActionType.LOGIN_SUCCEEDED,
 		token,
+		userId,
 	}
 }
 
@@ -142,10 +148,14 @@ export const verifyAuthStatus = (): Action => {
 	}
 }
 
-export const verifiedAuthStatus = (isVerified: boolean): Action => {
+export const verifiedAuthStatus = (
+	isVerified: boolean,
+	userId?: number,
+): Action => {
 	return {
 		type: ActionType.AUTH_STATUS_VERIFIED,
 		isVerified,
+		userId,
 	}
 }
 

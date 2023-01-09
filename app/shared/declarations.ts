@@ -6,6 +6,12 @@ export namespace API {
 		export type Auth = {
 			token?: string
 			error?: string
+			userId?: number
+		}
+
+		export type VerifyToken = {
+			isValid: boolean
+			userId?: number
 		}
 	}
 

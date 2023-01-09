@@ -24,6 +24,7 @@ const login = async (parent, args, context): Promise<Types.API.Response.Auth> =>
         return {
             token,
             error: undefined,
+            userId: +user.id,
         }
     } else {
         return {
@@ -67,6 +68,7 @@ const register = async (parent, args, context): Promise<Types.API.Response.Auth>
     return {
         token: user ? token : undefined,
         error: !user ? `user creation failed` : undefined,
+        userId: user ? +user.id : undefined,
     }
 }
 

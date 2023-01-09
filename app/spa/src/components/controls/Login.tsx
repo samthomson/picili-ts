@@ -11,6 +11,7 @@ const loginQuery = gql`
 		login(authInput: $authInput) {
 			token
 			error
+			userId
 		}
 	}
 `
@@ -27,7 +28,12 @@ const Login: React.FunctionComponent = () => {
 
 	React.useEffect(() => {
 		if (data?.login.token) {
-			dispatch(Actions.attemptLoginSucceeded(data.login.token))
+			dispatch(
+				Actions.attemptLoginSucceeded(
+					data.login.token,
+					data.login.userId,
+				),
+			)
 		}
 		if (data?.login.error) {
 			setError(data.login.error)

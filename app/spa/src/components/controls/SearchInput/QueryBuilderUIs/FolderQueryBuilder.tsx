@@ -5,6 +5,7 @@ import * as MantineCore from '@mantine/core'
 import * as Icons from '@tabler/icons'
 
 import * as Actions from 'src/redux/actions'
+import * as Selectors from 'src/redux/selectors'
 import * as Enums from '../../../../../../shared/enums'
 import * as HelperUtil from 'src/util/helper'
 import * as Types from '@shared/declarations'
@@ -31,6 +32,8 @@ const FolderQueryBuilder: React.FunctionComponent<{
 	const { loading, error, data } = useQuery(folderSummaryQuery, {
 		fetchPolicy: 'no-cache',
 	})
+
+	const userId: number = ReactRedux.useSelector(Selectors.userId) as number
 
 	const folderSummaryData: Types.API.FolderSummary[] =
 		data?.UIState?.queryBuilders.folders ?? []
@@ -99,12 +102,7 @@ const FolderQueryBuilder: React.FunctionComponent<{
 							<div className="image-part">
 								<img
 									key={id}
-									src={HelperUtil.thumbPath(
-										// todo: get properly
-										3,
-										id,
-										's',
-									)}
+									src={HelperUtil.thumbPath(userId, id, 's')}
 									className="folder-summary-image"
 								/>
 							</div>

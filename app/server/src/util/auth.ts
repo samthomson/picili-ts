@@ -1,5 +1,6 @@
 import * as jwt from 'jsonwebtoken'
 import * as DBUtil from './db'
+import * as Types from '@shared/declarations'
 // import * as Models from '../db/models'
 
 // declare module 'jsonwebtoken' {
@@ -28,9 +29,9 @@ export const userIdFromJWT = async (jwtToken: string): Promise<string | undefine
     }
 }
 
-export const requestHasValidCookieToken = (ctx): boolean => {
+export const requestHasValidCookieToken = (ctx): Types.API.Response.VerifyToken => {
     // if it did, middleware will have set it already
-    return !!ctx.userId
+    return { isValid: !!ctx.userId, userId: !!ctx.userId ? ctx.userId : undefined }
 }
 
 export const userIdFromRequestCookie = async (req): Promise<string | undefined> => {
