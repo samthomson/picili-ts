@@ -110,18 +110,21 @@ const FolderQueryBuilder: React.FunctionComponent<{
 								<Icons.IconFolder size={12} /> {fileDirectory}
 								<br />
 								<Icons.IconFolders size={12} />{' '}
-								{latestDirectoryPath}
+								<small>{latestDirectoryPath}</small>
 								<br />
-								{fileCount} file
-								{fileCount > 1 && 's'}
-								{!!latestDate && (
-									<>
-										&nbsp;&middot;{' '}
-										{HelperUtil.formatDateForUI(latestDate)}
-									</>
-								)}
+								<small>
+									{fileCount} file
+									{fileCount > 1 && 's'}
+									{!!latestDate && (
+										<>
+											&nbsp;&middot;{' '}
+											{HelperUtil.formatDateForUI(
+												latestDate,
+											)}
+										</>
+									)}
+								</small>
 							</div>
-							<hr />
 						</div>
 					),
 				)}

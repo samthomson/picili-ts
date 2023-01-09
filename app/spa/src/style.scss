@@ -576,7 +576,6 @@ a {
         
         .image-part {
           width: 70px;
-          background-color: red;
 
           .folder-summary-image {
             width: 100%;
@@ -585,7 +584,6 @@ a {
         .summary-part {
           flex: 1;
           padding-left: $margin;
-          background-color: yellow
         }
       }
     }
