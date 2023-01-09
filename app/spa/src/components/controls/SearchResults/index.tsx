@@ -7,6 +7,7 @@ import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
 import debounce from 'lodash.debounce'
 
+import * as Types from '@shared/declarations'
 import SearchSortSelect from 'src/components/controls/SearchSortSelect'
 import JustifiedImageGallery from './JustifiedImageGallery'
 import TiledImageGallery from './TiledImageGallery'
@@ -74,8 +75,23 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 		}
 	}
 
-	const scrollToTop = () =>
+	const [lastQueries, setLastQueries] = React.useState<
+		Types.API.IndividualSearchQuery[]
+	>([])
+
+	React.useEffect(() => {
+		if (lastQueries !== individualQueries) {
+			setLastQueries(individualQueries)
+			// a new search has occured
+			onScrollToTopNewSearch()
+		}
+	}, [individualQueries])
+
+	const onScrollToTopClick = () =>
 		scrollableRef?.current?.scrollTo({ top: 0, behavior: 'smooth' })
+
+	const onScrollToTopNewSearch = () =>
+		scrollableRef?.current?.scrollTo({ top: 0, behavior: 'auto' })
 
 	return (
 		<React.Fragment>
@@ -119,7 +135,7 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 									leftIcon={
 										<Icons.IconArrowBarToUp size={16} />
 									}
-									onClick={scrollToTop}
+									onClick={onScrollToTopClick}
 								>
 									Scroll to top
 								</MantineCore.Button>
