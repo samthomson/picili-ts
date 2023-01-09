@@ -107,6 +107,16 @@ a {
   }
 }
 
+#scroll-to-top-button {
+  position: absolute;
+  bottom: $margin * 3;
+  right: $margin * 3;
+  z-index: 100;
+  display: block;
+  background-color: #fff;
+  border-radius: $margin;
+}
+
 #map-results-container {
   height: 1vh;
 	width: 100%;

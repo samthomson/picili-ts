@@ -1,5 +1,7 @@
 import * as React from 'react'
 import * as ReactRedux from 'react-redux'
+import * as MantineCore from '@mantine/core'
+import * as Icons from '@tabler/icons'
 
 import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
@@ -42,18 +44,19 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 		}
 	}, 100)
 
+	const [showScrollToTop, setShowScrollToTop] = React.useState<boolean>(false)
+
 	const onScroll = () => {
 		if (scrollableRef?.current) {
-			const { scrollTop, clientHeight, scrollHeight } =
-				scrollableRef?.current
+			const { scrollTop, scrollHeight } = scrollableRef?.current
 
 			// we want to automatically load more when the user is half way down
 			// but half way down the 'current'/last 'page' of results, as otherwise
 			// the user would always exponentially less scrolling per additional load
 			// and have an equally growing number of results off page which they
 			// might not even look at.
-			const position = scrollTop + clientHeight
-			// const percentageScrolled = (position / scrollHeight) * 100
+			const position = scrollTop //+ clientHeight
+			const percentageScrolled = (position / scrollHeight) * 100
 
 			const page = paginationInfo?.page ?? 1
 			const perPage = scrollHeight / page
@@ -62,12 +65,17 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 			const percentageScrolledLastPage =
 				(positionInLastPage / perPage) * 100
 
+			setShowScrollToTop(percentageScrolled > 5)
+
 			if (percentageScrolledLastPage >= 50) {
 				// raise load more event
 				debouncedLoadMore()
 			}
 		}
 	}
+
+	const scrollToTop = () =>
+		scrollableRef?.current?.scrollTo({ top: 0, behavior: 'smooth' })
 
 	return (
 		<React.Fragment>
@@ -102,7 +110,21 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 							</div>
 						</div>
 
-						<div></div>
+						{showScrollToTop && (
+							<div id="scroll-to-top-button">
+								<MantineCore.Button
+									variant="outline"
+									color="red"
+									radius="md"
+									leftIcon={
+										<Icons.IconArrowBarToUp size={16} />
+									}
+									onClick={scrollToTop}
+								>
+									Scroll to top
+								</MantineCore.Button>
+							</div>
+						)}
 						{displayJustified && (
 							<JustifiedImageGallery
 								searchResults={searchResults}
