@@ -445,7 +445,7 @@ export const downloadDropboxFile = async (
                             }),
                     )
                 } catch (err) {
-                    Logger.error('2. caught error thrown in pipelines', err?.message)
+                    Logger.error('2. caught error thrown in pipelines', err)
                 }
             },
         )
