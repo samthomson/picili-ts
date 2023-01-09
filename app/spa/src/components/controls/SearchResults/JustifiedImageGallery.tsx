@@ -27,7 +27,11 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 
 	const [rows, setRows] = React.useState<Row[]>([])
 	const [rowHeights, setRowHeights] = React.useState<number[]>([])
-	const [ref, bounds] = useMeasure()
+	const [ref, bounds] = useMeasure({
+		scroll: true,
+		// don't mindlessly fire scroll events, but resize more responsively
+		debounce: { scroll: 200, resize: 50 },
+	})
 	// commenting out unused 'lastWidth' 18.11.2022
 	// const [lastWidth, setLastWidth] = React.useState<number>(0)
 	// const [lastResultsCount, setLastResultsCount] = React.useState<number>(0)
@@ -185,6 +189,15 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 		setRowHeights(rowHeights)
 		setRows(holdingRows)
 	}
+
+	// React.useEffect(() => {
+	// 	const { y, height } = bounds
+	// 	const percent = ((y * -1) / height) * 100
+	// 	// console.log('bounds', { y, height, percent })
+	// 	if (percent > 40) {
+	// 		loadMoreOnScroll()
+	// 	}
+	// }, [bounds])
 
 	return (
 		<div ref={ref} id="justified-gallery">

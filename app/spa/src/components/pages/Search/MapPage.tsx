@@ -56,8 +56,6 @@ const MapPage: React.FunctionComponent = () => {
 		return <Redirect to="/" />
 	}
 
-	// const ref = React.useRef<HTMLHeadingElement>(null)
-
 	return (
 		<SearchPageTemplate>
 			<div id="map-results-container" ref={ref}>
