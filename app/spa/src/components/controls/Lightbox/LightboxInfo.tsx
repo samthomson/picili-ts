@@ -160,7 +160,11 @@ const LightboxInfo: React.FunctionComponent<IProps> = ({
 	if (loading) {
 		return (
 			<>
-				<MantineCore.LoadingOverlay visible={loading} overlayBlur={2} />
+				<MantineCore.LoadingOverlay
+					visible={loading}
+					overlayBlur={2}
+					loaderProps={{ color: 'maroon' }}
+				/>
 			</>
 		)
 	}
