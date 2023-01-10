@@ -43,7 +43,7 @@ const AdminOverview: React.FunctionComponent = () => {
 
 	return (
 		<React.Fragment>
-			<h3>summary</h3>
+			<h3 className="admin-page-title">summary</h3>
 			<table>
 				<tbody>
 					<tr>

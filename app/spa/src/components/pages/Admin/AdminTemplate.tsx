@@ -69,7 +69,7 @@ const DropdownMenu: React.FunctionComponent = () => {
 	const location = useLocation()
 
 	return (
-		<div>
+		<div id="admin-mobile-menu-container">
 			<MantineCore.Menu shadow="md" width={200}>
 				<MantineCore.Menu.Target>
 					<MantineCore.Button
