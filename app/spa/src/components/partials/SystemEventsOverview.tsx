@@ -45,11 +45,16 @@ const SystemEventsOverview: React.FunctionComponent = () => {
 			{items.length === 0 && <>no system events have occured...</>}
 			{items.length > 0 && (
 				<>
-					<table>
+					<MantineCore.Table
+						striped
+						highlightOnHover
+						withBorder
+						withColumnBorders
+					>
 						<thead>
 							<tr>
-								<td>when</td>
-								<td>event</td>
+								<th>when</th>
+								<th>event</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -64,7 +69,7 @@ const SystemEventsOverview: React.FunctionComponent = () => {
 								</tr>
 							))}
 						</tbody>
-					</table>
+					</MantineCore.Table>
 					<br />
 					<p>(showing only the most recent 100)</p>
 				</>
