@@ -67,25 +67,42 @@ const MenuItems = () => {
 const DropdownMenu: React.FunctionComponent = () => {
 	const [isMenuOpen, setIsMenuOpen] = React.useState<boolean>(false)
 	const location = useLocation()
-	const isMobile = useIsMobile()
 
 	return (
-		<div
-			id="admin-dropdown-menu"
-			className={classNames({
-				'is-mobile': isMobile,
-			})}
-		>
-			<a onClick={() => setIsMenuOpen(!isMenuOpen)}>
-				<h2 className="admin-page-title">
-					{displayTextForRoute(location.pathname)}
-				</h2>
-			</a>
-			{isMenuOpen && (
-				<div>
-					<MenuItems />
-				</div>
-			)}
+		<div>
+			<MantineCore.Menu shadow="md" width={200}>
+				<MantineCore.Menu.Target>
+					<MantineCore.Button
+						variant="outline"
+						color="gray"
+						radius="md"
+					>
+						{displayTextForRoute(location.pathname)}
+						<MantineCore.Burger
+							opened={isMenuOpen}
+							onClick={() => setIsMenuOpen((o) => !o)}
+							title={'title'}
+							size="xs"
+							color="grey"
+						/>
+					</MantineCore.Button>
+				</MantineCore.Menu.Target>
+
+				<MantineCore.Menu.Dropdown>
+					{menuItems.map((menuItem, key) => (
+						<NavLink
+							exact={true}
+							className="item"
+							to={menuItem.href}
+							key={key}
+						>
+							<MantineCore.Menu.Item>
+								{menuItem.displayText}
+							</MantineCore.Menu.Item>
+						</NavLink>
+					))}
+				</MantineCore.Menu.Dropdown>
+			</MantineCore.Menu>
 		</div>
 	)
 }
@@ -102,7 +119,7 @@ const AdminTemplate: React.FunctionComponent<Props> = ({ children }: Props) => {
 					</div>
 				)}
 				<div id="admin-tab-content">
-					<DropdownMenu />
+					{isMobile && <DropdownMenu />}
 					{children}
 				</div>
 			</div>
