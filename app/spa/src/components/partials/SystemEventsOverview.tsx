@@ -1,6 +1,7 @@
 import React from 'react'
 import { useQuery, gql } from '@apollo/client'
 import moment from 'moment'
+import * as MantineCore from '@mantine/core'
 
 import * as Types from '@shared/declarations'
 
@@ -22,7 +23,13 @@ const SystemEventsOverview: React.FunctionComponent = () => {
 	})
 
 	if (loading) {
-		return <>loading...</>
+		return (
+			<MantineCore.LoadingOverlay
+				visible={true}
+				overlayBlur={2}
+				loaderProps={{ color: 'maroon' }}
+			/>
+		)
 	}
 
 	if (error) {
