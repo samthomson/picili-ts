@@ -82,7 +82,7 @@ const TasksOverview: React.FunctionComponent = () => {
 		actionable
 	return (
 		<React.Fragment>
-			<h2>tasks queued</h2>
+			<h2>queued</h2>
 			<span title={oldest}>Queue age: {queueAge}</span>
 			<br />
 			total tasks: {totalTasks}

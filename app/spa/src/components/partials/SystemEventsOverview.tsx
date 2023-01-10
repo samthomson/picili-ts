@@ -41,7 +41,6 @@ const SystemEventsOverview: React.FunctionComponent = () => {
 
 	return (
 		<React.Fragment>
-			<h2>system events</h2>
 			{items.length === 0 && <>no system events have occured...</>}
 			{items.length > 0 && (
 				<>

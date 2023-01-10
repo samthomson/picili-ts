@@ -25,7 +25,7 @@ const menuItems = [
 	},
 	{
 		href: '/admin/systemevents',
-		displayText: 'events',
+		displayText: 'system events',
 	},
 ]
 
