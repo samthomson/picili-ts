@@ -101,6 +101,7 @@ const QueryBuilder: React.FunctionComponent<{
 					radius="md"
 					value={searchMode}
 					id="query-builder-tabs"
+					keepMounted={false}
 				>
 					<MantineCore.Tabs.List>
 						{tabs.map((tab, index) => (
