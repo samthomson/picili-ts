@@ -72,6 +72,9 @@ const IconForType = (type: string, subtype: string) => {
 		// todo: plant IconPlant
 		// todo: directory
 
+		case type === 'plant':
+			return Icons.IconPlant
+
 		default:
 			return Icons.IconQuestionMark
 	}
