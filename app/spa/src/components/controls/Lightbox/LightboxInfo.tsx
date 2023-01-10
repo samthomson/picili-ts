@@ -3,6 +3,7 @@ import * as ReactRedux from 'react-redux'
 import { useQuery, gql } from '@apollo/client'
 import moment from 'moment'
 import * as Icons from '@tabler/icons'
+import * as MantineCore from '@mantine/core'
 
 import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
@@ -157,7 +158,11 @@ const LightboxInfo: React.FunctionComponent<IProps> = ({
 		return <></>
 	}
 	if (loading) {
-		return <>loading...</>
+		return (
+			<>
+				<MantineCore.LoadingOverlay visible={loading} overlayBlur={2} />
+			</>
+		)
 	}
 	if (error) {
 		return <>error getting file info...{error?.message || error}</>
@@ -187,6 +192,7 @@ const LightboxInfo: React.FunctionComponent<IProps> = ({
 	})()
 	return (
 		<>
+			<MantineCore.LoadingOverlay visible={loading} overlayBlur={2} />
 			{fileInfo?.address && (
 				<div className="lightbox-information-piece">
 					<Icons.IconMapPin size={14} />
