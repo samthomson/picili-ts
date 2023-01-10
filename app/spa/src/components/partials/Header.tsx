@@ -39,7 +39,7 @@ const Header: React.FunctionComponent = () => {
 				<div id="top-right-links">
 					{isAuthenticated && (
 						<div>
-							<ProcessorSummaryHeader />
+							{/* <ProcessorSummaryHeader /> */}
 
 							<MantineCore.Menu shadow="md" width={200}>
 								<MantineCore.Menu.Target>
