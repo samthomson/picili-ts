@@ -49,7 +49,7 @@ const IconForType = (type: string, subtype: string) => {
 		case type === 'metadata':
 			return Icons.IconAperture
 
-		case type === 'folder':
+		case type === 'path':
 			return Icons.IconFolder
 
 		case type === 'subject':
