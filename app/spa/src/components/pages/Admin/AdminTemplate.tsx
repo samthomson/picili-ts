@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import classNames from 'classnames'
+import * as MantineCore from '@mantine/core'
 
 import PageTemplate from 'src/components/pages/PageTemplate'
 
@@ -33,30 +34,33 @@ const displayTextForRoute = (route: string): string => {
 }
 
 const MenuItems = () => {
-	return (
-		<ul>
-			{menuItems.map((menuItem, key) => (
-				<li key={key}>
-					<NavLink
-						exact={true}
-						className="item"
-						to={menuItem.href}
-						activeClassName="activeLink"
-					>
-						{menuItem.displayText}
-					</NavLink>
-				</li>
-			))}
+	const location = useLocation()
 
-			{/*
-	<NavLink
-		exact={true}
-		className="item"
-		to="/admin/keys"
-	>
-		Keys
-	</NavLink> */}
-		</ul>
+	return (
+		<>
+			<MantineCore.Tabs
+				color="red"
+				variant="outline"
+				radius="md"
+				orientation="vertical"
+				defaultValue={location.pathname}
+			>
+				<MantineCore.Tabs.List>
+					{menuItems.map((menuItem, key) => (
+						<NavLink
+							exact={true}
+							className="item"
+							to={menuItem.href}
+							key={key}
+						>
+							<MantineCore.Tabs.Tab value={menuItem.href}>
+								{menuItem.displayText}
+							</MantineCore.Tabs.Tab>
+						</NavLink>
+					))}
+				</MantineCore.Tabs.List>
+			</MantineCore.Tabs>
+		</>
 	)
 }
 

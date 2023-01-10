@@ -83,17 +83,19 @@ a {
 
 #admin-page {
   display: flex;
-  background-color: beige;
+
   #admin-side-menu {
     padding-right: $margin;
 
     flex: 0 0 auto;
-    background-color: green;
+
+    .item button{
+      width: 100%;
+    }
   }
 
   #admin-tab-content {
     flex: 1;
-    background-color: orange;
   }
 
   #admin-dropdown-menu.is-mobile {
