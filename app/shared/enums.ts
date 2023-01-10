@@ -46,7 +46,7 @@ export enum QueryType {
     VIDEO = 'video',
     COLOUR = 'colour',
     PATH = 'PATH',
-    // todo: plant 
+    PLANT = 'plant',
 }
 
 export enum QuerySubtype {
