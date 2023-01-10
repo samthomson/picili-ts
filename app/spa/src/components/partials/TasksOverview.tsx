@@ -95,13 +95,18 @@ const TasksOverview: React.FunctionComponent = () => {
 			<h2>queues</h2>
 			{queues.length === 0 && <>no tasks queued...</>}
 			{queues.length > 0 && (
-				<table>
+				<MantineCore.Table
+					striped
+					highlightOnHover
+					withBorder
+					withColumnBorders
+				>
 					<thead>
 						<tr>
-							<td>type</td>
-							<td>count</td>
-							<td>unblocked</td>
-							<td>actionable</td>
+							<th>type</th>
+							<th>count</th>
+							<th>unblocked</th>
+							<th>actionable</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -118,7 +123,7 @@ const TasksOverview: React.FunctionComponent = () => {
 							</tr>
 						))}
 					</tbody>
-				</table>
+				</MantineCore.Table>
 			)}
 			<h2>processing</h2>
 			{workers.length === 0 && (
@@ -127,16 +132,21 @@ const TasksOverview: React.FunctionComponent = () => {
 			{/* if start is after end: render start as time spent working on task 
 			if end is after start: render time since end as time idle since last task */}
 			{workers.length > 0 && (
-				<table>
+				<MantineCore.Table
+					striped
+					highlightOnHover
+					withBorder
+					withColumnBorders
+				>
 					<thead>
 						<tr>
-							<td>thread</td>
-							<td>isVideoCapable</td>
-							<td>timing</td>
-							<td>task: id</td>
-							<td>task: type</td>
-							<td>task: import?</td>
-							<td>task: # attempted</td>
+							<th>thread</th>
+							<th>isVideoCapable</th>
+							<th>timing</th>
+							<th>task: id</th>
+							<th>task: type</th>
+							<th>task: import?</th>
+							<th>task: # attempted</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -234,18 +244,23 @@ const TasksOverview: React.FunctionComponent = () => {
 							},
 						)}
 					</tbody>
-				</table>
+				</MantineCore.Table>
 			)}
 			<h2>processed</h2>
 			{recent.length === 0 && (
 				<>no tasks processed in the last month...</>
 			)}
 			{recent.length > 0 && (
-				<table>
+				<MantineCore.Table
+					striped
+					highlightOnHover
+					withBorder
+					withColumnBorders
+				>
 					<thead>
 						<tr>
-							<td>date</td>
-							<td>count</td>
+							<th>date</th>
+							<th>count</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -256,7 +271,7 @@ const TasksOverview: React.FunctionComponent = () => {
 							</tr>
 						))}
 					</tbody>
-				</table>
+				</MantineCore.Table>
 			)}
 			<hr />
 			<button onClick={() => refetch()}>refetch data</button>
