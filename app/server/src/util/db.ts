@@ -842,6 +842,7 @@ export const getFileWithTagsAndDropboxFile = async (
                 },
             },
         ],
+        order: [[Models.TagModel, 'confidence', 'DESC']],
     })
 
     if (!file) {
