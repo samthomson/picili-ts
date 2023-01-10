@@ -20,10 +20,6 @@ const AdminOverview: React.FunctionComponent = () => {
 		fetchPolicy: 'cache-and-network',
 	})
 
-	if (loading) {
-		return <>loading...</>
-	}
-
 	if (error) {
 		return <>{error?.message}</>
 	}
@@ -34,38 +30,36 @@ const AdminOverview: React.FunctionComponent = () => {
 	return (
 		<AdminTemplate>
 			<h2>summary</h2>
-			<table>
-				{/* <thead>
-					<tr>
-						<th></th>
-					</tr>
-				</thead> */}
-				<tbody>
-					<tr>
-						<td>corrupt files</td>
-						<td>
-							{corruptFiles.map((file, corruptFileIndex) => (
-								<li key={corruptFileIndex}>
-									{file}
-									<br />
-								</li>
-							))}
-						</td>
-					</tr>
-					<tr>
-						<td># dropbox files</td>
-						<td>{dropboxFileCount}</td>
-					</tr>
-					<tr>
-						<td># files</td>
-						<td>{fileCount}</td>
-					</tr>
-					<tr>
-						<td># searchable files</td>
-						<td>{searchableFilesCount}</td>
-					</tr>
-				</tbody>
-			</table>
+			{loading && <>loading...</>}
+			{loading && (
+				<table>
+					<tbody>
+						<tr>
+							<td>corrupt files</td>
+							<td>
+								{corruptFiles.map((file, corruptFileIndex) => (
+									<li key={corruptFileIndex}>
+										{file}
+										<br />
+									</li>
+								))}
+							</td>
+						</tr>
+						<tr>
+							<td># dropbox files</td>
+							<td>{dropboxFileCount}</td>
+						</tr>
+						<tr>
+							<td># files</td>
+							<td>{fileCount}</td>
+						</tr>
+						<tr>
+							<td># searchable files</td>
+							<td>{searchableFilesCount}</td>
+						</tr>
+					</tbody>
+				</table>
+			)}
 		</AdminTemplate>
 	)
 }
