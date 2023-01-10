@@ -27,7 +27,7 @@ const ElevationQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
 }> = ({ closeModal }) => {
 	const { loading, error, data } = useQuery(elevationMinMaxQuery, {
-		fetchPolicy: 'no-cache',
+		fetchPolicy: 'cache-and-network',
 	})
 
 	const elevationRangeData: Types.API.UIState = data?.UIState

@@ -27,7 +27,7 @@ const VideoQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
 }> = ({ closeModal }) => {
 	const { loading, error, data } = useQuery(videoMinMaxQuery, {
-		fetchPolicy: 'no-cache',
+		fetchPolicy: 'cache-and-network',
 	})
 
 	const dispatch = ReactRedux.useDispatch()

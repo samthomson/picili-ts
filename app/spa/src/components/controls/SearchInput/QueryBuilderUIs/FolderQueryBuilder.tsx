@@ -30,7 +30,7 @@ const FolderQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
 }> = ({ closeModal }) => {
 	const { loading, error, data } = useQuery(folderSummaryQuery, {
-		fetchPolicy: 'no-cache',
+		fetchPolicy: 'cache-and-network',
 	})
 
 	const userId: number = ReactRedux.useSelector(Selectors.userId) as number

@@ -30,7 +30,7 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
 }> = ({ closeModal }) => {
 	const { loading, error, data } = useQuery(dateRangeMinMaxQuery, {
-		fetchPolicy: 'no-cache',
+		fetchPolicy: 'cache-and-network',
 	})
 
 	const isMobile = useIsMobile()
