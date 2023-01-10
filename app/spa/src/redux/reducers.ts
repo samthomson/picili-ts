@@ -135,6 +135,7 @@ export function appReducers(
 					...state.searchQuery,
 					individualQueries: queriesAfterRemoval,
 				},
+				searchResult: undefined,
 				// reset sort overload so that default is used on subsequent queries unless explicitly set again
 				sortOverload: undefined,
 			}
