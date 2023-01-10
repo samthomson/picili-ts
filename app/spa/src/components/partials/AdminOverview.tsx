@@ -1,0 +1,71 @@
+import React from 'react'
+import { useQuery, gql } from '@apollo/client'
+
+import * as Types from '@shared/declarations'
+
+const adminOverviewQuery = gql`
+	query adminOverview {
+		adminOverview {
+			corruptFiles
+			dropboxFileCount
+			fileCount
+			searchableFilesCount
+		}
+	}
+`
+
+const AdminOverview: React.FunctionComponent = () => {
+	const { loading, error, data } = useQuery(adminOverviewQuery, {
+		fetchPolicy: 'cache-and-network',
+	})
+
+	if (loading) {
+		return <>loading...</>
+	}
+
+	if (error) {
+		return <>{error?.message}</>
+	}
+
+	const {
+		corruptFiles,
+		dropboxFileCount,
+		fileCount,
+		searchableFilesCount,
+	}: Types.API.AdminOverview = data?.adminOverview
+
+	return (
+		<React.Fragment>
+			<h2>summary</h2>
+			<table>
+				<tbody>
+					<tr>
+						<td>corrupt files</td>
+						<td>
+							{corruptFiles.map((file, corruptFileIndex) => (
+								<li key={corruptFileIndex}>
+									{file}
+									<br />
+								</li>
+							))}
+						</td>
+					</tr>
+					<tr>
+						<td># dropbox files</td>
+						<td>{dropboxFileCount}</td>
+					</tr>
+					<tr>
+						<td># files</td>
+						<td>{fileCount}</td>
+					</tr>
+					<tr>
+						<td># searchable files</td>
+						<td>{searchableFilesCount}</td>
+					</tr>
+				</tbody>
+			</table>
+		</React.Fragment>
+	)
+}
+
+export default AdminOverview

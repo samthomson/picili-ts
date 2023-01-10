@@ -16,7 +16,7 @@ import HomePage from 'src/components/pages/Search/HomePage'
 import MapPage from 'src/components/pages/Search/MapPage'
 import CalendarPage from 'src/components/pages/Search/CalendarPage'
 
-import AdminOverview from 'src/components/pages/Admin/AdminOverview'
+import AdminOverviewPage from 'src/components/pages/Admin/AdminOverviewPage'
 import AdminDropbox from 'src/components/pages/Admin/AdminDropbox'
 import AdminTasks from 'src/components/pages/Admin/AdminTasks'
 import AdminSystemEvents from 'src/components/pages/Admin/AdminSystemEvents'
@@ -79,7 +79,7 @@ const AppRouter: React.FunctionComponent = () => {
 						<ProtectedRoute
 							{...defaultProtectedRouteProps}
 							path={`${url}/`}
-							component={AdminOverview}
+							component={AdminOverviewPage}
 							exact
 						/>
 						<ProtectedRoute
