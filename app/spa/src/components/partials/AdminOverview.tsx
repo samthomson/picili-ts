@@ -40,17 +40,6 @@ const AdminOverview: React.FunctionComponent = () => {
 			<table>
 				<tbody>
 					<tr>
-						<td>corrupt files</td>
-						<td>
-							{corruptFiles.map((file, corruptFileIndex) => (
-								<li key={corruptFileIndex}>
-									{file}
-									<br />
-								</li>
-							))}
-						</td>
-					</tr>
-					<tr>
 						<td># dropbox files</td>
 						<td>{dropboxFileCount}</td>
 					</tr>
@@ -61,6 +50,18 @@ const AdminOverview: React.FunctionComponent = () => {
 					<tr>
 						<td># searchable files</td>
 						<td>{searchableFilesCount}</td>
+					</tr>
+
+					<tr>
+						<td>corrupt files</td>
+						<td>
+							{corruptFiles.map((file, corruptFileIndex) => (
+								<li key={corruptFileIndex}>
+									{file}
+									<br />
+								</li>
+							))}
+						</td>
 					</tr>
 				</tbody>
 			</table>
