@@ -77,7 +77,9 @@ const DropdownMenu: React.FunctionComponent = () => {
 			})}
 		>
 			<a onClick={() => setIsMenuOpen(!isMenuOpen)}>
-				<h2>{displayTextForRoute(location.pathname)}</h2>
+				<h2 className="admin-page-title">
+					{displayTextForRoute(location.pathname)}
+				</h2>
 			</a>
 			{isMenuOpen && (
 				<div>
