@@ -235,20 +235,15 @@ const systemEvents = async (parents, args, context): Promise<Types.API.SystemEve
     }
 }
 
-const UIState = async (parents, args, context): Promise<Types.API.UIState> => {
-    const { userId } = context
-
-    const elevationMinMax = await DBUtil.getElevationMinMax(userId)
-    const videoMinMax = await DBUtil.getVideoLengthMinMax(userId)
-    const dateRangeMinMax = await DBUtil.getDateRangeMinMax(userId)
-    const folders = await DBUtil.getFolderSummary(userId)
+const UIState = async (parents, args, ctx) => {
+    const { userId } = ctx
 
     return {
         queryBuilders: {
-            elevation: elevationMinMax,
-            videoLength: videoMinMax,
-            dateRange: dateRangeMinMax,
-            folders,
+            elevation: async () => await DBUtil.getElevationMinMax(userId),
+            videoLength: async () => await DBUtil.getVideoLengthMinMax(userId),
+            dateRange: async () => await DBUtil.getDateRangeMinMax(userId),
+            folders: async () => await DBUtil.getFolderSummary(userId),
         },
     }
 }
