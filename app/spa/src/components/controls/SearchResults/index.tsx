@@ -95,6 +95,12 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 
 	return (
 		<React.Fragment>
+			{isLoadingSearchResults && searchResults.length === 0 && (
+				<MantineCore.Loader
+					color={'maroon'}
+					style={{ width: '100%', margin: '80px auto' }}
+				/>
+			)}
 			{individualQueries.length > 0 && paginationInfo && searchStats && (
 				<div
 					ref={scrollableRef}
@@ -108,16 +114,21 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 					<>
 						<div className="results-overview">
 							<div className="results-overview-column">
-								found {paginationInfo.totalItems} result(s){' '}
-								{paginationInfo.totalItems > 0 && (
-									<>in {searchStats.speed}ms</>
+								{!isLoadingSearchResults && (
+									<>
+										found {paginationInfo.totalItems}{' '}
+										result(s){' '}
+										{paginationInfo.totalItems > 0 && (
+											<>in {searchStats.speed}ms</>
+										)}
+										<button
+											id="refresh-query-button"
+											onClick={refreshQuery}
+										>
+											[refresh]
+										</button>
+									</>
 								)}
-								<button
-									id="refresh-query-button"
-									onClick={refreshQuery}
-								>
-									[refresh]
-								</button>
 							</div>
 							<div className="results-overview-column">
 								<SearchSortSelect
@@ -125,7 +136,6 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 								/>
 							</div>
 						</div>
-
 						{showScrollToTop && (
 							<div id="scroll-to-top-button">
 								<MantineCore.Button
@@ -149,7 +159,8 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 						{!displayJustified && (
 							<TiledImageGallery searchResults={searchResults} />
 						)}
-
+						{/* // todo: make this full width and not look crappy like
+						it does now */}
 						{paginationInfo?.hasNextPage && (
 							<>
 								<br />
