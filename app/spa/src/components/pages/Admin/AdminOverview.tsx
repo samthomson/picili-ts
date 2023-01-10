@@ -17,7 +17,7 @@ const adminOverviewQuery = gql`
 
 const AdminOverview: React.FunctionComponent = () => {
 	const { loading, error, data } = useQuery(adminOverviewQuery, {
-		fetchPolicy: 'no-cache',
+		fetchPolicy: 'cache-and-network',
 	})
 
 	if (loading) {
