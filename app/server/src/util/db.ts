@@ -656,6 +656,8 @@ export const getAllResultData = async (
                 return `ORDER BY files.elevation ASC`
             case Enums.SearchSort.OLDEST:
                 return `ORDER BY files.datetime ASC`
+            case Enums.SearchSort.RANDOM:
+                return `ORDER BY RAND()`
             case Enums.SearchSort.LATEST:
             default:
                 return `ORDER BY files.datetime DESC`

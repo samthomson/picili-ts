@@ -26,6 +26,7 @@ export enum SearchSort {
     RELEVANCE = 'RELEVANCE',
     ELEVATION_HIGHEST = 'ELEVATION_HIGHEST',
     ELEVATION_LOWEST = 'ELEVATION_LOWEST',
+    RANDOM = 'RANDOM',
 }
 
 export enum AspectRatio {

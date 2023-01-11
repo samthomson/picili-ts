@@ -8,7 +8,6 @@ import moment from 'moment'
 const individualQuerySearch = async (
     userId: number,
     individualQuery: Types.API.IndividualSearchQuery,
-    sort: Enums.SearchSort,
 ): Promise<Types.Core.SearchQueryResultSet> => {
     const timeAtStart = moment()
     const dbResults = await DBUtil.performSearchQuery(userId, individualQuery)
@@ -19,7 +18,6 @@ const individualQuerySearch = async (
     Logger[searchTime > 250 ? 'warn' : 'info']('SearchUtil.individualQuerySearch', {
         searchTime,
         individualQuery,
-        sort,
         userId,
     })
 
@@ -68,7 +66,7 @@ const findOverlappingResults = (
 
     // scoring can be skipped if the user isn't sorting by confidence - just return early
 
-    if (sortMode !== Enums.SearchSort.RELEVANCE) {
+    if (!(sortMode === Enums.SearchSort.RELEVANCE || sortMode === Enums.SearchSort.RANDOM)) {
         return resultsThatAreInAllResultSets
     } else {
         // map to k/v structure
@@ -112,7 +110,7 @@ const findOverlappingResults = (
 export const sortsForSearchQuery = (searchQuery: Types.API.SearchQuery): Types.Core.SortsForSearchQuery => {
     const { individualQueries } = searchQuery
 
-    const defaultSorts = [Enums.SearchSort.LATEST, Enums.SearchSort.OLDEST]
+    const defaultSorts = [Enums.SearchSort.LATEST, Enums.SearchSort.OLDEST, Enums.SearchSort.RANDOM]
 
     // todo: use query type enum
     // const enableElevation = individualQueries.filter(query => query?.type === 'elevation').length > 0
@@ -143,7 +141,7 @@ export const search = async (
 ): Promise<Types.Core.MatchingResultData> => {
     // foreach individual query, perform an individual query search
     const individualQueryPromises = searchQuery.individualQueries.map((individualQuery) =>
-        individualQuerySearch(userId, individualQuery, sortToUse),
+        individualQuerySearch(userId, individualQuery),
     )
     const individualQueryResultSets: Types.Core.SearchQueryResultSet[] = await Promise.all(individualQueryPromises)
 

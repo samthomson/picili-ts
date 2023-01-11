@@ -202,6 +202,7 @@ const typeDefs = gql`
         RELEVANCE
         ELEVATION_HIGHEST
         ELEVATION_LOWEST
+        RANDOM
     }
 
     enum FileType {
