@@ -9,6 +9,7 @@ import DateRangeQueryBuilder from './QueryBuilderUIs/DateRangeQueryBuilder'
 // import ColourQueryBuilder from './QueryBuilderUIs/ColourQueryBuilder'
 import FolderQueryBuilder from './QueryBuilderUIs/FolderQueryBuilder'
 import PlantQueryBuilder from './QueryBuilderUIs/PlantQueryBuilder'
+import NumberplateQueryBuilder from './QueryBuilderUIs/NumberplateQueryBuilder'
 
 const QueryBuilder: React.FunctionComponent<{
 	closing: () => void
@@ -81,6 +82,13 @@ const QueryBuilder: React.FunctionComponent<{
 			label: 'Plants',
 			icon: <Icons.IconPlant size={14} />,
 			content: <PlantQueryBuilder closeModal={closeModal} />,
+		},
+		{
+			value: 'numberplates',
+			clickValue: 'numberplates',
+			label: 'Number plates',
+			icon: <Icons.IconCarCrash size={14} />,
+			content: <NumberplateQueryBuilder closeModal={closeModal} />,
 		},
 	]
 	const isMobile = useIsMobile()

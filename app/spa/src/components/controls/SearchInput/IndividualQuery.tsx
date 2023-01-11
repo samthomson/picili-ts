@@ -148,6 +148,10 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 				subtype === Enums.QuerySubtype.DIRECTORY:
 				return <span title={value}>{value.split('/').pop()}</span>
 
+			case type === Enums.QueryType.OCR &&
+				subtype === Enums.QuerySubtype.NUMBER_PLATE:
+				return value
+
 			case type === Enums.QueryType.PLANT:
 				return (
 					<>
