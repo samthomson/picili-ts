@@ -59,8 +59,7 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 				subtype === Enums.QuerySubtype.TEXT:
 				return Icons.IconTextRecognition
 
-			case type === Enums.QueryType.OCR &&
-				subtype === Enums.QuerySubtype.NUMBER_PLATE:
+			case type === Enums.QueryType.OCR_NUMBERPLATE:
 				return Icons.IconCarCrash
 
 			case type === Enums.QueryType.LOCATION:
@@ -148,8 +147,7 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 				subtype === Enums.QuerySubtype.DIRECTORY:
 				return <span title={value}>{value.split('/').pop()}</span>
 
-			case type === Enums.QueryType.OCR &&
-				subtype === Enums.QuerySubtype.NUMBER_PLATE:
+			case type === Enums.QueryType.OCR_NUMBERPLATE:
 				return value
 
 			case type === Enums.QueryType.PLANT:

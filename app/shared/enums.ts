@@ -41,6 +41,7 @@ export enum QueryType {
     EXIF = 'exif',
     SUBJECT = 'subject',
     OCR = 'ocr',
+    OCR_NUMBERPLATE = 'ocr.numberplate',
     LOCATION = 'location',
     FILETYPE = 'filetype',
     VIDEO = 'video',
@@ -51,7 +52,6 @@ export enum QueryType {
 
 export enum QuerySubtype {
     TEXT = 'text',
-    NUMBER_PLATE = 'number_plate',
     LENGTH = 'length',
     DIRECTORY = 'DIRECTORY',
     SCIENTIFICNAME = 'scientificname',

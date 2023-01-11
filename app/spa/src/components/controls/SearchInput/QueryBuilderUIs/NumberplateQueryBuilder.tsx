@@ -48,8 +48,7 @@ const NumberplateQueryBuilder: React.FunctionComponent<{
 		}
 
 		const newPlateQuery = {
-			type: Enums.QueryType.OCR,
-			subtype: Enums.QuerySubtype.NUMBER_PLATE,
+			type: Enums.QueryType.OCR_NUMBERPLATE,
 			value: selectedPlate,
 		}
 		dispatch(Actions.searchQueryAdd(newPlateQuery))
