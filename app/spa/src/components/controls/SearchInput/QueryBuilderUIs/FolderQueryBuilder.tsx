@@ -92,25 +92,37 @@ const FolderQueryBuilder: React.FunctionComponent<{
 						},
 						folderIndex,
 					) => (
-						<div
-							className="folder-summary"
+						<MantineCore.Card
+							shadow="sm"
+							p="lg"
+							radius="md"
+							withBorder
 							key={folderIndex}
 							onClick={() =>
 								setSelectedFolder(latestDirectoryPath)
 							}
+							className="folder-summary"
 						>
-							<div className="image-part">
-								<img
-									key={id}
-									src={HelperUtil.thumbPath(userId, id, 's')}
-									className="folder-summary-image"
+							<MantineCore.Card.Section>
+								<MantineCore.Image
+									src={HelperUtil.thumbPath(userId, id, 'm')}
+									height={160}
+									alt={fileDirectory}
 								/>
-							</div>
-							<div className="summary-part">
-								<Icons.IconFolder size={12} /> {fileDirectory}
+							</MantineCore.Card.Section>
+
+							<MantineCore.Group position="apart" mt="md" mb="xs">
+								<MantineCore.Text weight={500}>
+									{fileDirectory}
+								</MantineCore.Text>
+							</MantineCore.Group>
+
+							<MantineCore.Text size="sm" color="dimmed">
+								<small>
+									<Icons.IconFolders size={12} />
+									&nbsp;{latestDirectoryPath}
+								</small>
 								<br />
-								<Icons.IconFolders size={12} />{' '}
-								<small>{latestDirectoryPath}</small>
 								<br />
 								<small>
 									{fileCount} file
@@ -124,8 +136,8 @@ const FolderQueryBuilder: React.FunctionComponent<{
 										</>
 									)}
 								</small>
-							</div>
-						</div>
+							</MantineCore.Text>
+						</MantineCore.Card>
 					),
 				)}
 			</div>

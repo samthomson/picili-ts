@@ -586,15 +586,15 @@ a {
       margin-bottom: $margin;
       overflow-y: auto;
       max-height: 50vh;
-    
-      .folder-summary {
-        display: flex;
-        margin-bottom: $margin;
-        cursor: pointer;
 
-        &:last-of-type {
-          margin-bottom: 0;
-        }
+      // wrap items
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      grid-column-gap: $margin;
+      grid-row-gap: $margin;
+          
+      .folder-summary {
+        cursor: pointer;
         
         .image-part {
           width: 70px;
