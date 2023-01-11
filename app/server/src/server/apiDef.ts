@@ -264,11 +264,17 @@ const typeDefs = gql`
         fileCount: Int!
     }
 
+    type PlantSummary {
+        fileId: Int!
+        name: String!
+    }
+
     type QueryBuilders {
         elevation: MinMax
         videoLength: MinMax
         dateRange: MinMaxString
         folders: [LatestFolder]
+        plants: [PlantSummary]
     }
 
     type UIState {

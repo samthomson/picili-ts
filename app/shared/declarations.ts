@@ -212,6 +212,11 @@ export namespace API {
 		fileCount: number
 	}
 
+	export type PlantSummary = {
+		fileId: number
+		name: string
+	}
+
 	export type UIState = {
 		queryBuilders: QueryBuildersUIData
 	}

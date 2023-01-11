@@ -979,3 +979,23 @@ export const getFolderSummary = async (userId: number): Promise<Types.API.Folder
         }
     })
 }
+
+export const getPlantSummary = async (userId: number): Promise<Types.API.PlantSummary[]> => {
+    const query = `SELECT tags.file_id as fileId, tags.value as name FROM tags 
+    JOIN files ON files.id = tags.file_id 
+    WHERE type='plant' AND subtype='scientificname' AND confidence >= :confidence AND files.user_id=:userId AND files.is_thumbnailed = TRUE
+    GROUP BY file_id 
+    ORDER BY confidence DESC;`
+
+    const { SEARCH_CONFIDENCE_THRESHOLD: confidence } = process.env
+
+    const dbPlants: Types.API.PlantSummary[] = await Database.query(query, {
+        type: Sequelize.QueryTypes.SELECT,
+        replacements: {
+            userId,
+            confidence,
+        },
+    })
+
+    return dbPlants
+}
