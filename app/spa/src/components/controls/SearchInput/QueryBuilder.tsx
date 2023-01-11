@@ -8,6 +8,7 @@ import VideoQueryBuilder from './QueryBuilderUIs/VideoQueryBuilder'
 import DateRangeQueryBuilder from './QueryBuilderUIs/DateRangeQueryBuilder'
 // import ColourQueryBuilder from './QueryBuilderUIs/ColourQueryBuilder'
 import FolderQueryBuilder from './QueryBuilderUIs/FolderQueryBuilder'
+import PlantQueryBuilder from './QueryBuilderUIs/PlantQueryBuilder'
 
 const QueryBuilder: React.FunctionComponent<{
 	closing: () => void
@@ -73,6 +74,13 @@ const QueryBuilder: React.FunctionComponent<{
 			label: 'Video',
 			icon: <Icons.IconVideo size={14} />,
 			content: <VideoQueryBuilder closeModal={closeModal} />,
+		},
+		{
+			value: 'plants',
+			clickValue: 'plants',
+			label: 'Plants',
+			icon: <Icons.IconPlant size={14} />,
+			content: <PlantQueryBuilder closeModal={closeModal} />,
 		},
 	]
 	const isMobile = useIsMobile()

@@ -54,4 +54,5 @@ export enum QuerySubtype {
     NUMBER_PLATE = 'number_plate',
     LENGTH = 'length',
     DIRECTORY = 'DIRECTORY',
+    SCIENTIFICNAME = 'scientificname',
 }
