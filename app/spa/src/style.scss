@@ -628,6 +628,26 @@ a {
     }
   }
 
+  #exif-aggregation-bucket-list {
+
+    margin-bottom: $margin;
+    overflow-y: auto;
+    max-height: 50vh;
+
+    #exif-aggregation-bucket-summaries-list {
+      
+      // wrap items
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      grid-column-gap: $margin;
+      grid-row-gap: $margin;
+          
+        .exif-summary {
+          cursor: pointer;
+        }
+      }
+    }
+
 }
 
 //
