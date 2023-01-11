@@ -269,12 +269,19 @@ const typeDefs = gql`
         name: String!
     }
 
+    type NumberplateSummary {
+        fileId: Int!
+        plate: String!
+        count: Int!
+    }
+
     type QueryBuilders {
         elevation: MinMax
         videoLength: MinMax
         dateRange: MinMaxString
         folders: [LatestFolder]
         plants: [PlantSummary]
+        numberplates: [NumberplateSummary]
     }
 
     type UIState {

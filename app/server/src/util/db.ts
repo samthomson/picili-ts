@@ -999,3 +999,23 @@ export const getPlantSummary = async (userId: number): Promise<Types.API.PlantSu
 
     return dbPlants
 }
+
+export const getNumberplateSummary = async (userId: number): Promise<Types.API.NumberplateSummary[]> => {
+    const query = `SELECT files.id as fileId, tags.value as plate, count(files.id) as count FROM tags 
+    RIGHT JOIN files ON files.id = tags.file_id
+    WHERE type='ocr.numberplate' and subtype='plate' AND confidence >= :confidence AND files.user_id=:userId AND files.is_thumbnailed = TRUE
+    GROUP BY value 
+    ORDER BY count DESC`
+
+    const { SEARCH_CONFIDENCE_THRESHOLD: confidence } = process.env
+
+    const dbNumberplates: Types.API.NumberplateSummary[] = await Database.query(query, {
+        type: Sequelize.QueryTypes.SELECT,
+        replacements: {
+            userId,
+            confidence,
+        },
+    })
+
+    return dbNumberplates
+}

@@ -202,6 +202,8 @@ export namespace API {
 		videoLength?: MinMax
 		dateRange?: MinMaxString
 		folders?: FolderSummary[]
+		plants?: PlantSummary[]
+		numberplates?: NumberplateSummary[]
 	}
 
 	export type FolderSummary = {
@@ -215,6 +217,12 @@ export namespace API {
 	export type PlantSummary = {
 		fileId: number
 		name: string
+	}
+
+	export type NumberplateSummary = {
+		fileId: number
+		plate: string
+		count: number
 	}
 
 	export type UIState = {

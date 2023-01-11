@@ -245,6 +245,7 @@ const UIState = async (parents, args, ctx) => {
             dateRange: async () => await DBUtil.getDateRangeMinMax(userId),
             folders: async () => await DBUtil.getFolderSummary(userId),
             plants: async () => await DBUtil.getPlantSummary(userId),
+            numberplates: async () => await DBUtil.getNumberplateSummary(userId),
         },
     }
 }
