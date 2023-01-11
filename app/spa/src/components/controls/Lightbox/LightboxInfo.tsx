@@ -177,7 +177,15 @@ const LightboxInfo: React.FunctionComponent<IProps> = ({
 
 	const { fileInfo }: { fileInfo: Types.API.FileInfo } = data
 
-	const searchFromTag = (type: string, subtype: string, tagValue: string) => {
+	const searchFromTag = ({
+		type,
+		subtype = undefined,
+		tagValue,
+	}: {
+		type: string
+		subtype?: string
+		tagValue: string
+	}) => {
 		dispatch(Actions.searchQueryAdd({ type, subtype, value: tagValue }))
 		dispatch(Actions.attemptSearch())
 		// close the lightbox
@@ -262,7 +270,14 @@ const LightboxInfo: React.FunctionComponent<IProps> = ({
 									key={tagIndex}
 									className="lightbox-tag"
 									onClick={() =>
-										searchFromTag(type, subtype, value)
+										searchFromTag({
+											type,
+											subtype:
+												subtype && subtype !== null
+													? subtype
+													: undefined,
+											tagValue: value,
+										})
 									}
 								>
 									<Icon size={14} />{' '}
