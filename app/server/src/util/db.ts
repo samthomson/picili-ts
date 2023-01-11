@@ -1019,3 +1019,43 @@ export const getNumberplateSummary = async (userId: number): Promise<Types.API.N
 
     return dbNumberplates
 }
+
+export const getExifSummary = async (userId: number): Promise<Types.API.ExifCameraSummary[]> => {
+    const query = `SELECT files.id as fileId, tags.subtype, tags.value as value, count(files.id) as count FROM tags 
+    JOIN files ON files.id = tags.file_id 
+    WHERE tags.type='exif' and (tags.subtype='cameramake' OR tags.subtype='cameramodel' OR tags.subtype='lensmodel') AND tags.confidence >= :confidence AND files.user_id=:userId AND files.is_thumbnailed = TRUE
+    GROUP BY tags.value 
+    ORDER BY count DESC;`
+
+    const { SEARCH_CONFIDENCE_THRESHOLD: confidence } = process.env
+
+    const dbExifSummaries: Types.Core.DBExifFieldSummary[] = await Database.query(query, {
+        type: Sequelize.QueryTypes.SELECT,
+        replacements: {
+            userId,
+            confidence,
+        },
+    })
+
+    const dbCameraAggregations = {}
+
+    for (let i = 0; i < dbExifSummaries.length; i++) {
+        const { fileId, subtype, value, count } = dbExifSummaries[i]
+
+        if (!dbCameraAggregations?.[subtype]) {
+            dbCameraAggregations[subtype] = []
+        }
+        dbCameraAggregations[subtype].push({ fileId, value, count })
+    }
+
+    const aggs = []
+
+    for (const [key, value] of Object.entries(dbCameraAggregations)) {
+        aggs.push({
+            bucket: key,
+            summaries: value,
+        })
+    }
+
+    return aggs
+}

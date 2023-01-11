@@ -276,6 +276,17 @@ const typeDefs = gql`
         count: Int!
     }
 
+    type ExifFieldSummary {
+        fileId: Int!
+        value: String!
+        count: Int!
+    }
+
+    type ExifCameraSummary {
+        bucket: String!
+        summaries: [ExifFieldSummary]!
+    }
+
     type QueryBuilders {
         elevation: MinMax
         videoLength: MinMax
@@ -283,6 +294,7 @@ const typeDefs = gql`
         folders: [LatestFolder]
         plants: [PlantSummary]
         numberplates: [NumberplateSummary]
+        exifCameras: [ExifCameraSummary]
     }
 
     type UIState {

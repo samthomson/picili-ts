@@ -226,6 +226,17 @@ export namespace API {
 		count: number
 	}
 
+	export type ExifFieldAggregation = {
+		fileId: number
+		value: string
+		count: number
+	}
+
+	export type ExifCameraSummary = {
+		bucket: string
+		summaries: ExifFieldAggregation[]
+	}
+
 	export type UIState = {
 		queryBuilders: QueryBuildersUIData
 	}
@@ -670,6 +681,13 @@ export namespace Core {
 		latestFilePath: string
 		latestDate?: string
 		fileCount: number
+	}
+
+	export type DBExifFieldSummary = {
+		fileId: number
+		subtype: string
+		value: string
+		count: number
 	}
 }
 

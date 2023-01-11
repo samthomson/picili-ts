@@ -246,6 +246,7 @@ const UIState = async (parents, args, ctx) => {
             folders: async () => await DBUtil.getFolderSummary(userId),
             plants: async () => await DBUtil.getPlantSummary(userId),
             numberplates: async () => await DBUtil.getNumberplateSummary(userId),
+            exifCameras: async () => await DBUtil.getExifSummary(userId),
         },
     }
 }
