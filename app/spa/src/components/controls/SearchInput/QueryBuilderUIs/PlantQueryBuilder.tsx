@@ -77,21 +77,31 @@ const PlantQueryBuilder: React.FunctionComponent<{
 		<div id="folder-query-builder">
 			Select one of {plantSummaryData.length} plant
 			{plantSummaryData.length > 1 && 's'}.
-			<div id="folder-summary-list">
+			<div id="flower-summary-list">
 				{plantSummaryData.map(({ fileId, name }, plantIndex) => (
-					<div
-						className="folder-summary"
+					<MantineCore.Card
+						shadow="sm"
+						p="lg"
+						radius="md"
+						withBorder
 						key={plantIndex}
 						onClick={() => setSelectedPlant(name)}
+						className="flower-result"
 					>
-						<div className="image-part">
-							<img
-								src={HelperUtil.thumbPath(userId, fileId, 's')}
-								className="folder-summary-image"
+						<MantineCore.Card.Section>
+							<MantineCore.Image
+								src={HelperUtil.thumbPath(userId, fileId, 'm')}
+								height={160}
+								alt={name}
 							/>
-						</div>
-						<div className="summary-part">{name}</div>
-					</div>
+						</MantineCore.Card.Section>
+
+						<MantineCore.Group position="apart" mt="md" mb="xs">
+							<MantineCore.Text weight={500}>
+								{name}
+							</MantineCore.Text>
+						</MantineCore.Group>
+					</MantineCore.Card>
 				))}
 			</div>
 			<div className="button-to-add-query-container">
