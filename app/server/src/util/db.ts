@@ -987,6 +987,15 @@ export const getPlantSummary = async (userId: number): Promise<Types.API.PlantSu
     GROUP BY file_id 
     ORDER BY confidence DESC;`
 
+    // todo: change to a query/schema with count of files matching plant type and also group on plant type not file - that doesn't make sense; leads to duplicates
+    /*
+    SELECT files.id as fileId, tags.value as name, count(files.id) as count FROM `tags` 
+    JOIN files ON files.id = tags.file_id 
+    where type='plant' and subtype='scientificname' AND confidence >= 35 AND files.user_id=6 AND files.is_thumbnailed = TRUE
+    GROUP BY value 
+    ORDER BY count DESC;
+    */
+
     const { SEARCH_CONFIDENCE_THRESHOLD: confidence } = process.env
 
     const dbPlants: Types.API.PlantSummary[] = await Database.query(query, {
