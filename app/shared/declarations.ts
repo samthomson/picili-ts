@@ -217,6 +217,7 @@ export namespace API {
 	export type PlantSummary = {
 		fileId: number
 		name: string
+		count: number
 	}
 
 	export type NumberplateSummary = {

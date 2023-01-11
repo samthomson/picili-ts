@@ -267,6 +267,7 @@ const typeDefs = gql`
     type PlantSummary {
         fileId: Int!
         name: String!
+        count: Int!
     }
 
     type NumberplateSummary {

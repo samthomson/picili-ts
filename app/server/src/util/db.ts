@@ -981,20 +981,11 @@ export const getFolderSummary = async (userId: number): Promise<Types.API.Folder
 }
 
 export const getPlantSummary = async (userId: number): Promise<Types.API.PlantSummary[]> => {
-    const query = `SELECT tags.file_id as fileId, tags.value as name FROM tags 
+    const query = `SELECT files.id as fileId, tags.value as name, count(files.id) as count FROM tags
     JOIN files ON files.id = tags.file_id 
-    WHERE type='plant' AND subtype='scientificname' AND confidence >= :confidence AND files.user_id=:userId AND files.is_thumbnailed = TRUE
-    GROUP BY file_id 
-    ORDER BY confidence DESC;`
-
-    // todo: change to a query/schema with count of files matching plant type and also group on plant type not file - that doesn't make sense; leads to duplicates
-    /*
-    SELECT files.id as fileId, tags.value as name, count(files.id) as count FROM `tags` 
-    JOIN files ON files.id = tags.file_id 
-    where type='plant' and subtype='scientificname' AND confidence >= 35 AND files.user_id=6 AND files.is_thumbnailed = TRUE
+    where type='plant' and subtype='scientificname' AND confidence >= :confidence AND files.user_id=:userId AND files.is_thumbnailed = TRUE
     GROUP BY value 
-    ORDER BY count DESC;
-    */
+    ORDER BY count DESC;`
 
     const { SEARCH_CONFIDENCE_THRESHOLD: confidence } = process.env
 
