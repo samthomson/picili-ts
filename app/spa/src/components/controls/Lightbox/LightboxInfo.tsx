@@ -56,10 +56,10 @@ const IconForType = (type: string, subtype: string) => {
 		case type === 'subject':
 			return Icons.IconPhotoSearch
 
-		case type === 'ocr' && subtype === 'text':
+		case type === 'ocr.text':
 			return Icons.IconTextRecognition
 
-		case type === 'ocr' && subtype === 'number_plate':
+		case type === 'ocr.number_plate':
 			return Icons.IconCarCrash
 
 		case type === 'fileextension':
@@ -134,6 +134,11 @@ const displayContentForTag = (tag: Types.API.Tag) => {
 
 		case type === 'subject' && subtype === 'imagga':
 			return `${value} (${confidence}%)`
+
+		case type === 'ocr.text':
+		case type === 'ocr.number_plate':
+			return value
+
 		default:
 			return `${type}.${subtype}=${value}(${confidence}%)`
 	}

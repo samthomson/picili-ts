@@ -55,8 +55,7 @@ const IndividualQuery: React.FunctionComponent<IProps> = ({
 			case type === Enums.QueryType.SUBJECT:
 				return Icons.IconPhotoSearch
 
-			case type === Enums.QueryType.OCR &&
-				subtype === Enums.QuerySubtype.TEXT:
+			case type === Enums.QueryType.OCR_TEXT:
 				return Icons.IconTextRecognition
 
 			case type === Enums.QueryType.OCR_NUMBERPLATE:
