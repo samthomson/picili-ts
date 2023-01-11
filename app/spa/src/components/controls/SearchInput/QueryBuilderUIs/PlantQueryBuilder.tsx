@@ -17,6 +17,7 @@ const plantSummaryQuery = gql`
 				plants {
 					fileId
 					name
+					count
 				}
 			}
 		}
@@ -78,7 +79,7 @@ const PlantQueryBuilder: React.FunctionComponent<{
 			Select one of {plantSummaryData.length} plant
 			{plantSummaryData.length > 1 && 's'}.
 			<div id="flower-summary-list">
-				{plantSummaryData.map(({ fileId, name }, plantIndex) => (
+				{plantSummaryData.map(({ fileId, name, count }, plantIndex) => (
 					<MantineCore.Card
 						shadow="sm"
 						p="lg"
@@ -99,6 +100,13 @@ const PlantQueryBuilder: React.FunctionComponent<{
 						<MantineCore.Group position="apart" mt="md" mb="xs">
 							<MantineCore.Text weight={500}>
 								{name}
+							</MantineCore.Text>
+
+							<MantineCore.Text size="sm" color="dimmed">
+								<small>
+									&nbsp;{count} occurence
+									{count > 1 && 's'}
+								</small>
 							</MantineCore.Text>
 						</MantineCore.Group>
 					</MantineCore.Card>
