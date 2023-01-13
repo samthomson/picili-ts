@@ -276,8 +276,10 @@ const TasksOverview: React.FunctionComponent = () => {
 					</tbody>
 				</MantineCore.Table>
 			)}
-			<hr />
+			<br />
 			<button onClick={() => refetch()}>refetch data</button>
+			<br />
+			<br />
 		</React.Fragment>
 	)
 }
