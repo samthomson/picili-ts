@@ -110,7 +110,7 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 			: paginationInfo.totalItems
 
 		return { showingMinimum, showingCount }
-	}, [])
+	}, [paginationInfo])
 
 	return (
 		<React.Fragment>
