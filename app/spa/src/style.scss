@@ -560,6 +560,7 @@ a {
 #query-builder-tabs {
 
   .button-to-add-query-container {
+    margin-top: $margin * 2;
     float: right;
   }
 
@@ -572,7 +573,6 @@ a {
       display: flex;
       gap: 16px;
       margin-top: $margin * 2;
-      margin-bottom: $margin * 3;
 
       .elevation-bound-input {
         flex-grow: 1;
@@ -584,7 +584,6 @@ a {
   #folder-query-builder {
 
     #folder-summary-list {
-      margin-bottom: $margin;
       overflow-y: auto;
       max-height: 50vh;
 
@@ -613,8 +612,6 @@ a {
   }
 
   #flower-summary-list {
-
-    margin-bottom: $margin;
     overflow-y: auto;
     max-height: 50vh;
     
@@ -630,8 +627,6 @@ a {
   }
 
   #exif-aggregation-bucket-list {
-
-    margin-bottom: $margin;
     overflow-y: auto;
     max-height: 50vh;
 
