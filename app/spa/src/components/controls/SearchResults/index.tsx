@@ -116,30 +116,43 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 							<div className="results-overview-column">
 								{!isLoadingSearchResults && (
 									<>
-										showing 1 -{' '}
-										{!(
-											paginationInfo.perPage *
-												paginationInfo.page >
-											paginationInfo.totalItems
-										)
-											? paginationInfo.perPage *
-											  paginationInfo.page
-											: paginationInfo.totalItems}
-										&nbsp;files from{' '}
-										{paginationInfo.totalItems} result
-										{paginationInfo.totalItems > 1 && 's'}.
-										{paginationInfo.totalItems > 0 && (
-											<>
-												&nbsp;speed: {searchStats.speed}
-												ms
-											</>
-										)}
-										<button
+										<span id="overview-text">
+											showing 1 -{' '}
+											{!(
+												paginationInfo.perPage *
+													paginationInfo.page >
+												paginationInfo.totalItems
+											)
+												? paginationInfo.perPage *
+												  paginationInfo.page
+												: paginationInfo.totalItems}
+											&nbsp;files from{' '}
+											{paginationInfo.totalItems} result
+											{paginationInfo.totalItems > 1 &&
+												's'}
+											.
+											{paginationInfo.totalItems > 0 && (
+												<>
+													&nbsp;speed:{' '}
+													{searchStats.speed}
+													ms
+												</>
+											)}
+										</span>
+										<MantineCore.Button
 											id="refresh-query-button"
 											onClick={refreshQuery}
+											variant="light"
+											color="gray"
+											radius="md"
+											size="sm"
+											compact
+											leftIcon={
+												<Icons.IconReload size={14} />
+											}
 										>
-											[refresh]
-										</button>
+											refresh
+										</MantineCore.Button>
 									</>
 								)}
 							</div>

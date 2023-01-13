@@ -303,10 +303,6 @@ a {
     #reset-query-button {
       float: right;
     }
-
-    #refresh-query-button {
-      float: right;
-    }
   }
 
   // todo: on mobile, hide this
@@ -333,6 +329,17 @@ a {
 
   .results-overview-column {
     flex-grow: 1;
+
+    align-items: center;
+    display: flex;
+  }
+
+  #overview-text {
+    color: $greyColor;
+  }
+
+  #refresh-query-button {
+    margin-left: $margin;
   }
 }
 
@@ -345,7 +352,7 @@ a {
 }
 
 #sort-select {
-  float: right;
+  margin-left: auto;
 
   .sort-capitalised {
     text-transform: capitalize;
