@@ -32,13 +32,11 @@ const VideoQueryBuilder: React.FunctionComponent<{
 
 	const dispatch = ReactRedux.useDispatch()
 
-	const videoLengthRangeData: Types.API.UIState = data?.UIState
+	const videoLengthRangeData: Types.API.MinMax =
+		data?.UIState?.queryBuilders?.videoLength
 
-	const defaultMinMax = videoLengthRangeData?.queryBuilders?.videoLength
-		? [
-				videoLengthRangeData.queryBuilders.videoLength.min,
-				videoLengthRangeData.queryBuilders.videoLength.max,
-		  ]
+	const defaultMinMax = videoLengthRangeData
+		? [videoLengthRangeData.min, videoLengthRangeData.max]
 		: undefined
 
 	const currentVideoQuery = ReactRedux.useSelector(
@@ -53,10 +51,9 @@ const VideoQueryBuilder: React.FunctionComponent<{
 	)
 
 	React.useEffect(() => {
-		const parsedAPIMinMax = videoLengthRangeData?.queryBuilders
-			?.videoLength && [
-			videoLengthRangeData.queryBuilders.videoLength.min,
-			videoLengthRangeData.queryBuilders.videoLength.max,
+		const parsedAPIMinMax = videoLengthRangeData && [
+			videoLengthRangeData.min,
+			videoLengthRangeData.max,
 		]
 
 		// only overwrite if we don't have an existing query from redux
@@ -67,7 +64,7 @@ const VideoQueryBuilder: React.FunctionComponent<{
 		) {
 			setRangeValue([parsedAPIMinMax[0], parsedAPIMinMax[1]])
 		}
-	}, [videoLengthRangeData?.queryBuilders.videoLength])
+	}, [videoLengthRangeData])
 
 	const addVideoQuery = () => {
 		const newVideoQuery = {
