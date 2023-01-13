@@ -162,8 +162,8 @@ const VideoQueryBuilder: React.FunctionComponent<{
 					radius="md"
 					size="md"
 					onClick={addVideoQuery}
-					leftIcon={<Icons.IconSearch />}
-					variant="outline"
+					leftIcon={<Icons.IconSearch size={16} />}
+					variant="light"
 					color="gray"
 				>
 					Find videos&nbsp;

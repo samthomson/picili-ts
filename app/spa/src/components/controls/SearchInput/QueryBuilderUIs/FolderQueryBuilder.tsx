@@ -146,8 +146,8 @@ const FolderQueryBuilder: React.FunctionComponent<{
 					radius="md"
 					size="md"
 					onClick={addFolderQuery}
-					leftIcon={<Icons.IconSearch />}
-					variant="outline"
+					leftIcon={selectedFolder && <Icons.IconSearch size={16} />}
+					variant="light"
 					color="gray"
 					disabled={!selectedFolder}
 				>

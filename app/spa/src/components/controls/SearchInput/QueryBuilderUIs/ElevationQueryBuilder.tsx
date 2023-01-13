@@ -162,8 +162,8 @@ const ElevationQueryBuilder: React.FunctionComponent<{
 					radius="md"
 					size="md"
 					onClick={addElevationQuery}
-					leftIcon={<Icons.IconSearch />}
-					variant="outline"
+					leftIcon={<Icons.IconSearch size={16} />}
+					variant="light"
 					color="gray"
 				>
 					Search for files between{' '}

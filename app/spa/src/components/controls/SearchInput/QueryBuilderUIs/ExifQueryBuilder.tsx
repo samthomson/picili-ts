@@ -147,8 +147,8 @@ const ExifQueryBuilder: React.FunctionComponent<{
 					radius="md"
 					size="md"
 					onClick={addQuery}
-					leftIcon={<Icons.IconSearch />}
-					variant="outline"
+					leftIcon={selectedQuery && <Icons.IconSearch size={16} />}
+					variant="light"
 					color="gray"
 					disabled={!selectedQuery}
 				>

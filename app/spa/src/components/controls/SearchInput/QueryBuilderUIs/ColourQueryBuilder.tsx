@@ -48,8 +48,8 @@ const ColourQueryBuilder: React.FunctionComponent<{
 					radius="md"
 					size="md"
 					onClick={addColourQuery}
-					leftIcon={<Icons.IconSearch />}
-					variant="outline"
+					leftIcon={value !== '' && <Icons.IconSearch size={16} />}
+					variant="light"
 					color="gray"
 					disabled={value === ''}
 				>

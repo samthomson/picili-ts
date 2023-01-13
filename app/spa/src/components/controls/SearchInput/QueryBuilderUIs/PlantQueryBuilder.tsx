@@ -117,8 +117,8 @@ const PlantQueryBuilder: React.FunctionComponent<{
 					radius="md"
 					size="md"
 					onClick={addPlantQuery}
-					leftIcon={<Icons.IconSearch />}
-					variant="outline"
+					leftIcon={selectedPlant && <Icons.IconSearch size={16} />}
+					variant="light"
 					color="gray"
 					disabled={!selectedPlant}
 				>
