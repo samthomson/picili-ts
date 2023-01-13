@@ -108,7 +108,10 @@ const VideoQueryBuilder: React.FunctionComponent<{
 	}
 
 	return (
-		<div id="date-range-query-builder">
+		<div
+			id="date-range-query-builder"
+			className="centered-range-query-builder-container"
+		>
 			<MantineCore.RangeSlider
 				size="xl"
 				radius="xl"

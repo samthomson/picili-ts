@@ -108,7 +108,10 @@ const ElevationQueryBuilder: React.FunctionComponent<{
 	}
 
 	return (
-		<div id="elevation-query-builder">
+		<div
+			id="elevation-query-builder"
+			className="centered-range-query-builder-container"
+		>
 			<MantineCore.RangeSlider
 				size="xl"
 				radius="xl"

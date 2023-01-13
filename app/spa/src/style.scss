@@ -563,10 +563,14 @@ a {
     float: right;
   }
 
-  #elevation-query-builder {
+  .centered-range-query-builder-container {
     width: 80%;
     margin: 0 auto;
     padding-top: 40px;
+
+  }
+
+  #elevation-query-builder {
 
     #elevation-range-inputs {
       display: flex;
