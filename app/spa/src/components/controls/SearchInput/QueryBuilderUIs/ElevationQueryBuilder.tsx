@@ -30,13 +30,11 @@ const ElevationQueryBuilder: React.FunctionComponent<{
 		fetchPolicy: 'cache-and-network',
 	})
 
-	const elevationRangeData: Types.API.UIState = data?.UIState
+	const elevationRangeData: Types.API.MinMax =
+		data?.UIState?.queryBuilders?.elevation
 
-	const defaultMinMax = elevationRangeData?.queryBuilders?.elevation
-		? [
-				elevationRangeData.queryBuilders.elevation.min,
-				elevationRangeData.queryBuilders.elevation.max,
-		  ]
+	const defaultMinMax = elevationRangeData
+		? [elevationRangeData.min, elevationRangeData.max]
 		: undefined
 
 	const currentElevationQuery = ReactRedux.useSelector(
@@ -53,10 +51,9 @@ const ElevationQueryBuilder: React.FunctionComponent<{
 	)
 
 	React.useEffect(() => {
-		const parsedAPIMinMax = elevationRangeData?.queryBuilders
-			?.elevation && [
-			elevationRangeData.queryBuilders.elevation.min,
-			elevationRangeData.queryBuilders.elevation.max,
+		const parsedAPIMinMax = elevationRangeData && [
+			elevationRangeData.min,
+			elevationRangeData.max,
 		]
 
 		// only overwrite if we don't have an existing query from redux
@@ -67,7 +64,7 @@ const ElevationQueryBuilder: React.FunctionComponent<{
 		) {
 			setRangeValue([parsedAPIMinMax[0], parsedAPIMinMax[1]])
 		}
-	}, [elevationRangeData?.queryBuilders.elevation])
+	}, [elevationRangeData])
 
 	const dispatch = ReactRedux.useDispatch()
 
