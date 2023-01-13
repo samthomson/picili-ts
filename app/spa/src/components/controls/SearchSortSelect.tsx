@@ -33,7 +33,7 @@ const SearchSortSelect: React.FunctionComponent<IProps> = ({
 			label: transformText(mode),
 			value: mode,
 			active: mode === sortUsed,
-			// icon: <Icons.IconSettings size={14} />,
+			// icon: ,
 		}
 	})
 	return (
@@ -60,10 +60,13 @@ const SearchSortSelect: React.FunctionComponent<IProps> = ({
 					{menuItems.map((mode, sortModeIndex) => (
 						<MantineCore.Menu.Item
 							key={sortModeIndex}
-							// icon={mode.icon}
+							rightSection={
+								mode.active && <Icons.IconCheck size={14} />
+							}
 							disabled={mode.active}
 							onClick={() => setMode(mode.value)}
 							className="sort-capitalised"
+							// icons={mode.icon}
 						>
 							{mode.label}
 						</MantineCore.Menu.Item>
