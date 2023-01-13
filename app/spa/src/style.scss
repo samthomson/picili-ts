@@ -494,6 +494,8 @@ a {
     overflow-y: auto;
     // background-color: aqua;
 
+    color: $greyColor;
+
     &.with-info {
       width: $lightboxInfoWidth;
     }
