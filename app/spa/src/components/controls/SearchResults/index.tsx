@@ -12,6 +12,8 @@ import SearchSortSelect from 'src/components/controls/SearchSortSelect'
 import JustifiedImageGallery from './JustifiedImageGallery'
 import TiledImageGallery from './TiledImageGallery'
 
+import useIsMobile from 'src/util/hooks/use-is-mobile.hook'
+
 interface IProps {
 	displayJustified?: boolean
 }
@@ -93,6 +95,23 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 	const onScrollToTopNewSearch = () =>
 		scrollableRef?.current?.scrollTo({ top: 0, behavior: 'auto' })
 
+	const isMobile = useIsMobile()
+
+	const { showingMinimum, showingCount } = React.useMemo(() => {
+		if (!paginationInfo) {
+			return { showingMinimum: 0, showingCount: 0 }
+		}
+		const showingMinimum = paginationInfo.totalItems > 0 ? 1 : 0
+		const showingCount = !(
+			paginationInfo.perPage * paginationInfo?.page >
+			paginationInfo.totalItems
+		)
+			? paginationInfo.perPage * paginationInfo.page
+			: paginationInfo.totalItems
+
+		return { showingMinimum, showingCount }
+	}, [])
+
 	return (
 		<React.Fragment>
 			{isLoadingSearchResults && searchResults.length === 0 && (
@@ -117,25 +136,41 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 								{!isLoadingSearchResults && (
 									<>
 										<span id="overview-text">
-											showing 1 -{' '}
-											{!(
-												paginationInfo.perPage *
-													paginationInfo.page >
-												paginationInfo.totalItems
-											)
-												? paginationInfo.perPage *
-												  paginationInfo.page
-												: paginationInfo.totalItems}
-											&nbsp;files from{' '}
-											{paginationInfo.totalItems} result
-											{paginationInfo.totalItems > 1 &&
-												's'}
-											.
-											{paginationInfo.totalItems > 0 && (
+											{isMobile ? (
 												<>
-													&nbsp;speed:{' '}
-													{searchStats.speed}
-													ms
+													{showingMinimum} -{' '}
+													{showingCount}
+													&nbsp;of{' '}
+													{paginationInfo.totalItems}
+													{paginationInfo.totalItems >
+														0 && (
+														<>
+															&nbsp;(
+															{searchStats.speed}
+															ms)
+														</>
+													)}
+												</>
+											) : (
+												<>
+													showing {showingMinimum} -{' '}
+													{showingCount}
+													&nbsp;of{' '}
+													{
+														paginationInfo.totalItems
+													}{' '}
+													result
+													{paginationInfo.totalItems >
+														1 && 's'}
+													.
+													{paginationInfo.totalItems >
+														0 && (
+														<>
+															&nbsp;speed:{' '}
+															{searchStats.speed}
+															ms
+														</>
+													)}
 												</>
 											)}
 										</span>
