@@ -6,6 +6,8 @@ import * as Icons from '@tabler/icons'
 import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
 
+import useIsMobile from 'src/util/hooks/use-is-mobile.hook'
+
 interface IProps {
 	searchSorting?: Types.API.SearchResultsSorting
 }
@@ -14,6 +16,7 @@ const SearchSortSelect: React.FunctionComponent<IProps> = ({
 	searchSorting,
 }) => {
 	const dispatch = ReactRedux.useDispatch()
+	const isMobile = useIsMobile()
 
 	const setMode = (mode: Types.SearchSortEnum) => {
 		dispatch(Actions.sortModeSet(mode))
@@ -47,12 +50,18 @@ const SearchSortSelect: React.FunctionComponent<IProps> = ({
 						size="xs"
 						rightIcon={<Icons.IconChevronDown size={14} />}
 					>
-						<span style={{ marginRight: 4 }}>Sort by:</span>
-						<span className="sort-capitalised">
-							{searchSorting.sortUsed
-								.replaceAll('_', ' ')
-								.toLowerCase()}
-						</span>
+						{isMobile ? (
+							<span>Sort</span>
+						) : (
+							<>
+								<span style={{ marginRight: 4 }}>Sort by:</span>
+								<span className="sort-capitalised">
+									{searchSorting.sortUsed
+										.replaceAll('_', ' ')
+										.toLowerCase()}
+								</span>
+							</>
+						)}
 					</MantineCore.Button>
 				</MantineCore.Menu.Target>
 
