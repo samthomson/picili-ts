@@ -41,7 +41,8 @@ const typeDefs = gql`
     }
     type TasksProcessedSummary {
         date: String
-        count: Int
+        countSuccessful: Int
+        countUnsuccessful: Int
     }
     type TasksProcessed {
         recent: [TasksProcessedSummary]

@@ -25,7 +25,8 @@ const taskSummaryQuery = gql`
 			processed {
 				recent {
 					date
-					count
+					countSuccessful
+					countUnsuccessful
 				}
 			}
 		}
@@ -260,14 +261,16 @@ const TasksOverview: React.FunctionComponent = () => {
 					<thead>
 						<tr>
 							<th>date</th>
-							<th>count</th>
+							<th>succeeded</th>
+							<th>failed</th>
 						</tr>
 					</thead>
 					<tbody>
 						{recent.map((row, i) => (
 							<tr key={i}>
 								<td>{moment(row.date).format('MMM Do')}</td>
-								<td>{row.count}</td>
+								<td>{row.countSuccessful}</td>
+								<td>{row.countUnsuccessful}</td>
 							</tr>
 						))}
 					</tbody>

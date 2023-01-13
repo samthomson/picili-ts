@@ -372,13 +372,34 @@ export const createTaskProcessedLog = async (createObject: Types.Core.Inputs.Cre
 }
 
 export const taskProcessorMonthLog = async (): Promise<Types.API.TasksProcessedSummary[]> => {
-    const query = `SELECT DATE(created_at) as date, COUNT(*) as count FROM task_processed_logs WHERE created_at > (NOW() - INTERVAL 1 MONTH) GROUP BY date;`
-    const taskProcessorMonthLogResult = await Database.query(query, {
+    const query = `
+    SELECT DATE(query1.created_at) as date, query2.count2 as countSuccessful, query3.count3 as countUnsuccessful 
+	FROM task_processed_logs as query1
+	LEFT JOIN (
+		SELECT DATE(created_at) as date, COUNT(*) as count2 
+		FROM task_processed_logs
+		WHERE success=TRUE
+		GROUP BY date
+	) query2 ON DATE(query1.created_at) = query2.date
+	LEFT JOIN (
+	    SELECT DATE(created_at) as date, COUNT(*) as count3 
+	    FROM task_processed_logs
+	    WHERE success=FALSE
+	    GROUP BY date
+	) query3 ON DATE(query1.created_at) = query3.date
+	WHERE query1.created_at > (NOW() - INTERVAL 1 MONTH) GROUP BY date;
+    `
+    const taskProcessorMonthLogResult: { date; countSuccessful; countUnsuccessful }[] = await Database.query(query, {
         type: Sequelize.QueryTypes.SELECT,
     })
 
-    // @ts-ignore
-    return taskProcessorMonthLogResult?.map(({ date, count }) => ({ date, count })) ?? []
+    return (
+        taskProcessorMonthLogResult?.map(({ date, countSuccessful, countUnsuccessful }) => ({
+            date,
+            countSuccessful,
+            countUnsuccessful,
+        })) ?? []
+    )
 }
 
 export const updateDependentTasks = async (taskId: number) => {

@@ -36,7 +36,8 @@ export namespace API {
 
 	export type TasksProcessedSummary = {
 		date: string // date
-		count: number
+		countSuccessful: number
+		countUnsuccessful: number
 	}
 
 	type TasksProcessed = {
