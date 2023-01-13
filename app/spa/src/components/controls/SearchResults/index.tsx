@@ -116,10 +116,23 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 							<div className="results-overview-column">
 								{!isLoadingSearchResults && (
 									<>
-										found {paginationInfo.totalItems}{' '}
-										result(s){' '}
+										showing 1 -{' '}
+										{!(
+											paginationInfo.perPage *
+												paginationInfo.page >
+											paginationInfo.totalItems
+										)
+											? paginationInfo.perPage *
+											  paginationInfo.page
+											: paginationInfo.totalItems}
+										&nbsp;files from{' '}
+										{paginationInfo.totalItems} result
+										{paginationInfo.totalItems > 1 && 's'}.
 										{paginationInfo.totalItems > 0 && (
-											<>in {searchStats.speed}ms</>
+											<>
+												&nbsp;speed: {searchStats.speed}
+												ms
+											</>
 										)}
 										<button
 											id="refresh-query-button"
