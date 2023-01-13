@@ -122,7 +122,7 @@ const VideoQueryBuilder: React.FunctionComponent<{
 				onChange={setRangeValue}
 				label={formatValueToDuration}
 			/>
-			<div id="elevation-range-inputs">
+			<div className="range-query-range-inputs">
 				<MantineCore.NumberInput
 					label="Minimum"
 					defaultValue={rangeValue[0]}

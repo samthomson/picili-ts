@@ -568,11 +568,7 @@ a {
     margin: 0 auto;
     padding-top: 40px;
 
-  }
-
-  #elevation-query-builder {
-
-    #elevation-range-inputs {
+    .range-query-range-inputs {
       display: flex;
       gap: 16px;
       margin-top: $margin * 2;
@@ -582,6 +578,7 @@ a {
         flex-grow: 1;
       }
     }
+
   }
 
   #folder-query-builder {
