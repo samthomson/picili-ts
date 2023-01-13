@@ -330,10 +330,17 @@ a {
 .results-overview {
   display: flex;
   margin-bottom: $margin;
-  padding-left: $margin;
 
   .results-overview-column {
     flex-grow: 1;
+  }
+}
+
+
+#map-results-container {
+  .results-overview {
+    @extend .results-overview;
+    padding-left: $margin;
   }
 }
 
