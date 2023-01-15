@@ -11,7 +11,7 @@ import * as Models from '../db/models'
 import Logger from '../services/logging'
 import * as Enums from '../../../shared/enums'
 import moment from 'moment'
-import { processSearchReqeust } from '../server/queries'
+import { processSearchRequest } from '../server/queries'
 
 import fs from 'fs'
 import path from 'path'
@@ -345,7 +345,7 @@ const apiTestElevation = async () => {
 }
 const searchAll = async () => {
     const timeAtStart = moment()
-    const searchAll = await processSearchReqeust(
+    const searchAll = await processSearchRequest(
         {
             individualQueries: [
                 {
@@ -365,7 +365,7 @@ const searchAll = async () => {
 
 const searchSpeedTest = async () => {
     let timeAtStart = moment()
-    const bigMapQuery = await processSearchReqeust(
+    const bigMapQuery = await processSearchRequest(
         {
             individualQueries: [
                 {
@@ -384,7 +384,7 @@ const searchSpeedTest = async () => {
     console.log('1. big map query', moment().diff(timeAtStart))
 
     timeAtStart = moment()
-    const bigMapQueryWithTwoTerms = await processSearchReqeust(
+    const bigMapQueryWithTwoTerms = await processSearchRequest(
         {
             individualQueries: [
                 {
@@ -409,7 +409,7 @@ const searchSpeedTest = async () => {
     console.log('2. big map query with two terms', moment().diff(timeAtStart))
 
     timeAtStart = moment()
-    const mediumMapQuery = await processSearchReqeust(
+    const mediumMapQuery = await processSearchRequest(
         {
             individualQueries: [
                 {
@@ -433,7 +433,7 @@ const searchSpeedTest = async () => {
     // 5. small term query
 
     timeAtStart = moment()
-    await processSearchReqeust(
+    await processSearchRequest(
         {
             individualQueries: [
                 {
@@ -452,7 +452,7 @@ const searchSpeedTest = async () => {
     // 6. medium term query
 
     timeAtStart = moment()
-    const medium = await processSearchReqeust(
+    const medium = await processSearchRequest(
         {
             individualQueries: [
                 {
@@ -470,7 +470,7 @@ const searchSpeedTest = async () => {
     console.log('6. medium term query', moment().diff(timeAtStart))
 
     timeAtStart = moment()
-    const big = await processSearchReqeust(
+    const big = await processSearchRequest(
         {
             individualQueries: [
                 {
@@ -489,7 +489,7 @@ const searchSpeedTest = async () => {
 
     // 7. small & medium
     timeAtStart = moment()
-    await processSearchReqeust(
+    await processSearchRequest(
         {
             individualQueries: [
                 {

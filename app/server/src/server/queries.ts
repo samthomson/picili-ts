@@ -60,7 +60,7 @@ const taskSummary = async (parents, args, context): Promise<Types.API.TaskSummar
 }
 
 // todo: move this to search util
-export const processSearchReqeust = async (
+export const processSearchRequest = async (
     searchQuery: Types.API.SearchQuery,
     sortOverload: SearchSort,
     userId: number,
@@ -141,7 +141,7 @@ const search = async (parents, args, context): Promise<Types.API.SearchResult> =
     const { filter: searchQuery, page = 1, perPage = 50, withGeoAggregations = false, sortOverload = undefined } = args
     const { userId } = context
 
-    const searchResult = await processSearchReqeust(
+    const searchResult = await processSearchRequest(
         searchQuery,
         sortOverload,
         userId,
