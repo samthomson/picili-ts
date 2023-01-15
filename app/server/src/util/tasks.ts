@@ -176,7 +176,7 @@ export const fileImport = async (fileId: number, taskId: number): Promise<Types.
                 userId,
                 message: `the processing directory (for files of type ${fileType}) is bigger on disk than is allowed by the current relevant env var, so no new files will be imported. this will resolve itself once the current - waiting, already imported - files are processed.`,
             })
-            // wait a bit and let the processing dir clear ut a little before importing more files
+            // wait a bit and let the processing dir clear out a little before importing more files
             return {
                 success: false,
                 retryInMinutes: 15,
