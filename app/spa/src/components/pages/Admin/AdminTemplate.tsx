@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import classNames from 'classnames'
 import * as MantineCore from '@mantine/core'
 
 import PageTemplate from 'src/components/pages/PageTemplate'

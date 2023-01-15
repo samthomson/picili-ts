@@ -41,7 +41,7 @@ interface IProps {
 }
 
 // todo: memoize
-const IconForType = (type: string, subtype: string) => {
+const IconForType = (type: string) => {
 	switch (true) {
 		case type === 'location':
 			return Icons.IconMapPin
@@ -264,7 +264,7 @@ const LightboxInfo: React.FunctionComponent<IProps> = ({
 						{group.map((tag, tagIndex) => {
 							const { type, subtype, value } = tag
 
-							const Icon = IconForType(type, subtype)
+							const Icon = IconForType(type)
 							return (
 								<div
 									key={tagIndex}

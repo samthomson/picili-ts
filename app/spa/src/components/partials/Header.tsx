@@ -7,7 +7,7 @@ import * as Icons from '@tabler/icons'
 import * as Actions from 'src/redux/actions'
 import * as Selectors from 'src/redux/selectors'
 
-import ProcessorSummaryHeader from 'src/components/controls/ProcessorSummaryHeader'
+// import ProcessorSummaryHeader from 'src/components/controls/ProcessorSummaryHeader'
 
 const Header: React.FunctionComponent = () => {
 	const isAuthenticated = ReactRedux.useSelector(
