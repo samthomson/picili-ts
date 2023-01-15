@@ -1,0 +1,1 @@
+INSERT INTO `binomial_states` (`id`, `variable`, `value`, `last_changed_at`) VALUES (NULL, 'STORAGE_SPACE_FULL', '0', NOW()), (NULL, 'IMAGE_PROCESSING_DIR_FULL', '0', NOW()), (NULL, 'VIDEO_PROCESSING_DIR_FULL', '0', NOW());
