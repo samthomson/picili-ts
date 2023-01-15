@@ -59,6 +59,7 @@ const taskSummary = async (parents, args, context): Promise<Types.API.TaskSummar
     }
 }
 
+// todo: move this to search util
 export const processSearchReqeust = async (
     searchQuery: Types.API.SearchQuery,
     sortOverload: SearchSort,
