@@ -26,7 +26,7 @@ $lightboxInfoWidth: 320px;
 * {
   font-family: 'Comic Mono';
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;color: $greyColor;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -334,6 +334,10 @@ a {
     display: flex;
   }
 
+  #overview-text {
+    color: $greyColor;
+  }
+
   #refresh-query-button {
     margin-left: $margin;
   }
@@ -489,6 +493,8 @@ a {
     overflow: hidden;
     overflow-y: auto;
     // background-color: aqua;
+
+    color: $greyColor;
 
     &.with-info {
       width: $lightboxInfoWidth;
