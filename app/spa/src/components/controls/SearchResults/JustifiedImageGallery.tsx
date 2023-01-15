@@ -229,6 +229,7 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 											openLightbox(result.index)
 										}
 										ref={refs[result.index]}
+										className="search-result-thumbnail"
 									/>
 								)
 							})}

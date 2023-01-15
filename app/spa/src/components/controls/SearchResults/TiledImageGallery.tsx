@@ -51,6 +51,7 @@ const TiledImageGallery: React.FunctionComponent<IProps> = ({
 						)}
 						onClick={() => openLightbox(resultIndex)}
 						ref={refs[resultIndex]}
+						className="search-result-thumbnail"
 					/>
 				)
 			})}
