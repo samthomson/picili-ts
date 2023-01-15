@@ -690,6 +690,14 @@ export namespace Core {
 		value: string
 		count: number
 	}
+
+	export type DiskSpaceStats = {
+		totalSpaceBytes: number
+		freeSpaceBytes: number
+		usedSpaceBytes: number
+		reservedForPiciliProcessingDirsBytes: number
+		availableForPiciliToUse: number
+	}
 }
 
 // todo: refactor these into an enum namespace, loosing appended `Enum`

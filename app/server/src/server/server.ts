@@ -16,8 +16,6 @@ import * as DropboxUtil from '../util/dropbox'
 
 import { TaskManager } from '../services/TaskManager'
 
-import checkDiskSpace from 'check-disk-space'
-
 const resolvers = {
     Query,
     Mutation,
@@ -67,9 +65,6 @@ const startApolloServer = async (typeDefs, resolvers) => {
     })
 
     await server.start()
-
-    const diskSpace = await checkDiskSpace('/')
-    Logger.warn('diskSpace', diskSpace)
 
     server.applyMiddleware({ app, cors: false })
 

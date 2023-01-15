@@ -2,6 +2,7 @@ import sharp from 'sharp'
 import FSExtra from 'fs-extra'
 import fs from 'fs'
 import PathLib from 'path'
+import checkDiskSpace from 'check-disk-space'
 import Logger from '../services/logging'
 import * as HelperUtil from '../util/helper'
 import * as DBUtil from '../util/db'
@@ -564,4 +565,28 @@ export const isThereSpaceToImportAFile = async (fileType: Types.FileTypeEnum): P
     // shouldn't ever get here
     Logger.warn('how did I get here?')
     return false
+}
+
+export const diskSpaceStats = async (): Promise<Types.Core.DiskSpaceStats> => {
+    const { free, size } = await checkDiskSpace('/')
+
+    const {
+        PROCESSING_DIR_IMAGE_SIZE_LIMIT_GB: processingDirImageSizeLimit,
+        PROCESSING_DIR_VIDEO_SIZE_LIMIT_GB: processingDirVideoSizeLimit,
+    } = process.env
+
+    // around 5gb is expected; 4gb allocated to videos, and 1gb for images
+    const reservedForPiciliProcessingDirs =
+        processingDirImageSizeLimit / 1024 / 1024 / 1024 + processingDirVideoSizeLimit / 1024 / 1024 / 1024
+
+    // eg remaining space minus above [5]gb
+    const availableForPiciliToUse = free - reservedForPiciliProcessingDirs
+
+    return {
+        totalSpaceBytes: size,
+        freeSpaceBytes: free,
+        usedSpaceBytes: size - free,
+        reservedForPiciliProcessingDirs,
+        availableForPiciliToUse,
+    }
 }
