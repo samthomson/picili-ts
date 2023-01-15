@@ -172,6 +172,15 @@ a {
 	}
 }
 
+#error-boundary-ui {
+  max-width: 600px;
+  margin: 0 auto;
+
+  h2 svg {
+    vertical-align: middle;
+  }
+}
+
 //
 //
 // COMPONENTS
