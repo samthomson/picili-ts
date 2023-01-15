@@ -544,49 +544,79 @@ export const dirSize = async (dir, divideBy = 1): Promise<Record<Types.FileTypeE
     }
 }
 
+/*
 export const isThereSpaceToImportAFile = async (fileType: Types.FileTypeEnum): Promise<boolean> => {
     // how big is the processing dir on disk (ins gb)?
-    const processingDirSize = await dirSize('processing', 1024 * 1024 * 1024)
+    // const processingDirSize = await dirSize('processing', 1024 * 1024 * 1024)
     // what is our processing dir size limit (also in gb)
 
+    // const {
+    //     PROCESSING_DIR_IMAGE_SIZE_LIMIT_GB: processingDirImageSizeLimit,
+    //     PROCESSING_DIR_VIDEO_SIZE_LIMIT_GB: processingDirVideoSizeLimit,
+    // } = process.env
     const {
-        PROCESSING_DIR_IMAGE_SIZE_LIMIT_GB: processingDirImageSizeLimit,
-        PROCESSING_DIR_VIDEO_SIZE_LIMIT_GB: processingDirVideoSizeLimit,
-    } = process.env
+        processingDirImageSizeLimitBytes,
+        processingDirVideoSizeLimitBytes,
+        processingDirSize,
+        isOutOfSpace,
+        isImageProcessingDirOutOfSpace,
+        isVideoProcessingDirOutOfSpace,
+    } = await diskSpaceStats()
     // how do they compare? (eg size <= limit)
 
+    // check space for picili in general
+    if (isOutOfSpace) {
+        return false
+    }
+
+    // check space in processing dirs
     if (fileType === Enums.FileType.IMAGE) {
-        return processingDirSize[Enums.FileType.IMAGE] <= +processingDirImageSizeLimit
+        return isImageProcessingDirOutOfSpace
     }
     if (fileType === Enums.FileType.VIDEO) {
-        return processingDirSize[Enums.FileType.VIDEO] <= +processingDirVideoSizeLimit
+        return isVideoProcessingDirOutOfSpace
     }
 
     // shouldn't ever get here
     Logger.warn('how did I get here?')
     return false
 }
+*/
 
 export const diskSpaceStats = async (): Promise<Types.Core.DiskSpaceStats> => {
     const { free, size } = await checkDiskSpace('/')
 
     const {
-        PROCESSING_DIR_IMAGE_SIZE_LIMIT_GB: processingDirImageSizeLimit,
-        PROCESSING_DIR_VIDEO_SIZE_LIMIT_GB: processingDirVideoSizeLimit,
+        PROCESSING_DIR_IMAGE_SIZE_LIMIT_GB: processingDirImageSizeLimitGB,
+        PROCESSING_DIR_VIDEO_SIZE_LIMIT_GB: processingDirVideoSizeLimitGB,
     } = process.env
 
+    const processingDirImageSizeLimitBytes = +processingDirImageSizeLimitGB / 1024 / 1024 / 1024
+    const processingDirVideoSizeLimitBytes = +processingDirVideoSizeLimitGB / 1024 / 1024 / 1024
+
     // around 5gb is expected; 4gb allocated to videos, and 1gb for images
-    const reservedForPiciliProcessingDirs =
-        processingDirImageSizeLimit / 1024 / 1024 / 1024 + processingDirVideoSizeLimit / 1024 / 1024 / 1024
+    const reservedForPiciliProcessingDirsBytes = processingDirImageSizeLimitBytes + processingDirVideoSizeLimitBytes
 
     // eg remaining space minus above [5]gb
-    const availableForPiciliToUse = free - reservedForPiciliProcessingDirs
+    const availableForPiciliToUse = free - reservedForPiciliProcessingDirsBytes
+
+    const processingDirSize = await dirSize('processing')
+
+    const isOutOfSpace = availableForPiciliToUse <= 0
+    const isImageProcessingDirOutOfSpace = processingDirSize[Enums.FileType.IMAGE] <= processingDirImageSizeLimitBytes
+    const isVideoProcessingDirOutOfSpace = processingDirSize[Enums.FileType.VIDEO] <= processingDirVideoSizeLimitBytes
 
     return {
         totalSpaceBytes: size,
         freeSpaceBytes: free,
         usedSpaceBytes: size - free,
-        reservedForPiciliProcessingDirs,
+        reservedForPiciliProcessingDirsBytes,
         availableForPiciliToUse,
+        processingDirImageSizeLimitBytes,
+        processingDirVideoSizeLimitBytes,
+        processingDirSize,
+        isOutOfSpace,
+        isImageProcessingDirOutOfSpace,
+        isVideoProcessingDirOutOfSpace,
     }
 }

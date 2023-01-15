@@ -163,10 +163,25 @@ export const fileImport = async (fileId: number, taskId: number): Promise<Types.
         const { fileExtension, fileName, userId, fileType } = file
 
         // check the processing dir isn't full up
-        const isThereSpaceToImportAFile = await FileUtil.isThereSpaceToImportAFile(fileType)
+        const { isOutOfSpace, isImageProcessingDirOutOfSpace, isVideoProcessingDirOutOfSpace } =
+            await FileUtil.diskSpaceStats()
+
+        const isThereSpaceToImportAFile = !(
+            isOutOfSpace ||
+            isImageProcessingDirOutOfSpace ||
+            isVideoProcessingDirOutOfSpace
+        )
 
         if (!isThereSpaceToImportAFile) {
-            Logger.warn('not enough space in procesing dir to import files from dropbox.', {
+            // todo: change this to warning to info
+            const message = isOutOfSpace
+                ? 'Out of disk space for picili to keep storing thumbs etc'
+                : isImageProcessingDirOutOfSpace
+                ? 'image processing dir is full'
+                : isVideoProcessingDirOutOfSpace
+                ? 'video processing dir is full'
+                : 'unexpected failure finding disk space'
+            Logger.warn(message, {
                 taskId,
                 fileId,
                 fileType,
@@ -174,8 +189,9 @@ export const fileImport = async (fileId: number, taskId: number): Promise<Types.
             // create a system event
             await DBUtil.createSystemEvent({
                 userId,
-                message: `the processing directory (for files of type ${fileType}) is bigger on disk than is allowed by the current relevant env var, so no new files will be imported. this will resolve itself once the current - waiting, already imported - files are processed.`,
+                message,
             })
+            // todo: change according binomial tracker if necessary and raise event/notificaiton
             // wait a bit and let the processing dir clear out a little before importing more files
             return {
                 success: false,

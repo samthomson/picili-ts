@@ -697,6 +697,12 @@ export namespace Core {
 		usedSpaceBytes: number
 		reservedForPiciliProcessingDirsBytes: number
 		availableForPiciliToUse: number
+		processingDirImageSizeLimitBytes: number
+		processingDirVideoSizeLimitBytes: number
+		processingDirSize: Record<FileTypeEnum, number>
+		isOutOfSpace: boolean
+		isImageProcessingDirOutOfSpace: boolean
+		isVideoProcessingDirOutOfSpace: boolean
 	}
 }
 
