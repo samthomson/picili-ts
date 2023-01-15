@@ -69,7 +69,7 @@ const startApolloServer = async (typeDefs, resolvers) => {
     await server.start()
 
     const diskSpace = await checkDiskSpace('/')
-    Logger.info('diskSpace', diskSpace)
+    Logger.warn('diskSpace', diskSpace)
 
     server.applyMiddleware({ app, cors: false })
 
