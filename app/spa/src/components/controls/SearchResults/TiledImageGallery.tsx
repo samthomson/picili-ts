@@ -42,7 +42,7 @@ const TiledImageGallery: React.FunctionComponent<IProps> = ({
 			{searchResults.map((result, resultIndex) => {
 				return (
 					<img
-						title={result.fileId + ''}
+						title={result.address}
 						key={resultIndex}
 						src={HelperUtil.thumbPath(
 							result.userId,

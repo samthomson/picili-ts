@@ -216,7 +216,7 @@ const JustifiedImageGallery: React.FunctionComponent<IProps> = ({
 							{row.map((result, rowResultIndex) => {
 								return (
 									<img
-										title={result.fileId + ''}
+										title={result.address}
 										key={rowResultIndex}
 										src={HelperUtil.thumbPath(
 											result.userId,
