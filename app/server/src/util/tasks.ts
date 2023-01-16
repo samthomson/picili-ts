@@ -179,7 +179,6 @@ export const fileImport = async (fileId: number, taskId: number): Promise<Types.
         )
 
         if (!isThereSpaceToImportAFile) {
-            // todo: change this to warning to info
             const message = isOutOfSpace
                 ? 'Out of disk space for picili to keep storing thumbs etc'
                 : isImageProcessingDirOutOfSpace
@@ -187,15 +186,10 @@ export const fileImport = async (fileId: number, taskId: number): Promise<Types.
                 : isVideoProcessingDirOutOfSpace
                 ? 'video processing dir is full'
                 : 'unexpected failure finding disk space'
-            Logger.warn(message, {
+            Logger.info(message, {
                 taskId,
                 fileId,
                 fileType,
-            })
-            // create a system event
-            await DBUtil.createSystemEvent({
-                userId,
-                message,
             })
             // todo: change according binomial tracker if necessary and raise event/notificaiton
             // wait a bit and let the processing dir clear out a little before importing more files
