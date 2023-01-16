@@ -83,7 +83,7 @@ const AdminOverview: React.FunctionComponent = () => {
 	return (
 		<React.Fragment>
 			<h3 className="admin-page-title">summary</h3>
-			<table>
+			<MantineCore.Table>
 				<tbody>
 					<tr>
 						<td># dropbox files</td>
@@ -110,12 +110,19 @@ const AdminOverview: React.FunctionComponent = () => {
 						</td>
 					</tr>
 				</tbody>
-			</table>
+			</MantineCore.Table>
 
 			{storageStates && (
 				<>
 					<h4>Storage</h4>
-					<table>
+					<MantineCore.Table>
+						<thead>
+							<tr>
+								<th></th>
+								<th></th>
+								<th>since</th>
+							</tr>
+						</thead>
 						<tbody>
 							{storageValuesToShow.map(
 								({ label, value, updatedAt }, key) => {
@@ -129,7 +136,7 @@ const AdminOverview: React.FunctionComponent = () => {
 								},
 							)}
 						</tbody>
-					</table>
+					</MantineCore.Table>
 				</>
 			)}
 		</React.Fragment>
