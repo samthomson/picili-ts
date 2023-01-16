@@ -723,6 +723,13 @@ export namespace Core {
 		isImageProcessingDirOutOfSpace: boolean
 		isVideoProcessingDirOutOfSpace: boolean
 	}
+
+	export type ResourceManagerStats = {
+		dateTime: string
+		isOutOfSpace: boolean
+		isImageProcessingDirOutOfSpace: boolean
+		isVideoProcessingDirOutOfSpace: boolean
+	}
 }
 
 // todo: refactor these into an enum namespace, loosing appended `Enum`

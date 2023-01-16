@@ -15,6 +15,7 @@ import * as AuthUtil from '../util/auth'
 import * as DropboxUtil from '../util/dropbox'
 
 import { TaskManager } from '../services/TaskManager'
+import { ResourceManager } from '../services/ResourceManager'
 
 const resolvers = {
     Query,
@@ -22,6 +23,7 @@ const resolvers = {
 }
 
 const taskManager = TaskManager.getInstance()
+const resourceManager = ResourceManager.getInstance()
 
 const startApolloServer = async (typeDefs, resolvers) => {
     const app = express()
@@ -65,6 +67,8 @@ const startApolloServer = async (typeDefs, resolvers) => {
     })
 
     await server.start()
+    // intentionally synchronous
+    resourceManager.start()
 
     server.applyMiddleware({ app, cors: false })
 

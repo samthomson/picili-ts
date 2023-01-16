@@ -3,6 +3,7 @@ import * as DBUtil from '../util/db'
 import * as Models from '../db/models'
 import * as SearchUtil from '../util/search'
 import { TaskManager } from '../services/TaskManager'
+import { ResourceManager } from '../services/ResourceManager'
 import * as Types from '@shared/declarations'
 import moment from 'moment'
 import Logger from '../services/logging'
@@ -277,6 +278,14 @@ const UIState = async (parents, args, ctx) => {
     }
 }
 
+const resourceManager = async (parents, args, ctx) => {
+    const stats = ResourceManager.getInstance().getStats()
+
+    return {
+        stats,
+    }
+}
+
 const queries = {
     validateToken: (parent, args, ctx) => AuthUtil.requestHasValidCookieToken(ctx),
     dropboxConnection: getDropboxConnection,
@@ -288,6 +297,7 @@ const queries = {
     fileInfo,
     systemEvents,
     UIState,
+    resourceManager,
 }
 
 export default queries

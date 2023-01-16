@@ -320,6 +320,17 @@ const typeDefs = gql`
         userId: Int
     }
 
+    type ResourceManagerStats {
+        dateTime: String
+        isOutOfSpace: Boolean
+        isImageProcessingDirOutOfSpace: Boolean
+        isVideoProcessingDirOutOfSpace: Boolean
+    }
+
+    type ResourceManager {
+        stats: [ResourceManagerStats]
+    }
+
     type Query {
         validateToken(token: String!): ValidateTokenResponse
         dropboxConnection: DropboxConnection
@@ -338,6 +349,7 @@ const typeDefs = gql`
         autoComplete(query: IndividualQuery): AutoCompleteResponse
         fileInfo(fileId: Int!): FileInfo
         UIState: UIState
+        resourceManager: ResourceManager
     }
     type Mutation {
         login(authInput: LoginInput!): AuthResponse
