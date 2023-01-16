@@ -172,6 +172,12 @@ export const fileImport = async (fileId: number, taskId: number): Promise<Types.
             isVideoProcessingDirOutOfSpace
         )
 
+        await FileUtil.evaluateStorageStateChanges(
+            isOutOfSpace,
+            isImageProcessingDirOutOfSpace,
+            isVideoProcessingDirOutOfSpace,
+        )
+
         if (!isThereSpaceToImportAFile) {
             // todo: change this to warning to info
             const message = isOutOfSpace

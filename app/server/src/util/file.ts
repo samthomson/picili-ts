@@ -620,3 +620,41 @@ export const diskSpaceStats = async (): Promise<Types.Core.DiskSpaceStats> => {
         isVideoProcessingDirOutOfSpace,
     }
 }
+
+export const evaluateStorageStateChanges = async (
+    isOutOfSpace: boolean,
+    isImageProcessingDirOutOfSpace: boolean,
+    isVideoProcessingDirOutOfSpace: boolean,
+) => {
+    // store new state values if necessary and raise events
+    const binomialStateData = await DBUtil.getBinomialStateData()
+
+    const bsdIsOutOfSpace = binomialStateData.find(
+        (val) => val.variable === Enums.BinomialVariableType.STORAGE_SPACE_FULL,
+    )
+    const bsdIsImageProcessingDirOutOfSpace = binomialStateData.find(
+        (val) => val.variable === Enums.BinomialVariableType.IMAGE_PROCESSING_DIR_FULL,
+    )
+    const bsdIsVideoProcessingDirOutOfSpace = binomialStateData.find(
+        (val) => val.variable === Enums.BinomialVariableType.VIDEO_PROCESSING_DIR_FULL,
+    )
+
+    if (bsdIsOutOfSpace.value !== isOutOfSpace) {
+        // update it
+        bsdIsOutOfSpace.value = isOutOfSpace
+        await bsdIsOutOfSpace.save()
+    }
+
+    if (bsdIsImageProcessingDirOutOfSpace.value !== isImageProcessingDirOutOfSpace) {
+        // update it
+        bsdIsImageProcessingDirOutOfSpace.value = isImageProcessingDirOutOfSpace
+
+        await bsdIsImageProcessingDirOutOfSpace.save()
+    }
+
+    if (bsdIsVideoProcessingDirOutOfSpace.value !== isVideoProcessingDirOutOfSpace) {
+        // update it
+        bsdIsVideoProcessingDirOutOfSpace.value = isVideoProcessingDirOutOfSpace
+        await bsdIsVideoProcessingDirOutOfSpace.save()
+    }
+}
