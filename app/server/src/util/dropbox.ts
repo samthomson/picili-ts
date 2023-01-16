@@ -11,7 +11,7 @@ import * as fs from 'fs'
 import FSExtra from 'fs-extra'
 import moment from 'moment'
 import { Dropbox } from 'dropbox'
-import got from 'got-cjs'
+import got from 'got'
 import { promisify } from 'node:util'
 import stream from 'node:stream'
 
