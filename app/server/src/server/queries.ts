@@ -175,20 +175,12 @@ const taskProcessor = async (parents, args, context): Promise<Types.API.TaskProc
     })
 
     const storageStates = {
-        // storageSpaceFull: binomialStateInstanceToValues(
-        //     binomialStateData.find((val) => val.variable === BinomialVariableType.STORAGE_SPACE_FULL),
-        // ),
-        storageSpaceFull: {
-            value: true,
-            updatedAt: moment().format(),
-        },
-        // imageProcessingDirFull: binomialStateInstanceToValues(
-        //     binomialStateData.find((val) => val.variable === BinomialVariableType.IMAGE_PROCESSING_DIR_FULL),
-        // ),
-        imageProcessingDirFull: {
-            value: true,
-            updatedAt: moment().format(),
-        },
+        storageSpaceFull: binomialStateInstanceToValues(
+            binomialStateData.find((val) => val.variable === BinomialVariableType.STORAGE_SPACE_FULL),
+        ),
+        imageProcessingDirFull: binomialStateInstanceToValues(
+            binomialStateData.find((val) => val.variable === BinomialVariableType.IMAGE_PROCESSING_DIR_FULL),
+        ),
         videoProcessingDirFull: binomialStateInstanceToValues(
             binomialStateData.find((val) => val.variable === BinomialVariableType.VIDEO_PROCESSING_DIR_FULL),
         ),
