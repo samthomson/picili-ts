@@ -794,6 +794,7 @@ export const ocrGeneric = async (fileId: number): Promise<Types.Core.TaskProcess
         const newTags: Types.Core.Inputs.CreateTagInput[] = []
 
         const words = parsedText
+            // @ts-ignore
             .replaceAll('\n', ' ')
             .replaceAll('\r', ' ')
             .replaceAll(',', ' ')
