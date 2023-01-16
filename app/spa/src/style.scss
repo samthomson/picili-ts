@@ -59,6 +59,10 @@ a {
     float: right;
     position: relative;
   }
+  .header-summary-icon-link {
+    vertical-align: middle;
+    margin-left: $margin;
+  }
 }
 
 #content-container {
