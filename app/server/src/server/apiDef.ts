@@ -69,10 +69,22 @@ const typeDefs = gql`
         threadNo: Int
     }
 
+    type BinomialStateValues {
+        value: Boolean
+        lastUpdated: String
+    }
+
+    type StorageState {
+        storageSpaceFull: BinomialStateValues
+        imageProcessingDirFull: BinomialStateValues
+        videoProcessingDirFull: BinomialStateValues
+    }
+
     type TaskProcessor {
         stopping: Boolean
         isImportingEnabled: Boolean
         workers: [Worker]
+        storageStates: StorageState
     }
 
     input DropboxConnectInput {

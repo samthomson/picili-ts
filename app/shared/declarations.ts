@@ -65,10 +65,22 @@ export namespace API {
 		threadNo: number
 	}
 
+	export type BinomialStateValues = {
+		value: boolean
+		updatedAt: string
+	}
+
+	type StorageState = {
+		storageSpaceFull: BinomialStateValues,
+		imageProcessingDirFull: BinomialStateValues,
+		videoProcessingDirFull: BinomialStateValues,
+	}
+
 	export interface TaskProcessor {
 		stopping: boolean
 		isImportingEnabled: boolean
 		workers: TaskWorker[]
+		storageStates: StorageState
 	}
 
 	export interface SearchResultItem {
@@ -649,6 +661,13 @@ export namespace Core {
 			priority: number
 			timesSeen: number
 			isProcessed: boolean
+		}
+
+		export interface BinomialStateAttributes {
+			id: number
+			variable: Enums.BinomialVariableType
+			value: boolean
+			updatedAt?: string
 		}
 
 		export interface SystemEventAttributes {

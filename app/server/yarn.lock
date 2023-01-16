@@ -3071,9 +3071,9 @@ ts-node@^10.3.0:
     yn "3.1.1"
 
 tsc-watch@^4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/tsc-watch/-/tsc-watch-4.5.0.tgz#d6884b932822b2c2ccd37f1c1f3748304566a474"
-  integrity sha512-aXhN4jY+1YEcn/NwCQ/+fHqU43EqOpW+pS+933EPsVEsrKhvyrodPDIjQsk1a1niFrabAK3RIBrRbAslVefEbQ==
+  version "4.6.2"
+  resolved "https://registry.yarnpkg.com/tsc-watch/-/tsc-watch-4.6.2.tgz#4267ee6acddb608356573ba96024fa250eb22cac"
+  integrity sha512-eHWzZGkPmzXVGQKbqQgf3BFpGiZZw1jQ29ZOJeaSe8JfyUvphbd221NfXmmsJUGGPGA/nnaSS01tXipUcyxAxg==
   dependencies:
     cross-spawn "^7.0.3"
     node-cleanup "^2.1.2"

@@ -15,6 +15,12 @@ export enum TaskType {
     REMOVE_FILE = 'REMOVE_FILE',
 }
 
+export enum BinomialVariableType {
+    STORAGE_SPACE_FULL = 'STORAGE_SPACE_FULL',
+    IMAGE_PROCESSING_DIR_FULL = 'IMAGE_PROCESSING_DIR_FULL',
+    VIDEO_PROCESSING_DIR_FULL = 'VIDEO_PROCESSING_DIR_FULL',
+}
+
 export enum FileType {
     IMAGE = 'IMAGE',
     VIDEO = 'VIDEO'

@@ -1082,3 +1082,7 @@ export const getExifSummary = async (userId: number): Promise<Types.API.ExifCame
 
     return aggs
 }
+
+export const getBinomialStateData = async (): Promise<Models.BinomialStateInstance[]> => {
+    return await Models.BinomialStateModel.findAll()
+}

@@ -350,3 +350,35 @@ export const SystemEventModel = Database.define<SystemEventInstance>(
         underscored: true,
     },
 )
+
+type BinomialStateCreationAttributes = Sequelize.Optional<
+    Types.Core.BaseModels.BinomialStateAttributes,
+    // todo: what what what?
+    'id' | 'value' | 'updatedAt'
+>
+
+export interface BinomialStateInstance
+    extends Sequelize.Model<Types.Core.BaseModels.BinomialStateAttributes, BinomialStateCreationAttributes>,
+        Types.Core.BaseModels.BinomialStateAttributes {
+    // todo: what what what?
+    updatedAt: string
+}
+
+export const BinomialStateModel = Database.define<BinomialStateInstance>(
+    'binomial_state',
+    {
+        // todo: what what what?
+        id: {
+            type: Sequelize.INTEGER.UNSIGNED,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        variable: Sequelize.ENUM('STORAGE_SPACE_FULL', 'IMAGE_PROCESSING_DIR_FULL', 'VIDEO_PROCESSING_DIR_FULL'),
+        value: Sequelize.BOOLEAN,
+    },
+    {
+        timestamps: true,
+        createdAt: false,
+        underscored: true,
+    },
+)
