@@ -139,6 +139,24 @@ const AdminOverview: React.FunctionComponent = () => {
 					</MantineCore.Table>
 				</>
 			)}
+			{storageStates.storageSpaceFull.value && (
+				<p>
+					<strong>syncing indefinitely blocked</strong>. Picili
+					currently have space to generate more thumbnails, so
+					won&apos;t be able to import new files (sync).
+				</p>
+			)}
+
+			{storageStates.imageProcessingDirFull.value ||
+				(storageStates.videoProcessingDirFull.value && (
+					<p>
+						<strong>syncing temporarily blocked</strong>. One or
+						both (image / video) processing dir(s) are currently
+						full, picili won&apost be able to import (sync){' '}
+						<strong>temporarily</strong> until the currently
+						processing files in that directory have been processed.
+					</p>
+				))}
 		</React.Fragment>
 	)
 }
