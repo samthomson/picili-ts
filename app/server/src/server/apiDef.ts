@@ -71,7 +71,7 @@ const typeDefs = gql`
 
     type BinomialStateValues {
         value: Boolean
-        lastUpdated: String
+        updatedAt: String
     }
 
     type StorageState {

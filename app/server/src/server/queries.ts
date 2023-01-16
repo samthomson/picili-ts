@@ -6,8 +6,8 @@ import { TaskManager } from '../services/TaskManager'
 import * as Types from '@shared/declarations'
 import moment from 'moment'
 import Logger from '../services/logging'
-import { SearchSort, BinomialVariableType } from '@shared/enums'
-// import { SearchSort, BinomialVariableType } from '../../../shared/enums'
+// import { SearchSort, BinomialVariableType } from '@shared/enums'
+import { SearchSort, BinomialVariableType } from '../../../shared/enums'
 
 const getDropboxConnection = async (parents, args, context): Promise<Types.API.DropboxConnectionEditableAttributes> => {
     AuthUtil.verifyRequestIsAuthenticated(context)
@@ -118,6 +118,7 @@ export const processSearchRequest = async (
         ? SearchUtil.geoAggregateResults(
               resultIds,
               ...SearchUtil.extractMapParamsFromSearchQueries(searchQuery.individualQueries),
+              //@ts-ignore
               userId,
           )
         : undefined
@@ -165,13 +166,23 @@ const taskProcessor = async (parents, args, context): Promise<Types.API.TaskProc
 
     const binomialStateData = await DBUtil.getBinomialStateData()
 
+    const binomialStateInstanceToValues = ({
+        value,
+        updatedAt,
+    }: Models.BinomialStateInstance): Types.API.BinomialStateValues => ({
+        value,
+        updatedAt: moment(updatedAt).format(),
+    })
+
     const storageStates = {
-        storageSpaceFull: binomialStateData.find((val) => val.variable === BinomialVariableType.STORAGE_SPACE_FULL),
-        imageProcessingDirFull: binomialStateData.find(
-            (val) => val.variable === BinomialVariableType.IMAGE_PROCESSING_DIR_FULL,
+        storageSpaceFull: binomialStateInstanceToValues(
+            binomialStateData.find((val) => val.variable === BinomialVariableType.STORAGE_SPACE_FULL),
         ),
-        videoProcessingDirFull: binomialStateData.find(
-            (val) => val.variable === BinomialVariableType.VIDEO_PROCESSING_DIR_FULL,
+        imageProcessingDirFull: binomialStateInstanceToValues(
+            binomialStateData.find((val) => val.variable === BinomialVariableType.IMAGE_PROCESSING_DIR_FULL),
+        ),
+        videoProcessingDirFull: binomialStateInstanceToValues(
+            binomialStateData.find((val) => val.variable === BinomialVariableType.VIDEO_PROCESSING_DIR_FULL),
         ),
     }
 
