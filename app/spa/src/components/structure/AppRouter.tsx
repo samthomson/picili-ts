@@ -20,6 +20,7 @@ import AdminOverviewPage from 'src/components/pages/Admin/AdminOverviewPage'
 import AdminDropbox from 'src/components/pages/Admin/AdminDropbox'
 import AdminTasks from 'src/components/pages/Admin/AdminTasks'
 import AdminSystemEvents from 'src/components/pages/Admin/AdminSystemEvents'
+import AdminSystemStats from 'src/components/pages/Admin/AdminSystemStats'
 
 const AppRouter: React.FunctionComponent = () => {
 	const isAuthenticated = ReactRedux.useSelector(
@@ -98,6 +99,12 @@ const AppRouter: React.FunctionComponent = () => {
 							{...defaultProtectedRouteProps}
 							path={`${url}/systemevents`}
 							component={AdminSystemEvents}
+							exact
+						/>
+						<ProtectedRoute
+							{...defaultProtectedRouteProps}
+							path={`${url}/systemstats`}
+							component={AdminSystemStats}
 							exact
 						/>
 					</>

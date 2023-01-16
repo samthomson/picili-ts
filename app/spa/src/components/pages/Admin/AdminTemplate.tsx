@@ -26,6 +26,10 @@ const menuItems = [
 		href: '/admin/systemevents',
 		displayText: 'system events',
 	},
+	{
+		href: '/admin/systemstats',
+		displayText: 'system stats',
+	},
 ]
 
 const displayTextForRoute = (route: string): string => {
