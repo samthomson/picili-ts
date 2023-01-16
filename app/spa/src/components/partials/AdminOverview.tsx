@@ -141,8 +141,8 @@ const AdminOverview: React.FunctionComponent = () => {
 			)}
 			{storageStates.storageSpaceFull.value && (
 				<p>
-					<strong>syncing indefinitely blocked</strong>. Picili
-					currently have space to generate more thumbnails, so
+					<strong>syncing indefinitely blocked</strong>. Picili is
+					currently out of space to generate more thumbnails, so
 					won&apos;t be able to import new files (sync).
 				</p>
 			)}
