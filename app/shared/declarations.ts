@@ -70,7 +70,7 @@ export namespace API {
 		updatedAt: string
 	}
 
-	type StorageState = {
+	export type StorageState = {
 		storageSpaceFull: BinomialStateValues,
 		imageProcessingDirFull: BinomialStateValues,
 		videoProcessingDirFull: BinomialStateValues,

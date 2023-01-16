@@ -12,6 +12,23 @@ const adminOverviewQuery = gql`
 			fileCount
 			searchableFilesCount
 		}
+
+		taskProcessor {
+			storageStates {
+				storageSpaceFull {
+					value
+					updatedAt
+				}
+				imageProcessingDirFull {
+					value
+					updatedAt
+				}
+				videoProcessingDirFull {
+					value
+					updatedAt
+				}
+			}
+		}
 	}
 `
 
@@ -40,6 +57,28 @@ const AdminOverview: React.FunctionComponent = () => {
 		fileCount,
 		searchableFilesCount,
 	}: Types.API.AdminOverview = data?.adminOverview
+
+	const { storageStates }: Types.API.TaskProcessor = data?.taskProcessor
+
+	const storageValuesToShow = storageStates
+		? [
+				{
+					label: 'Disk full',
+					value: storageStates.storageSpaceFull.value,
+					updatedAt: storageStates.storageSpaceFull.updatedAt,
+				},
+				{
+					label: 'Image processing dir full',
+					value: storageStates.imageProcessingDirFull.value,
+					updatedAt: storageStates.imageProcessingDirFull.updatedAt,
+				},
+				{
+					label: 'Video processing dir full',
+					value: storageStates.videoProcessingDirFull.value,
+					updatedAt: storageStates.videoProcessingDirFull.updatedAt,
+				},
+		  ]
+		: []
 
 	return (
 		<React.Fragment>
@@ -72,6 +111,27 @@ const AdminOverview: React.FunctionComponent = () => {
 					</tr>
 				</tbody>
 			</table>
+
+			{storageStates && (
+				<>
+					<h4>Storage</h4>
+					<table>
+						<tbody>
+							{storageValuesToShow.map(
+								({ label, value, updatedAt }, key) => {
+									return (
+										<tr key={key}>
+											<td>{label}</td>
+											<td>{String(value)}</td>
+											<td>{updatedAt}</td>
+										</tr>
+									)
+								},
+							)}
+						</tbody>
+					</table>
+				</>
+			)}
 		</React.Fragment>
 	)
 }
