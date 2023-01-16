@@ -101,12 +101,20 @@ const AdminOverview: React.FunctionComponent = () => {
 					<tr>
 						<td>corrupt files</td>
 						<td>
-							{corruptFiles.map((file, corruptFileIndex) => (
-								<li key={corruptFileIndex}>
-									{file}
-									<br />
-								</li>
-							))}
+							{corruptFiles?.length > 0 ? (
+								<ol>
+									{corruptFiles.map(
+										(file, corruptFileIndex) => (
+											<li key={corruptFileIndex}>
+												{file}
+												<br />
+											</li>
+										),
+									)}
+								</ol>
+							) : (
+								<>0</>
+							)}
 						</td>
 					</tr>
 				</tbody>
