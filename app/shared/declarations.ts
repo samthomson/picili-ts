@@ -192,6 +192,9 @@ export namespace API {
             g: number
             b: number
 		}
+		pendingTasks: {
+			taskType: string
+		}[]
 	}
 
 	export interface SystemEvent extends Omit<Core.BaseModels.SystemEventAttributes, 'userId'> { datetime: string }

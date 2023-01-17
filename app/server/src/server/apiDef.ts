@@ -241,6 +241,10 @@ const typeDefs = gql`
         b: Int!
     }
 
+    type PendingTask {
+        taskType: String
+    }
+
     type FileInfo {
         address: String
         datetime: String
@@ -249,6 +253,7 @@ const typeDefs = gql`
         pathOnDropbox: String
         tags: [Tag]
         mainColour: RGB
+        pendingTasks: [PendingTask]
     }
 
     type SystemEvent {

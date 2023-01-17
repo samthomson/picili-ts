@@ -864,6 +864,12 @@ export const getFileWithTagsAndDropboxFile = async (
                     },
                 },
             },
+            {
+                model: Models.TaskModel,
+                where: {
+                    isProcessed: false,
+                },
+            },
         ],
         order: [[Models.TagModel, 'confidence', 'DESC']],
     })
@@ -873,7 +879,7 @@ export const getFileWithTagsAndDropboxFile = async (
     }
 
     // @ts-ignore
-    const { address, latitude, longitude, datetime, elevation, dropbox_file, tags, r, g, b } = file
+    const { address, latitude, longitude, datetime, elevation, dropbox_file, tags, r, g, b, tasks } = file
 
     const location = latitude && longitude ? { latitude, longitude } : undefined
 
@@ -891,6 +897,11 @@ export const getFileWithTagsAndDropboxFile = async (
         })),
         mainColour:
             HelperUtil.isNumber(r) && HelperUtil.isNumber(g) && HelperUtil.isNumber(b) ? { r, g, b } : undefined,
+        pendingTasks: tasks
+            .filter(({ taskType }) => taskType !== 'DROPBOX_SYNC')
+            .map(({ taskType }) => ({
+                taskType,
+            })),
     }
 
     return fileInfo

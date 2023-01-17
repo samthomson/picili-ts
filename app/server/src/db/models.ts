@@ -325,6 +325,7 @@ export const TagModel = Database.define<TagInstance>(
 )
 
 FileModel.hasMany(TagModel)
+FileModel.hasMany(TaskModel, { foreignKey: 'related_picili_file_id' })
 
 type SystemEventCreationAttributes = Sequelize.Optional<Types.Core.BaseModels.SystemEventAttributes, 'id'>
 export interface SystemEventInstance

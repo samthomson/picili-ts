@@ -31,6 +31,9 @@ const fileInfoQuery = gql`
 				g
 				b
 			}
+			pendingTasks {
+				taskType
+			}
 		}
 	}
 `
@@ -275,6 +278,19 @@ const LightboxInfo: React.FunctionComponent<IProps> = ({
 					</div>
 				)
 			})}
+
+			{fileInfo?.pendingTasks && (
+				<div>
+					Pending Tasks:
+					<ol>
+						{fileInfo?.pendingTasks.map(({ taskType }, index) => (
+							<li key={index}>
+								{taskType.toLowerCase().replaceAll('_', ' ')}
+							</li>
+						))}
+					</ol>
+				</div>
+			)}
 		</>
 	)
 }
