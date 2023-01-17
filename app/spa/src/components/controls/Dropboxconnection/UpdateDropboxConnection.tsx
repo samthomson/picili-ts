@@ -2,6 +2,7 @@ import React from 'react'
 import { useMutation, gql } from '@apollo/client'
 import * as Types from '@shared/declarations'
 import * as MantineCore from '@mantine/core'
+import * as Icons from '@tabler/icons'
 
 const updateDropboxConnectionGQL = gql`
 	mutation updateDropboxConnection($dropboxUpdateInput: DropboxUpdateInput!) {
@@ -68,16 +69,23 @@ const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 	return (
 		<div>
 			{dropboxUpdateFailed && { dropboxUpdateFailed }}
+			<p>
+				Enter the path (with leading slash) within your dropbox folder
+				of the directory you&apos;d like picili to sync with.
+			</p>
+			<p>Optionally toggle syncing on/off with the checkbox.</p>
+			<p>Save any changes by clicking &apos;Update&apos;.</p>
 			<form id="dropbox-connection-form">
 				<div id="input-wrapper">
 					<MantineCore.Input
 						type="text"
-						placeholder="path on dropbox to sync with"
+						placeholder="eg `/my-picture-folder`"
 						value={syncPath ?? ''}
 						onChange={(e: React.FormEvent<HTMLInputElement>) =>
 							setSyncPath(e.currentTarget.value)
 						}
 						disabled={disabled}
+						icon={<Icons.IconFolder size={16} />}
 					/>
 				</div>
 				<div id="checkbox-button-wrapper">
