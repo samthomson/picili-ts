@@ -728,11 +728,18 @@ export namespace Core {
 		isVideoProcessingDirOutOfSpace: boolean
 	}
 
+	export type SystemResourceStats = {
+		cpuUsagePercent: number
+		memoryUsagePercent: number
+	}
+
 	export type ResourceManagerStats = {
 		dateTime: string
 		isOutOfSpace: boolean
 		isImageProcessingDirOutOfSpace: boolean
 		isVideoProcessingDirOutOfSpace: boolean
+		cpuUsagePercent: number
+		memoryUsagePercent: number
 	}
 }
 

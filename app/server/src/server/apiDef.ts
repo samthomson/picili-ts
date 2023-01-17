@@ -325,6 +325,8 @@ const typeDefs = gql`
         isOutOfSpace: Boolean
         isImageProcessingDirOutOfSpace: Boolean
         isVideoProcessingDirOutOfSpace: Boolean
+        cpuUsagePercent: Float
+        memoryUsagePercent: Float
     }
 
     type ResourceManager {

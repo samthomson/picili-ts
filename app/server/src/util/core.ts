@@ -6,6 +6,7 @@ import * as HelperUtil from './helper'
 
 import * as UUID from 'uuid'
 import moment from 'moment'
+import * as OSU from 'node-os-utils'
 
 export const addAFileToTheSystem = async (userId: number, newDropboxFile: Types.ShadowDropboxAPIFile) => {
     // add to dropbox files
@@ -130,3 +131,15 @@ export const raiseEventInvalidDropboxPathDetected = async (userId: number): Prom
     // todo: send email notification to user
 }
 // todo: make method like above for invalid token?
+
+export const systemResourceStats = async (): Promise<Types.Core.SystemResourceStats> => {
+    const { cpu, mem } = OSU
+    const cpuUsagePercent = await cpu.usage()
+    const { usedMemMb, totalMemMb } = await mem.used()
+    const memoryUsagePercent = (usedMemMb / totalMemMb) * 100
+
+    return {
+        cpuUsagePercent,
+        memoryUsagePercent,
+    }
+}

@@ -1,11 +1,12 @@
 import * as HelperUtil from '../util/helper'
 import * as FileUtil from '../util/file'
+import * as CoreUtil from '../util/core'
 import * as Types from '@shared/declarations'
 
 import moment from 'moment'
 
 export class ResourceManager {
-    TICK_FREQUENCY = 60000
+    TICK_FREQUENCY = 1000
 
     public static getInstance(): ResourceManager {
         return ResourceManager._instance
@@ -40,15 +41,19 @@ export class ResourceManager {
         // todo: get stats
         const { isOutOfSpace, isImageProcessingDirOutOfSpace, isVideoProcessingDirOutOfSpace } =
             await FileUtil.diskSpaceStats()
+        const { cpuUsagePercent, memoryUsagePercent } = await CoreUtil.systemResourceStats()
 
-        // todo: add latest stats to list of stats
-        const tempStats = this.stats
-        tempStats.push({
+        const newStats = {
             dateTime: moment().toISOString(),
             isOutOfSpace,
             isImageProcessingDirOutOfSpace,
             isVideoProcessingDirOutOfSpace,
-        })
+            cpuUsagePercent,
+            memoryUsagePercent,
+        }
+
+        const tempStats = this.stats
+        tempStats.push(newStats)
 
         // todo: if list is over ITEM_LIMIT items (minutes), cull the first
         this.stats =

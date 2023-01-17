@@ -13,6 +13,8 @@ const systemStatsQuery = gql`
 				isOutOfSpace
 				isImageProcessingDirOutOfSpace
 				isVideoProcessingDirOutOfSpace
+				cpuUsagePercent
+				memoryUsagePercent
 			}
 		}
 	}
@@ -57,6 +59,8 @@ const SystemStatsOverview: React.FunctionComponent = () => {
 								<th>isOutOfSpace</th>
 								<th>isImageProcessingDirOutOfSpace</th>
 								<th>isVideoProcessingDirOutOfSpace</th>
+								<th>CPU Usage</th>
+								<th>Mem Usage</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -67,6 +71,8 @@ const SystemStatsOverview: React.FunctionComponent = () => {
 										isOutOfSpace,
 										isImageProcessingDirOutOfSpace,
 										isVideoProcessingDirOutOfSpace,
+										cpuUsagePercent,
+										memoryUsagePercent,
 									},
 									i,
 								) => (
@@ -87,6 +93,8 @@ const SystemStatsOverview: React.FunctionComponent = () => {
 												isVideoProcessingDirOutOfSpace,
 											)}
 										</td>
+										<td>{cpuUsagePercent} %</td>
+										<td>{memoryUsagePercent} %</td>
 									</tr>
 								),
 							)}
