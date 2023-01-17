@@ -591,8 +591,8 @@ export const diskSpaceStats = async (): Promise<Types.Core.DiskSpaceStats> => {
         PROCESSING_DIR_VIDEO_SIZE_LIMIT_GB: processingDirVideoSizeLimitGB,
     } = process.env
 
-    const processingDirImageSizeLimitBytes = +processingDirImageSizeLimitGB / 1024 / 1024 / 1024
-    const processingDirVideoSizeLimitBytes = +processingDirVideoSizeLimitGB / 1024 / 1024 / 1024
+    const processingDirImageSizeLimitBytes = +processingDirImageSizeLimitGB * 1024 * 1024 * 1024
+    const processingDirVideoSizeLimitBytes = +processingDirVideoSizeLimitGB * 1024 * 1024 * 1024
 
     // around 5gb is expected; 4gb allocated to videos, and 1gb for images
     const reservedForPiciliProcessingDirsBytes = processingDirImageSizeLimitBytes + processingDirVideoSizeLimitBytes

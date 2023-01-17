@@ -67,8 +67,6 @@ const startApolloServer = async (typeDefs, resolvers) => {
     })
 
     await server.start()
-    // intentionally synchronous
-    resourceManager.start()
 
     server.applyMiddleware({ app, cors: false })
 
@@ -81,6 +79,8 @@ const startApolloServer = async (typeDefs, resolvers) => {
 
     if (process.env.NODE_ENV === 'production') {
         taskManager.start()
+        // intentionally synchronous
+        resourceManager.start()
     }
 
     process.on('SIGTERM', async () => {

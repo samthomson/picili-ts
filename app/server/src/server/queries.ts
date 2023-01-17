@@ -1,5 +1,6 @@
 import * as AuthUtil from '../util/auth'
 import * as DBUtil from '../util/db'
+import * as FileUtil from '../util/file'
 import * as Models from '../db/models'
 import * as SearchUtil from '../util/search'
 import { TaskManager } from '../services/TaskManager'
@@ -286,6 +287,14 @@ const resourceManager = async (parents, args, ctx) => {
     }
 }
 
+const serverData = async (parents, args, ctx) => {
+    const diskSpaceData = await FileUtil.diskSpaceStats()
+
+    return {
+        diskSpaceData,
+    }
+}
+
 const queries = {
     validateToken: (parent, args, ctx) => AuthUtil.requestHasValidCookieToken(ctx),
     dropboxConnection: getDropboxConnection,
@@ -298,6 +307,7 @@ const queries = {
     systemEvents,
     UIState,
     resourceManager,
+    serverData,
 }
 
 export default queries

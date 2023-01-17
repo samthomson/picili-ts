@@ -3,6 +3,7 @@ import { useQuery, gql } from '@apollo/client'
 import * as MantineCore from '@mantine/core'
 
 import * as Types from '@shared/declarations'
+import * as HelperUtil from 'src/util/helper'
 
 const adminOverviewQuery = gql`
 	query adminOverview {
@@ -12,7 +13,6 @@ const adminOverviewQuery = gql`
 			fileCount
 			searchableFilesCount
 		}
-
 		taskProcessor {
 			storageStates {
 				storageSpaceFull {
@@ -27,6 +27,15 @@ const adminOverviewQuery = gql`
 					value
 					updatedAt
 				}
+			}
+		}
+		serverData {
+			diskSpaceData {
+				totalSpaceBytes
+				freeSpaceBytes
+				usedSpaceBytes
+				reservedForPiciliProcessingDirsBytes
+				availableForPiciliToUse
 			}
 		}
 	}
@@ -59,6 +68,7 @@ const AdminOverview: React.FunctionComponent = () => {
 	}: Types.API.AdminOverview = data?.adminOverview
 
 	const { storageStates }: Types.API.TaskProcessor = data?.taskProcessor
+	const serverData: Types.API.ServerData = data?.serverData
 
 	const storageValuesToShow = storageStates
 		? [
@@ -76,6 +86,42 @@ const AdminOverview: React.FunctionComponent = () => {
 					label: 'Video processing dir full',
 					value: storageStates.videoProcessingDirFull.value,
 					updatedAt: storageStates.videoProcessingDirFull.updatedAt,
+				},
+		  ]
+		: []
+
+	const diskDataValuesToShow = serverData?.diskSpaceData
+		? [
+				{
+					label: 'Total space',
+					value: HelperUtil.formatBytes(
+						serverData.diskSpaceData.totalSpaceBytes,
+					),
+				},
+				{
+					label: 'Used space',
+					value: HelperUtil.formatBytes(
+						serverData.diskSpaceData.usedSpaceBytes,
+					),
+				},
+				{
+					label: 'Free space',
+					value: HelperUtil.formatBytes(
+						serverData.diskSpaceData.freeSpaceBytes,
+					),
+				},
+				{
+					label: 'Reserved space for processing files',
+					value: HelperUtil.formatBytes(
+						serverData.diskSpaceData
+							.reservedForPiciliProcessingDirsBytes,
+					),
+				},
+				{
+					label: 'Space picili can use (free space - reserved)',
+					value: HelperUtil.formatBytes(
+						serverData.diskSpaceData.availableForPiciliToUse,
+					),
 				},
 		  ]
 		: []
@@ -122,7 +168,7 @@ const AdminOverview: React.FunctionComponent = () => {
 
 			{storageStates && (
 				<>
-					<h4>Storage</h4>
+					<h4>Full / Blocked?</h4>
 					<MantineCore.Table>
 						<thead>
 							<tr>
@@ -165,6 +211,63 @@ const AdminOverview: React.FunctionComponent = () => {
 						processing files in that directory have been processed.
 					</p>
 				))}
+
+			{serverData && (
+				<>
+					<h4>Server data</h4>
+
+					<MantineCore.Table>
+						<tbody>
+							{diskDataValuesToShow.map(
+								({ label, value }, key) => {
+									return (
+										<tr key={key}>
+											<td>{label}</td>
+											<td>{String(value)}</td>
+										</tr>
+									)
+								},
+							)}
+						</tbody>
+					</MantineCore.Table>
+
+					<br />
+					<MantineCore.Progress
+						radius="xl"
+						size={24}
+						sections={[
+							{
+								value:
+									(serverData.diskSpaceData.usedSpaceBytes /
+										serverData.diskSpaceData
+											.totalSpaceBytes) *
+									100,
+								color: 'red',
+								label: 'Used Space',
+								tooltip: `Used Space – ${HelperUtil.formatBytes(
+									serverData.diskSpaceData.usedSpaceBytes,
+								)}`,
+							},
+
+							{
+								value:
+									(serverData.diskSpaceData
+										.reservedForPiciliProcessingDirsBytes /
+										serverData.diskSpaceData
+											.totalSpaceBytes) *
+									100,
+								color: 'orange',
+								label: 'Reserved',
+								tooltip: `Reserved – ${HelperUtil.formatBytes(
+									serverData.diskSpaceData
+										.reservedForPiciliProcessingDirsBytes,
+								)}`,
+							},
+						]}
+					/>
+					<br />
+				</>
+			)}
 		</React.Fragment>
 	)
 }

@@ -331,6 +331,29 @@ const typeDefs = gql`
         stats: [ResourceManagerStats]
     }
 
+    type ProcessingDirSize {
+        IMAGE: Float
+        VIDEO: Float
+    }
+
+    type DiskSpaceData {
+        totalSpaceBytes: Float
+        freeSpaceBytes: Float
+        usedSpaceBytes: Float
+        reservedForPiciliProcessingDirsBytes: Float
+        availableForPiciliToUse: Float
+        processingDirImageSizeLimitBytes: Float
+        processingDirVideoSizeLimitBytes: Float
+        processingDirSize: ProcessingDirSize
+        isOutOfSpace: Boolean
+        isImageProcessingDirOutOfSpace: Boolean
+        isVideoProcessingDirOutOfSpace: Boolean
+    }
+
+    type ServerData {
+        diskSpaceData: DiskSpaceData
+    }
+
     type Query {
         validateToken(token: String!): ValidateTokenResponse
         dropboxConnection: DropboxConnection
@@ -350,6 +373,7 @@ const typeDefs = gql`
         fileInfo(fileId: Int!): FileInfo
         UIState: UIState
         resourceManager: ResourceManager
+        serverData: ServerData
     }
     type Mutation {
         login(authInput: LoginInput!): AuthResponse

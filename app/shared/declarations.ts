@@ -253,6 +253,10 @@ export namespace API {
 	export type UIState = {
 		queryBuilders: QueryBuildersUIData
 	}
+
+	export type ServerData = {
+		diskSpaceData: Core.DiskSpaceStats
+	}
 }
 export namespace ExternalAPI {
 	export namespace Dropbox {
