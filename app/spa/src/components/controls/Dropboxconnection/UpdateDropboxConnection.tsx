@@ -68,6 +68,18 @@ const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 
 	return (
 		<div>
+			{(!!!dropboxConnection?.syncPath ||
+				dropboxConnection.syncPath === '') && (
+				<MantineCore.Alert
+					icon={<Icons.IconAlertCircle size={16} />}
+					title="Not syncing"
+					color="orange"
+					variant="outline"
+				>
+					Dropbox is connected but you haven&apos;t set a folder to
+					sync with.
+				</MantineCore.Alert>
+			)}
 			{dropboxUpdateFailed && { dropboxUpdateFailed }}
 			<p>
 				Enter the path (with leading slash) within your dropbox folder
