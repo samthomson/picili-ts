@@ -3,6 +3,7 @@ import FSExtra from 'fs-extra'
 import fs from 'fs'
 import PathLib from 'path'
 import checkDiskSpace from 'check-disk-space'
+import fastFolderSizeSync from 'fast-folder-size/sync'
 import Logger from '../services/logging'
 import * as HelperUtil from '../util/helper'
 import * as DBUtil from '../util/db'
@@ -601,7 +602,7 @@ export const diskSpaceStats = async (): Promise<Types.Core.DiskSpaceStats> => {
     const availableForPiciliToUse = free - reservedForPiciliProcessingDirsBytes
 
     const processingDirSize = await dirSize('processing')
-
+    const thumbsDirSizeBytes = await fastFolderSizeSync(PathLib.resolve('thumbs'))
     const isOutOfSpace = availableForPiciliToUse <= 0
     const isImageProcessingDirOutOfSpace = processingDirSize[Enums.FileType.IMAGE] <= processingDirImageSizeLimitBytes
     const isVideoProcessingDirOutOfSpace = processingDirSize[Enums.FileType.VIDEO] <= processingDirVideoSizeLimitBytes
@@ -615,6 +616,7 @@ export const diskSpaceStats = async (): Promise<Types.Core.DiskSpaceStats> => {
         processingDirImageSizeLimitBytes,
         processingDirVideoSizeLimitBytes,
         processingDirSize,
+        thumbsDirSizeBytes,
         isOutOfSpace,
         isImageProcessingDirOutOfSpace,
         isVideoProcessingDirOutOfSpace,

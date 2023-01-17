@@ -347,6 +347,7 @@ const typeDefs = gql`
         processingDirImageSizeLimitBytes: Float
         processingDirVideoSizeLimitBytes: Float
         processingDirSize: ProcessingDirSize
+        thumbsDirSizeBytes: Float
         isOutOfSpace: Boolean
         isImageProcessingDirOutOfSpace: Boolean
         isVideoProcessingDirOutOfSpace: Boolean

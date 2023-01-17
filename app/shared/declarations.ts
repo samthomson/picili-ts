@@ -723,6 +723,7 @@ export namespace Core {
 		processingDirImageSizeLimitBytes: number
 		processingDirVideoSizeLimitBytes: number
 		processingDirSize: Record<FileTypeEnum, number>
+		thumbsDirSizeBytes: number
 		isOutOfSpace: boolean
 		isImageProcessingDirOutOfSpace: boolean
 		isVideoProcessingDirOutOfSpace: boolean
