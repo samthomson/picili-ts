@@ -1,5 +1,7 @@
 import React from 'react'
 import { useMutation, gql } from '@apollo/client'
+import * as MantineCore from '@mantine/core'
+import * as Icons from '@tabler/icons'
 
 const stopImportingGQL = gql`
 	mutation stopImporting {
@@ -60,15 +62,28 @@ const ImportState: React.FunctionComponent<IProps> = ({
 			)}
 			{isImportingEnabled && !stopping && (
 				<>
-					<p>
-						Picili is currently importing files and so the dropbox
-						connection can&apos;t be changed unless you stop
-						importing.
-					</p>
-					{stopImportingFailed && { stopImportingFailed }}
-					<button onClick={stopImportingHandler} disabled={loading}>
-						stop importing
-					</button>
+					<MantineCore.Alert
+						icon={<Icons.IconAlertCircle size={16} />}
+						title="Currently syncing - can't disconnect"
+						color="orange"
+						variant="outline"
+					>
+						<p>
+							Picili is currently importing files and so the
+							dropbox connection can&apos;t be changed unless you
+							stop importing.
+						</p>
+						{stopImportingFailed && { stopImportingFailed }}
+						<MantineCore.Button
+							onClick={stopImportingHandler}
+							disabled={loading}
+							variant="subtle"
+							color="red"
+							radius="md"
+						>
+							Stop importing
+						</MantineCore.Button>
+					</MantineCore.Alert>
 				</>
 			)}
 		</div>
