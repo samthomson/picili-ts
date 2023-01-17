@@ -83,7 +83,7 @@ const DropboxConnection: React.FunctionComponent = () => {
 				<>
 					<h4>dropbox not connected</h4>
 					<div>
-						connect? <CreateDropboxConnection refetch={refetch} />
+						<CreateDropboxConnection refetch={refetch} />
 					</div>
 				</>
 			)}

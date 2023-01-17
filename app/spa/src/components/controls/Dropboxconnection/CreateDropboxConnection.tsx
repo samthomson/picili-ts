@@ -2,6 +2,8 @@ import React from 'react'
 import { useLocation, useHistory } from 'react-router-dom'
 import { useMutation, gql } from '@apollo/client'
 import * as HelperUtil from 'src/util/helper'
+import * as MantineCore from '@mantine/core'
+import * as Icons from '@tabler/icons'
 
 const createDropboxConnectionGQL = gql`
 	mutation createDropboxConnection(
@@ -68,7 +70,10 @@ const CreateDropboxConnection: React.FunctionComponent<IProps> = ({
 			{token && (
 				<>
 					{connectingDropboxAccount && (
-						<p>connecting your dropbox account to picili...</p>
+						<p>
+							connecting your dropbox account to picili.. please
+							wait...
+						</p>
 					)}
 				</>
 			)}
@@ -78,9 +83,17 @@ const CreateDropboxConnection: React.FunctionComponent<IProps> = ({
 					<strong>{dropboxConnectFailed}</strong>
 				</div>
 			)}
-			<button onClick={dropboxOAuth}>
-				link dropbox account to picili
-			</button>
+			<p>
+				First connect picili with your dropbox account, before you can
+				choose a directory to sync with.
+			</p>
+			<MantineCore.Button
+				onClick={dropboxOAuth}
+				leftIcon={<Icons.IconPlugConnected size={14} />}
+				disabled={!!token}
+			>
+				Connect picili to your dropbox account
+			</MantineCore.Button>
 		</div>
 	)
 }
