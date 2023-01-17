@@ -36,6 +36,7 @@ const adminOverviewQuery = gql`
 				usedSpaceBytes
 				reservedForPiciliProcessingDirsBytes
 				availableForPiciliToUse
+				thumbsDirSizeBytes
 			}
 		}
 	}
@@ -99,7 +100,7 @@ const AdminOverview: React.FunctionComponent = () => {
 					),
 				},
 				{
-					label: 'Used space',
+					label: 'Used space (including thumbnails)',
 					value: HelperUtil.formatBytes(
 						serverData.diskSpaceData.usedSpaceBytes,
 					),
@@ -115,6 +116,12 @@ const AdminOverview: React.FunctionComponent = () => {
 					value: HelperUtil.formatBytes(
 						serverData.diskSpaceData
 							.reservedForPiciliProcessingDirsBytes,
+					),
+				},
+				{
+					label: 'Thumb dir size',
+					value: HelperUtil.formatBytes(
+						serverData.diskSpaceData.thumbsDirSizeBytes,
 					),
 				},
 				{
@@ -238,17 +245,33 @@ const AdminOverview: React.FunctionComponent = () => {
 						sections={[
 							{
 								value:
-									(serverData.diskSpaceData.usedSpaceBytes /
+									((serverData.diskSpaceData.usedSpaceBytes -
+										serverData.diskSpaceData
+											.thumbsDirSizeBytes) /
 										serverData.diskSpaceData
 											.totalSpaceBytes) *
 									100,
 								color: 'red',
 								label: 'Used Space',
 								tooltip: `Used Space – ${HelperUtil.formatBytes(
-									serverData.diskSpaceData.usedSpaceBytes,
+									serverData.diskSpaceData.usedSpaceBytes -
+										serverData.diskSpaceData
+											.thumbsDirSizeBytes,
 								)}`,
 							},
-
+							{
+								value:
+									(serverData.diskSpaceData
+										.thumbsDirSizeBytes /
+										serverData.diskSpaceData
+											.totalSpaceBytes) *
+									100,
+								color: 'orange',
+								label: 'Thumbnails',
+								tooltip: `Thumbnails – ${HelperUtil.formatBytes(
+									serverData.diskSpaceData.thumbsDirSizeBytes,
+								)}`,
+							},
 							{
 								value:
 									(serverData.diskSpaceData
@@ -256,7 +279,7 @@ const AdminOverview: React.FunctionComponent = () => {
 										serverData.diskSpaceData
 											.totalSpaceBytes) *
 									100,
-								color: 'orange',
+								color: 'yellow',
 								label: 'Reserved',
 								tooltip: `Reserved – ${HelperUtil.formatBytes(
 									serverData.diskSpaceData
