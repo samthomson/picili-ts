@@ -6,7 +6,7 @@ import * as Types from '@shared/declarations'
 import moment from 'moment'
 
 export class ResourceManager {
-    TICK_FREQUENCY = 1000
+    TICK_FREQUENCY = 60000
 
     public static getInstance(): ResourceManager {
         return ResourceManager._instance
