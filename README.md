@@ -61,7 +61,7 @@ Once a connection with dropbox is made via OAuth, and a directory (within your d
 |text / OCR||&check;|&check;|[OCR Space](http://ocr.space/)|
 |text / number plates||&check;|&check;|[Plate recognizer](https://platerecognizer.com/)|
 
-[*] Some APIs require a latitude/longitude, so are only called if the image was geotagged.
+[*] Some APIs require a latitude/longitude, so are only called if the image was geotagged. If the picture isn't already geotagged (eg from supporting camera or smartphone) then a geotagging application can be used (for example [geosetter](https://geosetter.de/en/main-en/) on windows, or [photolinker](https://www.earlyinnovations.com/photolinker/) on mac).
 
 [**] These APIs are called conditionally based on the results of subject detection. For example if *plant*, *flower*, or *tree* is detected as a subject tag, then a task will be created to have the plant detection API called for that picture.
 
