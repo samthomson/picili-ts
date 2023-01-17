@@ -679,6 +679,36 @@ a {
 
 }
 
+#dropbox-connection-form {
+  display: flex;
+  // background-color: green;
+  gap: $margin * 2;
+  margin-bottom: $margin * 2;
+
+  #input-wrapper {
+    // background-color: red;
+    flex: 1;
+  }
+  #checkbox-button-wrapper {
+    // background-color: yellow;
+    flex: 0 0 auto;
+
+    display: flex;
+    align-items: center;
+    gap: $margin;
+    display: inline-flex;
+
+    .mantine-Checkbox-root {
+      align-items: center;
+      display: inline-flex;
+    }
+  }
+}
+
+#dropbox-connection-remove-button {
+  float: right;
+}
+
 //
 //
 // SMALL HELPERS / GENERIC STYLES / DETAILS

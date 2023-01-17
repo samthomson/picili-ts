@@ -1,6 +1,7 @@
 import React from 'react'
 import { useMutation, gql } from '@apollo/client'
 import * as Types from '@shared/declarations'
+import * as MantineCore from '@mantine/core'
 
 const updateDropboxConnectionGQL = gql`
 	mutation updateDropboxConnection($dropboxUpdateInput: DropboxUpdateInput!) {
@@ -67,21 +68,36 @@ const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 	return (
 		<div>
 			{dropboxUpdateFailed && { dropboxUpdateFailed }}
-			<form>
-				<input
-					type="text"
-					placeholder="path on dropbox to sync with"
-					value={syncPath ?? ''}
-					onChange={(e) => setSyncPath(e.target.value)}
-					disabled={disabled}
-				/>
-
-				<input
-					type="checkbox"
-					checked={syncEnabled}
-					onChange={(e) => setSyncEnabled(e.target.checked)}
-					disabled={disabled}
-				/>
+			<form id="dropbox-connection-form">
+				<div id="input-wrapper">
+					<MantineCore.Input
+						type="text"
+						placeholder="path on dropbox to sync with"
+						value={syncPath ?? ''}
+						onChange={(e: React.FormEvent<HTMLInputElement>) =>
+							setSyncPath(e.currentTarget.value)
+						}
+						disabled={disabled}
+					/>
+				</div>
+				<div id="checkbox-button-wrapper">
+					<MantineCore.Checkbox
+						checked={syncEnabled}
+						onChange={(e: React.FormEvent<HTMLInputElement>) =>
+							setSyncEnabled(e.currentTarget.checked)
+						}
+						disabled={disabled}
+						id="dropbox-connection-checkbox"
+						// size="md"
+						label="Syncing Enabled"
+					/>
+					<MantineCore.Button
+						onClick={disconnectHandler}
+						disabled={isUpdateButtonDisabled}
+					>
+						Update
+					</MantineCore.Button>
+				</div>
 			</form>
 			{dropboxConnection.invalidPathDetected && (
 				<>
@@ -91,12 +107,6 @@ const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 					</div>
 				</>
 			)}
-			<button
-				onClick={disconnectHandler}
-				disabled={isUpdateButtonDisabled}
-			>
-				update
-			</button>
 		</div>
 	)
 }

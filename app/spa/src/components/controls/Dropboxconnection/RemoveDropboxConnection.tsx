@@ -1,5 +1,7 @@
 import React from 'react'
 import { useMutation, gql } from '@apollo/client'
+import * as MantineCore from '@mantine/core'
+import * as Icons from '@tabler/icons'
 
 const disconnectDropboxConnectionGQL = gql`
 	mutation disconnectDropboxConnection {
@@ -45,9 +47,17 @@ const RemoveDropboxConnection: React.FunctionComponent<IProps> = ({
 		<div>
 			{loading && <>loading...</>}
 			{dropboxDisconnectFailed && { dropboxDisconnectFailed }}
-			<button onClick={disconnectHandler} disabled={loading || disabled}>
-				disconnect dropbox
-			</button>
+			<MantineCore.Button
+				onClick={disconnectHandler}
+				disabled={loading || disabled}
+				id="dropbox-connection-remove-button"
+				leftIcon={<Icons.IconPlugConnectedX size="14" />}
+				variant="subtle"
+				color="red"
+				radius="md"
+			>
+				Disconnect dropbox
+			</MantineCore.Button>
 		</div>
 	)
 }
