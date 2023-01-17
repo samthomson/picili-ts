@@ -83,7 +83,7 @@ const TasksOverview: React.FunctionComponent = () => {
 		actionable
 	return (
 		<React.Fragment>
-			<h2 className="admin-page-title">queued</h2>
+			<h2 className="admin-page-title">Queued</h2>
 			<span title={oldest}>Queue age: {queueAge}</span>
 			<br />
 			total tasks: {totalTasks}
@@ -93,7 +93,7 @@ const TasksOverview: React.FunctionComponent = () => {
 			actionable tasks (non video capable):{' '}
 			{actionableTasksNonVideoCapable}
 			<br />
-			<h2>queues</h2>
+			<h2>Queues</h2>
 			{queues.length === 0 && <>no tasks queued...</>}
 			{queues.length > 0 && (
 				<MantineCore.Table
@@ -126,7 +126,7 @@ const TasksOverview: React.FunctionComponent = () => {
 					</tbody>
 				</MantineCore.Table>
 			)}
-			<h2>processing</h2>
+			<h2>Processing</h2>
 			{workers.length === 0 && (
 				<>[no workers are active at this moment.]</>
 			)}
@@ -247,7 +247,7 @@ const TasksOverview: React.FunctionComponent = () => {
 					</tbody>
 				</MantineCore.Table>
 			)}
-			<h2>processed</h2>
+			<h2>Processed</h2>
 			{recent.length === 0 && (
 				<>no tasks processed in the last month...</>
 			)}

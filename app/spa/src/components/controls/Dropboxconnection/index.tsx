@@ -59,7 +59,7 @@ const DropboxConnection: React.FunctionComponent = () => {
 		<div>
 			{hasDropboxConnection && (
 				<>
-					<h4 className="admin-page-title">dropbox is connected</h4>
+					<h3 className="admin-page-title">Dropbox is connected</h3>
 					<div>
 						<UpdateDropboxConnection
 							dropboxConnection={data.dropboxConnection}
@@ -81,7 +81,7 @@ const DropboxConnection: React.FunctionComponent = () => {
 			)}
 			{!hasDropboxConnection && (
 				<>
-					<h4>dropbox not connected</h4>
+					<h3 className="admin-page-title">Dropbox not connected</h3>
 					<div>
 						<CreateDropboxConnection refetch={refetch} />
 					</div>

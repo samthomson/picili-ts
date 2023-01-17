@@ -135,7 +135,7 @@ const AdminOverview: React.FunctionComponent = () => {
 
 	return (
 		<React.Fragment>
-			<h3 className="admin-page-title">summary</h3>
+			<h3 className="admin-page-title">Summary</h3>
 			<MantineCore.Table>
 				<tbody>
 					<tr>
