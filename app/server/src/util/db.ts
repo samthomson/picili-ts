@@ -195,7 +195,7 @@ export const createTask = async (createTaskInput: Types.Core.Inputs.CreateTaskIn
 export const ensureTaskExists = async (taskType: Types.TaskTypeEnum, relatedPiciliFileId: number): Promise<void> => {
     // task type
     // related id
-    const exists = await Models.TaskModel.findOne({ where: { taskType, relatedPiciliFileId } })
+    const exists = await Models.TaskModel.findOne({ where: { taskType, relatedPiciliFileId, isProcessed: false } })
 
     if (!exists) {
         await Models.TaskModel.create({
