@@ -999,7 +999,10 @@ export const isTaskProcessorWorkingOnImportTasks = (): boolean => {
      * returns true if active tasks contains import tasks other than dropbox sync.
      */
     const taskManager = TaskManager.getInstance()
-    const tasks = taskManager.getWorkers().map((task) => task.currentTaskBeingProcessed)
+    const tasks = taskManager
+        .getWorkers()
+        .map((task) => task.currentTaskBeingProcessed)
+        .filter((val) => !!val)
     const importTasks = tasks.filter((task) => task.importTask)
     const nonSyncImportTasks = importTasks.filter((task) => task.taskType !== Enums.TaskType.DROPBOX_SYNC)
 
