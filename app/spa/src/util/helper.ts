@@ -22,6 +22,9 @@ export const APIURL = (): string => {
 	return `${baseAPIURL()}/graphql`
 }
 
+export const formatNumberStripDecimal = (value: string | number): string =>
+	formatNumber(Math.round(+value))
+
 export const formatNumber = (value: string | number): string =>
 	`${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 

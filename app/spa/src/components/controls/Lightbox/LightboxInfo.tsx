@@ -222,7 +222,7 @@ const LightboxInfo: React.FunctionComponent<IProps> = ({
 			{fileInfo?.elevation && (
 				<div className="lightbox-information-piece">
 					<Icons.IconMountain size={14} />
-					{HelperUtil.formatNumber(fileInfo.elevation)}m
+					{HelperUtil.formatNumberStripDecimal(fileInfo.elevation)}m
 				</div>
 			)}
 
