@@ -97,9 +97,20 @@ export function appReducers(
 				return !(onlyAllowOneOfThisType && newTypeMatchesCurrentType)
 			})
 
+			// add new query only if there isn't an existing exact match
+			const individualQueries = filteredQueries.find(
+				(existingQuery) =>
+					existingQuery.type === addSearchQuery.type &&
+					existingQuery.subtype === addSearchQuery.subtype &&
+					existingQuery.value === addSearchQuery.value &&
+					existingQuery.isNotQuery === addSearchQuery.isNotQuery,
+			)
+				? filteredQueries
+				: [...filteredQueries, addSearchQuery]
+
 			const newQuery = {
 				...state.searchQuery,
-				individualQueries: [...filteredQueries, addSearchQuery],
+				individualQueries,
 			}
 
 			return {
