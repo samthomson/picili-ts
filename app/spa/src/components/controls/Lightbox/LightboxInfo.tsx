@@ -279,7 +279,7 @@ const LightboxInfo: React.FunctionComponent<IProps> = ({
 				)
 			})}
 
-			{fileInfo?.pendingTasks && (
+			{fileInfo?.pendingTasks.length > 0 && (
 				<div>
 					Pending Tasks:
 					<ol>
