@@ -11,8 +11,8 @@ import * as HelperUtil from 'src/util/helper'
 import * as Types from '@shared/declarations'
 
 const exifSummaryQuery = gql`
-	query {
-		UIState {
+	query ($fakeId: Int!) {
+		UIState(fakeId: $fakeId) {
 			queryBuilders {
 				exifCameras {
 					bucket
@@ -30,9 +30,11 @@ const exifSummaryQuery = gql`
 const ExifQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
 }> = ({ closeModal }) => {
-	const { loading, error, data } = useQuery(exifSummaryQuery, {
+	const { error, data } = useQuery(exifSummaryQuery, {
 		fetchPolicy: 'cache-and-network',
+		variables: { fakeId: 6 },
 	})
+	const loading = !error && !data
 
 	const userId: number = ReactRedux.useSelector(Selectors.userId) as number
 

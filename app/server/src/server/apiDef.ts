@@ -380,7 +380,7 @@ const typeDefs = gql`
         ): SearchQueryResponse
         autoComplete(query: IndividualQuery): AutoCompleteResponse
         fileInfo(fileId: Int!): FileInfo
-        UIState: UIState
+        UIState(fakeId: Int!): UIState
         resourceManager: ResourceManager
         serverData: ServerData
     }

@@ -11,8 +11,8 @@ import * as HelperUtil from 'src/util/helper'
 import * as Types from '@shared/declarations'
 
 const videoMinMaxQuery = gql`
-	query {
-		UIState {
+	query ($fakeId: Int!) {
+		UIState(fakeId: $fakeId) {
 			queryBuilders {
 				videoLength {
 					min
@@ -26,9 +26,11 @@ const videoMinMaxQuery = gql`
 const VideoQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
 }> = ({ closeModal }) => {
-	const { loading, error, data } = useQuery(videoMinMaxQuery, {
+	const { error, data } = useQuery(videoMinMaxQuery, {
 		fetchPolicy: 'cache-and-network',
+		variables: { fakeId: 3 },
 	})
+	const loading = !error && !data
 
 	const dispatch = ReactRedux.useDispatch()
 

@@ -11,8 +11,8 @@ import * as HelperUtil from 'src/util/helper'
 import * as Types from '@shared/declarations'
 
 const plantSummaryQuery = gql`
-	query {
-		UIState {
+	query ($fakeId: Int!) {
+		UIState(fakeId: $fakeId) {
 			queryBuilders {
 				plants {
 					fileId
@@ -27,9 +27,12 @@ const plantSummaryQuery = gql`
 const PlantQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
 }> = ({ closeModal }) => {
-	const { loading, error, data } = useQuery(plantSummaryQuery, {
+	const { error, data } = useQuery(plantSummaryQuery, {
 		fetchPolicy: 'cache-and-network',
+		variables: { fakeId: 123 },
 	})
+
+	const loading = !error && !data
 
 	const userId: number = ReactRedux.useSelector(Selectors.userId) as number
 

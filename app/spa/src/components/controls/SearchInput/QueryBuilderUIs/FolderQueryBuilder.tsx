@@ -11,8 +11,8 @@ import * as HelperUtil from 'src/util/helper'
 import * as Types from '@shared/declarations'
 
 const folderSummaryQuery = gql`
-	query {
-		UIState {
+	query ($fakeId: Int!) {
+		UIState(fakeId: $fakeId) {
 			queryBuilders {
 				folders {
 					id
@@ -29,9 +29,11 @@ const folderSummaryQuery = gql`
 const FolderQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
 }> = ({ closeModal }) => {
-	const { loading, error, data } = useQuery(folderSummaryQuery, {
+	const { error, data } = useQuery(folderSummaryQuery, {
 		fetchPolicy: 'cache-and-network',
+		variables: { fakeId: 2 },
 	})
+	const loading = !error && !data
 
 	const userId: number = ReactRedux.useSelector(Selectors.userId) as number
 

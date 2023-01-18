@@ -11,8 +11,8 @@ import * as HelperUtil from 'src/util/helper'
 import * as Types from '@shared/declarations'
 
 const numberplateSummaryQuery = gql`
-	query {
-		UIState {
+	query ($fakeId: Int!) {
+		UIState(fakeId: $fakeId) {
 			queryBuilders {
 				numberplates {
 					fileId
@@ -27,9 +27,11 @@ const numberplateSummaryQuery = gql`
 const NumberplateQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
 }> = ({ closeModal }) => {
-	const { loading, error, data } = useQuery(numberplateSummaryQuery, {
+	const { error, data } = useQuery(numberplateSummaryQuery, {
 		fetchPolicy: 'cache-and-network',
+		variables: { fakeId: 1 },
 	})
+	const loading = !error && !data
 
 	const userId: number = ReactRedux.useSelector(Selectors.userId) as number
 

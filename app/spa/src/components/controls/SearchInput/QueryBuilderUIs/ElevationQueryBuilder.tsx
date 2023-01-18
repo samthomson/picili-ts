@@ -11,8 +11,8 @@ import * as HelperUtil from 'src/util/helper'
 import * as Types from '@shared/declarations'
 
 const elevationMinMaxQuery = gql`
-	query {
-		UIState {
+	query ($fakeId: Int!) {
+		UIState(fakeId: $fakeId) {
 			queryBuilders {
 				elevation {
 					min
@@ -26,9 +26,11 @@ const elevationMinMaxQuery = gql`
 const ElevationQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
 }> = ({ closeModal }) => {
-	const { loading, error, data } = useQuery(elevationMinMaxQuery, {
+	const { error, data } = useQuery(elevationMinMaxQuery, {
 		fetchPolicy: 'cache-and-network',
+		variables: { fakeId: 4 },
 	})
+	const loading = !error && !data
 
 	const elevationRangeData: Types.API.MinMax =
 		data?.UIState?.queryBuilders?.elevation

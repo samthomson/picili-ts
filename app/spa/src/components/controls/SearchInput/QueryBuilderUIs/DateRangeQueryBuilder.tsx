@@ -14,8 +14,8 @@ import * as Types from '@shared/declarations'
 import useIsMobile from 'src/util/hooks/use-is-mobile.hook'
 
 const dateRangeMinMaxQuery = gql`
-	query {
-		UIState {
+	query ($fakeId: Int!) {
+		UIState(fakeId: $fakeId) {
 			queryBuilders {
 				dateRange {
 					min
@@ -29,9 +29,11 @@ const dateRangeMinMaxQuery = gql`
 const DateRangeQueryBuilder: React.FunctionComponent<{
 	closeModal: () => void
 }> = ({ closeModal }) => {
-	const { loading, error, data } = useQuery(dateRangeMinMaxQuery, {
+	const { error, data } = useQuery(dateRangeMinMaxQuery, {
 		fetchPolicy: 'cache-and-network',
+		variables: { fakeId: 5 },
 	})
+	const loading = !error && !data
 
 	const isMobile = useIsMobile()
 

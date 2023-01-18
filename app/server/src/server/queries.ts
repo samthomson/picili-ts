@@ -1,6 +1,7 @@
 import * as AuthUtil from '../util/auth'
 import * as DBUtil from '../util/db'
 import * as FileUtil from '../util/file'
+import * as HelperUtil from '../util/helper'
 import * as Models from '../db/models'
 import * as SearchUtil from '../util/search'
 import { TaskManager } from '../services/TaskManager'
