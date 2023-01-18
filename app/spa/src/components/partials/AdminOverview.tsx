@@ -1,6 +1,7 @@
 import React from 'react'
 import { useQuery, gql } from '@apollo/client'
 import * as MantineCore from '@mantine/core'
+import * as Icons from '@tabler/icons'
 
 import * as Types from '@shared/declarations'
 import * as HelperUtil from 'src/util/helper'
@@ -231,22 +232,31 @@ const AdminOverview: React.FunctionComponent = () => {
 				</>
 			)}
 			{storageStates.storageSpaceFull.value && (
-				<p>
-					<strong>syncing indefinitely blocked</strong>. Picili is
-					currently out of space to generate more thumbnails, so
-					won&apos;t be able to import new files (sync).
-				</p>
+				<MantineCore.Alert
+					icon={<Icons.IconAlertCircle size={16} />}
+					title="Syncing indefinitely blocked"
+					color="red"
+					variant="outline"
+				>
+					Picili is currently out of space to generate more
+					thumbnails, so won&apos;t be able to import new files
+					(sync).
+				</MantineCore.Alert>
 			)}
 
 			{storageStates.imageProcessingDirFull.value ||
 				(storageStates.videoProcessingDirFull.value && (
-					<p>
-						<strong>syncing temporarily blocked</strong>. One or
-						both (image / video) processing dir(s) are currently
-						full, picili won&apost be able to import (sync){' '}
-						<strong>temporarily</strong> until the currently
+					<MantineCore.Alert
+						icon={<Icons.IconAlertCircle size={16} />}
+						title="Syncing temporarily blocked"
+						color="orange"
+						variant="outline"
+					>
+						One or both (image / video) processing dir(s) are
+						currently full, picili won&apos;t be able to import
+						(sync) <strong>temporarily</strong> until the currently
 						processing files in that directory have been processed.
-					</p>
+					</MantineCore.Alert>
 				))}
 
 			{serverData && (
