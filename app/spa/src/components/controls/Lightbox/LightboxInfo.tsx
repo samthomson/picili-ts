@@ -208,7 +208,9 @@ const LightboxInfo: React.FunctionComponent<IProps> = ({
 			{fileInfo?.datetime && (
 				<div className="lightbox-information-piece">
 					<Icons.IconCalendar size={14} />
-					{moment(fileInfo.datetime).format('h:mma, MMM Do Y')}{' '}
+					{moment
+						.utc(fileInfo.datetime)
+						.format('h:mma, MMM Do Y')}{' '}
 				</div>
 			)}
 
