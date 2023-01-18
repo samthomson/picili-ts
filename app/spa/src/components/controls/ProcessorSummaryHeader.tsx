@@ -60,7 +60,7 @@ const ProcessorSummaryHeader: React.FunctionComponent = () => {
 	}
 
 	const taskProcessorSummary: Types.API.TaskProcessor = data.taskProcessor
-	const { stopping, isImportingEnabled } = taskProcessorSummary
+	// const { stopping, isImportingEnabled } = taskProcessorSummary
 	const {
 		storageStates: {
 			storageSpaceFull: { value: isStorageSpaceFull },
