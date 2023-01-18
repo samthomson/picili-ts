@@ -128,7 +128,11 @@ export const removeAFileFromTheSystem = async (dropboxFileId: number) => {
 export const raiseEventInvalidDropboxPathDetected = async (userId: number): Promise<void> => {
     // set flag on dropbox connection
     await DBUtil.updateDropboxConnection(userId, { syncEnabled: false, invalidPathDetected: true })
-    // todo: send email notification to user
+    // create system event
+    await DBUtil.createSystemEvent({
+        userId,
+        message: `Dropbox import path was invalid so syncing has been disabled. Set a correct directory path for syncing to resume.`,
+    })
 }
 // todo: make method like above for invalid token?
 

@@ -151,7 +151,11 @@ const dropboxUpdate = async (parent, args, context): Promise<any> => {
         }
     }
 
-    const updatedConnection = await DBUtil.updateDropboxConnection(userId, { syncPath, syncEnabled })
+    const updatedConnection = await DBUtil.updateDropboxConnection(userId, {
+        syncPath,
+        syncEnabled,
+        invalidPathDetected: false,
+    })
 
     // ensure task processor is running
     TasksUtil.ensureTaskProcessorIsRunning()
