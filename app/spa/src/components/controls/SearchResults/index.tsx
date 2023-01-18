@@ -36,7 +36,8 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 	const searchStats = ReactRedux.useSelector(Selectors.searchStats)
 	const searchSorting = ReactRedux.useSelector(Selectors.searchSorting)
 
-	const loadMore = () => dispatch(Actions.searchNext())
+	// use !displayJustified as shorthand for map mode
+	const loadMore = () => dispatch(Actions.searchNext(!displayJustified))
 	const refreshQuery = () => dispatch(Actions.attemptSearch())
 
 	const scrollableRef = React.useRef<HTMLHeadingElement>(null)

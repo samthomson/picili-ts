@@ -59,6 +59,7 @@ export type Action =
 	  }
 	| {
 			type: ActionType.SEARCH_NEXT
+			withGeoAggregations: boolean
 	  }
 	| {
 			type: ActionType.SEARCH_NEXT_SUCCEEDED
@@ -173,9 +174,10 @@ export const attemptSearch = (withGeoAggregations = false): Action => {
 	}
 }
 
-export const searchNext = (): Action => {
+export const searchNext = (withGeoAggregations = false): Action => {
 	return {
 		type: ActionType.SEARCH_NEXT,
+		withGeoAggregations,
 	}
 }
 

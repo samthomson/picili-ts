@@ -140,15 +140,17 @@ function* search(action: Actions.AttemptSearchAction) {
 	}
 }
 
-function* searchNext() {
+function* searchNext(action: Actions.AttemptSearchAction) {
 	yield put(Actions.searchingSet(true))
 	try {
 		const paginationInfo: Types.API.PaginationInfo = yield select(
 			Selectors.searchPaginationInfo,
 		)
+		const { withGeoAggregations } = action
 		const nextPage = paginationInfo.page + 1
 		const searchResult: Types.API.SearchResult = yield callSearchQuery(
 			nextPage,
+			withGeoAggregations,
 		)
 		if (searchResult) {
 			yield put(Actions.nextSearchSucceeded(searchResult))
