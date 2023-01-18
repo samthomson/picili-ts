@@ -114,7 +114,7 @@ const AdminOverview: React.FunctionComponent = () => {
 							Full
 						</MantineCore.Badge>
 					) : (
-						<span>not full</span>
+						<span>no</span>
 					),
 					updatedAt: storageStates.videoProcessingDirFull.updatedAt,
 				},
