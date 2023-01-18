@@ -627,6 +627,7 @@ export const evaluateStorageStateChanges = async (
     isOutOfSpace: boolean,
     isImageProcessingDirOutOfSpace: boolean,
     isVideoProcessingDirOutOfSpace: boolean,
+    userId: number,
 ) => {
     // store new state values if necessary and raise events
     const binomialStateData = await DBUtil.getBinomialStateData()
@@ -642,15 +643,20 @@ export const evaluateStorageStateChanges = async (
     )
 
     if (bsdIsOutOfSpace.value !== isOutOfSpace) {
-        // todo: create system event
+        await DBUtil.createSystemEvent({
+            userId,
+            message: `STORAGE_SPACE_FULL is now ${isOutOfSpace}`,
+        })
         // update it
         bsdIsOutOfSpace.value = isOutOfSpace
         await bsdIsOutOfSpace.save()
     }
 
     if (bsdIsImageProcessingDirOutOfSpace.value !== isImageProcessingDirOutOfSpace) {
-        // todo: create system event
-        Logger.warn('image dir out of space, changed')
+        await DBUtil.createSystemEvent({
+            userId,
+            message: `IMAGE_PROCESSING_DIR_FULL is now ${isImageProcessingDirOutOfSpace}`,
+        })
         // update it
         bsdIsImageProcessingDirOutOfSpace.value = isImageProcessingDirOutOfSpace
 
@@ -658,7 +664,10 @@ export const evaluateStorageStateChanges = async (
     }
 
     if (bsdIsVideoProcessingDirOutOfSpace.value !== isVideoProcessingDirOutOfSpace) {
-        // todo: create system event
+        await DBUtil.createSystemEvent({
+            userId,
+            message: `VIDEO_PROCESSING_DIR_FULL is now ${isVideoProcessingDirOutOfSpace}`,
+        })
         // update it
         bsdIsVideoProcessingDirOutOfSpace.value = isVideoProcessingDirOutOfSpace
         await bsdIsVideoProcessingDirOutOfSpace.save()

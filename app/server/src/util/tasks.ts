@@ -176,6 +176,7 @@ export const fileImport = async (fileId: number, taskId: number): Promise<Types.
             isOutOfSpace,
             isImageProcessingDirOutOfSpace,
             isVideoProcessingDirOutOfSpace,
+            userId,
         )
 
         if (!isThereSpaceToImportAFile) {
