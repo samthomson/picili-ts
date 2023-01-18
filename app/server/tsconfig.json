@@ -18,4 +18,5 @@
 		"baseUrl": "./"
 	},
 	"exclude": ["thumbs", "logs", "processing"],
+	"include": ["src"],
 }
