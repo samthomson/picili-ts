@@ -858,6 +858,7 @@ export const getFileWithTagsAndDropboxFile = async (
             { model: Models.DropboxFileModel },
             {
                 model: Models.TagModel,
+                required: false,
                 where: {
                     confidence: {
                         [Sequelize.Op.gte]: process.env.SEARCH_CONFIDENCE_THRESHOLD,
@@ -866,6 +867,7 @@ export const getFileWithTagsAndDropboxFile = async (
             },
             {
                 model: Models.TaskModel,
+                required: false,
                 where: {
                     isProcessed: false,
                 },
