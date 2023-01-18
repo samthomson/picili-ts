@@ -120,12 +120,14 @@ const UpdateDropboxConnection: React.FunctionComponent<IProps> = ({
 				</div>
 			</form>
 			{dropboxConnection.invalidPathDetected && (
-				<>
-					<div>
-						[invalid dropbox path - syncing is disabled and will
-						auto resume once fixed]
-					</div>
-				</>
+				<MantineCore.Alert
+					icon={<Icons.IconAlertCircle size={16} />}
+					title="Invalid dropbox path"
+					color="red"
+					variant="outline"
+				>
+					Syncing is disabled and will auto resume once fixed.
+				</MantineCore.Alert>
 			)}
 		</div>
 	)
