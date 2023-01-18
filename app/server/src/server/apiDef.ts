@@ -67,6 +67,7 @@ const typeDefs = gql`
         timeLastStartedATask: String
         timeLastFinishedATask: String
         threadNo: Int
+        processedCount: Int
     }
 
     type BinomialStateValues {

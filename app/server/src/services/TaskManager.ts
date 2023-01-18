@@ -8,6 +8,7 @@ import Logger from '../services/logging'
 
 export class TaskProcessor {
     threadNo: number
+    processedCount: number
     isVideoCapable: boolean
     currentTaskBeingProcessed: Models.TaskInstance | undefined
     callBackToUpdateHowManyProcessableTasksThereAre: () => void
@@ -22,6 +23,7 @@ export class TaskProcessor {
         this.threadNo = threadNo
         this.isVideoCapable = isVideoCapable
         this.callBackToUpdateHowManyProcessableTasksThereAre = callBackToUpdateHowManyProcessableTasksThereAre
+        this.processedCount = 0
     }
 
     get isStopping(): boolean {
@@ -63,6 +65,9 @@ export class TaskProcessor {
                     // clearTimeout(timeoutCheck)
                     this.currentTaskBeingProcessed = undefined
                     this.timeLastFinishedATask = moment().toISOString()
+
+                    // increment processed count
+                    this.processedCount++
                 } else {
                     Logger.info(`[thread:${this.threadNo}] found no task, so delaying...`)
                     // else, delay ten seconds

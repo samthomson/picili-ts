@@ -42,6 +42,7 @@ const taskSummaryQuery = gql`
 				isVideoCapable
 				timeLastStartedATask
 				timeLastFinishedATask
+				processedCount
 			}
 		}
 	}
@@ -159,6 +160,7 @@ const TasksOverview: React.FunctionComponent = () => {
 									timeLastStartedATask,
 									timeLastFinishedATask,
 									currentTaskBeingProcessed,
+									processedCount,
 								},
 								i,
 							) => {
@@ -240,6 +242,7 @@ const TasksOverview: React.FunctionComponent = () => {
 										{!currentTaskBeingProcessed && (
 											<td colSpan={3}>[no task]</td>
 										)}
+										<td>{processedCount}</td>
 									</tr>
 								)
 							},

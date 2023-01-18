@@ -63,6 +63,7 @@ export namespace API {
         timeLastStartedATask: string
         timeLastFinishedATask: string
 		threadNo: number
+		processedCount: number
 	}
 
 	export type BinomialStateValues = {
