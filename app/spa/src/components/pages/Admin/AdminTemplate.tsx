@@ -20,15 +20,15 @@ const menuItems = [
 	},
 	{
 		href: '/admin/tasks',
-		displayText: 'tasks',
+		displayText: 'Tasks',
 	},
 	{
 		href: '/admin/systemevents',
-		displayText: 'system events',
+		displayText: 'System events',
 	},
 	{
 		href: '/admin/systemstats',
-		displayText: 'system stats',
+		displayText: 'System stats',
 	},
 ]
 
