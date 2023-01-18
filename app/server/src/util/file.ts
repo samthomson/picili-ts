@@ -604,8 +604,8 @@ export const diskSpaceStats = async (): Promise<Types.Core.DiskSpaceStats> => {
     const processingDirSize = await dirSize('processing')
     const thumbsDirSizeBytes = await fastFolderSizeSync(PathLib.resolve('thumbs'))
     const isOutOfSpace = availableForPiciliToUse <= 0
-    const isImageProcessingDirOutOfSpace = processingDirSize[Enums.FileType.IMAGE] <= processingDirImageSizeLimitBytes
-    const isVideoProcessingDirOutOfSpace = processingDirSize[Enums.FileType.VIDEO] <= processingDirVideoSizeLimitBytes
+    const isImageProcessingDirOutOfSpace = processingDirSize[Enums.FileType.IMAGE] >= processingDirImageSizeLimitBytes
+    const isVideoProcessingDirOutOfSpace = processingDirSize[Enums.FileType.VIDEO] >= processingDirVideoSizeLimitBytes
 
     return {
         totalSpaceBytes: size,
@@ -642,12 +642,15 @@ export const evaluateStorageStateChanges = async (
     )
 
     if (bsdIsOutOfSpace.value !== isOutOfSpace) {
+        // todo: create system event
         // update it
         bsdIsOutOfSpace.value = isOutOfSpace
         await bsdIsOutOfSpace.save()
     }
 
     if (bsdIsImageProcessingDirOutOfSpace.value !== isImageProcessingDirOutOfSpace) {
+        // todo: create system event
+        Logger.warn('image dir out of space, changed')
         // update it
         bsdIsImageProcessingDirOutOfSpace.value = isImageProcessingDirOutOfSpace
 
@@ -655,6 +658,7 @@ export const evaluateStorageStateChanges = async (
     }
 
     if (bsdIsVideoProcessingDirOutOfSpace.value !== isVideoProcessingDirOutOfSpace) {
+        // todo: create system event
         // update it
         bsdIsVideoProcessingDirOutOfSpace.value = isVideoProcessingDirOutOfSpace
         await bsdIsVideoProcessingDirOutOfSpace.save()
