@@ -148,7 +148,7 @@ const TasksOverview: React.FunctionComponent = () => {
 							<th>task: id</th>
 							<th>task: type</th>
 							<th>task: import?</th>
-							<th>task: # attempted</th>
+							<th>task: # completed</th>
 						</tr>
 					</thead>
 					<tbody>
