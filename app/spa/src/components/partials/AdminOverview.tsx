@@ -74,18 +74,48 @@ const AdminOverview: React.FunctionComponent = () => {
 	const storageValuesToShow = storageStates
 		? [
 				{
-					label: 'Disk full',
-					value: storageStates.storageSpaceFull.value,
+					label: 'Disk full?',
+					value: storageStates.storageSpaceFull.value ? (
+						<MantineCore.Badge
+							color="red"
+							radius="md"
+							variant="filled"
+						>
+							Full
+						</MantineCore.Badge>
+					) : (
+						<span>no</span>
+					),
 					updatedAt: storageStates.storageSpaceFull.updatedAt,
 				},
 				{
-					label: 'Image processing dir full',
-					value: storageStates.imageProcessingDirFull.value,
+					label: 'Image processing dir full?',
+					value: storageStates.imageProcessingDirFull.value ? (
+						<MantineCore.Badge
+							color="orange"
+							radius="md"
+							variant="filled"
+						>
+							Full
+						</MantineCore.Badge>
+					) : (
+						<span>no</span>
+					),
 					updatedAt: storageStates.imageProcessingDirFull.updatedAt,
 				},
 				{
-					label: 'Video processing dir full',
-					value: storageStates.videoProcessingDirFull.value,
+					label: 'Video processing dir full?',
+					value: storageStates.videoProcessingDirFull.value ? (
+						<MantineCore.Badge
+							color="orange"
+							radius="md"
+							variant="filled"
+						>
+							Full
+						</MantineCore.Badge>
+					) : (
+						<span>not full</span>
+					),
 					updatedAt: storageStates.videoProcessingDirFull.updatedAt,
 				},
 		  ]
@@ -190,7 +220,7 @@ const AdminOverview: React.FunctionComponent = () => {
 									return (
 										<tr key={key}>
 											<td>{label}</td>
-											<td>{String(value)}</td>
+											<td>{value}</td>
 											<td>{updatedAt}</td>
 										</tr>
 									)
