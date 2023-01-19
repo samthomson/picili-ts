@@ -23,7 +23,7 @@ const Header: React.FunctionComponent = () => {
 		if (isSearching) {
 			MantineProgress.startNavigationProgress()
 		} else {
-			MantineProgress.stopNavigationProgress()
+			MantineProgress.completeNavigationProgress()
 		}
 	}, [isSearching])
 
