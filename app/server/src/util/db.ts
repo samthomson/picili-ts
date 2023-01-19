@@ -455,6 +455,10 @@ export const createMultipleTags = async (tagCreationParams: Types.Core.Inputs.Cr
     return true
 }
 
+export const mod = (n: number, m: number): number => {
+    return ((n % m) + m) % m
+}
+
 export const performSearchQuery = async (
     userId: number,
     individualQuery: Types.API.IndividualSearchQuery,
@@ -466,6 +470,21 @@ export const performSearchQuery = async (
     switch (true) {
         case type === Enums.QueryType.MAP:
             const [latLower, latUpper, lngLower, lngUpper] = value.split(',')
+
+            const isSpanningDateLine = +lngLower <= 180 && +lngUpper >= -180 && +lngLower > +lngUpper
+
+            // Logger.info('geoquery', {
+            //     isSpanningDateLine,
+            //     lngLower,
+            //     lngUpper,
+            //     latLower,
+            //     latUpper,
+            // })
+
+            /*
+            leave this old query for now, delete later along with the db types and index.
+            this query didn't search around the dateline - also had no performance gain over the original (now current again) query.
+
             const mapQuery = `
             SELECT files.id as fileId, 100 as score, latitude, longitude 
             FROM files 
@@ -474,16 +493,33 @@ export const performSearchQuery = async (
             AND MBRContains( GeomFromText( 'LINESTRING(:latLower :lngLower, :latUpper :lngUpper)' ), files.location)
             
             AND files.is_thumbnailed;`
-            const mapResults: Types.Core.DBSearchMatch[] = await Database.query(mapQuery, {
+            */
+
+            const mapQuery2 = `
+            SELECT files.id as fileId, 100 as score, latitude, longitude 
+            FROM files 
+            WHERE 
+            files.user_id = :userId 
+            AND files.latitude >= :latLower
+            AND files.latitude <= :latUpper
+            AND (files.longitude >= :lngLower ${isSpanningDateLine ? 'OR' : 'AND'} 
+             files.longitude <= :lngUpper)         
+            AND files.is_thumbnailed;`
+            const mapResults: Types.Core.DBSearchMatch[] = await Database.query(mapQuery2, {
                 type: Sequelize.QueryTypes.SELECT,
                 replacements: {
                     userId,
                     latLower: +latLower,
-                    latUpper: +latUpper,
                     lngLower: +lngLower,
+
+                    latUpper: +latUpper,
                     lngUpper: +lngUpper,
                 },
             })
+            // Logger.info('geo search', {
+            //     from: { latLower, lngLower },
+            //     to: { latUpper, lngUpper },
+            // })
             return mapResults.map(({ fileId, score, latitude, longitude }) => ({
                 fileId,
                 score,

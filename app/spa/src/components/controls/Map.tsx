@@ -21,8 +21,78 @@ const MapControl: React.FunctionComponent<IProps> = ({
 	const [map, setMap] = React.useState<Map | undefined>(undefined)
 	const [markers, setMarkers] = React.useState<Marker[]>([])
 
-	const mapBoundsChanged = (bounds: LngLatBounds, zoom: number) =>
-		boundsChanged(JSON.parse(JSON.stringify(bounds)), zoom)
+	const mapBoundsChanged = (bounds: LngLatBounds, zoom: number) => {
+		// const validBounds = {
+		// 	_sw: {
+		// 		lng: bounds._sw?.lng % 180,
+		// 		lat: bounds._sw?.lat % 85,
+		// 	},
+		// 	_ne: {
+		// 		lng: bounds._ne?.lng % 180,
+		// 		lat: bounds._ne?.lat % 85,
+		// 	},
+		// }
+		// const swLessThanNW = bounds._sw?.lng < bounds._ne?.lng
+		// const swLessThanNW =
+		// 	HelperUtil.mod(bounds._sw?.lng, 180) <
+		// 	HelperUtil.mod(bounds._ne?.lng, 180)
+
+		// const validBounds = {
+		// 	_sw: {
+		// 		lng: !swLessThanNW ? bounds._ne?.lng : bounds._sw?.lng,
+		// 		lat: bounds._sw?.lat,
+		// 	},
+		// 	_ne: {
+		// 		lng: swLessThanNW ? bounds._ne?.lng : bounds._sw?.lng,
+		// 		lat: bounds._ne?.lat,
+		// 	},
+		// // }
+		// const validBounds = {
+		// 	_sw: {
+		// 		// lng: HelperUtil.mod(bounds._sw?.lng, 180),
+		// 		lng: bounds._sw?.lng,
+		// 		// lng: swLessThanNW
+		// 		// 	? HelperUtil.mod(bounds._sw?.lng, 180)
+		// 		// 	: HelperUtil.mod(bounds._ne?.lng, 180),
+		// 		lat: bounds._sw?.lat,
+		// 	},
+		// 	_ne: {
+		// 		// lng: HelperUtil.mod(bounds._ne?.lng, 180),
+		// 		lng: bounds._ne?.lng,
+		// 		// lng: swLessThanNW
+		// 		// 	? HelperUtil.mod(bounds._ne?.lng, 180)
+		// 		// 	: HelperUtil.mod(bounds._sw?.lng, 180),
+		// 		lat: bounds._ne?.lat,
+		// 	},
+		// }
+		const validBounds = {
+			_sw: bounds.getSouthWest().wrap(),
+			_ne: bounds.getNorthEast().wrap(),
+			// _ne: {
+			// 	// lng: HelperUtil.mod(bounds._ne?.lng, 180),
+			// 	lng: bounds._ne?.lng,
+			// 	// lng: swLessThanNW
+			// 	// 	? HelperUtil.mod(bounds._ne?.lng, 180)
+			// 	// 	: HelperUtil.mod(bounds._sw?.lng, 180),
+			// 	lat: bounds._ne?.lat,
+			// },
+		}
+
+		// .getSouthWest()
+		// .wrap()
+		// console.log('bounds', bounds)
+		// console.log('validBounds', validBounds)
+		// console.log('data', {
+		// 	// swLessThanNW,
+		// 	// swLon: bounds._sw?.lng,
+		// 	// swLonMod: HelperUtil.mod(bounds._sw?.lng, 180),
+		// 	// neLon: bounds._ne?.lng,
+		// 	// neLonMod: HelperUtil.mod(bounds._ne?.lng, 180),
+		// 	bounds,
+		// 	validBounds,
+		// })
+		boundsChanged(JSON.parse(JSON.stringify(validBounds)), zoom)
+	}
 
 	// initialize map when component mounts
 	React.useEffect(() => {
@@ -43,6 +113,7 @@ const MapControl: React.FunctionComponent<IProps> = ({
 				return
 			}
 			// pan or zoom occured - raise bounds event
+			console.log('bounds', newMap.getBounds())
 			mapBoundsChanged(newMap.getBounds(), newMap.getZoom())
 		})
 		newMap.on('load', () => {
