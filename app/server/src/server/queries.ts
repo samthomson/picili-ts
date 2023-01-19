@@ -82,7 +82,7 @@ export const processSearchRequest = async (
 
     const { searchMatches: resultIds, queryStats } = await SearchUtil.search(userId, searchQuery, sortToUse)
     const results =
-        resultIds.length > 0 ? await DBUtil.getAllResultData(resultIds, page, perPage, sortOverload, userId) : []
+        resultIds.length > 0 ? await DBUtil.getAllResultData(resultIds, page, perPage, sortToUse, userId) : []
 
     const timeAtEndOfSearchUtil = moment().diff(timeAtStartOfSearchUtil)
 

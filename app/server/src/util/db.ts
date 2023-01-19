@@ -703,7 +703,7 @@ export const getAllResultData = async (
                 // todo: what was this about?
                 // if (type !== 'map') {
                 const sortedIds = matches.map(({ fileId }) => fileId)
-                return `ORDER BY FIELD(id, ${sortedIds.join(', ')}) DESC`
+                return `ORDER BY FIELD(id, ${sortedIds.join(', ')})`
             // } else {
             //     return `ORDER BY files.datetime DESC`
             // }

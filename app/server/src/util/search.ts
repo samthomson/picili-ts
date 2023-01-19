@@ -32,9 +32,10 @@ const findOverlappingResults = (
     if (arrayOfResultArrays.length === 0) {
         return []
     }
-    if (arrayOfResultArrays.length < 2) {
-        return arrayOfResultArrays[0]
-    }
+    // no longer return early as we still want to sort the results below
+    // if (arrayOfResultArrays.length < 2) {
+    //     return arrayOfResultArrays[0]
+    // }
 
     // start with the smallest array
     let smallestIndex = 0
