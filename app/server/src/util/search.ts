@@ -116,7 +116,9 @@ export const sortsForSearchQuery = (searchQuery: Types.API.SearchQuery): Types.C
     // const enableElevation = individualQueries.filter(query => query?.type === 'elevation').length > 0
     const enableElevation = true
 
-    const enableRelevance = individualQueries.filter((query) => !query?.type || query.type === 'colour').length > 0
+    const enableRelevance =
+        individualQueries.filter((query) => !query?.type || query.type === 'colour' || query.type === 'subject')
+            .length > 0
 
     const availableSortModes = [
         ...defaultSorts,
