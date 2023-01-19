@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as ReactRedux from 'react-redux'
 import { NavLink } from 'react-router-dom'
 import * as MantineCore from '@mantine/core'
+import * as MantineProgress from '@mantine/nprogress'
 import * as Icons from '@tabler/icons'
 
 import * as Actions from 'src/redux/actions'
@@ -13,20 +14,22 @@ const Header: React.FunctionComponent = () => {
 	const isAuthenticated = ReactRedux.useSelector(
 		Selectors.userIsAuthenticated,
 	)
-	const isSomethingLoading = ReactRedux.useSelector(
-		Selectors.somethingIsLoading,
-	)
+	const isSearching = ReactRedux.useSelector(Selectors.searchIsSearching)
 
 	const dispatch = ReactRedux.useDispatch()
 	const logOut = () => dispatch(Actions.logout())
 
+	React.useEffect(() => {
+		if (isSearching) {
+			MantineProgress.startNavigationProgress()
+		} else {
+			MantineProgress.stopNavigationProgress()
+		}
+	}, [isSearching])
+
 	return (
 		<React.Fragment>
-			{isSomethingLoading && (
-				<div className="indeterminate-loading-bar progress">
-					<div className="indeterminate"></div>
-				</div>
-			)}
+			<MantineProgress.NavigationProgress color="maroon" />
 
 			<div id="header">
 				<span id="brand" className="header-font">
@@ -34,7 +37,6 @@ const Header: React.FunctionComponent = () => {
 						picili
 					</NavLink>
 				</span>
-				{isSomethingLoading && 'loading'}
 
 				<div id="top-right-links">
 					{isAuthenticated && (
