@@ -878,8 +878,10 @@ export const getCorruptFilesDropboxPaths = async (userId: number): Promise<strin
         where: { userId, isCorrupt: true },
         include: [{ model: Models.DropboxFileModel }],
     })
-    // @ts-ignore
-    const dropboxFilePaths = result.map((file) => file.dropbox_file.path)
+    const dropboxFilePaths = result.map(
+        // @ts-ignore
+        (file) => file.dropbox_file?.path ?? "couldn't read the dropbox path strangely..",
+    )
 
     return dropboxFilePaths
 }
