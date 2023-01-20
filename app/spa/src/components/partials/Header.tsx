@@ -20,6 +20,7 @@ const Header: React.FunctionComponent = () => {
 	const logOut = () => dispatch(Actions.logout())
 
 	React.useEffect(() => {
+		console.log('debug.Header.isSearching', isSearching)
 		if (isSearching) {
 			MantineProgress.startNavigationProgress()
 		} else {
