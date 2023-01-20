@@ -189,7 +189,7 @@ export const autoComplete = async (
 }
 
 export const geoAggregateResults = (
-    results: Types.Core.DBSearchMatch[],
+    results: Types.API.SearchResultItem[],
     mapBounds: number[], // [-180, -85, 180, 85]
     zoom: number, // 2
     userId: number,
