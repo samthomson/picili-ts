@@ -672,7 +672,7 @@ export const performSearchQuery = async (
                     type ? `tags.type=:type and ` : ''
                 }${
                     subtype ? `tags.subtype=:subtype and ` : ''
-                } tags.value = :value and tags.confidence >= :confidence and files.is_thumbnailed and files.user_id = :userId`
+                } tags.value = :value and tags.confidence >= :confidence and files.is_thumbnailed and files.user_id = :userId ORDER BY score DESC`
             })()
 
             const results: Types.Core.DBSearchMatch[] = await Database.query(query, {
