@@ -83,3 +83,8 @@ export const formatBytes = (bytes: number, decimals = 2): string => {
 export const mod = (n: number, m: number): number => {
 	return ((n % m) + m) % m
 }
+
+export const shouldIRequestGeoAggregations = (): boolean => {
+	const location = window.location.pathname
+	return location === '/map'
+}

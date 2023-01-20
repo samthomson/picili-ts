@@ -187,7 +187,11 @@ const TypeAhead: React.FunctionComponent<{
 				// clear input
 				setTextInputValue('')
 				// do search
-				dispatch(Actions.attemptSearch())
+				dispatch(
+					Actions.attemptSearch(
+						HelperUtil.shouldIRequestGeoAggregations(),
+					),
+				)
 			}}
 			id="typeahead-form-wrapper"
 		>
@@ -222,7 +226,11 @@ const TypeAhead: React.FunctionComponent<{
 
 					dispatch(Actions.searchQueryAdd({ type, subtype, value }))
 					setTextInputValue('')
-					dispatch(Actions.attemptSearch())
+					dispatch(
+						Actions.attemptSearch(
+							HelperUtil.shouldIRequestGeoAggregations(),
+						),
+					)
 				}}
 				onKeyDown={onKeyDown}
 				// todo: get these from vars (shared above with style of right section)
