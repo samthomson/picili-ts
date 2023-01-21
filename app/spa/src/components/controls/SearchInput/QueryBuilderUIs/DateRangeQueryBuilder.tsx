@@ -62,12 +62,16 @@ const DateRangeQueryBuilder: React.FunctionComponent<{
 
 	React.useEffect(() => {
 		const parsedAPIMinMax = dateRangeData?.queryBuilders?.dateRange && [
-			moment(
-				dateRangeData.queryBuilders.dateRange.min as string,
-			).toDate(),
-			moment(
-				dateRangeData.queryBuilders.dateRange.max as string,
-			).toDate(),
+			HelperUtil.dateWithoutTimeFromMomentDate(
+				moment.utc(
+					dateRangeData.queryBuilders?.dateRange?.min as string,
+				),
+			),
+			HelperUtil.dateWithoutTimeFromMomentDate(
+				moment.utc(
+					dateRangeData.queryBuilders?.dateRange?.max as string,
+				),
+			),
 		]
 
 		// only overwrite if we don't have an existing query from redux

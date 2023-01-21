@@ -88,3 +88,7 @@ export const shouldIRequestGeoAggregations = (): boolean => {
 	const location = window.location.pathname
 	return location === '/map'
 }
+
+export const dateWithoutTimeFromMomentDate = (date: moment.Moment): Date => {
+	return new Date(date.format('YYYY/MM/DD'))
+}
