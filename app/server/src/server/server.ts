@@ -16,6 +16,7 @@ import * as DropboxUtil from '../util/dropbox'
 
 import { TaskManager } from '../services/TaskManager'
 import { ResourceManager } from '../services/ResourceManager'
+import { QueryBuilderCache } from '../services/QueryBuilderCache'
 
 const resolvers = {
     Query,
@@ -24,6 +25,7 @@ const resolvers = {
 
 const taskManager = TaskManager.getInstance()
 const resourceManager = ResourceManager.getInstance()
+const queryBuilderCache = QueryBuilderCache.getInstance()
 
 const startApolloServer = async (typeDefs, resolvers) => {
     const app = express()
@@ -66,6 +68,7 @@ const startApolloServer = async (typeDefs, resolvers) => {
         logger: Logger,
     })
 
+    queryBuilderCache.start()
     await server.start()
 
     server.applyMiddleware({ app, cors: false })

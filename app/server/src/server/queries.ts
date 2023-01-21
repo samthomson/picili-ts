@@ -6,6 +6,7 @@ import * as Models from '../db/models'
 import * as SearchUtil from '../util/search'
 import { TaskManager } from '../services/TaskManager'
 import { ResourceManager } from '../services/ResourceManager'
+import { QueryBuilderCache } from '../services/QueryBuilderCache'
 import * as Types from '@shared/declarations'
 import moment from 'moment'
 import Logger from '../services/logging'
@@ -266,10 +267,12 @@ const systemEvents = async (parents, args, context): Promise<Types.API.SystemEve
 
 const UIState = async (parents, args, ctx) => {
     const { userId } = ctx
+    const queryBuilderCache = QueryBuilderCache.getInstance()
 
     return {
         queryBuilders: {
-            elevation: async () => await DBUtil.getElevationMinMax(userId),
+            elevation: async () =>
+                queryBuilderCache?.cachedData?.[userId]?.elevation ?? (await DBUtil.getElevationMinMax(userId)),
             videoLength: async () => await DBUtil.getVideoLengthMinMax(userId),
             dateRange: async () => await DBUtil.getDateRangeMinMax(userId),
             folders: async () => await DBUtil.getFolderSummary(userId),

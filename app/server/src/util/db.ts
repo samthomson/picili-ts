@@ -27,6 +27,12 @@ export const getUser = async (email: string, password: string): Promise<Models.U
     return passwordsMatch ? user : undefined
 }
 
+export const getUserIds = async (): Promise<number[]> => {
+    const users = await Models.UserModel.findAll()
+
+    return users.map(({ id }) => +id)
+}
+
 export const getUserById = async (id: number): Promise<Models.UserInstance> => {
     const user = await Models.UserModel.findByPk(id)
 
