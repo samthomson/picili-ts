@@ -690,7 +690,7 @@ export const performSearchQuery = async (
                     confidence,
                 },
             })
-            return results.map(({ fileId, score }) => ({ fileId, score }))
+            return results.map(({ fileId, score, latitude, longitude }) => ({ fileId, score, latitude, longitude }))
             break
     }
 }
