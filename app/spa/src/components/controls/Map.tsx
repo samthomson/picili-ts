@@ -116,6 +116,8 @@ const MapControl: React.FunctionComponent<IProps> = ({
 			mapBoundsChanged(newMap.getBounds(), newMap.getZoom())
 		})
 		newMap.on('load', () => {
+			// immediately 'resize' so that the maps internal bounds are correct for later raising such events
+			newMap.resize()
 			// map loaded, raise bounds event to seed first results
 			mapBoundsChanged(newMap.getBounds(), newMap.getZoom())
 		})
