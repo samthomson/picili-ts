@@ -495,16 +495,21 @@ export const performSearchQuery = async (
             AND files.is_thumbnailed;`
             */
 
+            // when spanning the dateline have to make two queries; longitude between left and 180 and -180 and right (or between left and right ordinarily)
+
             const mapQuery2 = `
             SELECT files.id as fileId, 100 as score, latitude, longitude 
             FROM files 
             WHERE 
             files.user_id = :userId 
-            AND files.latitude >= :latLower
-            AND files.latitude <= :latUpper
-            AND (files.longitude >= :lngLower ${isSpanningDateLine ? 'OR' : 'AND'} 
-             files.longitude <= :lngUpper)         
+            AND files.latitude BETWEEN :latLower AND :latUpper 
+            ${
+                isSpanningDateLine
+                    ? 'AND ((files.longitude BETWEEN :lngLower AND 180) OR (files.longitude BETWEEN -180 AND :lngUpper)) '
+                    : 'AND files.longitude BETWEEN :lngLower AND :lngUpper '
+            }
             AND files.is_thumbnailed;`
+            // Logger.warn('query', { mapQuery2 })
             const mapResults: Types.Core.DBSearchMatch[] = await Database.query(mapQuery2, {
                 type: Sequelize.QueryTypes.SELECT,
                 replacements: {
