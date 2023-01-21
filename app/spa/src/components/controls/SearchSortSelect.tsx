@@ -5,6 +5,7 @@ import * as Icons from '@tabler/icons'
 
 import * as Types from '@shared/declarations'
 import * as Actions from 'src/redux/actions'
+import * as HelperUtil from 'src/util/helper'
 
 import useIsMobile from 'src/util/hooks/use-is-mobile.hook'
 
@@ -20,7 +21,9 @@ const SearchSortSelect: React.FunctionComponent<IProps> = ({
 
 	const setMode = (mode: Types.SearchSortEnum) => {
 		dispatch(Actions.sortModeSet(mode))
-		dispatch(Actions.attemptSearch())
+		dispatch(
+			Actions.attemptSearch(HelperUtil.shouldIRequestGeoAggregations()),
+		)
 	}
 
 	if (!searchSorting) {
