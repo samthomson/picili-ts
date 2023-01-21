@@ -9,6 +9,7 @@ import debounce from 'lodash.debounce'
 
 import * as Types from '@shared/declarations'
 import SearchSortSelect from 'src/components/controls/SearchSortSelect'
+import * as HelperUtil from 'src/util/helper'
 import JustifiedImageGallery from './JustifiedImageGallery'
 import TiledImageGallery from './TiledImageGallery'
 
@@ -38,7 +39,10 @@ const SearchResults: React.FunctionComponent<IProps> = ({
 
 	// use !displayJustified as shorthand for map mode
 	const loadMore = () => dispatch(Actions.searchNext(!displayJustified))
-	const refreshQuery = () => dispatch(Actions.attemptSearch())
+	const refreshQuery = () =>
+		dispatch(
+			Actions.attemptSearch(HelperUtil.shouldIRequestGeoAggregations()),
+		)
 
 	const scrollableRef = React.useRef<HTMLHeadingElement>(null)
 
