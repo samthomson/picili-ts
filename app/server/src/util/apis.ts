@@ -139,6 +139,7 @@ export const locationIQ = async (latitude: number, longitude: number): Promise<T
                         status: result.status,
                         location: { latitude, longitude },
                         result,
+                        success: false,
                     })
                     break
             }
