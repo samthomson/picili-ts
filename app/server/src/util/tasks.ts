@@ -713,25 +713,28 @@ export const addressLookup = async (fileId: number): Promise<Types.Core.TaskProc
         const lookup = await APIUtil.locationIQ(latitude, longitude)
 
         if (lookup.success) {
-            const formattedAddress = lookup.data.display_name
-            // truncate stupidly big addresses to 255 - not worth the outsized db impact of a larger field for a tiny minority of 255+ addresses which are surely full of junk if that big.
-            file.address = formattedAddress?.substring(0, 255)
-            await file.save()
+            // if we got data, store it (might successfully get no data if 404 response, eg picture taken at sea)
+            if (!!lookup.data) {
+                const formattedAddress = lookup.data.display_name
+                // truncate stupidly big addresses to 255 - not worth the outsized db impact of a larger field for a tiny minority of 255+ addresses which are surely full of junk if that big.
+                file.address = formattedAddress?.substring(0, 255)
+                await file.save()
 
-            const newLocationTags: Types.Core.Inputs.CreateTagInput[] = []
-            const addressParts = lookup.data.address
-            Object.keys(addressParts).forEach((key) => {
-                const value = addressParts[key]
-                newLocationTags.push({
-                    fileId,
-                    type: 'location',
-                    subtype: key,
-                    value,
-                    confidence: 75,
+                const newLocationTags: Types.Core.Inputs.CreateTagInput[] = []
+                const addressParts = lookup.data.address
+                Object.keys(addressParts).forEach((key) => {
+                    const value = addressParts[key]
+                    newLocationTags.push({
+                        fileId,
+                        type: 'location',
+                        subtype: key,
+                        value,
+                        confidence: 75,
+                    })
                 })
-            })
-            if (newLocationTags.length > 0) {
-                await DBUtil.createMultipleTags(newLocationTags)
+                if (newLocationTags.length > 0) {
+                    await DBUtil.createMultipleTags(newLocationTags)
+                }
             }
             return { success: true }
         } else {

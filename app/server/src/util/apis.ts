@@ -120,6 +120,13 @@ export const locationIQ = async (latitude: number, longitude: number): Promise<T
                     const data: Types.ExternalAPI.LocationIQ.ReverseGeocodeResponse = await result.json()
                     return { success: true, data }
                     break
+                case 404:
+                    Logger.info("Location API couldn't find info for file - 404", {
+                        latitude,
+                        longitude,
+                    })
+                    return { success: true }
+                    break
                 case 429:
                     const error = await result.json()
                     const errorText = error?.error
