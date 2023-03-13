@@ -42,6 +42,10 @@ const CheckToken: React.FunctionComponent = () => {
 							userId as number,
 						),
 					)
+				} else if (!tokenWasValid) {
+					dispatch(
+						Actions.verifiedAuthStatus(false, userId as number),
+					)
 				}
 			}
 		}, [data])
