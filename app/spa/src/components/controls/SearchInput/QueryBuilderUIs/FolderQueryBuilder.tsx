@@ -114,8 +114,11 @@ const FolderQueryBuilder: React.FunctionComponent<{
 							</MantineCore.Card.Section>
 
 							<MantineCore.Group position="apart" mt="md" mb="xs">
-								<MantineCore.Text weight={500}>
-									{fileDirectory}
+								<MantineCore.Text
+									weight={500}
+									className="containing-directory-title"
+								>
+									{fileDirectory.split('/').pop()}
 								</MantineCore.Text>
 							</MantineCore.Group>
 
@@ -125,18 +128,19 @@ const FolderQueryBuilder: React.FunctionComponent<{
 									&nbsp;{latestDirectoryPath}
 								</small>
 								<br />
-								<br />
 								<small>
-									{fileCount} file
-									{fileCount > 1 && 's'}
-									{!!latestDate && (
-										<>
-											&nbsp;&middot;{' '}
-											{HelperUtil.formatDateForUI(
-												latestDate,
-											)}
-										</>
-									)}
+									<small>
+										{fileCount} file
+										{fileCount > 1 && 's'}
+										{!!latestDate && (
+											<>
+												&nbsp;&middot;{' '}
+												{HelperUtil.formatDateForUI(
+													latestDate,
+												)}
+											</>
+										)}
+									</small>
 								</small>
 							</MantineCore.Text>
 						</MantineCore.Card>
