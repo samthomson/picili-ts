@@ -113,7 +113,7 @@ const QueryBuilder: React.FunctionComponent<{
 				opened={typeof searchMode !== 'undefined'}
 				onClose={onClose}
 				title="Construct a search query"
-				size="lg"
+				size="80%"
 				overlayColor={theme.colors.gray[2]}
 				overlayOpacity={0.55}
 				overlayBlur={3}
