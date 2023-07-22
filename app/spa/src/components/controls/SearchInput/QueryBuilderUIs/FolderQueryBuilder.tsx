@@ -81,7 +81,8 @@ const FolderQueryBuilder: React.FunctionComponent<{
 	return (
 		<div id="folder-query-builder">
 			Select one of {folderSummaryData.length} folder
-			{folderSummaryData.length > 1 && 's'}.
+			{folderSummaryData.length > 1 && 's'}:<br />
+			<br />
 			<div id="folder-summary-list">
 				{folderSummaryData.map(
 					(

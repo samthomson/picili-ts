@@ -80,7 +80,9 @@ const PlantQueryBuilder: React.FunctionComponent<{
 	return (
 		<div id="folder-query-builder">
 			Select one of {plantSummaryData.length} plant
-			{plantSummaryData.length > 1 && 's'}.
+			{plantSummaryData.length > 1 && 's'}
+			<br />
+			<br />
 			<div id="flower-summary-list">
 				{plantSummaryData.map(({ fileId, name, count }, plantIndex) => (
 					<MantineCore.Card

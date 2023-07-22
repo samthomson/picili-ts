@@ -78,7 +78,8 @@ const NumberplateQueryBuilder: React.FunctionComponent<{
 	return (
 		<div id="folder-query-builder">
 			Select one of {numberplateSummaryData.length} number plates
-			{numberplateSummaryData.length > 1 && 's'}.
+			{numberplateSummaryData.length > 1 && 's'}:<br />
+			<br />
 			<div id="flower-summary-list">
 				{numberplateSummaryData.map(
 					({ fileId, plate, count }, plateIndex) => (
