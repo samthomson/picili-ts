@@ -456,8 +456,9 @@ export const plantLookup = async (thumbnail: string): Promise<Types.Core.PlantNe
 
     while (requestAttempts < retryLimit) {
         requestAttempts++
+        let result = undefined
         try {
-            const result = await fetch(url, options)
+            result = await fetch(url, options)
             switch (result.status) {
                 case 200:
                     const data: Types.ExternalAPI.PlantNet.PlantNetResponse = await result.json()
@@ -520,7 +521,7 @@ export const plantLookup = async (thumbnail: string): Promise<Types.Core.PlantNe
                     }
             }
         } catch (err) {
-            Logger.warn('unexpected exception when calling plant net API', { err })
+            Logger.warn('unexpected exception when calling plant net API', { err, thumbnail, requestAttempts, result })
             if (requestAttempts < retryLimit) {
                 await HelperUtil.delay(retryDelay)
             } else {
