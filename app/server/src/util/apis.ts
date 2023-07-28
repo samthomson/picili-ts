@@ -430,6 +430,18 @@ export const ocrNumberplate = async (largeThumbnailPath: string): Promise<Types.
     }
 }
 
+function getFormDataLength(formData: FormData): Promise<number> {
+    return new Promise((resolve, reject) => {
+        formData.getLength((err, length) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(length)
+            }
+        })
+    })
+}
+
 export const plantLookup = async (thumbnail: string): Promise<Types.Core.PlantNetLookupResult> => {
     const retryLimit = 3
     const retryDelay = 15000
@@ -454,8 +466,8 @@ export const plantLookup = async (thumbnail: string): Promise<Types.Core.PlantNe
         headers: formData.getHeaders(),
     }
 
-    const sizeOfPostData = formData.getLengthSync()
-    const sizeOfFile = fs.statSync(thumbnail)
+    const sizeOfPostData = await getFormDataLength(formData)
+    const sizeOfFile = fs.statSync(thumbnail).size
 
     while (requestAttempts < retryLimit) {
         requestAttempts++
@@ -516,6 +528,8 @@ export const plantLookup = async (thumbnail: string): Promise<Types.Core.PlantNe
                         thumbnail,
                         result,
                         error: result?.statusText ?? '[no error parsed]',
+                        sizeOfPostData,
+                        sizeOfFile,
                     })
                     // an error that should be handled programmatically, requeue for one day so that the daily email picks it up as a task seen multiple times
                     return {
