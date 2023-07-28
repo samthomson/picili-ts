@@ -586,4 +586,11 @@ const bulkDirPathTest = async () => {
     // await TasksUtil.fileImport(60, 8008)
 }
 
-bulkDirPathTest()
+// bulkDirPathTest()
+
+const testPlantAPI = async () => {
+    const thumbPath = FileUtil.thumbPath(3, 823, 'xl')
+    const response = await APIUtil.plantLookup(thumbPath)
+    console.log('response', response)
+}
+testPlantAPI()
