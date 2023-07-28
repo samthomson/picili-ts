@@ -454,6 +454,9 @@ export const plantLookup = async (thumbnail: string): Promise<Types.Core.PlantNe
         headers: formData.getHeaders(),
     }
 
+    const sizeOfPostData = formData.getLengthSync()
+    const sizeOfFile = fs.statSync(thumbnail)
+
     while (requestAttempts < retryLimit) {
         requestAttempts++
         let result = undefined
@@ -521,7 +524,14 @@ export const plantLookup = async (thumbnail: string): Promise<Types.Core.PlantNe
                     }
             }
         } catch (err) {
-            Logger.warn('unexpected exception when calling plant net API', { err, thumbnail, requestAttempts, result })
+            Logger.warn('unexpected exception when calling plant net API', {
+                err,
+                thumbnail,
+                requestAttempts,
+                result,
+                sizeOfPostData,
+                sizeOfFile,
+            })
             if (requestAttempts < retryLimit) {
                 await HelperUtil.delay(retryDelay)
             } else {
