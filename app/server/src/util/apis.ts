@@ -482,10 +482,7 @@ export const plantLookup = async (thumbnail: string): Promise<Types.Core.PlantNe
                     if (data.results?.[0]) {
                         const bestResult = data.results[0]
 
-                        const {
-                            score,
-                            gbif: { id: gbifId },
-                        } = bestResult
+                        const { score } = bestResult
 
                         const scientificName = bestResult.species.scientificNameWithoutAuthor
                         const genus = bestResult.species.genus.scientificNameWithoutAuthor
@@ -498,7 +495,7 @@ export const plantLookup = async (thumbnail: string): Promise<Types.Core.PlantNe
                             genus,
                             family,
                             commonNames,
-                            gbif: gbifId,
+                            gbif: bestResult.gbif?.id,
                         }
                     }
 
@@ -526,7 +523,6 @@ export const plantLookup = async (thumbnail: string): Promise<Types.Core.PlantNe
                     Logger.error('non 200 result from plant net', {
                         status: result.status,
                         thumbnail,
-                        result,
                         error: result?.statusText ?? '[no error parsed]',
                         sizeOfPostData,
                         sizeOfFile,
@@ -542,7 +538,7 @@ export const plantLookup = async (thumbnail: string): Promise<Types.Core.PlantNe
                 err,
                 thumbnail,
                 requestAttempts,
-                result,
+                // result,
                 sizeOfPostData,
                 sizeOfFile,
             })
