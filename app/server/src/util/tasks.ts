@@ -921,13 +921,15 @@ export const plantLookup = async (fileId: number): Promise<Types.Core.TaskProces
             })
 
             // gbif
-            newTags.push({
-                fileId,
-                type: 'plant',
-                subtype: 'gbif',
-                value: plantData.gbif,
-                confidence,
-            })
+            if (!!plantData?.gbif) {
+                newTags.push({
+                    fileId,
+                    type: 'plant',
+                    subtype: 'gbif',
+                    value: plantData.gbif,
+                    confidence,
+                })
+            }
 
             // common names
             plantData.commonNames.map((value) => {
