@@ -555,7 +555,7 @@ export namespace Core {
 		genus: string
 		family: string
 		commonNames: string[]
-		gbif: string
+		gbif?: string
 	}
 
 	export type PlantNetLookupResult = {
