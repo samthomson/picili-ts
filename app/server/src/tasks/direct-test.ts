@@ -590,7 +590,9 @@ const bulkDirPathTest = async () => {
 
 const testPlantAPI = async () => {
     // const thumbPath = FileUtil.thumbPath(3, 823, 'xl')
-    const thumbPath = FileUtil.thumbPath(6, 35548, 'xl')
+    // const thumbPath = FileUtil.thumbPath(6, 35548, 'xl')
+    const thumbPath = FileUtil.thumbPath(6, 25168, 'xl')
+
     const response = await APIUtil.plantLookup(thumbPath)
     console.log('response', response)
 }
